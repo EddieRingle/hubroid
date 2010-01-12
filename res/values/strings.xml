@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Hubroid</string>
+	<string name="repositories_tab_label">Repositories</string>
+	<string name="users_tab_label">Users</string>
+	<string name="search_repositories_btn">Search Repos</string>
+	<string name="search_users_btn">Search Users</string>
+	<string name="repository_owner_label">Owner:</string>
+	<string name="repository_fork_of_label">Fork of:</string>
+	<string name="repository_fork_count_label"># of Forks:</string>
+	<string name="repository_watcher_count_label"># of Watchers:</string>
+	<string name="user_fullname_label">Full Name:</string>
+	<string name="user_email_label">E-Mail:</string>
+	<string name="user_location_label">Location: </string>
+	<string name="user_repository_count_label"># of Public Repos:</string>
+</resources>

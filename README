@@ -1,0 +1,13 @@
+This application allows you to access various information about GitHub repositories and users through the GitHub API.
+
+It currently is in very early development stages, so it is still simple and some features may be missing.
+
+TODO:
+* Finish the Commit Log
+* Increase responsiveness
+
+Wishlist:
+* Repository Fork List
+* Favorite Repositories and Users
+* User Follower/Following List
+* Repository Watcher List
