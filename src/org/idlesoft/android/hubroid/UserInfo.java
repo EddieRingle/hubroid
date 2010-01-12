@@ -1,18 +1,9 @@
 package org.idlesoft.android.hubroid;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -35,32 +26,6 @@ public class UserInfo extends TabActivity {
 	public RepositoriesListAdapter m_adapter;
 	public Intent m_intent;
 	public int m_position;
-
-	public JSONObject make_request(URL url) throws ClientProtocolException, IOException, URISyntaxException, JSONException {
-		HttpClient c = new DefaultHttpClient();
-		HttpGet getReq = new HttpGet(url.toURI());
-		HttpResponse resp = c.execute(getReq);
-		JSONObject json = null;
-		if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			resp.getEntity().writeTo(os);
-			json = new JSONObject(os.toString()).getJSONObject("user");
-		}
-		return json;
-	}
-
-	public JSONArray request_repo_list(URL url) throws ClientProtocolException, IOException, URISyntaxException, JSONException {
-		HttpClient c = new DefaultHttpClient();
-		HttpGet getReq = new HttpGet(url.toURI());
-		HttpResponse resp = c.execute(getReq);
-		JSONArray json = null;
-		if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			resp.getEntity().writeTo(os);
-			json = new JSONObject(os.toString()).getJSONArray("repositories");
-		}
-		return json;
-	}
 
 	private Runnable threadProc_itemClick = new Runnable() {
 		public void run() {
@@ -112,7 +77,7 @@ public class UserInfo extends TabActivity {
         	try {
 				URL user_query = new URL("http://github.com/api/v2/json/user/show/"
 										+ URLEncoder.encode(extras.getString("username")));
-				m_jsonData = make_request(user_query);
+				m_jsonData = Hubroid.make_api_request(user_query).getJSONObject("user");
 				TextView user_name = (TextView)findViewById(R.id.user_name);
 				user_name.setText(m_jsonData.getString("login"));
 				TextView user_fullname = (TextView)findViewById(R.id.user_fullname);
@@ -124,22 +89,13 @@ public class UserInfo extends TabActivity {
 				TextView user_repository_count = (TextView)findViewById(R.id.user_repository_count);
 				user_repository_count.setText(m_jsonData.getString("public_repo_count"));
 
-				m_userRepoData = request_repo_list(new URL("http://github.com/api/v2/json/repos/show/"
-															+ URLEncoder.encode(extras.getString("username"))));
+				m_userRepoData = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/repos/show/"
+															+ URLEncoder.encode(extras.getString("username")))).getJSONArray("repositories");
 				m_adapter = new RepositoriesListAdapter(UserInfo.this, m_userRepoData);
 				ListView repo_list = (ListView)findViewById(R.id.repo_list);
 				repo_list.setAdapter(m_adapter);
 				repo_list.setOnItemClickListener(m_MessageClickedHandler);
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JSONException e) {

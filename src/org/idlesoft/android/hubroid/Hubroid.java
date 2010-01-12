@@ -20,7 +20,7 @@ import android.os.Bundle;
 import android.widget.TabHost;
 
 public class Hubroid extends TabActivity {
-	public JSONObject make_api_request(URL url, String root) {
+	public static JSONObject make_api_request(URL url) {
 		JSONObject json = null;
 		HttpClient c = new DefaultHttpClient();
 		HttpGet getReq;
@@ -30,7 +30,7 @@ public class Hubroid extends TabActivity {
 			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
 				resp.getEntity().writeTo(os);
-				json = new JSONObject(os.toString()).getJSONObject(root);
+				json = new JSONObject(os.toString());
 			}
 		} catch (URISyntaxException e) {
 			e.printStackTrace();

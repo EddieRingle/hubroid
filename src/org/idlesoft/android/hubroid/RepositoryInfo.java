@@ -1,18 +1,9 @@
 package org.idlesoft.android.hubroid;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,19 +20,6 @@ public class RepositoryInfo extends TabActivity {
 	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
 	public Intent m_intent;
-
-	public JSONObject make_request(URL url, String root) throws ClientProtocolException, IOException, URISyntaxException, JSONException {
-		HttpClient c = new DefaultHttpClient();
-		HttpGet getReq = new HttpGet(url.toURI());
-		HttpResponse resp = c.execute(getReq);
-		JSONObject json = null;
-		if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			resp.getEntity().writeTo(os);
-			json = new JSONObject(os.toString()).getJSONObject(root);
-		}
-		return json;
-	}
 
 	private Runnable threadProc_userInfo = new Runnable() {
 		public void run() {
@@ -92,16 +70,11 @@ public class RepositoryInfo extends TabActivity {
 						+ URLEncoder.encode(extras.getString("username"))
 						+ "/"
 						+ URLEncoder.encode(extras.getString("repo_name")));
-				m_jsonData = make_request(repo_query, "repository");
+				m_jsonData = Hubroid.make_api_request(repo_query).getJSONObject("repository");
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (URISyntaxException e) {
-				e.printStackTrace();
 			} catch (JSONException e) {
+				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

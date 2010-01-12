@@ -1,19 +1,9 @@
 package org.idlesoft.android.hubroid;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -33,38 +23,16 @@ public class RepositoriesList extends ListActivity {
 	private RepositoriesListAdapter m_adapter;
 	public ProgressDialog m_progressDialog;
 	private EditText m_searchBox;
-	public JSONArray m_jsonData;
+	public JSONObject m_jsonData;
 	public int m_position;
 	public Intent m_intent;
-
-	public JSONArray request(URL url) throws ClientProtocolException, IOException, URISyntaxException, JSONException {
-		HttpClient c = new DefaultHttpClient();
-		HttpGet getReq = new HttpGet(url.toURI());
-		HttpResponse resp = c.execute(getReq);
-		JSONArray json = null;
-		if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			resp.getEntity().writeTo(os);
-			json = new JSONObject(os.toString()).getJSONArray("repositories");
-		}
-		return json;
-	}
 
 	public void initializeList() {
 		try {
 			URL query = new URL("http://github.com/api/v2/json/repos/search/" + URLEncoder.encode(m_searchBox.getText().toString()));
-			m_jsonData = request(query);
-			m_adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData);
+			m_jsonData = Hubroid.make_api_request(query);
+			m_adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData.getJSONArray("repositories"));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (URISyntaxException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -90,8 +58,8 @@ public class RepositoriesList extends ListActivity {
 		public void run() {
 			try {
 	        	m_intent = new Intent(RepositoriesList.this, RepositoryInfo.class);
-	        	m_intent.putExtra("repo_name", m_jsonData.getJSONObject(m_position).getString("name"));
-	        	m_intent.putExtra("username", m_jsonData.getJSONObject(m_position).getString("username"));
+	        	m_intent.putExtra("repo_name", m_jsonData.getJSONArray("repositories").getJSONObject(m_position).getString("name"));
+	        	m_intent.putExtra("username", m_jsonData.getJSONArray("repositories").getJSONObject(m_position).getString("username"));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
