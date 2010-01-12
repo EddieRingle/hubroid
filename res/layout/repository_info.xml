@@ -78,6 +78,7 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_alignParentRight="true"
+					android:layout_marginRight="29dip"
 					android:layout_alignTop="@id/repository_watcher_count_label"/>
 			</RelativeLayout>
 			<LinearLayout
