@@ -17,7 +17,9 @@ public class RepositoriesListAdapter extends BaseAdapter {
 	private LayoutInflater m_inflater;
 
 	public static class ViewHolder {
-		public TextView text;
+		public TextView repo_name;
+		public TextView repo_owner;
+		public TextView repo_owner_label;
 	}
 
 	public RepositoriesListAdapter(final Context context, JSONArray jsonarray) {
@@ -46,17 +48,21 @@ public class RepositoriesListAdapter extends BaseAdapter {
 	public View getView(int index, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = m_inflater.inflate(android.R.layout.simple_list_item_1, null);
+			convertView = m_inflater.inflate(R.layout.repository_list_item, null);
 			holder = new ViewHolder();
-			holder.text = (TextView) convertView.findViewById(android.R.id.text1);
+			holder.repo_name = (TextView) convertView.findViewById(R.id.repository_list_item_name);
+			holder.repo_owner = (TextView) convertView.findViewById(R.id.repository_list_item_owner);
+			holder.repo_owner_label = (TextView) convertView.findViewById(R.id.repository_list_item_owner_label);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		try {
-			holder.text.setText(m_data.getJSONObject(index).getString("name"));
+			holder.repo_name.setText(m_data.getJSONObject(index).getString("name"));
+			holder.repo_owner.setText(m_data.getJSONObject(index).getString("username"));
 		} catch (JSONException e) {
-			e.printStackTrace();
+			holder.repo_owner.setVisibility(TextView.GONE);
+			holder.repo_owner_label.setVisibility(TextView.GONE);
 		}
 		return convertView;
 	}

@@ -5,6 +5,7 @@
 	<string name="users_tab_label">Users</string>
 	<string name="search_repositories_btn">Search Repos</string>
 	<string name="search_users_btn">Search Users</string>
+	<string name="repository_list_item_owner_label">Owner:</string>
 	<string name="repository_owner_label">Owner:</string>
 	<string name="repository_fork_of_label">Fork of:</string>
 	<string name="repository_fork_count_label"># of Forks:</string>
