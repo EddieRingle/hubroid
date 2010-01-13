@@ -80,6 +80,31 @@
 					android:layout_alignParentRight="true"
 					android:layout_marginRight="29dip"
 					android:layout_alignTop="@id/repository_watcher_count_label"/>
+				<TextView
+					android:id="@+id/repository_fork_of_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/repository_watcher_count_label"
+					android:text="@string/repository_fork_of_label"
+					android:visibility="gone" />
+				<TextView
+					android:id="@+id/repository_fork_of"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_alignParentRight="true"
+					android:layout_marginRight="29dip"
+					android:layout_alignTop="@id/repository_fork_of_label"
+					android:visibility="gone" />
+				<Button
+					android:id="@+id/goto_forked_repository_btn"
+					android:background="@android:drawable/ic_dialog_info"
+					android:layout_width="24dip"
+					android:layout_height="24dip"
+					android:layout_marginTop="17.5dip"
+					android:layout_marginLeft="5dip"
+					android:layout_alignParentRight="true"
+					android:layout_alignBottom="@id/repository_fork_of_label"
+					android:visibility="gone" />
 			</RelativeLayout>
 			<LinearLayout
 				android:id="@+id/repo_commits_tab"
