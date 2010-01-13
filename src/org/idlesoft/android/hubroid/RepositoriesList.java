@@ -33,10 +33,8 @@ public class RepositoriesList extends ListActivity {
 			m_jsonData = Hubroid.make_api_request(query);
 			m_adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData.getJSONArray("repositories"));
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

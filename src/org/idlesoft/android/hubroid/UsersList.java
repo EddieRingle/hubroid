@@ -33,10 +33,8 @@ public class UsersList extends ListActivity {
 			m_jsonData = Hubroid.make_api_request(query).getJSONArray("users");
 			m_adapter = new UsersListAdapter(UsersList.this, m_jsonData);
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (JSONException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -60,7 +58,6 @@ public class UsersList extends ListActivity {
 	        	m_intent = new Intent(UsersList.this, UserInfo.class);
 	        	m_intent.putExtra("username", m_jsonData.getJSONObject(m_position).getString("username"));
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

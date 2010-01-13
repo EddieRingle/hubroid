@@ -31,7 +31,6 @@ public class RepositoryInfo extends TabActivity {
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -104,7 +103,6 @@ public class RepositoryInfo extends TabActivity {
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 

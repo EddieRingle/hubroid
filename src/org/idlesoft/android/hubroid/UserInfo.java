@@ -96,10 +96,8 @@ public class UserInfo extends TabActivity {
 				repo_list.setAdapter(m_adapter);
 				repo_list.setOnItemClickListener(m_MessageClickedHandler);
 			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
         }
