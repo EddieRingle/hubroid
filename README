@@ -2,12 +2,15 @@ This application allows you to access various information about GitHub repositor
 
 It currently is in very early development stages, so it is still simple and some features may be missing.
 
+New in v0.2:
+* Repository Network List
+* Show more fork information
+
 TODO:
 * Finish the Commit Log
 * Increase responsiveness
 
 Wishlist:
-* Repository Fork List
 * Favorite Repositories and Users
 * User Follower/Following List
 * Repository Watcher List
