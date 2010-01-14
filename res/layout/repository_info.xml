@@ -107,21 +107,7 @@
 					android:layout_alignBottom="@id/repository_fork_of_label"
 					android:visibility="gone" />
 			</RelativeLayout>
-			<LinearLayout
-				android:id="@+id/repo_commits_tab"
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent">
-				<Spinner
-					android:id="@+id/branch_select"
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:drawSelectorOnTop="true" />
-				<ListView
-					android:id="@+id/repo_commit_log_list"
-					android:layout_width="fill_parent"
-					android:layout_height="fill_parent">
-				</ListView>
-			</LinearLayout>
+			<include layout="@layout/repo_commits_tab" />
 			<LinearLayout
 				android:id="@+id/repo_forks_tab"
 				android:layout_width="fill_parent"

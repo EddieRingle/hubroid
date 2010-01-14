@@ -5,9 +5,11 @@ It currently is in very early development stages, so it is still simple and some
 New in v0.2:
 * Repository Network List
 * Show more fork information
+* Repository Commit Log
 
 TODO:
-* Finish the Commit Log
+* Specific Commit Info
+* Improve info given in lists
 * Increase responsiveness
 
 Wishlist:

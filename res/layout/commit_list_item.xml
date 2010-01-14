@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:paddingTop="10dip"
+	android:paddingBottom="10dip">
+	<TextView
+		android:id="@+id/commit_list_item_shortdesc"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="5dip"
+		android:textSize="24dip"
+		android:textColor="#FFFFFF"
+		android:ellipsize="end"
+		android:singleLine="true" />
+	<TextView
+		android:id="@+id/commit_list_item_sha_label"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/commit_list_item_shortdesc"
+		android:text="@string/commit_list_item_sha_label" />
+	<TextView
+		android:id="@+id/commit_list_item_sha"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignTop="@id/commit_list_item_sha_label"
+		android:layout_toRightOf="@id/commit_list_item_sha_label"
+		android:layout_marginLeft="5dip"
+		android:ellipsize="end" />
+</RelativeLayout>
