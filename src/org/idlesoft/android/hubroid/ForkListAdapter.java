@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.Context;
+import android.text.TextUtils.TruncateAt;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,8 @@ public class ForkListAdapter extends BaseAdapter {
 			holder.text.setText(m_data.getJSONObject(index).getString("owner")
 								+ "/"
 								+ m_data.getJSONObject(index).getString("name"));
+			holder.text.setEllipsize(TruncateAt.END);
+			holder.text.setMaxLines(1);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

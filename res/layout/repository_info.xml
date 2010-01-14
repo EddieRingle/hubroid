@@ -25,9 +25,12 @@
 					android:id="@+id/repository_name"
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
-					android:textSize="20dip"
+					android:textSize="18dip"
 					android:textColor="#FFFFFF"
-					android:textStyle="bold"/>
+					android:textStyle="bold"
+					android:singleLine="true"
+					android:ellipsize="marquee"
+					android:focusable="true" />
 				<TextView
 					android:id="@+id/repository_description"
 					android:layout_width="fill_parent"
