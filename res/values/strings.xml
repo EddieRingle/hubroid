@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Hubroid 0.2</string>
+    <string name="app_name">Hubroid</string>
 	<string name="repositories_tab_label">Repositories</string>
 	<string name="users_tab_label">Users</string>
 	<string name="search_repositories_btn">Search Repos</string>
