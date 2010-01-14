@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class RepositoriesList extends ListActivity {
@@ -27,25 +28,33 @@ public class RepositoriesList extends ListActivity {
 	public int m_position;
 	public Intent m_intent;
 
-	public void initializeList() {
+	public RepositoriesListAdapter initializeList() {
+		RepositoriesListAdapter adapter = null;
 		try {
 			URL query = new URL("http://github.com/api/v2/json/repos/search/" + URLEncoder.encode(m_searchBox.getText().toString()));
 			m_jsonData = Hubroid.make_api_request(query);
-			m_adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData.getJSONArray("repositories"));
+			if (m_jsonData == null) {
+				Toast.makeText(RepositoriesList.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
+			} else {
+				adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData.getJSONArray("repositories"));
+			}
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return adapter;
 	}
 	
 	private Runnable threadProc_initializeList = new Runnable() {
 		public void run() {
-			initializeList();
+			m_adapter = initializeList();
 
 			runOnUiThread(new Runnable() {
 				public void run() {
-					setListAdapter(m_adapter);
+					if (m_adapter != null) {
+						setListAdapter(m_adapter);
+					}
 					m_progressDialog.dismiss();
 				}
 			});
