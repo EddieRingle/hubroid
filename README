@@ -6,6 +6,8 @@ New in v0.2:
 * Repository Network List
 * Show more fork information
 * Repository Commit Log
+* Repository owner displayed in repository lists
+* Cleaned other stuff up
 
 TODO:
 * Specific Commit Info
