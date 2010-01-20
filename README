@@ -1,20 +1,6 @@
 This application allows you to access various information about GitHub repositories and users through the GitHub API.
 
-It currently is in very early development stages, so it is still simple and some features may be missing.
-
-New in v0.2:
-* Repository Network List
-* Show more fork information
-* Repository Commit Log
-* Repository owner displayed in repository lists
-* Cleaned other stuff up
-
-TODO:
-* Specific Commit Info
-* Improve info given in lists
-* Increase responsiveness
-
-Wishlist:
-* Favorite Repositories and Users
-* User Follower/Following List
-* Repository Watcher List
+Changes in v0.2.1:
+* Backwards compatible with Android 1.5
+* Remember list contents when switching between portrait and landscape.
+* Bug fixes
