@@ -34,7 +34,11 @@ public class RepositoriesList extends ListActivity {
 			URL query = new URL("http://github.com/api/v2/json/repos/search/" + URLEncoder.encode(m_searchBox.getText().toString()));
 			m_jsonData = Hubroid.make_api_request(query);
 			if (m_jsonData == null) {
-				Toast.makeText(RepositoriesList.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
+				runOnUiThread(new Runnable() {
+					public void run() {
+						Toast.makeText(RepositoriesList.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
+					}
+				});
 			} else {
 				adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData.getJSONArray("repositories"));
 			}

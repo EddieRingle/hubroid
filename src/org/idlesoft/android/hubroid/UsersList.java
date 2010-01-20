@@ -4,8 +4,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.ListActivity;
 import android.app.ProgressDialog;
@@ -17,35 +17,50 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class UsersList extends ListActivity {
 	private UsersListAdapter m_adapter;
 	public ProgressDialog m_progressDialog;
 	private EditText m_searchBox;
-	public JSONArray m_jsonData;
+	public JSONObject m_jsonData;
 	public Intent m_intent;
 	public int m_position;
 
-	public void initializeList() {
+	public UsersListAdapter initializeList() {
+		UsersListAdapter adapter = null;
 		try {
 			URL query = new URL("http://github.com/api/v2/json/user/search/" + URLEncoder.encode(m_searchBox.getText().toString()));
-			m_jsonData = Hubroid.make_api_request(query).getJSONArray("users");
-			m_adapter = new UsersListAdapter(UsersList.this, m_jsonData);
+			m_jsonData = Hubroid.make_api_request(query);
+
+			if (m_jsonData == null) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						Toast.makeText(UsersList.this, "Error gathering user data, please try again.", Toast.LENGTH_SHORT).show();
+					}
+				});
+			} else {
+				adapter = new UsersListAdapter(getApplicationContext(), m_jsonData.getJSONArray("users"));
+			}
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		return adapter;
 	}
 
 	private Runnable threadProc_initializeList = new Runnable() {
 		public void run() {
-			initializeList();
+			m_adapter = initializeList();
 
 			runOnUiThread(new Runnable() {
 				public void run() {
-					setListAdapter(m_adapter);
+					if (m_adapter != null) {
+						setListAdapter(m_adapter);
+					}
 					m_progressDialog.dismiss();
 				}
 			});
@@ -56,7 +71,7 @@ public class UsersList extends ListActivity {
 		public void run() {
 			try {
 	        	m_intent = new Intent(UsersList.this, UserInfo.class);
-	        	m_intent.putExtra("username", m_jsonData.getJSONObject(m_position).getString("username"));
+	        	m_intent.putExtra("username", m_jsonData.getJSONArray("users").getJSONObject(m_position).getString("username"));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
