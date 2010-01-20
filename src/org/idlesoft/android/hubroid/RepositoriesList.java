@@ -118,4 +118,44 @@ public class RepositoriesList extends ListActivity {
         ListView list = (ListView)findViewById(android.R.id.list);
         list.setOnItemClickListener(m_MessageClickedHandler);
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+    	if (m_jsonData != null) {
+    		savedInstanceState.putString("json", m_jsonData.toString());
+    	}
+    	super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    	super.onRestoreInstanceState(savedInstanceState);
+    	boolean keepGoing = true;
+    	try {
+    		if (savedInstanceState.containsKey("json")) {
+    			m_jsonData = new JSONObject(savedInstanceState.getString("json"));
+    		} else {
+    			keepGoing = false;
+    		}
+		} catch (JSONException e) {
+			keepGoing = false;
+		}
+		if (keepGoing == true) {
+			try {
+				m_adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData.getJSONArray("repositories"));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		} else {
+			m_adapter = null;
+		}
+    }
+
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	if (m_adapter != null) {
+    		setListAdapter(m_adapter);
+    	}
+    }
 }
