@@ -97,7 +97,7 @@
 			android:textSize="12.5dip"/>
 		<Button
 			android:layout_alignParentRight="true"
-			android:layout_centerVertical="true"
+			android:layout_alignBaseline="@id/tv_splash_login_token_label"
 			android:layout_width="125dip"
 			android:layout_height="wrap_content"
 			android:id="@+id/btn_splash_login"

@@ -21,6 +21,9 @@
 			android:textColor="#555"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_alignBaseline="@id/iv_main_gravatar"
+			android:layout_marginLeft="10dip"
+			android:layout_marginTop="6dip"
 			android:layout_toRightOf="@id/iv_main_gravatar" />
 	</RelativeLayout>
 </RelativeLayout>
