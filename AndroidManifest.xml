@@ -15,7 +15,8 @@
 		<activity android:name="UsersList" android:label="@string/users_tab_label"></activity>
 		<activity android:name="RepositoryInfo"></activity>
 		<activity android:name="UserInfo"></activity>
-	</application>
+	<activity android:name="MainScreen"></activity>
+</application>
     <uses-sdk android:minSdkVersion="3" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
 </manifest>

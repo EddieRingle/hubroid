@@ -3,7 +3,6 @@ package org.idlesoft.android.hubroid;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -19,8 +18,11 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -29,7 +31,10 @@ import android.widget.Toast;
 
 public class Hubroid extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
+	private SharedPreferences m_prefs;
+	private SharedPreferences.Editor m_editor;
 	public ProgressDialog m_progressDialog;
+	public boolean m_isLoggedIn;
 
 	public static JSONObject make_api_request(URL url) {
 		JSONObject json = null;
@@ -85,15 +90,16 @@ public class Hubroid extends Activity {
 					}
 				});
 			} else if(result.has("emails")) {
-				SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
-				SharedPreferences.Editor editor = prefs.edit();
-				editor.putString("login", login);
-				editor.putString("token", token);
-				editor.putBoolean("isLoggedIn", true);
-				editor.commit();
+				m_editor.putString("login", login);
+				m_editor.putString("token", token);
+				m_editor.putBoolean("isLoggedIn", true);
+				m_editor.commit();
 				runOnUiThread(new Runnable() {
 					public void run() {
 						m_progressDialog.dismiss();
+						Intent intent = new Intent(Hubroid.this, MainScreen.class);
+			        	startActivity(intent);
+			        	Toast.makeText(Hubroid.this, "Yay!", Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
@@ -121,14 +127,16 @@ public class Hubroid extends Activity {
         					.setIndicator(getString(R.string.users_tab_label), getResources().getDrawable(R.drawable.users))
         					.setContent(new Intent(this, UsersList.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
         */
-        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, 0);
-        boolean isLoggedIn = prefs.getBoolean("isLoggedIn", false);
-        if (!isLoggedIn) {
+        m_prefs = getSharedPreferences(PREFS_NAME, 0);
+    	m_editor = m_prefs.edit();
+        m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
+        if (!m_isLoggedIn) {
         	setContentView(R.layout.splash);
         	Button loginBtn = (Button)findViewById(R.id.btn_splash_login);
         	loginBtn.setOnClickListener(m_loginButtonClick);
         } else {
-        	setContentView(R.layout.splash);
+        	Intent intent = new Intent(Hubroid.this, MainScreen.class);
+        	startActivity(intent);
         	Toast.makeText(Hubroid.this, "Yay!", Toast.LENGTH_SHORT).show();
         }
     }
