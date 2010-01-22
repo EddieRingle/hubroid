@@ -13,11 +13,10 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.TextView;
 
 public class MainScreen extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
@@ -25,6 +24,15 @@ public class MainScreen extends Activity {
 	private SharedPreferences.Editor m_editor;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
+
+	public static final String[] MAIN_MENU = new String[] {
+		"Watched Repos",
+		"Followers/Following",
+		"Activity Feeds",
+		"Repositories",
+		"Search",
+		"Profile"
+	};
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (m_isLoggedIn) {
@@ -52,6 +60,9 @@ public class MainScreen extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ListView menu_list = (ListView)findViewById(R.id.lv_main_menu_list);
+        menu_list.setAdapter(new ArrayAdapter<String>(MainScreen.this, R.layout.main_menu_item, MAIN_MENU));
         /*
         TabHost m_TabHost = getTabHost();
 

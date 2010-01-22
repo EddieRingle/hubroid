@@ -26,4 +26,17 @@
 			android:layout_marginTop="6dip"
 			android:layout_toRightOf="@id/iv_main_gravatar" />
 	</RelativeLayout>
+	<LinearLayout
+		android:layout_below="@id/rl_main_user_bar"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:gravity="center">
+		<ListView
+			android:id="@+id/lv_main_menu_list"
+			android:layout_width="240dip"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="#FFF"
+			android:padding="3dip"
+			android:background="@drawable/main_menu_border" />
+	</LinearLayout>
 </RelativeLayout>
