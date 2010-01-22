@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -22,6 +23,9 @@ public class MainScreen extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
+	private String m_username;
+	private String m_token;
+	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
 
@@ -75,7 +79,47 @@ public class MainScreen extends Activity {
         */
         m_prefs = getSharedPreferences(PREFS_NAME, 0);
     	m_editor = m_prefs.edit();
+    	m_username = m_prefs.getString("login", "");
+        m_token = m_prefs.getString("token", "");
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
         setContentView(R.layout.main_menu);
+        m_progressDialog = ProgressDialog.show(MainScreen.this, "Please wait...", "Loading user data...");
+
+        Thread thread = new Thread(new Runnable() {
+			public void run() {
+				try {
+					URL query = new URL("http://github.com/api/v2/json/user/show/"
+										+ URLEncoder.encode(m_username)
+										+ "?login="
+										+ URLEncoder.encode(m_username)
+										+ "&token="
+										+ URLEncoder.encode(m_token));
+					m_userData = Hubroid.make_api_request(query).getJSONObject("user");
+
+					runOnUiThread(new Runnable() {
+						public void run() {
+							ImageView gravatar = (ImageView)findViewById(R.id.iv_main_gravatar);
+							try {
+								gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 48));
+								TextView username = (TextView)findViewById(R.id.tv_main_username);
+								if (m_userData.getString("name").length() > 0) {
+									username.setText(m_userData.getString("name"));
+								} else {
+									username.setText(m_username);
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							m_progressDialog.dismiss();
+						}
+					});
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+        thread.start();
     }
 }

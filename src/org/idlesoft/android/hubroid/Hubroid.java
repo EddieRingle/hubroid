@@ -1,10 +1,13 @@
 package org.idlesoft.android.hubroid;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import org.apache.http.HttpResponse;
@@ -20,9 +23,10 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -59,6 +63,26 @@ public class Hubroid extends Activity {
 		}
 		return json;
 	}
+
+	public static Bitmap getGravatar(String id, int size) { 
+		Bitmap bm = null; 
+    	try { 
+    		URL aURL = new URL("http://www.gravatar.com/avatar.php?gravatar_id="
+    							+ URLEncoder.encode(id)
+    							+ "&size="
+    							+ size);
+        	URLConnection conn = aURL.openConnection(); 
+        	conn.connect(); 
+        	InputStream is = conn.getInputStream(); 
+        	BufferedInputStream bis = new BufferedInputStream(is); 
+        	bm = BitmapFactory.decodeStream(bis); 
+        	bis.close(); 
+        	is.close(); 
+    	} catch (IOException e) { 
+    		Log.e("debug", "Error getting bitmap", e); 
+    	} 
+    	return bm; 
+    }
 
 	private Runnable threadProc_login = new Runnable() {
 		public void run() {
