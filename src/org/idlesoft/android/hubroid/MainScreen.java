@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class MainScreen extends Activity {
@@ -64,9 +65,8 @@ public class MainScreen extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.main_menu);
 
-        ListView menu_list = (ListView)findViewById(R.id.lv_main_menu_list);
-        menu_list.setAdapter(new ArrayAdapter<String>(MainScreen.this, R.layout.main_menu_item, MAIN_MENU));
         /*
         TabHost m_TabHost = getTabHost();
 
@@ -82,7 +82,7 @@ public class MainScreen extends Activity {
     	m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
-        setContentView(R.layout.main_menu);
+
         m_progressDialog = ProgressDialog.show(MainScreen.this, "Please wait...", "Loading user data...");
 
         Thread thread = new Thread(new Runnable() {
@@ -110,6 +110,10 @@ public class MainScreen extends Activity {
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
+							ListView menu_list = (ListView)findViewById(R.id.lv_main_menu_list);
+					        menu_list.setAdapter(new ArrayAdapter<String>(MainScreen.this, R.layout.main_menu_item, MAIN_MENU));
+					        RelativeLayout root_layout = (RelativeLayout)findViewById(R.id.rl_main_menu_root);
+					        root_layout.setVisibility(0);
 							m_progressDialog.dismiss();
 						}
 					});
