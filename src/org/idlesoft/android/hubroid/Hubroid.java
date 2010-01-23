@@ -123,7 +123,6 @@ public class Hubroid extends Activity {
 						m_progressDialog.dismiss();
 						Intent intent = new Intent(Hubroid.this, MainScreen.class);
 			        	startActivity(intent);
-			        	Toast.makeText(Hubroid.this, "Yay!", Toast.LENGTH_SHORT).show();
 					}
 				});
 			}
@@ -161,7 +160,6 @@ public class Hubroid extends Activity {
         } else {
         	Intent intent = new Intent(Hubroid.this, MainScreen.class);
         	startActivity(intent);
-        	Toast.makeText(Hubroid.this, "Yay!", Toast.LENGTH_SHORT).show();
         }
     }
 }
