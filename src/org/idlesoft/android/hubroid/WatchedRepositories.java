@@ -117,7 +117,7 @@ public class WatchedRepositories extends ListActivity {
     public void onStart() {
     	super.onStart();
 
-    	m_progressDialog = ProgressDialog.show(WatchedRepositories.this, "Please wait...", "Searching Repositories...", true);
+    	m_progressDialog = ProgressDialog.show(WatchedRepositories.this, "Please wait...", "Loading Repositories...", true);
 		Thread thread = new Thread(null, threadProc_initializeList);
 		thread.start();
 
