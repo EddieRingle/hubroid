@@ -2,6 +2,7 @@
 <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res/org.idlesoft.android.hubroid"
 	android:id="@android:id/tabhost"
+	android:background="@color/background"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
 	<LinearLayout
@@ -26,7 +27,7 @@
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
 					android:textSize="18dip"
-					android:textColor="#FFFFFF"
+					android:textColor="@color/textColor"
 					android:textStyle="bold"
 					android:singleLine="true"
 					android:ellipsize="marquee"
@@ -36,16 +37,19 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/user_name"
+					android:textColor="@color/textColor"
 					android:text="@string/user_fullname_label" />
 				<TextView
 					android:id="@+id/user_fullname"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_alignParentRight="true"
+					android:textColor="@color/textColor"
 					android:layout_alignTop="@id/user_fullname_label"/>
 				<TextView
 					android:id="@+id/user_email_label"
 					android:layout_width="wrap_content"
+					android:textColor="@color/textColor"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/user_fullname_label"
 					android:text="@string/user_email_label" />
@@ -54,30 +58,35 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_alignParentRight="true"
+					android:textColor="@color/textColor"
 					android:layout_alignTop="@id/user_email_label"/>
 				<TextView
 					android:id="@+id/user_location_label"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/user_email_label"
+					android:textColor="@color/textColor"
 					android:text="@string/user_location_label" />
 				<TextView
 					android:id="@+id/user_location"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_alignParentRight="true"
+					android:textColor="@color/textColor"
 					android:layout_alignTop="@id/user_location_label"/>
 				<TextView
 					android:id="@+id/user_repository_count_label"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/user_location_label"
+					android:textColor="@color/textColor"
 					android:text="@string/user_repository_count_label" />
 				<TextView
 					android:id="@+id/user_repository_count"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_alignParentRight="true"
+					android:textColor="@color/textColor"
 					android:layout_alignTop="@id/user_repository_count_label"/>
 			</RelativeLayout>
 			<LinearLayout
@@ -86,6 +95,7 @@
 				android:layout_height="fill_parent">
 				<ListView
 					android:id="@+id/repo_list"
+					android:cacheColorHint="#FFF"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent">
 				</ListView>
