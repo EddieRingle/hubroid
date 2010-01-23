@@ -8,10 +8,10 @@
 	<RelativeLayout
 		android:id="@+id/rl_main_user_bar"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="56dip"
 		android:layout_alignParentTop="true"
 		android:padding="7.5dip"
-		android:background="#9DDD">
+		android:background="@drawable/top_bar">
 		<ImageView
 			android:id="@+id/iv_main_gravatar"
 			android:layout_width="wrap_content"
@@ -25,11 +25,18 @@
 			android:layout_height="wrap_content"
 			android:layout_alignBaseline="@id/iv_main_gravatar"
 			android:layout_marginLeft="10dip"
-			android:layout_marginTop="6dip"
+			android:layout_marginTop="3dip"
 			android:layout_toRightOf="@id/iv_main_gravatar" />
 	</RelativeLayout>
 	<LinearLayout
+		android:id="@+id/ll_main_menu_shadow"
+		android:layout_width="fill_parent"
+		android:layout_height="10dip"
+		android:orientation="vertical"
 		android:layout_below="@id/rl_main_user_bar"
+		android:background="@drawable/shadow" />
+	<LinearLayout
+		android:layout_below="@id/ll_main_menu_shadow"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:gravity="center">
