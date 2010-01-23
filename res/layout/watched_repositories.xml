@@ -6,6 +6,14 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:background="#FFF">
+	<TextView
+		android:id="@+id/tv_watched_repositories_title"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_horizontal"
+		android:textColor="@color/textColor"
+		android:textSize="20dip"
+		android:textStyle="bold" />
 	<ListView
 		android:id="@android:id/list"
 		android:cacheColorHint="#FFF"

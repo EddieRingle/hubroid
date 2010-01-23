@@ -10,10 +10,12 @@ import org.json.JSONObject;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -22,6 +24,8 @@ public class WatchedRepositories extends ListActivity {
 	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
 	public int m_position;
+	public String m_username;
+	public SharedPreferences m_prefs;
 	public Intent m_intent;
 
 	public RepositoriesListAdapter initializeList() {
@@ -92,6 +96,21 @@ public class WatchedRepositories extends ListActivity {
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.watched_repositories);
+
+        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+	        if(extras.containsKey("username")) {
+	        	m_username = icicle.getString("username");
+	        } else {
+	        	m_username = m_prefs.getString("login", "");
+	        }
+        } else {
+        	m_username = m_prefs.getString("login", "");
+        }
+
+        TextView title = (TextView)findViewById(R.id.tv_watched_repositories_title);
+        title.setText(m_username + "'s fan club memberships:");
     }
 
     @Override
