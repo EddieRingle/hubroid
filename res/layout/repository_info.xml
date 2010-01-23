@@ -2,6 +2,7 @@
 <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res/org.idlesoft.android.hubroid"
 	android:id="@android:id/tabhost"
+	android:background="@color/background"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
 	<LinearLayout
@@ -26,7 +27,7 @@
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
 					android:textSize="18dip"
-					android:textColor="#FFFFFF"
+					android:textColor="@color/textColor"
 					android:textStyle="bold"
 					android:singleLine="true"
 					android:ellipsize="marquee"
@@ -36,12 +37,14 @@
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/repository_name"
+					android:textColor="@color/textColor"
 					android:paddingBottom="15dip"/>
 				<TextView
 					android:id="@+id/repository_owner_label"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/repository_description"
+					android:textColor="@color/textColor"
 					android:text="@string/repository_owner_label" />
 				<Button
 					android:id="@+id/goto_repo_owner_info_btn"
@@ -50,6 +53,7 @@
 					android:layout_height="24dip"
 					android:layout_marginTop="17.5dip"
 					android:layout_marginLeft="5dip"
+					android:textColor="@color/textColor"
 					android:layout_alignParentRight="true"
 					android:layout_alignBottom="@id/repository_owner_label" />
 				<TextView
@@ -57,12 +61,14 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_toLeftOf="@id/goto_repo_owner_info_btn"
+					android:textColor="@color/textColor"
 					android:layout_alignTop="@id/repository_owner_label" />
 				<TextView
 					android:id="@+id/repository_fork_count_label"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/repository_owner_label"
+					android:textColor="@color/textColor"
 					android:text="@string/repository_fork_count_label" />
 				<TextView
 					android:id="@+id/repository_fork_count"
@@ -70,12 +76,14 @@
 					android:layout_height="wrap_content"
 					android:layout_alignParentRight="true"
 					android:layout_marginRight="29dip"
+					android:textColor="@color/textColor"
 					android:layout_alignTop="@id/repository_fork_count_label"/>
 				<TextView
 					android:id="@+id/repository_watcher_count_label"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/repository_fork_count_label"
+					android:textColor="@color/textColor"
 					android:text="@string/repository_watcher_count_label" />
 				<TextView
 					android:id="@+id/repository_watcher_count"
@@ -83,6 +91,7 @@
 					android:layout_height="wrap_content"
 					android:layout_alignParentRight="true"
 					android:layout_marginRight="29dip"
+					android:textColor="@color/textColor"
 					android:layout_alignTop="@id/repository_watcher_count_label"/>
 				<TextView
 					android:id="@+id/repository_fork_of_label"
@@ -90,6 +99,7 @@
 					android:layout_height="wrap_content"
 					android:layout_below="@id/repository_watcher_count_label"
 					android:text="@string/repository_fork_of_label"
+					android:textColor="@color/textColor"
 					android:visibility="gone" />
 				<TextView
 					android:id="@+id/repository_fork_of"
@@ -98,6 +108,7 @@
 					android:layout_alignParentRight="true"
 					android:layout_marginRight="29dip"
 					android:layout_alignTop="@id/repository_fork_of_label"
+					android:textColor="@color/textColor"
 					android:visibility="gone" />
 				<Button
 					android:id="@+id/goto_forked_repository_btn"
@@ -116,6 +127,7 @@
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent">
 				<ListView
+					android:cacheColorHint="#FFF"
 					android:id="@+id/repo_forks_list"
 					android:layout_width="fill_parent"
 					android:layout_height="fill_parent">

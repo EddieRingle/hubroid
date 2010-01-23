@@ -59,6 +59,7 @@ public class ForkListAdapter extends BaseAdapter {
 								+ "/"
 								+ m_data.getJSONObject(index).getString("name"));
 			holder.text.setEllipsize(TruncateAt.END);
+			holder.text.setTextColor(R.color.textColor);
 			holder.text.setMaxLines(1);
 		} catch (JSONException e) {
 			e.printStackTrace();

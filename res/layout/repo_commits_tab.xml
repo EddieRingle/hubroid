@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/repo_commits_tab"
 	android:orientation="vertical"
+	android:background="@color/background"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
 	<LinearLayout
@@ -11,6 +12,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:textColor="@color/textColor"
 			android:text="Select Branch: " />
 		<Spinner
 			android:id="@+id/branch_select"
@@ -20,6 +22,7 @@
 	<ListView
 		android:id="@+id/repo_commit_log_list"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent">
+		android:layout_height="fill_parent"
+		android:cacheColorHint="#FFF">
 	</ListView>
 </LinearLayout>
