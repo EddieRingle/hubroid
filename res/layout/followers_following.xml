@@ -5,8 +5,17 @@
 	android:background="#FFF"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+	<TextView
+		android:id="@+id/tv_followers_following_title"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_centerHorizontal="true"
+		android:textColor="@color/textColor"
+		android:textSize="24dip"
+		android:textStyle="bold" />
 	<RelativeLayout
 		android:id="@+id/fl_followers_following_main_frame"
+		android:layout_below="@id/tv_followers_following_title"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
 		<ListView

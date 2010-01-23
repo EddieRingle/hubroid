@@ -17,6 +17,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -117,15 +118,18 @@ public class FollowersFollowing extends Activity {
 		public void onClick(View v) {
 			ListView followers = (ListView)findViewById(R.id.lv_followers_following_followers_list);
 			ListView following = (ListView)findViewById(R.id.lv_followers_following_following_list);
+			TextView title = (TextView)findViewById(R.id.tv_followers_following_title);
 
 			if(v.getId() == R.id.btn_followers_following_followers && m_type != "followers") {
 				followers.setAdapter(m_followers_adapter);
 				following.setAdapter(null);
 				m_type = "followers";
+				title.setText(m_username + "'s stalkers:");
 			} else if(v.getId() == R.id.btn_followers_following_following && m_type != "following") {
 				following.setAdapter(m_following_adapter);
 				followers.setAdapter(null);
 				m_type = "following";
+				title.setText("Who " + m_username + " stalks:");
 			}
 		}
 	};
@@ -156,6 +160,9 @@ public class FollowersFollowing extends Activity {
         } else {
         	m_username = m_prefs.getString("login", "");
         }
+
+        TextView title = (TextView)findViewById(R.id.tv_followers_following_title);
+        title.setText(m_username + "'s stalkers");
 
         m_progressDialog = ProgressDialog.show(FollowersFollowing.this, "Please wait...", "Fetching User Information...", true);
 		Thread thread = new Thread(null, threadProc_initializeList);
