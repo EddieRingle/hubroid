@@ -11,10 +11,10 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class UsersListAdapter extends BaseAdapter {
-	private JSONArray m_data = new JSONArray();
-	private int m_currentIndex;
-	private Context m_context;
-	private LayoutInflater m_inflater;
+	protected JSONArray m_data = new JSONArray();
+	protected int m_currentIndex;
+	protected Context m_context;
+	protected LayoutInflater m_inflater;
 
 	public static class ViewHolder {
 		public TextView text;

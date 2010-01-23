@@ -76,7 +76,8 @@ public class MainScreen extends Activity {
 				startActivity(intent);
 				break;
 			case 1:
-				
+				intent = new Intent(MainScreen.this, FollowersFollowing.class);
+				startActivity(intent);
 				break;
 			case 2:
 				Toast.makeText(MainScreen.this, "Activity Feeds", Toast.LENGTH_SHORT).show();

@@ -17,6 +17,7 @@
 		<activity android:name="UserInfo"></activity>
 		<activity android:name="MainScreen"></activity>
 		<activity android:name="WatchedRepositories" android:label="Hubroid :: Watched Repositories" />
+		<activity android:name="FollowersFollowing" />
 	</application>
     <uses-sdk android:minSdkVersion="3" />
 	<uses-permission android:name="android.permission.INTERNET"></uses-permission>

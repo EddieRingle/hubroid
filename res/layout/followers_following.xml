@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/org.idlesoft.android.hubroid"
+	android:id="@+id/ll_followers_following_root"
+	android:background="#FFF"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<RelativeLayout
+		android:id="@+id/fl_followers_following_main_frame"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<ListView
+			android:id="@+id/lv_followers_following_followers_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="#FFF" />
+		<ListView
+			android:id="@+id/lv_followers_following_following_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="#FFF" />
+	</RelativeLayout>
+	<RelativeLayout
+		android:id="@+id/ll_followers_following_button_holder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true">
+		<Button
+			android:id="@+id/btn_followers_following_followers"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:background="@android:drawable/btn_default_small"
+			android:text="Followers" />
+		<Button
+			android:id="@+id/btn_followers_following_following"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/btn_followers_following_followers"
+			android:background="@android:drawable/btn_default_small"
+			android:text="Following" />
+	</RelativeLayout>
+</RelativeLayout>
