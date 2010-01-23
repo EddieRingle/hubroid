@@ -14,11 +14,15 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class MainScreen extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
@@ -26,6 +30,7 @@ public class MainScreen extends Activity {
 	private SharedPreferences.Editor m_editor;
 	private String m_username;
 	private String m_token;
+	public ListView m_menuList;
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
@@ -62,6 +67,36 @@ public class MainScreen extends Activity {
 		return false;
 	}
 
+	private OnItemClickListener onMenuItemSelected = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> pV, View v, int pos, long id) {
+			Intent intent;
+			switch(pos) {
+			case 0:
+				intent = new Intent(MainScreen.this, WatchedRepositories.class);
+				startActivity(intent);
+				break;
+			case 1:
+				
+				break;
+			case 2:
+				Toast.makeText(MainScreen.this, "Activity Feeds", Toast.LENGTH_SHORT).show();
+				break;
+			case 3:
+				Toast.makeText(MainScreen.this, "Repositories", Toast.LENGTH_SHORT).show();
+				break;
+			case 4:
+				Toast.makeText(MainScreen.this, "Search", Toast.LENGTH_SHORT).show();
+				break;
+			case 5:
+				Toast.makeText(MainScreen.this, "Profile", Toast.LENGTH_SHORT).show();
+				break;
+			default:
+				Toast.makeText(MainScreen.this, "Umm...", Toast.LENGTH_SHORT).show();
+				break;
+			}
+		}
+	};
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,6 +120,10 @@ public class MainScreen extends Activity {
 
         m_progressDialog = ProgressDialog.show(MainScreen.this, "Please wait...", "Loading user data...");
 
+        m_menuList = (ListView)findViewById(R.id.lv_main_menu_list);
+        m_menuList.setAdapter(new ArrayAdapter<String>(MainScreen.this, R.layout.main_menu_item, MAIN_MENU));
+        m_menuList.setOnItemClickListener(onMenuItemSelected);
+        
         Thread thread = new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -110,8 +149,6 @@ public class MainScreen extends Activity {
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
-							ListView menu_list = (ListView)findViewById(R.id.lv_main_menu_list);
-					        menu_list.setAdapter(new ArrayAdapter<String>(MainScreen.this, R.layout.main_menu_item, MAIN_MENU));
 					        RelativeLayout root_layout = (RelativeLayout)findViewById(R.id.rl_main_menu_root);
 					        root_layout.setVisibility(0);
 							m_progressDialog.dismiss();

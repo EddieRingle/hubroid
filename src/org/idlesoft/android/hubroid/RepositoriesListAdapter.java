@@ -57,9 +57,19 @@ public class RepositoriesListAdapter extends BaseAdapter {
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
+		String owner = "";
+		try {
+			owner = m_data.getJSONObject(index).getString("username");
+		} catch (JSONException e) {
+			try {
+				owner = m_data.getJSONObject(index).getString("owner");
+			} catch (JSONException e1) {
+				e1.printStackTrace();
+			}
+		}
 		try {
 			holder.repo_name.setText(m_data.getJSONObject(index).getString("name"));
-			holder.repo_owner.setText(m_data.getJSONObject(index).getString("username"));
+			holder.repo_owner.setText(owner);
 		} catch (JSONException e) {
 			holder.repo_owner.setVisibility(TextView.GONE);
 			holder.repo_owner_label.setVisibility(TextView.GONE);
