@@ -2,6 +2,9 @@ package org.idlesoft.android.hubroid;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -25,7 +28,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -64,38 +69,59 @@ public class Hubroid extends Activity {
 		return json;
 	}
 
-	public static Bitmap getGravatar(String id, int size) { 
-		Bitmap bm = null; 
-    	try { 
-    		URL aURL = new URL("http://www.gravatar.com/avatar.php?gravatar_id="
-    							+ URLEncoder.encode(id)
-    							+ "&size="
-    							+ size);
-        	URLConnection conn = aURL.openConnection(); 
-        	conn.connect(); 
-        	InputStream is = conn.getInputStream(); 
-        	BufferedInputStream bis = new BufferedInputStream(is); 
-        	bm = BitmapFactory.decodeStream(bis); 
-        	bis.close(); 
-        	is.close(); 
-    	} catch (IOException e) { 
-    		Log.e("debug", "Error getting bitmap", e); 
-    	} 
-    	return bm; 
-    }
+	public static Bitmap getGravatar(final String id, final int size) {
+		Bitmap bm = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
+				+ "/hubroid/gravatars/"
+				+ id + "_" + size + ".png");
+		if (bm == null) {
+			try {
+				URL aURL = new URL(
+				"http://www.gravatar.com/avatar.php?gravatar_id="
+						+ URLEncoder.encode(id) + "&size=" + size);
+				URLConnection conn = aURL.openConnection();
+				conn.connect();
+				InputStream is = conn.getInputStream();
+				BufferedInputStream bis = new BufferedInputStream(is);
+				bm = BitmapFactory.decodeStream(bis);
+				bis.close();
+				is.close();
+			} catch (IOException e) {
+				Log.e("debug", "Error getting bitmap", e);
+			}
+			try {
+				File root = Environment.getExternalStorageDirectory();
+				if (root.canWrite()) {
+					File hubroid = new File(root, "hubroid");
+					if (!hubroid.exists() && !hubroid.isDirectory()) {
+						hubroid.mkdir();
+					}
+					File gravatars = new File(hubroid, "gravatars");
+					if (!gravatars.exists() && !gravatars.isDirectory()) {
+						gravatars.mkdir();
+					}
+					File image = new File(gravatars, id + "_" + size + ".png");
+					bm.compress(CompressFormat.PNG, 100, new FileOutputStream(image));
+				}
+			} catch (FileNotFoundException e) {
+				Log.e("debug", "Error saving bitmap", e);
+			}
+		}
+
+		return bm;
+	}
 
 	private Runnable threadProc_login = new Runnable() {
 		public void run() {
-			EditText loginBox = (EditText)findViewById(R.id.et_splash_login_user);
-			EditText tokenBox = (EditText)findViewById(R.id.et_splash_login_token);
+			EditText loginBox = (EditText) findViewById(R.id.et_splash_login_user);
+			EditText tokenBox = (EditText) findViewById(R.id.et_splash_login_token);
 			String login = loginBox.getText().toString();
 			String token = tokenBox.getText().toString();
 			URL query = null;
 			try {
-				query = new URL("http://github.com/api/v2/json/user/emails?login="
-									+ URLEncoder.encode(login)
-									+ "&token="
-									+ URLEncoder.encode(token));
+				query = new URL(
+						"http://github.com/api/v2/json/user/emails?login="
+								+ URLEncoder.encode(login) + "&token="
+								+ URLEncoder.encode(token));
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
@@ -110,10 +136,12 @@ public class Hubroid extends Activity {
 				runOnUiThread(new Runnable() {
 					public void run() {
 						m_progressDialog.dismiss();
-						Toast.makeText(Hubroid.this, "Error authenticating with server", Toast.LENGTH_LONG).show();
+						Toast.makeText(Hubroid.this,
+								"Error authenticating with server",
+								Toast.LENGTH_LONG).show();
 					}
 				});
-			} else if(result.has("emails")) {
+			} else if (result.has("emails")) {
 				m_editor.putString("login", login);
 				m_editor.putString("token", token);
 				m_editor.putBoolean("isLoggedIn", true);
@@ -121,8 +149,9 @@ public class Hubroid extends Activity {
 				runOnUiThread(new Runnable() {
 					public void run() {
 						m_progressDialog.dismiss();
-						Intent intent = new Intent(Hubroid.this, MainScreen.class);
-			        	startActivity(intent);
+						Intent intent = new Intent(Hubroid.this,
+								MainScreen.class);
+						startActivity(intent);
 					}
 				});
 			}
@@ -132,34 +161,39 @@ public class Hubroid extends Activity {
 	private OnClickListener m_loginButtonClick = new OnClickListener() {
 		public void onClick(View v) {
 			Thread thread = new Thread(threadProc_login);
-			m_progressDialog = ProgressDialog.show(Hubroid.this, "Logging in...", "Initializing...");
+			m_progressDialog = ProgressDialog.show(Hubroid.this,
+					"Logging in...", "Initializing...");
 			thread.start();
 		}
 	};
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        /*
-        TabHost m_TabHost = getTabHost();
-
-        m_TabHost.addTab(m_TabHost.newTabSpec("tab1")
-        					.setIndicator(getString(R.string.repositories_tab_label), getResources().getDrawable(R.drawable.repository))
-        					.setContent(new Intent(this, RepositoriesList.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-        m_TabHost.addTab(m_TabHost.newTabSpec("tab2")
-        					.setIndicator(getString(R.string.users_tab_label), getResources().getDrawable(R.drawable.users))
-        					.setContent(new Intent(this, UsersList.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-        */
-        m_prefs = getSharedPreferences(PREFS_NAME, 0);
-    	m_editor = m_prefs.edit();
-        m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
-        if (!m_isLoggedIn) {
-        	setContentView(R.layout.splash);
-        	Button loginBtn = (Button)findViewById(R.id.btn_splash_login);
-        	loginBtn.setOnClickListener(m_loginButtonClick);
-        } else {
-        	Intent intent = new Intent(Hubroid.this, MainScreen.class);
-        	startActivity(intent);
-        }
-    }
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		/*
+		 * TabHost m_TabHost = getTabHost();
+		 * 
+		 * m_TabHost.addTab(m_TabHost.newTabSpec("tab1")
+		 * .setIndicator(getString(R.string.repositories_tab_label),
+		 * getResources().getDrawable(R.drawable.repository)) .setContent(new
+		 * Intent(this,
+		 * RepositoriesList.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
+		 * m_TabHost.addTab(m_TabHost.newTabSpec("tab2")
+		 * .setIndicator(getString(R.string.users_tab_label),
+		 * getResources().getDrawable(R.drawable.users)) .setContent(new
+		 * Intent(this,
+		 * UsersList.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
+		 */
+		m_prefs = getSharedPreferences(PREFS_NAME, 0);
+		m_editor = m_prefs.edit();
+		m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
+		if (!m_isLoggedIn) {
+			setContentView(R.layout.splash);
+			Button loginBtn = (Button) findViewById(R.id.btn_splash_login);
+			loginBtn.setOnClickListener(m_loginButtonClick);
+		} else {
+			Intent intent = new Intent(Hubroid.this, MainScreen.class);
+			startActivity(intent);
+		}
+	}
 }
