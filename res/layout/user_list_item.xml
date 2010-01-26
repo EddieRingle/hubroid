@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:paddingTop="10dip"
+	android:paddingBottom="10dip">
+	<ImageView
+		android:id="@+id/iv_user_list_gravatar"
+		android:layout_width="36px"
+		android:layout_marginLeft="10dip"
+		android:layout_marginRight="10dip"
+		android:layout_height="36px"
+		android:scaleType="center"
+		android:background="@drawable/default_gravatar" />
+	<TextView
+		android:id="@+id/tv_user_list_item_name"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_toRightOf="@id/iv_user_list_gravatar"
+		android:layout_centerVertical="true"
+		android:textColor="@color/textColor"
+		android:textSize="20dip"
+		android:ellipsize="end"
+		android:maxLines="1" />
+</RelativeLayout>

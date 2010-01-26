@@ -1,10 +1,14 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -69,7 +73,47 @@ public class Hubroid extends Activity {
 		return json;
 	}
 
-	public static Bitmap getGravatar(final String id, final int size) {
+	public static String getGravatarID(String name) {
+		String id = null;
+		try {
+			File root = Environment.getExternalStorageDirectory();
+			if (root.canWrite()) {
+				File hubroid = new File(root, "hubroid");
+				if (!hubroid.exists() && !hubroid.isDirectory()) {
+					hubroid.mkdir();
+				}
+				File gravatars = new File(hubroid, "gravatars");
+				if (!gravatars.exists() && !gravatars.isDirectory()) {
+					gravatars.mkdir();
+				}
+				File image = new File(gravatars, name + ".id");
+				if (image.exists() && image.isFile()) {
+					FileReader fr = new FileReader(image);
+					BufferedReader in = new BufferedReader(fr);
+					id = in.readLine();
+					in.close();
+				} else {
+					URL query = new URL("http://github.com/api/v2/json/user/show/" + URLEncoder.encode(name));
+					id = make_api_request(query).getJSONObject("user").getString("gravatar_id");
+					FileWriter fw = new FileWriter(image);
+					BufferedWriter bw = new BufferedWriter(fw);
+					bw.write(id);
+					bw.flush();
+					bw.close();
+				}
+			}
+		} catch (FileNotFoundException e) {
+			Log.e("debug", "Error saving bitmap", e);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+		return id;
+	}
+
+	public static Bitmap getGravatar(String id, int size) {
 		Bitmap bm = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
 				+ "/hubroid/gravatars/"
 				+ id + "_" + size + ".png");
@@ -77,7 +121,8 @@ public class Hubroid extends Activity {
 			try {
 				URL aURL = new URL(
 				"http://www.gravatar.com/avatar.php?gravatar_id="
-						+ URLEncoder.encode(id) + "&size=" + size);
+						+ URLEncoder.encode(id) + "&size=" + size
+						+ "&d=" + URLEncoder.encode("http://github.com/eddieringle/hubroid/raw/master/res/drawable/default_gravatar.png"));
 				URLConnection conn = aURL.openConnection();
 				conn.connect();
 				InputStream is = conn.getInputStream();

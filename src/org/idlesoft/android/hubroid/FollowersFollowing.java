@@ -182,6 +182,7 @@ public class FollowersFollowing extends Activity {
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
+    	savedInstanceState.putString("type", m_type);
     	if (m_followersData != null) {
     		savedInstanceState.putString("followers_json", m_followersData.toString());
     	}
@@ -195,6 +196,7 @@ public class FollowersFollowing extends Activity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
     	super.onRestoreInstanceState(savedInstanceState);
     	boolean keepGoing = true;
+    	m_type = savedInstanceState.getString("type");
     	try {
     		if (savedInstanceState.containsKey("followers_json")) {
     			m_followersData = new JSONObject(savedInstanceState.getString("followers_json"));
@@ -229,11 +231,18 @@ public class FollowersFollowing extends Activity {
     @Override
     public void onResume() {
     	super.onResume();
+    	ListView followers = (ListView) findViewById(R.id.lv_followers_following_followers_list);
+    	ListView following = (ListView) findViewById(R.id.lv_followers_following_following_list);
+
     	if (m_followers_adapter != null && m_type == "followers") {
-    		((ListView)findViewById(R.id.lv_followers_following_followers_list)).setAdapter(m_followers_adapter);
+    		followers.setAdapter(m_followers_adapter);
+    		following.setAdapter(null);
+    		following.setVisibility(View.GONE);
     	}
     	if (m_following_adapter != null && m_type == "following") {
-    		((ListView)findViewById(R.id.lv_followers_following_following_list)).setAdapter(m_following_adapter);
+    		following.setAdapter(m_following_adapter);
+    		followers.setAdapter(null);
+    		followers.setVisibility(View.GONE);
     	}
     }
 }
