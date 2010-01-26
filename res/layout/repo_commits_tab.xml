@@ -17,7 +17,7 @@
 		<Spinner
 			android:id="@+id/branch_select"
 			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"/>
+			android:layout_height="40dip" />
 	</LinearLayout>
 	<ListView
 		android:id="@+id/repo_commit_log_list"
