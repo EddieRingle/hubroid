@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:paddingTop="10dip"
-	android:paddingBottom="10dip">
+	android:paddingTop="7.5dip"
+	android:paddingBottom="7.5dip">
 	<ImageView
 		android:id="@+id/iv_user_list_gravatar"
 		android:layout_width="36px"
@@ -19,7 +19,7 @@
 		android:layout_toRightOf="@id/iv_user_list_gravatar"
 		android:layout_centerVertical="true"
 		android:textColor="@color/textColor"
-		android:textSize="20dip"
+		android:textSize="16dip"
 		android:ellipsize="end"
 		android:maxLines="1" />
 </RelativeLayout>
