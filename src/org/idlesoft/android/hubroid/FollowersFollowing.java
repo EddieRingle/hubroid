@@ -135,7 +135,7 @@ public class FollowersFollowing extends Activity {
 	};
 
 	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
-		public void onItemClick(AdapterView parent, View v, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	        m_position = position;
 	        Thread thread = new Thread(null, threadProc_itemClick);
 	        thread.start();

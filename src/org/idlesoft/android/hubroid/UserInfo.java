@@ -52,7 +52,7 @@ public class UserInfo extends TabActivity {
 	};
 
 	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
-		public void onItemClick(AdapterView parent, View v, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 			m_position = position;
 			m_progressDialog = ProgressDialog.show(UserInfo.this, "Please wait...", "Loading Repository...", true);
 			Thread thread = new Thread(null, threadProc_itemClick);

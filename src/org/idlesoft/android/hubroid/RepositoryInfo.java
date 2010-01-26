@@ -120,7 +120,7 @@ public class RepositoryInfo extends TabActivity {
 	};
 
 	private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
-		public void onItemClick(AdapterView parent, View v, int position, long id) {
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 			m_position = position;
 			m_progressDialog = ProgressDialog.show(RepositoryInfo.this, "Please wait...", "Loading Repository's Network...", true);
 			Thread thread = new Thread(null, threadProc_itemClick);
@@ -156,7 +156,7 @@ public class RepositoryInfo extends TabActivity {
 	};
 
 	private OnItemSelectedListener m_onBranchSelect = new OnItemSelectedListener() {
-		public void onItemSelected(AdapterView parent, View view, int position, long id)
+		public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
 		{
 			m_position = position;
 			m_progressDialog = ProgressDialog.show(RepositoryInfo.this, "Please wait...", "Loading Repository's Commits...", true);
