@@ -38,8 +38,8 @@ public class MainScreen extends Activity {
 	public static final String[] MAIN_MENU = new String[] {
 		"Watched Repos",
 		"Followers/Following",
-		"Activity Feeds",
-		"Repositories",
+		//"Activity Feeds",
+		"My Repositories",
 		"Search",
 		"Profile"
 	};
@@ -79,16 +79,17 @@ public class MainScreen extends Activity {
 				intent = new Intent(MainScreen.this, FollowersFollowing.class);
 				startActivity(intent);
 				break;
-			case 2:
+			/*case 2:
 				Toast.makeText(MainScreen.this, "Activity Feeds", Toast.LENGTH_SHORT).show();
+				break;*/
+			case 2:
+				intent = new Intent(MainScreen.this, RepositoriesList.class);
+				startActivity(intent);
 				break;
 			case 3:
-				Toast.makeText(MainScreen.this, "Repositories", Toast.LENGTH_SHORT).show();
-				break;
-			case 4:
 				Toast.makeText(MainScreen.this, "Search", Toast.LENGTH_SHORT).show();
 				break;
-			case 5:
+			case 4:
 				Toast.makeText(MainScreen.this, "Profile", Toast.LENGTH_SHORT).show();
 				break;
 			default:

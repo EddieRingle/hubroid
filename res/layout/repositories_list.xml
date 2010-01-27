@@ -1,30 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	xmlns:app="http://schemas.android.com/apk/res/org.idlesoft.android.hubroid"
-	android:id="@+id/repositories_tab_container"
-	android:orientation="vertical"
+	android:id="@+id/rl_repositories_list_root"
+	android:background="#FFF"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<LinearLayout
-		android:id="@+id/repositories_search_area"
+		android:id="@+id/ll_repositories_list_shadow"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<EditText
-			android:id="@+id/search_repositories_box"
-			android:layout_width="0dp"
-			android:layout_height="wrap_content"
-			android:layout_weight="1"
-			android:singleLine="true"
-			android:layout_marginTop="2dp"/>
+		android:layout_height="10dip"
+		android:orientation="vertical"
+		android:layout_below="@id/include_top_bar"
+		android:background="@drawable/shadow" />
+	<RelativeLayout
+		android:id="@+id/rl_repositories_list_button_holder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true">
 		<Button
-			android:id="@+id/search_repositories_btn"
+			android:id="@+id/btn_repositories_list_public"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/search_repositories_btn" />
-	</LinearLayout>
-	<ListView
-		android:id="@android:id/list"
+			android:text="Public" />
+		<Button
+			android:id="@+id/btn_repositories_list_private"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/btn_repositories_list_public"
+			android:text="Private" />
+	</RelativeLayout>
+	<RelativeLayout
+		android:id="@+id/rl_repositories_list_main_frame"
+		android:layout_above="@id/rl_repositories_list_button_holder"
+		android:layout_below="@id/ll_repositories_list_shadow"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content">
-	</ListView>
-</LinearLayout>
+		<ListView
+			android:id="@+id/lv_repositories_list_public_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="#FFF" />
+		<ListView
+			android:id="@+id/lv_repositories_list_private_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="#FFF" />
+	</RelativeLayout>
+</RelativeLayout>

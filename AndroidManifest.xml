@@ -11,7 +11,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    	<activity android:name="RepositoriesList" android:label="@string/repositories_tab_label"></activity>
+    	<activity android:name="RepositoriesList" ></activity>
 		<activity android:name="UsersList" android:label="@string/users_tab_label"></activity>
 		<activity android:name="RepositoryInfo"></activity>
 		<activity android:name="UserInfo"></activity>
