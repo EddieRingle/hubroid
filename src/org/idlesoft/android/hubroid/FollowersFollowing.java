@@ -70,21 +70,23 @@ public class FollowersFollowing extends Activity {
 
 	private Runnable threadProc_initializeList = new Runnable() {
 		public void run() {
-
-			m_type = "followers";
-			m_followers_adapter = initializeList(m_username);
 			m_type = "following";
 			m_following_adapter = initializeList(m_username);
 			m_type = "followers";
+			m_followers_adapter = initializeList(m_username);
 
 			runOnUiThread(new Runnable() {
 				public void run() {
 					if(m_followers_adapter != null && m_following_adapter != null) {
+						ListView followers = (ListView) findViewById(R.id.lv_followers_following_followers_list);
+						ListView following = (ListView) findViewById(R.id.lv_followers_following_following_list);
+						followers.setAdapter(m_followers_adapter);
+						following.setAdapter(m_following_adapter);
 						if (m_type == "followers") {
-							((ListView)findViewById(R.id.lv_followers_following_followers_list)).setAdapter(m_followers_adapter);
+							toggleList("followers");
 						}
 						if (m_type == "following") {
-							((ListView)findViewById(R.id.lv_followers_following_following_list)).setAdapter(m_following_adapter);
+							toggleList("following");
 						}
 					}
 					m_progressDialog.dismiss();
@@ -114,22 +116,34 @@ public class FollowersFollowing extends Activity {
 		}
 	};
 
+	public void toggleList(String type)
+	{
+		ListView followers = (ListView) findViewById(R.id.lv_followers_following_followers_list);
+		ListView following = (ListView) findViewById(R.id.lv_followers_following_following_list);
+		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
+
+		if (type == "" || type == null) {
+			type = (m_type == "followers") ? "following" : "followers";
+		}
+		m_type = type;
+
+		if (m_type == "followers") {
+			followers.setVisibility(View.VISIBLE);
+			following.setVisibility(View.GONE);
+			title.setText("Followers");
+		} else if (m_type == "following") {
+			following.setVisibility(View.VISIBLE);
+			followers.setVisibility(View.GONE);
+			title.setText("Following");
+		}
+	}
+
 	private OnClickListener onButtonToggleClickListener = new OnClickListener() {
 		public void onClick(View v) {
-			ListView followers = (ListView)findViewById(R.id.lv_followers_following_followers_list);
-			ListView following = (ListView)findViewById(R.id.lv_followers_following_following_list);
-			TextView title = (TextView)findViewById(R.id.tv_followers_following_title);
-
-			if(v.getId() == R.id.btn_followers_following_followers && m_type != "followers") {
-				followers.setAdapter(m_followers_adapter);
-				following.setAdapter(null);
-				m_type = "followers";
-				title.setText(m_username + "'s stalkers:");
-			} else if(v.getId() == R.id.btn_followers_following_following && m_type != "following") {
-				following.setAdapter(m_following_adapter);
-				followers.setAdapter(null);
-				m_type = "following";
-				title.setText("Who " + m_username + " stalks:");
+			if(v.getId() == R.id.btn_followers_following_followers) {
+				toggleList("followers");
+			} else if(v.getId() == R.id.btn_followers_following_following) {
+				toggleList("following");
 			}
 		}
 	};
@@ -160,9 +174,6 @@ public class FollowersFollowing extends Activity {
         } else {
         	m_username = m_prefs.getString("login", "");
         }
-
-        TextView title = (TextView)findViewById(R.id.tv_followers_following_title);
-        title.setText(m_username + "'s stalkers");
 
         m_progressDialog = ProgressDialog.show(FollowersFollowing.this, "Please wait...", "Fetching User Information...", true);
 		Thread thread = new Thread(null, threadProc_initializeList);
@@ -234,15 +245,8 @@ public class FollowersFollowing extends Activity {
     	ListView followers = (ListView) findViewById(R.id.lv_followers_following_followers_list);
     	ListView following = (ListView) findViewById(R.id.lv_followers_following_following_list);
 
-    	if (m_followers_adapter != null && m_type == "followers") {
-    		followers.setAdapter(m_followers_adapter);
-    		following.setAdapter(null);
-    		following.setVisibility(View.GONE);
-    	}
-    	if (m_following_adapter != null && m_type == "following") {
-    		following.setAdapter(m_following_adapter);
-    		followers.setAdapter(null);
-    		followers.setVisibility(View.GONE);
-    	}
+    	followers.setAdapter(m_followers_adapter);
+    	following.setAdapter(m_following_adapter);
+    	toggleList(m_type);
     }
 }

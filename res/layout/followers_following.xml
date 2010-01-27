@@ -5,21 +5,13 @@
 	android:background="#FFF"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<TextView
-		android:id="@+id/tv_followers_following_title"
-		android:layout_width="fill_parent"
-		android:layout_height="56dip"
-		android:gravity="center"
-		android:textColor="@color/textColor"
-		android:textSize="24dip"
-		android:textStyle="bold"
-		android:background="@drawable/top_bar" />
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<LinearLayout
 		android:id="@+id/ll_followers_following_shadow"
 		android:layout_width="fill_parent"
 		android:layout_height="10dip"
 		android:orientation="vertical"
-		android:layout_below="@id/tv_followers_following_title"
+		android:layout_below="@id/include_top_bar"
 		android:background="@drawable/shadow" />
 	<RelativeLayout
 		android:id="@+id/rl_followers_following_button_holder"
