@@ -36,16 +36,27 @@ import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Hubroid extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
+	private String m_username;
+	private String m_token;
+	public ListView m_menuList;
+	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
 
@@ -155,90 +166,131 @@ public class Hubroid extends Activity {
 		return bm;
 	}
 
-	private Runnable threadProc_login = new Runnable() {
-		public void run() {
-			EditText loginBox = (EditText) findViewById(R.id.et_splash_login_user);
-			EditText tokenBox = (EditText) findViewById(R.id.et_splash_login_token);
-			String login = loginBox.getText().toString();
-			String token = tokenBox.getText().toString();
-			URL query = null;
-			try {
-				query = new URL(
-						"http://github.com/api/v2/json/user/emails?login="
-								+ URLEncoder.encode(login) + "&token="
-								+ URLEncoder.encode(token));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			runOnUiThread(new Runnable() {
-				public void run() {
-					m_progressDialog.setMessage("Authenticating...");
-					m_progressDialog.show();
-				}
-			});
-			JSONObject result = make_api_request(query);
-			if (result == null || result.has("error")) {
-				runOnUiThread(new Runnable() {
-					public void run() {
-						m_progressDialog.dismiss();
-						Toast.makeText(Hubroid.this,
-								"Error authenticating with server",
-								Toast.LENGTH_LONG).show();
-					}
-				});
-			} else if (result.has("emails")) {
-				m_editor.putString("login", login);
-				m_editor.putString("token", token);
-				m_editor.putBoolean("isLoggedIn", true);
-				m_editor.commit();
-				runOnUiThread(new Runnable() {
-					public void run() {
-						m_progressDialog.dismiss();
-						Intent intent = new Intent(Hubroid.this,
-								MainScreen.class);
-						startActivity(intent);
-					}
-				});
-			}
-		}
+	public static final String[] MAIN_MENU = new String[] {
+		"Watched Repos",
+		"Followers/Following",
+		//"Activity Feeds",
+		"My Repositories",
+		"Search",
+		"Profile"
 	};
 
-	private OnClickListener m_loginButtonClick = new OnClickListener() {
-		public void onClick(View v) {
-			Thread thread = new Thread(threadProc_login);
-			m_progressDialog = ProgressDialog.show(Hubroid.this,
-					"Logging in...", "Initializing...");
-			thread.start();
-		}
-	};
-
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		/*
-		 * TabHost m_TabHost = getTabHost();
-		 * 
-		 * m_TabHost.addTab(m_TabHost.newTabSpec("tab1")
-		 * .setIndicator(getString(R.string.repositories_tab_label),
-		 * getResources().getDrawable(R.drawable.repository)) .setContent(new
-		 * Intent(this,
-		 * RepositoriesList.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-		 * m_TabHost.addTab(m_TabHost.newTabSpec("tab2")
-		 * .setIndicator(getString(R.string.users_tab_label),
-		 * getResources().getDrawable(R.drawable.users)) .setContent(new
-		 * Intent(this,
-		 * UsersList.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)));
-		 */
-		m_prefs = getSharedPreferences(PREFS_NAME, 0);
-		m_editor = m_prefs.edit();
-		m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
-		if (!m_isLoggedIn) {
-			setContentView(R.layout.splash);
-			Button loginBtn = (Button) findViewById(R.id.btn_splash_login);
-			loginBtn.setOnClickListener(m_loginButtonClick);
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (m_isLoggedIn) {
+			if (!menu.hasVisibleItems()) {
+				menu.add(0, 1, 0, "Logout");
+			}
+			return true;
 		} else {
-			Intent intent = new Intent(Hubroid.this, MainScreen.class);
-			startActivity(intent);
+			return false;
 		}
 	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 1:
+			m_isLoggedIn = false;
+			m_editor.putBoolean("isLoggedIn", false).commit();
+			Intent intent = new Intent(Hubroid.this, Hubroid.class);
+			startActivity(intent);
+        	return true;
+		}
+		return false;
+	}
+
+	private OnItemClickListener onMenuItemSelected = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> pV, View v, int pos, long id) {
+			Intent intent;
+			switch(pos) {
+			case 0:
+				intent = new Intent(Hubroid.this, WatchedRepositories.class);
+				startActivity(intent);
+				break;
+			case 1:
+				intent = new Intent(Hubroid.this, FollowersFollowing.class);
+				startActivity(intent);
+				break;
+			/*case 2:
+				Toast.makeText(MainScreen.this, "Activity Feeds", Toast.LENGTH_SHORT).show();
+				break;*/
+			case 2:
+				intent = new Intent(Hubroid.this, RepositoriesList.class);
+				startActivity(intent);
+				break;
+			case 3:
+				Toast.makeText(Hubroid.this, "Search", Toast.LENGTH_SHORT).show();
+				break;
+			case 4:
+				Toast.makeText(Hubroid.this, "Profile", Toast.LENGTH_SHORT).show();
+				break;
+			default:
+				Toast.makeText(Hubroid.this, "Umm...", Toast.LENGTH_SHORT).show();
+				break;
+			}
+		}
+	};
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        m_prefs = getSharedPreferences(PREFS_NAME, 0);
+    	m_editor = m_prefs.edit();
+    	m_username = m_prefs.getString("login", "");
+        m_token = m_prefs.getString("token", "");
+        m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
+
+        if (!m_isLoggedIn) {
+			Intent intent = new Intent(Hubroid.this, SplashScreen.class);
+			startActivity(intent);
+			Hubroid.this.finish();
+		} else {
+	        setContentView(R.layout.main_menu);
+	
+	        m_progressDialog = ProgressDialog.show(Hubroid.this, "Please wait...", "Loading user data...");
+	
+	        m_menuList = (ListView)findViewById(R.id.lv_main_menu_list);
+	        m_menuList.setAdapter(new ArrayAdapter<String>(Hubroid.this, R.layout.main_menu_item, MAIN_MENU));
+	        m_menuList.setOnItemClickListener(onMenuItemSelected);
+	        
+	        Thread thread = new Thread(new Runnable() {
+				public void run() {
+					try {
+						URL query = new URL("http://github.com/api/v2/json/user/show/"
+											+ URLEncoder.encode(m_username)
+											+ "?login="
+											+ URLEncoder.encode(m_username)
+											+ "&token="
+											+ URLEncoder.encode(m_token));
+						m_userData = Hubroid.make_api_request(query).getJSONObject("user");
+	
+						runOnUiThread(new Runnable() {
+							public void run() {
+								ImageView gravatar = (ImageView)findViewById(R.id.iv_main_gravatar);
+								try {
+									gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 40));
+									TextView username = (TextView)findViewById(R.id.tv_main_username);
+									if (m_userData.getString("name").length() > 0) {
+										username.setText(m_userData.getString("name"));
+									} else {
+										username.setText(m_username);
+									}
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+						        RelativeLayout root_layout = (RelativeLayout)findViewById(R.id.rl_main_menu_root);
+						        root_layout.setVisibility(0);
+								m_progressDialog.dismiss();
+							}
+						});
+					} catch (MalformedURLException e) {
+						e.printStackTrace();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			});
+	        thread.start();
+		}
+    }
 }
