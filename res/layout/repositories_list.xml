@@ -23,12 +23,14 @@
 			android:id="@+id/btn_repositories_list_public"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:background="@android:drawable/btn_default_small"
 			android:text="Public" />
 		<Button
 			android:id="@+id/btn_repositories_list_private"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_toRightOf="@id/btn_repositories_list_public"
+			android:background="@android:drawable/btn_default_small"
 			android:text="Private" />
 	</RelativeLayout>
 	<RelativeLayout
