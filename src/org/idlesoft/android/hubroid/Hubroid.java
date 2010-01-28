@@ -154,12 +154,16 @@ public class Hubroid extends Activity {
 					File gravatars = new File(hubroid, "gravatars");
 					if (!gravatars.exists() && !gravatars.isDirectory()) {
 						gravatars.mkdir();
+						File nomedia = new File(gravatars, ".nomedia");
+						nomedia.createNewFile();
 					}
 					File image = new File(gravatars, id + "_" + size + ".png");
 					bm.compress(CompressFormat.PNG, 100, new FileOutputStream(image));
 				}
 			} catch (FileNotFoundException e) {
 				Log.e("debug", "Error saving bitmap", e);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 
