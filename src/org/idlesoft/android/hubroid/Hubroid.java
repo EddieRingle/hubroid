@@ -176,24 +176,31 @@ public class Hubroid extends Activity {
 	};
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (m_isLoggedIn) {
-			if (!menu.hasVisibleItems()) {
-				menu.add(0, 1, 0, "Logout");
-			}
-			return true;
-		} else {
-			return false;
+		if (!menu.hasVisibleItems()) {
+			menu.add(0, 1, 0, "Clear Preferences");
+			menu.add(0, 2, 0, "Clear Cache");
 		}
+		return true;
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 1:
-			m_isLoggedIn = false;
-			m_editor.putBoolean("isLoggedIn", false).commit();
+			m_editor.clear().commit();
 			Intent intent = new Intent(Hubroid.this, Hubroid.class);
 			startActivity(intent);
         	return true;
+		case 2:
+			File root = Environment.getExternalStorageDirectory();
+			if (root.canWrite()) {
+				File hubroid = new File(root, "hubroid");
+				if (!hubroid.exists() && !hubroid.isDirectory()) {
+					return true;
+				} else {
+					hubroid.delete();
+					return true;
+				}
+			}
 		}
 		return false;
 	}

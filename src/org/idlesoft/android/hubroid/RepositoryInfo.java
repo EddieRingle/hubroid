@@ -1,5 +1,6 @@
 package org.idlesoft.android.hubroid;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -13,8 +14,12 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +35,8 @@ public class RepositoryInfo extends TabActivity {
 	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
 	public Intent m_intent;
+	private SharedPreferences m_prefs;
+	private SharedPreferences.Editor m_editor;
 	public ForkListAdapter m_forkListAdapter;
 	public CommitListAdapter m_commitListAdapter;
 	public JSONArray m_jsonForkData;
@@ -168,6 +175,36 @@ public class RepositoryInfo extends TabActivity {
 		}
 	};
 
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!menu.hasVisibleItems()) {
+			menu.add(0, 1, 0, "Clear Preferences");
+			menu.add(0, 2, 0, "Clear Cache");
+		}
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 1:
+			m_editor.clear().commit();
+			Intent intent = new Intent(RepositoryInfo.this, Hubroid.class);
+			startActivity(intent);
+        	return true;
+		case 2:
+			File root = Environment.getExternalStorageDirectory();
+			if (root.canWrite()) {
+				File hubroid = new File(root, "hubroid");
+				if (!hubroid.exists() && !hubroid.isDirectory()) {
+					return true;
+				} else {
+					hubroid.delete();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -180,6 +217,9 @@ public class RepositoryInfo extends TabActivity {
         tabhost.addTab(tabhost.newTabSpec("tab3").setIndicator("Network").setContent(R.id.repo_forks_tab));
 
         tabhost.setCurrentTab(0);        
+
+        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        m_editor = m_prefs.edit();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

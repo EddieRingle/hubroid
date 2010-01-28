@@ -1,5 +1,6 @@
 package org.idlesoft.android.hubroid;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -10,7 +11,11 @@ import org.json.JSONObject;
 import android.app.ListActivity;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -23,6 +28,8 @@ import android.widget.AdapterView.OnItemClickListener;
 public class SearchRepositoriesList extends ListActivity {
 	private RepositoriesListAdapter m_adapter;
 	public ProgressDialog m_progressDialog;
+	private SharedPreferences m_prefs;
+	private SharedPreferences.Editor m_editor;
 	private EditText m_searchBox;
 	public JSONObject m_jsonData;
 	public int m_position;
@@ -102,10 +109,43 @@ public class SearchRepositoriesList extends ListActivity {
 		}
 	};
 
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!menu.hasVisibleItems()) {
+			menu.add(0, 1, 0, "Clear Preferences");
+			menu.add(0, 2, 0, "Clear Cache");
+		}
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 1:
+			m_editor.clear().commit();
+			Intent intent = new Intent(SearchRepositoriesList.this, Hubroid.class);
+			startActivity(intent);
+        	return true;
+		case 2:
+			File root = Environment.getExternalStorageDirectory();
+			if (root.canWrite()) {
+				File hubroid = new File(root, "hubroid");
+				if (!hubroid.exists() && !hubroid.isDirectory()) {
+					return true;
+				} else {
+					hubroid.delete();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.search_repositories_list);
+
+        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        m_editor = m_prefs.edit();
     }
 
     @Override

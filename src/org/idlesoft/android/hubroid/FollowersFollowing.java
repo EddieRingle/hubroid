@@ -1,5 +1,6 @@
 package org.idlesoft.android.hubroid;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -12,6 +13,9 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -26,6 +30,7 @@ public class FollowersFollowing extends Activity {
 	private FollowersFollowingListAdapter m_following_adapter;
 	public ProgressDialog m_progressDialog;
 	private SharedPreferences m_prefs;
+	private SharedPreferences.Editor m_editor;
 	public String m_username;
 	public String m_type;
 	public JSONObject m_followersData;
@@ -142,8 +147,10 @@ public class FollowersFollowing extends Activity {
 		public void onClick(View v) {
 			if(v.getId() == R.id.btn_followers_following_followers) {
 				toggleList("followers");
+				m_type = "followers";
 			} else if(v.getId() == R.id.btn_followers_following_following) {
 				toggleList("following");
+				m_type = "following";
 			}
 		}
 	};
@@ -156,12 +163,43 @@ public class FollowersFollowing extends Activity {
 		}
 	};
 
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!menu.hasVisibleItems()) {
+			menu.add(0, 1, 0, "Clear Preferences");
+			menu.add(0, 2, 0, "Clear Cache");
+		}
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 1:
+			m_editor.clear().commit();
+			Intent intent = new Intent(FollowersFollowing.this, Hubroid.class);
+			startActivity(intent);
+        	return true;
+		case 2:
+			File root = Environment.getExternalStorageDirectory();
+			if (root.canWrite()) {
+				File hubroid = new File(root, "hubroid");
+				if (!hubroid.exists() && !hubroid.isDirectory()) {
+					return true;
+				} else {
+					hubroid.delete();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.followers_following);
 
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        m_editor = m_prefs.edit();
         m_type = "followers";
 
         Bundle extras = getIntent().getExtras();

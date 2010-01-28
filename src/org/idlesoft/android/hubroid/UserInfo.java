@@ -1,5 +1,6 @@
 package org.idlesoft.android.hubroid;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -11,7 +12,11 @@ import org.json.JSONObject;
 import android.app.ProgressDialog;
 import android.app.TabActivity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Environment;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -24,6 +29,8 @@ public class UserInfo extends TabActivity {
 	public JSONObject m_jsonData;
 	public JSONArray m_userRepoData;
 	public RepositoriesListAdapter m_adapter;
+	private SharedPreferences m_prefs;
+	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
 	public int m_position;
 
@@ -60,6 +67,36 @@ public class UserInfo extends TabActivity {
 		}
 	};
 
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!menu.hasVisibleItems()) {
+			menu.add(0, 1, 0, "Clear Preferences");
+			menu.add(0, 2, 0, "Clear Cache");
+		}
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 1:
+			m_editor.clear().commit();
+			Intent intent = new Intent(UserInfo.this, Hubroid.class);
+			startActivity(intent);
+        	return true;
+		case 2:
+			File root = Environment.getExternalStorageDirectory();
+			if (root.canWrite()) {
+				File hubroid = new File(root, "hubroid");
+				if (!hubroid.exists() && !hubroid.isDirectory()) {
+					return true;
+				} else {
+					hubroid.delete();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	@Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -71,6 +108,9 @@ public class UserInfo extends TabActivity {
         tabhost.addTab(tabhost.newTabSpec("tab2").setIndicator("User's Repositories").setContent(R.id.user_repositories_tab));
 
         tabhost.setCurrentTab(0);
+
+        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        m_editor = m_prefs.edit();
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
