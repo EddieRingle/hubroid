@@ -85,7 +85,7 @@ public class Hubroid extends Activity {
 	}
 
 	public static String getGravatarID(String name) {
-		String id = null;
+		String id = "";
 		try {
 			File root = Environment.getExternalStorageDirectory();
 			if (root.canWrite()) {
@@ -105,12 +105,16 @@ public class Hubroid extends Activity {
 					in.close();
 				} else {
 					URL query = new URL("http://github.com/api/v2/json/user/show/" + URLEncoder.encode(name));
-					id = make_api_request(query).getJSONObject("user").getString("gravatar_id");
-					FileWriter fw = new FileWriter(image);
-					BufferedWriter bw = new BufferedWriter(fw);
-					bw.write(id);
-					bw.flush();
-					bw.close();
+					try {
+						id = make_api_request(query).getJSONObject("user").getString("gravatar_id");
+						FileWriter fw = new FileWriter(image);
+						BufferedWriter bw = new BufferedWriter(fw);
+						bw.write(id);
+						bw.flush();
+						bw.close();
+					} catch (NullPointerException e) {
+						// do nothing
+					}
 				}
 			}
 		} catch (FileNotFoundException e) {
