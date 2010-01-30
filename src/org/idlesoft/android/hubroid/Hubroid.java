@@ -41,7 +41,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -233,7 +232,8 @@ public class Hubroid extends Activity {
 				startActivity(intent);
 				break;
 			case 3:
-				Toast.makeText(Hubroid.this, "Search", Toast.LENGTH_SHORT).show();
+				intent = new Intent(Hubroid.this, Search.class);
+				startActivity(intent);
 				break;
 			case 4:
 				Toast.makeText(Hubroid.this, "Profile", Toast.LENGTH_SHORT).show();

@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import android.app.ProgressDialog;
 import android.app.TabActivity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class UserInfo extends TabActivity {
@@ -117,24 +119,30 @@ public class UserInfo extends TabActivity {
         	try {
 				URL user_query = new URL("http://github.com/api/v2/json/user/show/"
 										+ URLEncoder.encode(extras.getString("username")));
-				m_jsonData = Hubroid.make_api_request(user_query).getJSONObject("user");
-				TextView user_name = (TextView)findViewById(R.id.user_name);
-				user_name.setText(m_jsonData.getString("login"));
-				TextView user_fullname = (TextView)findViewById(R.id.user_fullname);
-				user_fullname.setText(m_jsonData.getString("name"));
-				TextView user_email = (TextView)findViewById(R.id.user_email);
-				user_email.setText(m_jsonData.getString("email"));
-				TextView user_location = (TextView)findViewById(R.id.user_location);
-				user_location.setText(m_jsonData.getString("location"));
-				TextView user_repository_count = (TextView)findViewById(R.id.user_repository_count);
-				user_repository_count.setText(m_jsonData.getString("public_repo_count"));
-
-				m_userRepoData = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/repos/show/"
-															+ URLEncoder.encode(extras.getString("username")))).getJSONArray("repositories");
-				m_adapter = new RepositoriesListAdapter(UserInfo.this, m_userRepoData);
-				ListView repo_list = (ListView)findViewById(R.id.repo_list);
-				repo_list.setAdapter(m_adapter);
-				repo_list.setOnItemClickListener(m_MessageClickedHandler);
+				JSONObject json = Hubroid.make_api_request(user_query);
+				if (json == null) {
+					setResult(RESULT_CANCELED);
+					finishActivity(-2);
+				} else {
+					m_jsonData = json.getJSONObject("user");
+					TextView user_name = (TextView)findViewById(R.id.user_name);
+					user_name.setText(m_jsonData.getString("login"));
+					TextView user_fullname = (TextView)findViewById(R.id.user_fullname);
+					user_fullname.setText(m_jsonData.getString("name"));
+					TextView user_email = (TextView)findViewById(R.id.user_email);
+					user_email.setText(m_jsonData.getString("email"));
+					TextView user_location = (TextView)findViewById(R.id.user_location);
+					user_location.setText(m_jsonData.getString("location"));
+					TextView user_repository_count = (TextView)findViewById(R.id.user_repository_count);
+					user_repository_count.setText(m_jsonData.getString("public_repo_count"));
+	
+					m_userRepoData = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/repos/show/"
+																+ URLEncoder.encode(extras.getString("username")))).getJSONArray("repositories");
+					m_adapter = new RepositoriesListAdapter(UserInfo.this, m_userRepoData);
+					ListView repo_list = (ListView)findViewById(R.id.repo_list);
+					repo_list.setAdapter(m_adapter);
+					repo_list.setOnItemClickListener(m_MessageClickedHandler);
+				}
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {

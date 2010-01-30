@@ -12,8 +12,8 @@
             </intent-filter>
         </activity>
         <activity android:name="SplashScreen"></activity>
+        <activity android:name="Search"></activity>
     	<activity android:name="RepositoriesList" ></activity>
-		<activity android:name="UsersList" android:label="@string/users_tab_label"></activity>
 		<activity android:name="RepositoryInfo"></activity>
 		<activity android:name="UserInfo"></activity>
 		<activity android:name="WatchedRepositories" />

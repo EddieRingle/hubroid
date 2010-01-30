@@ -9,7 +9,6 @@
 		android:id="@+id/tv_top_bar_title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:text="Activity Feed"
 		android:layout_centerInParent="true"
 		android:textColor="@color/textColor"
 		android:textSize="24dip"

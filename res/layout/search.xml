@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res/org.idlesoft.android.hubroid"
+	android:id="@+id/rl_search_root"
+	android:background="#FFF"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<LinearLayout
+		android:id="@+id/ll_search_shadow"
+		android:layout_width="fill_parent"
+		android:layout_height="10dip"
+		android:orientation="vertical"
+		android:layout_below="@id/include_top_bar"
+		android:background="@drawable/shadow" />
+	<RelativeLayout
+		android:id="@+id/ll_search_search_area"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_below="@id/ll_search_shadow"
+		android:gravity="center_horizontal"
+		android:layout_centerHorizontal="true">
+		<EditText
+			android:id="@+id/et_search_search_box"
+			android:layout_width="256dip"
+			android:layout_height="wrap_content"
+			android:layout_alignParentLeft="true" />
+		<Button
+			android:id="@+id/btn_search_go"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/et_search_search_box"
+			android:gravity="center_vertical"
+			android:text="Search" />
+	</RelativeLayout>
+	<RelativeLayout
+		android:id="@+id/rl_search_button_holder"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_centerHorizontal="true">
+		<Button
+			android:id="@+id/btn_search_repositories"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="Repositories"
+			android:background="@android:drawable/btn_default_small" />
+		<Button
+			android:id="@+id/btn_search_users"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_toRightOf="@id/btn_search_repositories"
+			android:background="@android:drawable/btn_default_small"
+			android:text="Users" />
+	</RelativeLayout>
+	<RelativeLayout
+		android:id="@+id/rl_search_main_frame"
+		android:layout_above="@id/rl_search_button_holder"
+		android:layout_below="@id/ll_search_search_area"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+		<ListView
+			android:id="@+id/lv_search_repositories_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="#FFF" />
+		<ListView
+			android:id="@+id/lv_search_users_list"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:cacheColorHint="#FFF" />
+	</RelativeLayout>
+</RelativeLayout>
