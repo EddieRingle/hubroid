@@ -47,17 +47,15 @@ public class ForkListAdapter extends BaseAdapter {
 	public View getView(int index, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = m_inflater.inflate(android.R.layout.simple_list_item_1, null);
+			convertView = m_inflater.inflate(R.layout.network_list_item, null);
 			holder = new ViewHolder();
-			holder.text = (TextView) convertView.findViewById(android.R.id.text1);
+			holder.text = (TextView) convertView.findViewById(R.id.tv_network_username);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		try {
-			holder.text.setText(m_data.getJSONObject(index).getString("owner")
-								+ "/"
-								+ m_data.getJSONObject(index).getString("name"));
+			holder.text.setText(m_data.getJSONObject(index).getString("owner"));
 			holder.text.setEllipsize(TruncateAt.END);
 			holder.text.setTextColor(R.color.textColor);
 			holder.text.setMaxLines(1);
