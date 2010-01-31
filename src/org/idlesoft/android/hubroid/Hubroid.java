@@ -86,16 +86,20 @@ public class Hubroid extends Activity {
 	public static String getGravatarID(String name) {
 		String id = "";
 		try {
+			// Get SD card directory and check to see if it is writable
 			File root = Environment.getExternalStorageDirectory();
 			if (root.canWrite()) {
+				// Create the "hubroid" sub-directory if it doesn't already exist
 				File hubroid = new File(root, "hubroid");
 				if (!hubroid.exists() && !hubroid.isDirectory()) {
 					hubroid.mkdir();
 				}
+				// Create the "gravatars" sub-directory if it doesn't already exist
 				File gravatars = new File(hubroid, "gravatars");
 				if (!gravatars.exists() && !gravatars.isDirectory()) {
 					gravatars.mkdir();
 				}
+				// Create the image file on the disk
 				File image = new File(gravatars, name + ".id");
 				if (image.exists() && image.isFile()) {
 					FileReader fr = new FileReader(image);
@@ -112,7 +116,7 @@ public class Hubroid extends Activity {
 						bw.flush();
 						bw.close();
 					} catch (NullPointerException e) {
-						// do nothing
+						// do nothing, we don't like null pointers
 					}
 				}
 			}
@@ -128,9 +132,11 @@ public class Hubroid extends Activity {
 	}
 
 	public static Bitmap getGravatar(String id, int size) {
+		// Check to see if a gravatar of the correct size already exists
 		Bitmap bm = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
 				+ "/hubroid/gravatars/"
 				+ id + "_" + size + ".png");
+		// If not, fetch one
 		if (bm == null) {
 			try {
 				URL aURL = new URL(
@@ -147,6 +153,7 @@ public class Hubroid extends Activity {
 			} catch (IOException e) {
 				Log.e("debug", "Error getting bitmap", e);
 			}
+			// Save the gravatar onto the SD card for later retrieval
 			try {
 				File root = Environment.getExternalStorageDirectory();
 				if (root.canWrite()) {
@@ -169,7 +176,6 @@ public class Hubroid extends Activity {
 				e.printStackTrace();
 			}
 		}
-
 		return bm;
 	}
 
