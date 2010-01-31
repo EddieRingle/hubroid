@@ -165,7 +165,10 @@ public class Hubroid extends Activity {
 					File gravatars = new File(hubroid, "gravatars");
 					if (!gravatars.exists() && !gravatars.isDirectory()) {
 						gravatars.mkdir();
-						File nomedia = new File(gravatars, ".nomedia");
+					}
+					// Add .nomedia so the Gallery doesn't pick up our gravatars
+					File nomedia = new File(gravatars, ".nomedia");
+					if (!nomedia.exists()) {
 						nomedia.createNewFile();
 					}
 					File image = new File(gravatars, id + ".png");
