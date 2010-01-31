@@ -181,7 +181,7 @@ public class Hubroid extends Activity {
 			}
 		}
 		// Scale the image to the desired size
-		bm = Bitmap.createScaledBitmap(bm, size, size, false);
+		bm = Bitmap.createScaledBitmap(bm, size, size, true);
 		return bm;
 	}
 
