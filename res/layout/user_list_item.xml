@@ -11,7 +11,7 @@
 		android:layout_marginRight="10dip"
 		android:layout_height="36px"
 		android:scaleType="center"
-		android:background="@drawable/default_gravatar" />
+		android:background="@drawable/gravatar_border" />
 	<TextView
 		android:id="@+id/tv_user_list_item_name"
 		android:layout_width="fill_parent"

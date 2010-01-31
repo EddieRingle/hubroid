@@ -135,14 +135,15 @@ public class Hubroid extends Activity {
 		// Check to see if a gravatar of the correct size already exists
 		Bitmap bm = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
 				+ "/hubroid/gravatars/"
-				+ id + "_" + size + ".png");
+				+ id + ".png");
 		// If not, fetch one
 		if (bm == null) {
 			try {
 				URL aURL = new URL(
 				"http://www.gravatar.com/avatar.php?gravatar_id="
-						+ URLEncoder.encode(id) + "&size=" + size
-						+ "&d=" + URLEncoder.encode("http://github.com/eddieringle/hubroid/raw/master/res/drawable/default_gravatar.png"));
+						+ URLEncoder.encode(id) + "&size=50&d="
+						// Get the default 50x50 gravatar from GitHub if ID doesn't exist
+						+ URLEncoder.encode("http://github.com/eddieringle/hubroid/raw/master/res/drawable/default_gravatar.png"));
 				URLConnection conn = aURL.openConnection();
 				conn.connect();
 				InputStream is = conn.getInputStream();
@@ -167,7 +168,7 @@ public class Hubroid extends Activity {
 						File nomedia = new File(gravatars, ".nomedia");
 						nomedia.createNewFile();
 					}
-					File image = new File(gravatars, id + "_" + size + ".png");
+					File image = new File(gravatars, id + ".png");
 					bm.compress(CompressFormat.PNG, 100, new FileOutputStream(image));
 				}
 			} catch (FileNotFoundException e) {
@@ -176,6 +177,8 @@ public class Hubroid extends Activity {
 				e.printStackTrace();
 			}
 		}
+		// Scale the image to the desired size
+		bm = Bitmap.createScaledBitmap(bm, size, size, false);
 		return bm;
 	}
 

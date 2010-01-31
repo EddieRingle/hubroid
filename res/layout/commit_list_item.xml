@@ -11,7 +11,7 @@
 		android:layout_marginLeft="10dip"
 		android:layout_marginRight="10dip"
 		android:scaleType="center"
-		android:background="@drawable/default_gravatar" />
+		android:background="@drawable/gravatar_border" />
 	<TextView
 		android:id="@+id/commit_list_item_shortdesc"
 		android:layout_width="fill_parent"
