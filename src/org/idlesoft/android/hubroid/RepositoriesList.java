@@ -211,7 +211,7 @@ public class RepositoriesList extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 	        if(extras.containsKey("username")) {
-	        	m_targetUser = icicle.getString("username");
+	        	m_targetUser = extras.getString("username");
 	        } else {
 	        	m_targetUser = m_username;
 	        }

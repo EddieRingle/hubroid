@@ -205,7 +205,7 @@ public class FollowersFollowing extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 	        if(extras.containsKey("username")) {
-	        	m_username = icicle.getString("username");
+	        	m_username = extras.getString("username");
 	        } else {
 	        	m_username = m_prefs.getString("login", "");
 	        }
