@@ -14,8 +14,10 @@
 		android:background="@drawable/top_bar">
 		<ImageView
 			android:id="@+id/iv_main_gravatar"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
+			android:layout_width="40px"
+			android:layout_height="42px"
+			android:scaleType="center"
+			android:background="@drawable/gravatar_border" />
 		<TextView
 			android:id="@+id/tv_main_username"
 			android:textSize="24dip"

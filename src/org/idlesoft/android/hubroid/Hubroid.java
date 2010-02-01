@@ -295,7 +295,7 @@ public class Hubroid extends Activity {
 							public void run() {
 								ImageView gravatar = (ImageView)findViewById(R.id.iv_main_gravatar);
 								try {
-									gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 40));
+									gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 36));
 									TextView username = (TextView)findViewById(R.id.tv_main_username);
 									if (m_userData.getString("name").length() > 0) {
 										username.setText(m_userData.getString("name"));

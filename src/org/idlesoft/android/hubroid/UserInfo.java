@@ -9,9 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.TabActivity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,14 +18,14 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TabHost;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class UserInfo extends TabActivity {
+public class UserInfo extends Activity {
 	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
 	public JSONArray m_userRepoData;
@@ -35,6 +34,7 @@ public class UserInfo extends TabActivity {
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
 	public int m_position;
+	protected String m_username;
 
 	private Runnable threadProc_itemClick = new Runnable() {
 		public void run() {
@@ -57,6 +57,37 @@ public class UserInfo extends TabActivity {
 					m_progressDialog.dismiss();
 				}
 			});
+		}
+	};
+
+	private OnClickListener onButtonClick = new OnClickListener() {
+		public void onClick(View v) {
+			Intent intent;
+			// Figure out what button was clicked
+			int id = v.getId();
+			switch (id) {
+			case R.id.btn_user_info_repositories:
+				// Go to the user's list of repositories
+				intent = new Intent(UserInfo.this, RepositoriesList.class);
+				intent.putExtra("username", m_username);
+				startActivity(intent);
+				break;
+			case R.id.btn_user_info_followers_following:
+				// Go to the Followers/Following screen
+				intent = new Intent(UserInfo.this, FollowersFollowing.class);
+				intent.putExtra("username", m_username);
+				startActivity(intent);
+				break;
+			case R.id.btn_user_info_watched_repositories:
+				// Go to the Watched Repositories screen
+				intent = new Intent(UserInfo.this, WatchedRepositories.class);
+				intent.putExtra("username", m_username);
+				startActivity(intent);
+				break;
+			default:
+				// oh well...
+				break;
+			}
 		}
 	};
 
@@ -104,13 +135,6 @@ public class UserInfo extends TabActivity {
         super.onCreate(icicle);
         setContentView(R.layout.user_info);
 
-        TabHost tabhost = getTabHost();
-
-        tabhost.addTab(tabhost.newTabSpec("tab1").setIndicator("User Info").setContent(R.id.user_info_tab));
-        tabhost.addTab(tabhost.newTabSpec("tab2").setIndicator("User's Repositories").setContent(R.id.user_repositories_tab));
-
-        tabhost.setCurrentTab(0);
-
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
@@ -125,23 +149,33 @@ public class UserInfo extends TabActivity {
 					finishActivity(-2);
 				} else {
 					m_jsonData = json.getJSONObject("user");
-					TextView user_name = (TextView)findViewById(R.id.user_name);
-					user_name.setText(m_jsonData.getString("login"));
-					TextView user_fullname = (TextView)findViewById(R.id.user_fullname);
+
+					m_username = m_jsonData.getString("login");
+
+					// Set all the values in the layout
+					TextView user_name = (TextView)findViewById(R.id.tv_top_bar_title);
+					user_name.setText(m_username);
+					ImageView gravatar = (ImageView)findViewById(R.id.iv_user_info_gravatar);
+					gravatar.setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(m_username), 50));
+					TextView user_fullname = (TextView)findViewById(R.id.tv_user_info_full_name);
 					user_fullname.setText(m_jsonData.getString("name"));
-					TextView user_email = (TextView)findViewById(R.id.user_email);
+					TextView company = (TextView)findViewById(R.id.tv_user_info_company);
+					company.setText(m_jsonData.getString("company"));
+					TextView user_email = (TextView)findViewById(R.id.tv_user_info_email);
 					user_email.setText(m_jsonData.getString("email"));
-					TextView user_location = (TextView)findViewById(R.id.user_location);
+					TextView user_location = (TextView)findViewById(R.id.tv_user_info_location);
 					user_location.setText(m_jsonData.getString("location"));
-					TextView user_repository_count = (TextView)findViewById(R.id.user_repository_count);
-					user_repository_count.setText(m_jsonData.getString("public_repo_count"));
-	
-					m_userRepoData = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/repos/show/"
-																+ URLEncoder.encode(extras.getString("username")))).getJSONArray("repositories");
-					m_adapter = new RepositoriesListAdapter(UserInfo.this, m_userRepoData);
-					ListView repo_list = (ListView)findViewById(R.id.repo_list);
-					repo_list.setAdapter(m_adapter);
-					repo_list.setOnItemClickListener(m_MessageClickedHandler);
+					TextView user_blog = (TextView)findViewById(R.id.tv_user_info_blog);
+					user_blog.setText(m_jsonData.getString("blog"));
+
+					// Make the buttons work
+					Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
+					Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
+					Button watchedRepositoriesBtn = (Button) findViewById(R.id.btn_user_info_watched_repositories);
+
+					repositoriesBtn.setOnClickListener(onButtonClick);
+					followersFollowingBtn.setOnClickListener(onButtonClick);
+					watchedRepositoriesBtn.setOnClickListener(onButtonClick);
 				}
 			} catch (MalformedURLException e) {
 				e.printStackTrace();

@@ -79,6 +79,7 @@ public class CommitListAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		try {
+			
 			holder.gravatar.setImageBitmap(m_gravatars[index]);
 			String description = m_data.getJSONObject(index).getString("message");
 			holder.commit_shortdesc.setText(description.split("\n")[0]);
