@@ -37,7 +37,7 @@ public class WatchedRepositories extends ListActivity {
 		RepositoriesListAdapter adapter = null;
 		try {
 			URL query = new URL("http://github.com/api/v2/json/repos/watched/"
-								+ URLEncoder.encode(getSharedPreferences(Hubroid.PREFS_NAME, 0).getString("login", "")));
+								+ URLEncoder.encode(m_username));
 			m_jsonData = Hubroid.make_api_request(query);
 			if (m_jsonData == null) {
 				runOnUiThread(new Runnable() {
