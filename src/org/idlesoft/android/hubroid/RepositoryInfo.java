@@ -285,9 +285,7 @@ public class RepositoryInfo extends TabActivity {
 				Iterator<String> keys = branchesJson.keys();
 				while (keys.hasNext()) {
 					String next_branch = keys.next();
-					if (!next_branch.contains(new String("."))) {
-						m_branches.add(next_branch);
-					}
+					m_branches.add(next_branch);
 				}
 
 				Spinner branchesSpinner = (Spinner)findViewById(R.id.branch_select);
