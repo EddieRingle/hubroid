@@ -111,21 +111,42 @@ public class UserInfo extends Activity {
 
 					m_username = m_jsonData.getString("login");
 
+					String company, location, full_name, email, blog;
+
+					if (m_jsonData.has("company")) {
+						company = m_jsonData.getString("company");
+					} else {
+						company = "N/A";
+					}
+					if (m_jsonData.has("location")) {
+						location = m_jsonData.getString("location");
+					} else {
+						location = "N/A";
+					}
+					if (m_jsonData.has("name")) {
+						full_name = m_jsonData.getString("name");
+					} else {
+						full_name = "N/A";
+					}
+					if (m_jsonData.has("email")) {
+						email = m_jsonData.getString("email");
+					} else {
+						email = "N/A";
+					}
+					if (m_jsonData.has("blog")) {
+						blog = m_jsonData.getString("blog");
+					} else {
+						blog = "N/A";
+					}
+
 					// Set all the values in the layout
-					TextView user_name = (TextView)findViewById(R.id.tv_top_bar_title);
-					user_name.setText(m_username);
-					ImageView gravatar = (ImageView)findViewById(R.id.iv_user_info_gravatar);
-					gravatar.setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(m_username), 50));
-					TextView user_fullname = (TextView)findViewById(R.id.tv_user_info_full_name);
-					user_fullname.setText(m_jsonData.getString("name"));
-					TextView company = (TextView)findViewById(R.id.tv_user_info_company);
-					company.setText(m_jsonData.getString("company"));
-					TextView user_email = (TextView)findViewById(R.id.tv_user_info_email);
-					user_email.setText(m_jsonData.getString("email"));
-					TextView user_location = (TextView)findViewById(R.id.tv_user_info_location);
-					user_location.setText(m_jsonData.getString("location"));
-					TextView user_blog = (TextView)findViewById(R.id.tv_user_info_blog);
-					user_blog.setText(m_jsonData.getString("blog"));
+					((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_username);
+					((ImageView)findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(m_username), 50));
+					((TextView)findViewById(R.id.tv_user_info_full_name)).setText(full_name);
+					((TextView)findViewById(R.id.tv_user_info_company)).setText(company);
+					((TextView)findViewById(R.id.tv_user_info_email)).setText(email);
+					((TextView)findViewById(R.id.tv_user_info_location)).setText(location);
+					((TextView)findViewById(R.id.tv_user_info_blog)).setText(blog);
 
 					// Make the buttons work
 					Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
