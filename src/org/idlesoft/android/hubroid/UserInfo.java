@@ -5,12 +5,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,46 +17,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class UserInfo extends Activity {
-	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
-	public JSONArray m_userRepoData;
-	public RepositoriesListAdapter m_adapter;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
-	public int m_position;
 	protected String m_username;
-
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
-			try {
-	        	m_intent = new Intent(UserInfo.this, RepositoryInfo.class);
-	        	m_intent.putExtra("repo_name", m_userRepoData.getJSONObject(m_position).getString("name"));
-	        	m_intent.putExtra("username", m_userRepoData.getJSONObject(m_position).getString("owner"));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			UserInfo.this.startActivity(m_intent);
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					m_progressDialog.dismiss();
-				}
-			});
-		}
-	};
 
 	private OnClickListener onButtonClick = new OnClickListener() {
 		public void onClick(View v) {
@@ -88,15 +56,6 @@ public class UserInfo extends Activity {
 				// oh well...
 				break;
 			}
-		}
-	};
-
-	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-			m_position = position;
-			m_progressDialog = ProgressDialog.show(UserInfo.this, "Please wait...", "Loading Repository...", true);
-			Thread thread = new Thread(null, threadProc_itemClick);
-			thread.start();
 		}
 	};
 
