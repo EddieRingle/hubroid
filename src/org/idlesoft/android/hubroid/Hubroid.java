@@ -248,7 +248,9 @@ public class Hubroid extends Activity {
 				startActivity(intent);
 				break;
 			case 4:
-				Toast.makeText(Hubroid.this, "Profile", Toast.LENGTH_SHORT).show();
+				intent = new Intent(Hubroid.this, UserInfo.class);
+				intent.putExtra("username", m_username);
+				startActivity(intent);
 				break;
 			default:
 				Toast.makeText(Hubroid.this, "Umm...", Toast.LENGTH_SHORT).show();
