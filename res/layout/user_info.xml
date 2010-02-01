@@ -62,12 +62,14 @@
 			android:layout_height="wrap_content"
 			android:text="Location:"
 			android:layout_alignParentLeft="true"
+			android:textColor="#666"
 			android:paddingTop="10dip"
 			android:paddingBottom="5dip" />
 		<TextView
 			android:id="@+id/tv_user_info_location"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:textColor="#666"
 			android:layout_alignBaseline="@id/tv_user_info_location_label"
 			android:layout_alignParentRight="true" />
 		<TextView
@@ -75,6 +77,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="E-Mail:"
+			android:textColor="#666"
 			android:layout_below="@id/tv_user_info_location_label"
 			android:layout_alignParentLeft="true"
 			android:paddingTop="5dip"
@@ -83,6 +86,8 @@
 			android:id="@+id/tv_user_info_email"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:textColor="#666"
+			android:autoLink="email"
 			android:layout_alignBaseline="@id/tv_user_info_email_label"
 			android:layout_alignParentRight="true" />
 		<TextView
@@ -90,6 +95,7 @@
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:text="Blog:"
+			android:textColor="#666"
 			android:layout_below="@id/tv_user_info_email_label"
 			android:layout_alignParentLeft="true"
 			android:paddingTop="5dip"
@@ -98,6 +104,8 @@
 			android:id="@+id/tv_user_info_blog"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:textColor="#666"
+			android:autoLink="web"
 			android:layout_alignBaseline="@id/tv_user_info_blog_label"
 			android:layout_alignParentRight="true" />
 		<Button
