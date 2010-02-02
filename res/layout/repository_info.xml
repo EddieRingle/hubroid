@@ -1,137 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@android:id/tabhost"
-	android:background="@color/background"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/rl_repository_info_root"
+	android:background="#FFF"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
-	<LinearLayout
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<ScrollView
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:orientation="vertical">
-		<TabWidget
-			android:id="@android:id/tabs"
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content" />
-		<FrameLayout
-			android:id="@android:id/tabcontent"
+		android:layout_below="@id/include_top_bar">
+		<RelativeLayout
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
 			<RelativeLayout
-				android:id="@+id/repo_info_tab"
+				android:id="@+id/rl_repository_info_repobox"
 				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"
-				android:padding="20dip">
+				android:layout_height="wrap_content"
+				android:background="#F4F4F4"
+				android:padding="10dip">
 				<TextView
-					android:id="@+id/repository_name"
-					android:layout_width="fill_parent"
+					android:id="@+id/tv_repository_info_name"
+					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:textSize="20dip"
-					android:textColor="@color/textColor"
+					android:textColor="#333"
 					android:textStyle="bold"
-					android:singleLine="true"
-					android:ellipsize="marquee"
-					android:focusable="true" />
+					android:textSize="24dip" />
 				<TextView
-					android:id="@+id/repository_description"
-					android:layout_width="fill_parent"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/repository_name"
-					android:textColor="@color/textColor"
-					android:paddingBottom="15dip"/>
-				<TextView
-					android:id="@+id/repository_owner_label"
+					android:id="@+id/tv_repository_info_watchers"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_below="@id/repository_description"
-					android:textColor="@color/textColor"
-					android:text="@string/repository_owner_label" />
-				<Button
-					android:id="@+id/goto_repo_owner_info_btn"
-					android:background="@android:drawable/ic_dialog_info"
-					android:layout_width="24dip"
-					android:layout_height="24dip"
-					android:layout_marginTop="17.5dip"
-					android:layout_marginLeft="5dip"
-					android:textColor="@color/textColor"
-					android:layout_alignParentRight="true"
-					android:layout_alignBottom="@id/repository_owner_label" />
+					android:layout_below="@id/tv_repository_info_name"
+					android:layout_alignLeft="@id/tv_repository_info_name"
+					android:textSize="16dip" />
 				<TextView
-					android:id="@+id/repository_owner"
+					android:id="@+id/tv_repository_info_separator"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_toLeftOf="@id/goto_repo_owner_info_btn"
-					android:textColor="@color/textColor"
-					android:layout_alignTop="@id/repository_owner_label" />
+					android:layout_alignBaseline="@id/tv_repository_info_watchers"
+					android:layout_toRightOf="@id/tv_repository_info_watchers"
+					android:text=" / "
+					android:textSize="16dip" />
 				<TextView
-					android:id="@+id/repository_fork_count_label"
+					android:id="@+id/tv_repository_info_forks"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_below="@id/repository_owner_label"
-					android:textColor="@color/textColor"
-					android:text="@string/repository_fork_count_label" />
-				<TextView
-					android:id="@+id/repository_fork_count"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_alignParentRight="true"
-					android:layout_marginRight="29dip"
-					android:textColor="@color/textColor"
-					android:layout_alignTop="@id/repository_fork_count_label"/>
-				<TextView
-					android:id="@+id/repository_watcher_count_label"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/repository_fork_count_label"
-					android:textColor="@color/textColor"
-					android:text="@string/repository_watcher_count_label" />
-				<TextView
-					android:id="@+id/repository_watcher_count"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_alignParentRight="true"
-					android:layout_marginRight="29dip"
-					android:textColor="@color/textColor"
-					android:layout_alignTop="@id/repository_watcher_count_label"/>
-				<TextView
-					android:id="@+id/repository_fork_of_label"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/repository_watcher_count_label"
-					android:text="@string/repository_fork_of_label"
-					android:textColor="@color/textColor"
-					android:visibility="gone" />
-				<TextView
-					android:id="@+id/repository_fork_of"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_alignParentRight="true"
-					android:layout_marginRight="29dip"
-					android:layout_alignTop="@id/repository_fork_of_label"
-					android:textColor="@color/textColor"
-					android:visibility="gone" />
-				<Button
-					android:id="@+id/goto_forked_repository_btn"
-					android:background="@android:drawable/ic_dialog_info"
-					android:layout_width="24dip"
-					android:layout_height="24dip"
-					android:layout_marginTop="17.5dip"
-					android:layout_marginLeft="5dip"
-					android:layout_alignParentRight="true"
-					android:layout_alignBottom="@id/repository_fork_of_label"
-					android:visibility="gone" />
+					android:layout_alignBaseline="@id/tv_repository_info_separator"
+					android:layout_toRightOf="@id/tv_repository_info_separator"
+					android:textSize="16dip" />
 			</RelativeLayout>
-			<include layout="@layout/repo_commits_tab" />
 			<LinearLayout
-				android:id="@+id/repo_forks_tab"
+				android:id="@+id/ll_repository_info_strip"
 				android:layout_width="fill_parent"
-				android:layout_height="fill_parent">
-				<ListView
-					android:cacheColorHint="#FFF"
-					android:id="@+id/repo_forks_list"
+				android:layout_height="2.5dip"
+				android:layout_below="@id/rl_repository_info_repobox"
+				android:background="@drawable/gray_strip" />
+			<LinearLayout
+				android:id="@+id/ll_repository_info_shadow"
+				android:layout_width="fill_parent"
+				android:layout_height="10dip"
+				android:layout_below="@id/ll_repository_info_strip"
+				android:background="@drawable/shadow" />
+			<RelativeLayout
+				android:layout_below="@id/ll_repository_info_shadow"
+				android:layout_centerHorizontal="true"
+				android:layout_width="275dip"
+				android:layout_height="wrap_content">
+				<TextView
+					android:id="@+id/tv_repository_info_owner_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Owner:"
+					android:layout_alignParentLeft="true"
+					android:textColor="#666"
+					android:paddingTop="10dip"
+					android:paddingBottom="5dip" />
+				<TextView
+					android:id="@+id/tv_repository_info_owner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#666"
+					android:layout_alignBaseline="@id/tv_repository_info_owner_label"
+					android:layout_alignParentRight="true" />
+				<TextView
+					android:id="@+id/tv_repository_info_website_label"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:text="Website:"
+					android:textColor="#666"
+					android:layout_below="@id/tv_repository_info_owner_label"
+					android:layout_alignParentLeft="true"
+					android:paddingTop="5dip"
+					android:paddingBottom="5dip" />
+				<TextView
+					android:id="@+id/tv_repository_info_website"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#666"
+					android:autoLink="web"
+					android:layout_alignBaseline="@id/tv_repository_info_website_label"
+					android:layout_alignParentRight="true" />
+				<TextView
+					android:id="@+id/tv_repository_info_description"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textColor="#666"
+					android:layout_below="@id/tv_repository_info_website_label"
+					android:layout_alignParentLeft="true"
+					android:paddingTop="5dip"
+					android:paddingBottom="10dip" />
+				<Button
+					android:id="@+id/btn_repository_info_commits"
 					android:layout_width="fill_parent"
-					android:layout_height="fill_parent">
-				</ListView>
-			</LinearLayout>
-		</FrameLayout>
-	</LinearLayout>
-</TabHost>
+					android:layout_height="wrap_content"
+					android:layout_below="@id/tv_repository_info_description"
+					android:layout_marginTop="15dip"
+					android:layout_marginBottom="5dip"
+					android:text="Recent Commits" />
+				<Button
+					android:id="@+id/btn_repository_info_network"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/btn_repository_info_commits"
+					android:layout_marginTop="5dip"
+					android:layout_marginBottom="15dip"
+					android:text="Network" />
+			</RelativeLayout>
+		</RelativeLayout>
+	</ScrollView>
+</RelativeLayout>

@@ -4,50 +4,40 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Iterator;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.Spinner;
-import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 
-public class RepositoryInfo extends TabActivity {
+public class RepositoryInfo extends Activity {
 	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
 	public Intent m_intent;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
-	public ForkListAdapter m_forkListAdapter;
-	public CommitListAdapter m_commitListAdapter;
-	public JSONArray m_jsonForkData;
 	public int m_position;
-	public ArrayList<String> m_branches;
 	public String m_repo_owner;
 	public String m_repo_name;
 
+	/* bleh.
 	private Runnable threadProc_userInfo = new Runnable() {
 		public void run() {
-			TextView tv = (TextView)findViewById(R.id.repository_owner);
+			TextView tv = (TextView)findViewById(R.id.tv_repository_info_owner);
 			m_intent = new Intent(RepositoryInfo.this, UserInfo.class);
 			m_intent.putExtra("username", tv.getText());
 			RepositoryInfo.this.startActivity(m_intent);
@@ -63,8 +53,9 @@ public class RepositoryInfo extends TabActivity {
 				}
 			});
 		}
-	};
+	}; */
 
+	/* Holding off on this...
 	private Runnable threadProc_forkedRepoInfo = new Runnable() {
 		public void run() {
 			TextView tv = (TextView)findViewById(R.id.repository_fork_of);
@@ -84,96 +75,25 @@ public class RepositoryInfo extends TabActivity {
 				}
 			});
 		}
-	};
+	}; */
 
+	/* This too...
 	View.OnClickListener username_onClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			m_progressDialog = ProgressDialog.show(RepositoryInfo.this, "Please wait...", "Loading User Information...");
 			Thread thread = new Thread(null, threadProc_userInfo);
 			thread.start();
 		}
-	};
+	}; */
 
+	/* grr... too many methods I want to hold off from releasing >.<
 	View.OnClickListener forkedRepo_onClickListener = new View.OnClickListener() {
 		public void onClick(View v) {
 			m_progressDialog = ProgressDialog.show(RepositoryInfo.this, "Please wait...", "Loading Repository Information...");
 			Thread thread = new Thread(null, threadProc_forkedRepoInfo);
 			thread.start();
 		}
-	};
-
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
-			try {
-	        	m_intent = new Intent(RepositoryInfo.this, RepositoryInfo.class);
-	        	m_intent.putExtra("repo_name", m_jsonForkData.getJSONObject(m_position).getString("name"));
-	        	m_intent.putExtra("username", m_jsonForkData.getJSONObject(m_position).getString("owner"));
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			RepositoryInfo.this.startActivity(m_intent);
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					m_progressDialog.dismiss();
-				}
-			});
-		}
-	};
-
-	private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-			m_position = position;
-			m_progressDialog = ProgressDialog.show(RepositoryInfo.this, "Please wait...", "Loading Repository's Network...", true);
-			Thread thread = new Thread(null, threadProc_itemClick);
-			thread.start();
-		}
-	};
-
-	private Runnable threadProc_gatherCommits = new Runnable() {
-		public void run() {
-			try {
-				JSONArray commitsJSON = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/commits/list/"
-																		+ URLEncoder.encode(m_repo_owner)
-																		+ "/"
-																		+ URLEncoder.encode(m_repo_name)
-																		+ "/"
-																		+ URLEncoder.encode(m_branches.get(m_position)))).getJSONArray("commits");
-				Log.d("debug1",commitsJSON.toString());
-				m_commitListAdapter = new CommitListAdapter(RepositoryInfo.this, commitsJSON);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					ListView commitList = (ListView)findViewById(R.id.repo_commit_log_list);
-					commitList.setAdapter(m_commitListAdapter);
-					m_progressDialog.dismiss();
-				}
-			});
-		}
-	};
-
-	private OnItemSelectedListener m_onBranchSelect = new OnItemSelectedListener() {
-		public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-		{
-			m_position = position;
-			m_progressDialog = ProgressDialog.show(RepositoryInfo.this, "Please wait...", "Loading Repository's Commits...", true);
-			Thread thread = new Thread(null, threadProc_gatherCommits);
-			thread.start();
-		}
-
-		public void onNothingSelected(AdapterView<?> arg0) {
-		}
-	};
+	}; */
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
@@ -210,14 +130,6 @@ public class RepositoryInfo extends TabActivity {
         super.onCreate(icicle);
         setContentView(R.layout.repository_info);
 
-        TabHost tabhost = getTabHost();
-
-        tabhost.addTab(tabhost.newTabSpec("tab1").setIndicator("Repository Info").setContent(R.id.repo_info_tab));
-        tabhost.addTab(tabhost.newTabSpec("tab2").setIndicator("Commit Log").setContent(R.id.repo_commits_tab));
-        tabhost.addTab(tabhost.newTabSpec("tab3").setIndicator("Network").setContent(R.id.repo_forks_tab));
-
-        tabhost.setCurrentTab(0);        
-
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
@@ -238,23 +150,26 @@ public class RepositoryInfo extends TabActivity {
 			}
 
 			try {
-				TextView repo_name = (TextView)findViewById(R.id.repository_name);
+				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
+				title.setText(m_jsonData.getString("name"));
+				TextView repo_name = (TextView)findViewById(R.id.tv_repository_info_name);
 				repo_name.setText(m_jsonData.getString("name"));
-				TextView repo_desc = (TextView)findViewById(R.id.repository_description);
+				TextView repo_desc = (TextView)findViewById(R.id.tv_repository_info_description);
 				repo_desc.setText(m_jsonData.getString("description"));
-				TextView repo_owner = (TextView)findViewById(R.id.repository_owner);
+				TextView repo_owner = (TextView)findViewById(R.id.tv_repository_info_owner);
 				repo_owner.setText(m_jsonData.getString("owner"));
-				TextView repo_fork_count = (TextView)findViewById(R.id.repository_fork_count);
-				repo_fork_count.setText(m_jsonData.getString("forks"));
-				TextView repo_watcher_count = (TextView)findViewById(R.id.repository_watcher_count);
-				repo_watcher_count.setText(m_jsonData.getString("watchers"));
+				TextView repo_watcher_count = (TextView)findViewById(R.id.tv_repository_info_watchers);
+				repo_watcher_count.setText(m_jsonData.getString("watchers") + " watchers");
+				TextView repo_fork_count = (TextView)findViewById(R.id.tv_repository_info_forks);
+				repo_fork_count.setText(m_jsonData.getString("forks") + " forks");
+				TextView repo_website = (TextView)findViewById(R.id.tv_repository_info_website);
+				if (!m_jsonData.isNull("homepage")) {
+					repo_website.setText(m_jsonData.getString("homepage"));
+				} else {
+					repo_website.setText("N/A");
+				}
 
-				m_jsonForkData = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/repos/show/"
-						+ URLEncoder.encode(m_repo_owner)
-						+ "/"
-						+ URLEncoder.encode(m_repo_name)
-						+ "/network")).getJSONArray("network");
-
+				/* Let's hold off on putting this in the new version for now...
 				if (m_jsonData.getBoolean("fork") == true) {
 					// Find out what this is a fork of...
 					String forked_user = m_jsonForkData.getJSONObject(0).getString("owner");
@@ -270,37 +185,32 @@ public class RepositoryInfo extends TabActivity {
 					// Set the onClick listener for the button
 					goto_forked_repository_btn.setOnClickListener(forkedRepo_onClickListener);
 				}
+				*/
 
-				m_forkListAdapter = new ForkListAdapter(RepositoryInfo.this, m_jsonForkData);
-				ListView repo_list = (ListView)findViewById(R.id.repo_forks_list);
-				repo_list.setAdapter(m_forkListAdapter);
-				repo_list.setOnItemClickListener(m_onForkListItemClick);
-
-				JSONObject branchesJson = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/repos/show/"
-																+ URLEncoder.encode(extras.getString("username"))
-																+ "/"
-																+ URLEncoder.encode(extras.getString("repo_name"))
-																+ "/branches")).getJSONObject("branches");
-				m_branches = new ArrayList<String>(branchesJson.length());
-				Iterator<String> keys = branchesJson.keys();
-				while (keys.hasNext()) {
-					String next_branch = keys.next();
-					m_branches.add(next_branch);
-				}
-
-				Spinner branchesSpinner = (Spinner)findViewById(R.id.branch_select);
-				ArrayAdapter<String> branchesAdapter = new ArrayAdapter<String>(RepositoryInfo.this, android.R.layout.simple_spinner_item, m_branches);
-				branchesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-				branchesSpinner.setAdapter(branchesAdapter);
-				branchesSpinner.setOnItemSelectedListener(m_onBranchSelect);
 			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
 
+			((Button)findViewById(R.id.btn_repository_info_commits)).setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					Intent intent = new Intent(RepositoryInfo.this, CommitsList.class);
+					intent.putExtra("repo_name", m_repo_name);
+					intent.putExtra("username", m_repo_owner);
+					startActivity(intent);
+				}
+			});
+			((Button)findViewById(R.id.btn_repository_info_network)).setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					Intent intent = new Intent(RepositoryInfo.this, NetworkList.class);
+					intent.putExtra("repo_name", m_repo_name);
+					intent.putExtra("username", m_repo_owner);
+					startActivity(intent);
+				}
+			});
+			/* Hold off on this as well...
 			Button user_info_btn = (Button)findViewById(R.id.goto_repo_owner_info_btn);
 			user_info_btn.setOnClickListener(username_onClickListener);
+			*/
         }
     }
 }

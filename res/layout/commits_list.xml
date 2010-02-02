@@ -1,10 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/repo_commits_tab"
+	android:id="@+id/ll_commits_list_root"
 	android:orientation="vertical"
-	android:background="@color/background"
+	android:background="#FFF"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+	<TextView
+		android:id="@+id/tv_top_bar_title"
+		android:layout_width="fill_parent"
+		android:layout_height="56dip"
+		android:gravity="center"
+		android:background="@drawable/top_bar"
+		android:textColor="@color/textColor"
+		android:textSize="20dip"
+		android:textStyle="bold" />
+	<LinearLayout
+		android:id="@+id/ll_commits_list_shadow"
+		android:layout_width="fill_parent"
+		android:layout_height="10dip"
+		android:orientation="vertical"
+		android:background="@drawable/shadow" />
 	<LinearLayout
 		android:orientation="horizontal"
 		android:layout_width="fill_parent"
@@ -15,12 +30,12 @@
 			android:textColor="@color/textColor"
 			android:text="Select Branch: " />
 		<Spinner
-			android:id="@+id/branch_select"
+			android:id="@+id/spn_commits_list_branch_select"
 			android:layout_width="fill_parent"
 			android:layout_height="40dip" />
 	</LinearLayout>
 	<ListView
-		android:id="@+id/repo_commit_log_list"
+		android:id="@+id/lv_commits_list_list"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:cacheColorHint="#FFF">
