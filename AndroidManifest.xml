@@ -15,6 +15,8 @@
         <activity android:name="Search"></activity>
     	<activity android:name="RepositoriesList" ></activity>
 		<activity android:name="RepositoryInfo"></activity>
+		<activity android:name="CommitsList"></activity>
+		<activity android:name="NetworkList"></activity>
 		<activity android:name="UserInfo"></activity>
 		<activity android:name="WatchedRepositories" />
 		<activity android:name="FollowersFollowing" />
