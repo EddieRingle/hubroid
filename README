@@ -1,6 +1,8 @@
 This application allows you to access various information about GitHub repositories and users through the GitHub API.
 
-Changes in v0.2.1:
-* Backwards compatible with Android 1.5
-* Remember list contents when switching between portrait and landscape.
-* Bug fixes
+Changes in v1.0-rc1:
+* Newly revamped design
+* Followers/Following lists
+* Watched Repositories
+* Gravatar support
+* Much more!
