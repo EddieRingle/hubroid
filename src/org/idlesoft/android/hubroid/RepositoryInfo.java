@@ -163,7 +163,7 @@ public class RepositoryInfo extends Activity {
 				TextView repo_fork_count = (TextView)findViewById(R.id.tv_repository_info_forks);
 				repo_fork_count.setText(m_jsonData.getString("forks") + " forks");
 				TextView repo_website = (TextView)findViewById(R.id.tv_repository_info_website);
-				if (!m_jsonData.isNull("homepage")) {
+				if (m_jsonData.getString("homepage") != "") {
 					repo_website.setText(m_jsonData.getString("homepage"));
 				} else {
 					repo_website.setText("N/A");
