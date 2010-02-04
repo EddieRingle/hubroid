@@ -96,6 +96,9 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:textColor="#666"
+					android:ellipsize="end"
+					android:maxWidth="192dip"
+					android:singleLine="true"
 					android:autoLink="web"
 					android:layout_alignBaseline="@id/tv_repository_info_website_label"
 					android:layout_alignParentRight="true" />
