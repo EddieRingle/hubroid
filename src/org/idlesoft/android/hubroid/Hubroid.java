@@ -67,6 +67,12 @@ public class Hubroid extends Activity {
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
 
+	/**
+	 * Sends an HTTP request to a server and returns the response JSON.
+	 * 
+	 * @param url
+	 * @return	the respose JSON
+	 */
 	public static JSONObject make_api_request(URL url) {
 		JSONObject json = null;
 		HttpClient c = new DefaultHttpClient();
@@ -91,6 +97,12 @@ public class Hubroid extends Activity {
 		return json;
 	}
 
+	/**
+	 * Returns a Gravatar ID associated with the provided name
+	 * 
+	 * @param name
+	 * @return	the gravatar ID associated with the name
+	 */
 	public static String getGravatarID(String name) {
 		String id = "";
 		try {
@@ -139,6 +151,14 @@ public class Hubroid extends Activity {
 		return id;
 	}
 
+	/**
+	 * Returns a Bitmap of the Gravatar associated with the provided ID.
+	 * This image will be scaled according to the provided size.
+	 * 
+	 * @param id
+	 * @param size
+	 * @return	a scaled Bitmap
+	 */
 	public static Bitmap getGravatar(String id, int size) {
 		// Check to see if a gravatar of the correct size already exists
 		Bitmap bm = BitmapFactory.decodeFile(Environment.getExternalStorageDirectory()
