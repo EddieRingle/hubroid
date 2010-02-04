@@ -1,3 +1,11 @@
+/**
+ * Hubroid - A GitHub app for Android
+ * 
+ * Copyright (c) 2010 Eddie Ringle.
+ * 
+ * Licensed under the New BSD License.
+ */
+
 package org.idlesoft.android.hubroid;
 
 import org.json.JSONArray;
