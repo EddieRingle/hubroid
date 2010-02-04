@@ -113,17 +113,23 @@
 					android:paddingBottom="10dip" />
 				<Button
 					android:id="@+id/btn_repository_info_commits"
-					android:layout_width="fill_parent"
+					android:layout_width="175dip"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/tv_repository_info_description"
+					android:layout_centerHorizontal="true"
 					android:layout_marginTop="15dip"
 					android:layout_marginBottom="5dip"
+					android:drawableLeft="@drawable/commit"
+					android:drawableRight="@drawable/commit"
 					android:text="Recent Commits" />
 				<Button
 					android:id="@+id/btn_repository_info_network"
-					android:layout_width="fill_parent"
+					android:layout_width="175dip"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/btn_repository_info_commits"
+					android:layout_centerHorizontal="true"
+					android:drawableLeft="@drawable/fork"
+					android:drawableRight="@drawable/fork"
 					android:layout_marginTop="5dip"
 					android:layout_marginBottom="15dip"
 					android:text="Network" />
