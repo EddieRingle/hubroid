@@ -72,6 +72,7 @@ public class NetworkList extends Activity {
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
+			menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
 			menu.add(0, 1, 0, "Clear Preferences");
 			menu.add(0, 2, 0, "Clear Cache");
 		}
@@ -80,9 +81,13 @@ public class NetworkList extends Activity {
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case 0:
+			Intent i1 = new Intent(this, Hubroid.class);
+			startActivity(i1);
+			return true;
 		case 1:
 			m_editor.clear().commit();
-			Intent intent = new Intent(NetworkList.this, Hubroid.class);
+			Intent intent = new Intent(this, Hubroid.class);
 			startActivity(intent);
         	return true;
 		case 2:
