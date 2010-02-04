@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 public class CommitListAdapter extends BaseAdapter {
 	private JSONArray m_data = new JSONArray();
-	private int m_currentIndex;
 	private Context m_context;
 	private LayoutInflater m_inflater;
 	private Bitmap[] m_gravatars;
