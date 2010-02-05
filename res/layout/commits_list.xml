@@ -5,6 +5,7 @@
 	android:background="#FFF"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+	<!--  Top Bar -->
 	<TextView
 		android:id="@+id/tv_top_bar_title"
 		android:layout_width="fill_parent"

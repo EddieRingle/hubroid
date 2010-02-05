@@ -4,7 +4,9 @@
 	android:background="#FFF"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
+	<!-- Top Bar -->
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<!-- Contain the rest in a scroll view to give the views more space -->
 	<ScrollView
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"

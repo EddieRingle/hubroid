@@ -4,6 +4,7 @@
 	android:background="#FFF"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
+	<!-- Top bar -->
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<LinearLayout
 		android:id="@+id/ll_followers_following_shadow"
