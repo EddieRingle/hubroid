@@ -171,11 +171,6 @@ public class WatchedRepositories extends ListActivity {
     }
 
     @Override
-    public void onStart() {
-    	super.onStart();
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
     	if (m_jsonData != null) {
     		savedInstanceState.putString("json", m_jsonData.toString());
