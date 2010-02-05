@@ -161,18 +161,18 @@ public class WatchedRepositories extends ListActivity {
 
         TextView title = (TextView)findViewById(R.id.tv_watched_repositories_title);
         title.setText("Watched Repositories");
-    }
 
-    @Override
-    public void onStart() {
-    	super.onStart();
-
-    	m_progressDialog = ProgressDialog.show(WatchedRepositories.this, "Please wait...", "Loading Repositories...", true);
+        m_progressDialog = ProgressDialog.show(WatchedRepositories.this, "Please wait...", "Loading Repositories...", true);
 		Thread thread = new Thread(null, threadProc_initializeList);
 		thread.start();
 
         ListView list = (ListView)findViewById(android.R.id.list);
         list.setOnItemClickListener(m_MessageClickedHandler);
+    }
+
+    @Override
+    public void onStart() {
+    	super.onStart();
     }
 
     @Override
