@@ -58,6 +58,7 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Hubroid extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
+	public static final String GITHUB_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZ";
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	private String m_username;
