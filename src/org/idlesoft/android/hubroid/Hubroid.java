@@ -264,9 +264,12 @@ public class Hubroid extends Activity {
 				intent = new Intent(Hubroid.this, FollowersFollowing.class);
 				startActivity(intent);
 				break;
-			/*case 2:
+			/*
+			 * Let's exclude this until I feel like writing the code supporting this...
+			case 2:
 				Toast.makeText(MainScreen.this, "Activity Feeds", Toast.LENGTH_SHORT).show();
-				break;*/
+				break;
+			*/
 			case 2:
 				intent = new Intent(Hubroid.this, RepositoriesList.class);
 				startActivity(intent);
@@ -297,11 +300,14 @@ public class Hubroid extends Activity {
         m_token = m_prefs.getString("token", "");
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 
+        // Check to see if the user is already logged in
         if (!m_isLoggedIn) {
+        	// Launch the splash screen if not logged in so the user can do so
 			Intent intent = new Intent(Hubroid.this, SplashScreen.class);
 			startActivity(intent);
 			Hubroid.this.finish();
 		} else {
+			// Start the show.
 	        setContentView(R.layout.main_menu);
 	
 	        m_progressDialog = ProgressDialog.show(Hubroid.this, "Please wait...", "Loading user data...");
@@ -309,7 +315,7 @@ public class Hubroid extends Activity {
 	        m_menuList = (ListView)findViewById(R.id.lv_main_menu_list);
 	        m_menuList.setAdapter(new ArrayAdapter<String>(Hubroid.this, R.layout.main_menu_item, MAIN_MENU));
 	        m_menuList.setOnItemClickListener(onMenuItemSelected);
-	        
+
 	        Thread thread = new Thread(new Runnable() {
 				public void run() {
 					try {
