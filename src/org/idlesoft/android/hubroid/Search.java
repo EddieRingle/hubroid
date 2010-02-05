@@ -126,7 +126,7 @@ public class Search extends Activity {
 
 			runOnUiThread(new Runnable() {
 				public void run() {
-					Search.this.startActivityForResult(m_intent, -2);
+					Search.this.startActivityForResult(m_intent, 5005);
 				}
 			});
 		}
@@ -134,10 +134,8 @@ public class Search extends Activity {
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (requestCode == -2) {
-			if (resultCode == RESULT_CANCELED) {
-				Toast.makeText(Search.this, "That user has recently been deleted.", Toast.LENGTH_SHORT);
-			}
+		if (resultCode == 5005) {
+			Toast.makeText(Search.this, "That user has recently been deleted.", Toast.LENGTH_SHORT);
 		}
 	}
 

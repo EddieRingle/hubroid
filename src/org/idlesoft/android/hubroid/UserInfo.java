@@ -117,8 +117,9 @@ public class UserInfo extends Activity {
 										+ URLEncoder.encode(extras.getString("username")));
 				JSONObject json = Hubroid.make_api_request(user_query);
 				if (json == null) {
-					setResult(RESULT_CANCELED);
-					finishActivity(-2);
+					// User doesn't really exist, return to the previous activity
+					this.setResult(5005);
+					this.finish();
 				} else {
 					m_jsonData = json.getJSONObject("user");
 
@@ -126,27 +127,28 @@ public class UserInfo extends Activity {
 
 					String company, location, full_name, email, blog;
 
-					if (m_jsonData.has("company")) {
+					// Replace empty values with "N/A"
+					if (m_jsonData.has("company") && m_jsonData.getString("company") != "") {
 						company = m_jsonData.getString("company");
 					} else {
 						company = "N/A";
 					}
-					if (m_jsonData.has("location")) {
+					if (m_jsonData.has("location") && m_jsonData.getString("location") != "") {
 						location = m_jsonData.getString("location");
 					} else {
 						location = "N/A";
 					}
-					if (m_jsonData.has("name")) {
+					if (m_jsonData.has("name") && m_jsonData.getString("name") != "") {
 						full_name = m_jsonData.getString("name");
 					} else {
 						full_name = "N/A";
 					}
-					if (m_jsonData.has("email")) {
+					if (m_jsonData.has("email") && m_jsonData.getString("email") != "") {
 						email = m_jsonData.getString("email");
 					} else {
 						email = "N/A";
 					}
-					if (m_jsonData.has("blog")) {
+					if (m_jsonData.has("blog") && m_jsonData.getString("blog") != "") {
 						blog = m_jsonData.getString("blog");
 					} else {
 						blog = "N/A";
