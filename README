@@ -1,8 +1,4 @@
 This application allows you to access various information about GitHub repositories and users through the GitHub API.
 
-Changes in v1.0-rc1:
-* Newly revamped design
-* Followers/Following lists
-* Watched Repositories
-* Gravatar support
-* Much more!
+Please suggest new features and report bugs via GitHub:
+http://github.com/eddieringle/hubroid/issues
