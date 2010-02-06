@@ -1,0 +1,13 @@
+v1.0:
+* Commit items show their how long ago the commit was pushed
+* Icons for various buttons
+* Increased responsiveness
+* Limit repository homepage URL widths
+* "Back to main menu" menu option
+
+v1.0-rc1:
+* Newly revamped design
+* Followers/Following lists
+* Watched Repositories
+* Gravatar support
+* and more...
