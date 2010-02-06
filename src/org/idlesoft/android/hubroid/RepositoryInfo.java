@@ -170,9 +170,17 @@ public class RepositoryInfo extends Activity {
 				TextView repo_owner = (TextView)findViewById(R.id.tv_repository_info_owner);
 				repo_owner.setText(m_jsonData.getString("owner"));
 				TextView repo_watcher_count = (TextView)findViewById(R.id.tv_repository_info_watchers);
-				repo_watcher_count.setText(m_jsonData.getString("watchers") + " watchers");
+				if (m_jsonData.getInt("watchers") == 1) {
+					repo_watcher_count.setText(m_jsonData.getInt("watchers") + " watcher");
+				} else {
+					repo_watcher_count.setText(m_jsonData.getInt("watchers") + " watchers");
+				}
 				TextView repo_fork_count = (TextView)findViewById(R.id.tv_repository_info_forks);
-				repo_fork_count.setText(m_jsonData.getString("forks") + " forks");
+				if (m_jsonData.getInt("forks") == 1) {
+					repo_fork_count.setText(m_jsonData.getInt("forks") + " fork");
+				} else {
+					repo_fork_count.setText(m_jsonData.getInt("forks") + " forks");
+				}
 				TextView repo_website = (TextView)findViewById(R.id.tv_repository_info_website);
 				if (m_jsonData.getString("homepage") != "") {
 					repo_website.setText(m_jsonData.getString("homepage"));
