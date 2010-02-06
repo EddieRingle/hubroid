@@ -71,7 +71,7 @@ public class Hubroid extends Activity {
 	 * Sends an HTTP request to a server and returns the response JSON.
 	 * 
 	 * @param url
-	 * @return	the respose JSON
+	 * @return	the response JSON
 	 */
 	public static JSONObject make_api_request(URL url) {
 		JSONObject json = null;
