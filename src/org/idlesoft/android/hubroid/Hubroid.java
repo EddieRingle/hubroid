@@ -57,7 +57,9 @@ import android.widget.AdapterView.OnItemClickListener;
 
 public class Hubroid extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
+	// Time format used by GitHub in their responses
 	public static final String GITHUB_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZZZZ";
+	// Time format used by GitHub in their issue API. Inconsistent, tsk, tsk.
 	public static final String GITHUB_ISSUES_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss ZZZZ";
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
