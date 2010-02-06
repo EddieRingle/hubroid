@@ -51,7 +51,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -342,8 +341,6 @@ public class Hubroid extends Activity {
 								} catch (JSONException e) {
 									e.printStackTrace();
 								}
-						        RelativeLayout root_layout = (RelativeLayout)findViewById(R.id.rl_main_menu_root);
-						        root_layout.setVisibility(0);
 								m_progressDialog.dismiss();
 							}
 						});

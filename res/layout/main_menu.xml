@@ -3,8 +3,7 @@
 	android:id="@+id/rl_main_menu_root"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:background="#FFF"
-	android:visibility="gone">
+	android:background="#FFF">
 	<RelativeLayout
 		android:id="@+id/rl_main_user_bar"
 		android:layout_width="fill_parent"
