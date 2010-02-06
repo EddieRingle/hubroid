@@ -135,7 +135,7 @@ public class Search extends Activity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (resultCode == 5005) {
-			Toast.makeText(Search.this, "That user has recently been deleted.", Toast.LENGTH_SHORT);
+			Toast.makeText(Search.this, "That user has recently been deleted.", Toast.LENGTH_SHORT).show();
 		}
 	}
 
