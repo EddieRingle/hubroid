@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,9 +36,12 @@ public class RepositoryInfo extends Activity {
 	public Intent m_intent;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
-	public int m_position;
-	public String m_repo_owner;
-	public String m_repo_name;
+	private int m_position;
+	private String m_username;
+	private String m_token;
+	private String m_repo_owner;
+	private String m_repo_name;
+	private boolean m_isWatching;
 
 	/* bleh.
 	private Runnable threadProc_userInfo = new Runnable() {
@@ -101,16 +105,55 @@ public class RepositoryInfo extends Activity {
 	}; */
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if (!menu.hasVisibleItems()) {
-			menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-			menu.add(0, 1, 0, "Clear Preferences");
-			menu.add(0, 2, 0, "Clear Cache");
+		if (menu.hasVisibleItems()) menu.clear();
+		if (m_isWatching) {
+			menu.add(0, 3, 0, "Unwatch");
+		} else {
+			menu.add(0, 3, 0, "Watch");
 		}
+		menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+		menu.add(0, 1, 0, "Clear Preferences");
+		menu.add(0, 2, 0, "Clear Cache");
 		return true;
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case 3:
+			try {
+				URL command;
+				if (m_isWatching) {
+					command = new URL("http://github.com/api/v2/json/repos/unwatch/"
+										+ URLEncoder.encode(m_repo_owner) + "/"
+										+ URLEncoder.encode(m_repo_name) + "?login="
+										+ URLEncoder.encode(m_username) + "&token="
+										+ URLEncoder.encode(m_token));
+					m_isWatching = false;
+				} else {
+					command = new URL("http://github.com/api/v2/json/repos/watch/"
+							+ URLEncoder.encode(m_repo_owner) + "/"
+							+ URLEncoder.encode(m_repo_name) + "?login="
+							+ URLEncoder.encode(m_username) + "&token="
+							+ URLEncoder.encode(m_token));
+					m_isWatching = true;
+				}
+				JSONObject newRepoInfo = Hubroid.make_api_request(command).getJSONObject("repository");
+				if (newRepoInfo != null) {
+					String newWatcherCount = newRepoInfo.getString("watchers");
+					if (newWatcherCount != m_jsonData.getString("watchers")) {
+						if (newWatcherCount == "1") {
+							((TextView) findViewById(R.id.tv_repository_info_watchers)).setText(newWatcherCount + " watcher");
+						} else {
+							((TextView) findViewById(R.id.tv_repository_info_watchers)).setText(newWatcherCount + " watchers");
+						}
+					}
+				}
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			break;
 		case 0:
 			Intent i1 = new Intent(this, Hubroid.class);
 			startActivity(i1);
@@ -144,6 +187,10 @@ public class RepositoryInfo extends Activity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
+        m_username = m_prefs.getString("login", "");
+        m_token = m_prefs.getString("token", "");
+        m_isWatching = false;
+
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
         	m_repo_name = extras.getString("repo_name");
@@ -159,6 +206,22 @@ public class RepositoryInfo extends Activity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+
+			try {
+	        	URL watched_url = new URL("http://github.com/api/v2/json/repos/watched/"
+	        								+ URLEncoder.encode(m_username));
+	        	JSONArray watched_list = Hubroid.make_api_request(watched_url).getJSONArray("repositories");
+	        	int length = watched_list.length() - 1;
+	        	for (int i = 0; i <= length; i++) {
+	        		if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(m_repo_name)) {
+	        			m_isWatching = true;
+	        		}
+	        	}
+	        } catch (MalformedURLException e) {
+	        	e.printStackTrace();
+	        } catch (JSONException e) {
+	        	e.printStackTrace();
+	        }
 
 			try {
 				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
