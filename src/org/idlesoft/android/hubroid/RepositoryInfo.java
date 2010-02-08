@@ -197,9 +197,10 @@ public class RepositoryInfo extends Activity {
         	m_repo_owner = extras.getString("username");
 			try {
 				URL repo_query = new URL("http://github.com/api/v2/json/repos/show/"
-						+ URLEncoder.encode(m_repo_owner)
-						+ "/"
-						+ URLEncoder.encode(m_repo_name));
+						+ URLEncoder.encode(m_repo_owner) + "/"
+						+ URLEncoder.encode(m_repo_name) + "?login="
+						+ URLEncoder.encode(m_username) + "&token="
+						+ URLEncoder.encode(m_token));
 				m_jsonData = Hubroid.make_api_request(repo_query).getJSONObject("repository");
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
