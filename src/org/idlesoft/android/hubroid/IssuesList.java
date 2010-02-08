@@ -1,0 +1,328 @@
+/**
+ * Hubroid - A GitHub app for Android
+ * 
+ * Copyright (c) 2010 Eddie Ringle.
+ * 
+ * Licensed under the New BSD License.
+ */
+
+package org.idlesoft.android.hubroid;
+
+import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
+
+public class IssuesList extends Activity {
+	private IssuesListAdapter m_openIssues_adapter;
+	private IssuesListAdapter m_closedIssues_adapter;
+	private ProgressDialog m_progressDialog;
+	private SharedPreferences m_prefs;
+	private SharedPreferences.Editor m_editor;
+	private String m_targetUser;
+	private String m_targetRepo;
+	private String m_username;
+	private String m_token;
+	private String m_type;
+	private JSONArray m_openIssuesData;
+	private JSONArray m_closedIssuesData;
+	private Intent m_intent;
+	private int m_position;
+
+	public void initializeList() {
+		JSONObject json = null;
+		m_openIssuesData = new JSONArray();
+		m_closedIssuesData = new JSONArray();
+		URL query;
+		try {
+			query = new URL("http://github.com/api/v2/json/issues/list/"
+								+ URLEncoder.encode(m_targetUser) + "/"
+								+ URLEncoder.encode(m_targetRepo) + "/"
+								+ "open" + "?login="
+								+ URLEncoder.encode(m_username) + "&token="
+								+ URLEncoder.encode(m_token));
+			
+			json = Hubroid.make_api_request(query);
+
+			if (json == null) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						Toast.makeText(IssuesList.this, "Error gathering issue data, please try again.", Toast.LENGTH_SHORT).show();
+					}
+				});
+			} else {
+				m_openIssuesData = new JSONArray();
+				for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
+					m_openIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
+				}
+				m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
+			}
+			query = new URL("http://github.com/api/v2/json/issues/list/"
+								+ URLEncoder.encode(m_targetUser) + "/"
+								+ URLEncoder.encode(m_targetRepo) + "/"
+								+ "closed" + "?login="
+								+ URLEncoder.encode(m_username) + "&token="
+								+ URLEncoder.encode(m_token));
+
+			json = Hubroid.make_api_request(query);
+			
+			if (json == null) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						Toast.makeText(IssuesList.this, "Error gathering issue data, please try again.", Toast.LENGTH_SHORT).show();
+					}
+				});
+			} else {
+				m_closedIssuesData = new JSONArray();
+				for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
+					m_closedIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
+				}
+				m_closedIssues_adapter = new IssuesListAdapter(IssuesList.this, m_closedIssuesData);
+			}
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private Runnable threadProc_initializeList = new Runnable() {
+		public void run() {
+			initializeList();
+
+			runOnUiThread(new Runnable() {
+				public void run() {
+					if(m_openIssues_adapter != null && m_closedIssues_adapter != null) {
+						ListView openIssues = (ListView) findViewById(R.id.lv_issues_list_open_list);
+						ListView closedIssues = (ListView) findViewById(R.id.lv_issues_list_closed_list);
+						openIssues.setAdapter(m_openIssues_adapter);
+						closedIssues.setAdapter(m_closedIssues_adapter);
+						if (m_type == "open") {
+							toggleList("open");
+						}
+						if (m_type == "closed") {
+							toggleList("closed");
+						}
+					}
+					m_progressDialog.dismiss();
+				}
+			});
+		}
+	};
+
+	private Runnable threadProc_itemClick = new Runnable() {
+		public void run() {
+			/* Don't do anything just yet.
+			try {
+	        	m_intent = new Intent(IssuesList.this, RepositoryInfo.class);
+	        	if (m_type == "open") {
+	        		m_intent.putExtra("repo_name", m_openIssuesData.getJSONObject(m_position).getString("name"));
+		        	m_intent.putExtra("username", m_openIssuesData.getJSONObject(m_position).getString("owner"));
+	        	} else if (m_type == "private") {
+	        		m_intent.putExtra("repo_name", m_closedIssuesData.getJSONObject(m_position).getString("name"));
+		        	m_intent.putExtra("username", m_closedIssuesData.getJSONObject(m_position).getString("owner"));
+	        	}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+
+			runOnUiThread(new Runnable() {
+				public void run() {
+					IssuesList.this.startActivity(m_intent);
+				}
+			}); */
+		}
+	};
+
+	public void toggleList(String type)
+	{
+		ListView openList = (ListView) findViewById(R.id.lv_issues_list_open_list);
+		ListView closedList = (ListView) findViewById(R.id.lv_issues_list_closed_list);
+		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
+
+		if (type == "" || type == null) {
+			type = (m_type == "open") ? "closed" : "public";
+		}
+		m_type = type;
+
+		if (m_type == "open") {
+			openList.setVisibility(View.VISIBLE);
+			closedList.setVisibility(View.GONE);
+			title.setText("Open Issues");
+		} else if (m_type == "closed") {
+			closedList.setVisibility(View.VISIBLE);
+			openList.setVisibility(View.GONE);
+			title.setText("Closed Issues");
+		}
+	}
+
+	private OnClickListener onButtonToggleClickListener = new OnClickListener() {
+		public void onClick(View v) {
+			if(v.getId() == R.id.btn_issues_list_open) {
+				toggleList("open");
+				m_type = "open";
+			} else if(v.getId() == R.id.btn_issues_list_closed) {
+				toggleList("closed");
+				m_type = "closed";
+			}
+		}
+	};
+
+	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+	        m_position = position;
+	        Thread thread = new Thread(null, threadProc_itemClick);
+	        thread.start();
+		}
+	};
+
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if (!menu.hasVisibleItems()) {
+			menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+			menu.add(0, 1, 0, "Clear Preferences");
+			menu.add(0, 2, 0, "Clear Cache");
+		}
+		return true;
+	}
+
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case 0:
+			Intent i1 = new Intent(this, Hubroid.class);
+			startActivity(i1);
+			return true;
+		case 1:
+			m_editor.clear().commit();
+			Intent intent = new Intent(this, Hubroid.class);
+			startActivity(intent);
+        	return true;
+		case 2:
+			File root = Environment.getExternalStorageDirectory();
+			if (root.canWrite()) {
+				File hubroid = new File(root, "hubroid");
+				if (!hubroid.exists() && !hubroid.isDirectory()) {
+					return true;
+				} else {
+					hubroid.delete();
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	@Override
+    public void onCreate(Bundle icicle) {
+        super.onCreate(icicle);
+        setContentView(R.layout.issues_list);
+
+        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        m_editor = m_prefs.edit();
+        m_type = "open";
+
+        m_username = m_prefs.getString("login", "");
+        m_token = m_prefs.getString("token", "");
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+	        if (extras.containsKey("owner")) {
+	        	m_targetUser = extras.getString("owner");
+	        } else {
+	        	m_targetUser = m_username;
+	        }
+	        if (extras.containsKey("repository")) {
+	        	m_targetRepo = extras.getString("repository");
+	        }
+        } else {
+        	m_targetUser = m_username;
+        }
+
+        m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Loading Issues...", true);
+		Thread thread = new Thread(null, threadProc_initializeList);
+		thread.start();
+    }
+
+    @Override
+    public void onStart() {
+    	super.onStart();
+
+    	((Button)findViewById(R.id.btn_issues_list_open)).setOnClickListener(onButtonToggleClickListener);
+        ((Button)findViewById(R.id.btn_issues_list_closed)).setOnClickListener(onButtonToggleClickListener);
+
+        ((ListView)findViewById(R.id.lv_issues_list_open_list)).setOnItemClickListener(m_MessageClickedHandler);
+        ((ListView)findViewById(R.id.lv_issues_list_closed_list)).setOnItemClickListener(m_MessageClickedHandler);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+    	savedInstanceState.putString("type", m_type);
+    	if (m_openIssuesData != null) {
+    		savedInstanceState.putString("openIssues_json", m_openIssuesData.toString());
+    	}
+    	if (m_closedIssuesData != null) {
+    		savedInstanceState.putString("closedIssues_json", m_closedIssuesData.toString());
+    	}
+    	super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    	super.onRestoreInstanceState(savedInstanceState);
+    	boolean keepGoing = true;
+    	m_type = savedInstanceState.getString("type");
+    	try {
+    		if (savedInstanceState.containsKey("openIssues_json")) {
+    			m_openIssuesData = new JSONArray(savedInstanceState.getString("openIssues_json"));
+    		} else {
+    			keepGoing = false;
+    		}
+    		if (savedInstanceState.containsKey("closedIssues_json")) {
+    			m_closedIssuesData = new JSONArray(savedInstanceState.getString("closedIssues_json"));
+    		} else {
+    			keepGoing = false;
+    		}
+		} catch (JSONException e) {
+			keepGoing = false;
+		}
+		if (keepGoing == true) {
+			m_openIssues_adapter = new IssuesListAdapter(getApplicationContext(), m_openIssuesData);
+			m_closedIssues_adapter = new IssuesListAdapter(getApplicationContext(), m_closedIssuesData);
+		} else {
+			m_openIssues_adapter = null;
+			m_closedIssues_adapter = null;
+		}
+    }
+
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	ListView openList = (ListView) findViewById(R.id.lv_issues_list_open_list);
+    	ListView closedList = (ListView) findViewById(R.id.lv_issues_list_closed_list);
+
+    	openList.setAdapter(m_openIssues_adapter);
+    	closedList.setAdapter(m_closedIssues_adapter);
+    	toggleList(m_type);
+    }
+}

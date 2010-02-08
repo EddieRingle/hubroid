@@ -61,7 +61,7 @@ public class IssuesListAdapter extends BaseAdapter {
 	public View getView(int index, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = m_inflater.inflate(R.layout.commit_list_item, null);
+			convertView = m_inflater.inflate(R.layout.issue_list_item, null);
 			holder = new ViewHolder();
 			holder.issueIcon = (ImageView) convertView.findViewById(R.id.iv_issue_list_item_icon);
 			holder.issueNumber = (TextView) convertView.findViewById(R.id.tv_issue_list_item_number);
@@ -115,7 +115,7 @@ public class IssuesListAdapter extends BaseAdapter {
 			} else {
 				holder.issueIcon.setImageResource(R.drawable.issues_closed);
 			}
-			holder.issueNumber.setText(m_data.getJSONObject(index).getString("number"));
+			holder.issueNumber.setText("#" + m_data.getJSONObject(index).getString("number"));
 			holder.issueTitle.setText(m_data.getJSONObject(index).getString("title"));
 		} catch (JSONException e) {
 			e.printStackTrace();

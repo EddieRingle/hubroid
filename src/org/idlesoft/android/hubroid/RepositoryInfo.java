@@ -281,6 +281,14 @@ public class RepositoryInfo extends Activity {
 					startActivity(intent);
 				}
 			});
+			((Button)findViewById(R.id.btn_repository_info_issues)).setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					Intent intent = new Intent(RepositoryInfo.this, IssuesList.class);
+					intent.putExtra("repository", m_repo_name);
+					intent.putExtra("owner", m_repo_owner);
+					startActivity(intent);
+				}
+			});
 			((Button)findViewById(R.id.btn_repository_info_network)).setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
 					Intent intent = new Intent(RepositoryInfo.this, NetworkList.class);

@@ -9,14 +9,16 @@
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="20dip"
-		android:layout_marginBottom="5dip" />
+		android:layout_marginBottom="5dip"
+		android:src="@drawable/issues" />
 	<TextView
 		android:id="@+id/tv_issue_list_item_updated_date"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_toRightOf="@id/iv_issue_list_item_icon"
 		android:layout_marginLeft="7.5dip"
-		android:textStyle="italic" />
+		android:textStyle="italic"
+		android:textColor="#999" />
 	<TextView
 		android:id="@+id/tv_issue_list_item_number"
 		android:layout_width="wrap_content"
