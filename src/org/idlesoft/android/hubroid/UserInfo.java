@@ -9,10 +9,22 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,20 +101,26 @@ public class UserInfo extends Activity {
 		switch (item.getItemId()) {
 		case 3:
 			try {
+				HttpClient client = new DefaultHttpClient();
 				URL command;
 				if (m_isFollowing) {
 					command = new URL("http://github.com/api/v2/json/user/unfollow/"
-										+ URLEncoder.encode(m_targetUser) + "?login="
-										+ URLEncoder.encode(m_username) + "&token="
-										+ URLEncoder.encode(m_token));
+										+ URLEncoder.encode(m_targetUser));
 				} else {
 					command = new URL("http://github.com/api/v2/json/user/follow/"
-							+ URLEncoder.encode(m_targetUser) + "?login="
-							+ URLEncoder.encode(m_username) + "&token="
-							+ URLEncoder.encode(m_token));
+							+ URLEncoder.encode(m_targetUser));
 				}
-				JSONObject newRepoInfo = Hubroid.make_api_request(command).getJSONObject("user");
-				if (newRepoInfo != null) {
+
+				HttpPost post = new HttpPost(command.toString());
+				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
+		        nameValuePairs.add(new BasicNameValuePair("login", m_username));  
+		        nameValuePairs.add(new BasicNameValuePair("token", m_token));  
+		        post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
+
+		        // Execute HTTP Post Request  
+		        HttpResponse response = client.execute(post);
+
+				if (response.getStatusLine().getStatusCode() == 200) {
 					if (m_isFollowing) {
 						Toast.makeText(this, "You are no longer following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 					} else {
@@ -112,7 +130,9 @@ public class UserInfo extends Activity {
 				}
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
-			} catch (JSONException e) {
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			break;
