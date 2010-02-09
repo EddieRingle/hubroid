@@ -175,8 +175,9 @@ public class UserInfo extends Activity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
         	try {
+        		m_targetUser = extras.getString("username");
 				URL user_query = new URL("http://github.com/api/v2/json/user/show/"
-										+ URLEncoder.encode(extras.getString("username")));
+										+ URLEncoder.encode(m_targetUser));
 				JSONObject json = Hubroid.make_api_request(user_query);
 				if (json == null) {
 					// User doesn't really exist, return to the previous activity
@@ -185,11 +186,9 @@ public class UserInfo extends Activity {
 				} else {
 					m_jsonData = json.getJSONObject("user");
 
-					m_targetUser = m_jsonData.getString("login");
-
 					try {
 			        	URL following_url = new URL("http://github.com/api/v2/json/user/show/"
-			        								+ URLEncoder.encode(m_username));
+			        								+ URLEncoder.encode(m_username) + "/following");
 			        	JSONArray following_list = Hubroid.make_api_request(following_url).getJSONArray("users");
 			        	int length = following_list.length() - 1;
 			        	for (int i = 0; i <= length; i++) {
@@ -206,27 +205,27 @@ public class UserInfo extends Activity {
 					String company, location, full_name, email, blog;
 
 					// Replace empty values with "N/A"
-					if (!m_jsonData.getString("company").equalsIgnoreCase("")) {
+					if (m_jsonData.has("company") && !m_jsonData.getString("company").equalsIgnoreCase("")) {
 						company = m_jsonData.getString("company");
 					} else {
 						company = "N/A";
 					}
-					if (m_jsonData.getString("location") != "") {
+					if (m_jsonData.has("location") && m_jsonData.getString("location") != "") {
 						location = m_jsonData.getString("location");
 					} else {
 						location = "N/A";
 					}
-					if (m_jsonData.getString("name") != "") {
+					if (m_jsonData.has("name") && m_jsonData.getString("name") != "") {
 						full_name = m_jsonData.getString("name");
 					} else {
 						full_name = "N/A";
 					}
-					if (m_jsonData.getString("email") != "") {
+					if (m_jsonData.has("email") && m_jsonData.getString("email") != "") {
 						email = m_jsonData.getString("email");
 					} else {
 						email = "N/A";
 					}
-					if (m_jsonData.getString("blog") != "") {
+					if (m_jsonData.has("blog") && m_jsonData.getString("blog") != "") {
 						blog = m_jsonData.getString("blog");
 					} else {
 						blog = "N/A";
