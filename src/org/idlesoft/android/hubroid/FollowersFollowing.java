@@ -57,9 +57,9 @@ public class FollowersFollowing extends Activity {
 			
 			json = Hubroid.make_api_request(query);
 
-			if (m_type == "followers") {
+			if (m_type.equals("followers")) {
 				m_followersData = json;
-			} else if (m_type == "following") {
+			} else if (m_type.equals("following")) {
 				m_followingData = json;
 			}
 
@@ -95,10 +95,10 @@ public class FollowersFollowing extends Activity {
 						ListView following = (ListView) findViewById(R.id.lv_followers_following_following_list);
 						followers.setAdapter(m_followers_adapter);
 						following.setAdapter(m_following_adapter);
-						if (m_type == "followers") {
+						if (m_type.equals("followers")) {
 							toggleList("followers");
 						}
-						if (m_type == "following") {
+						if (m_type.equals("following")) {
 							toggleList("following");
 						}
 					}
@@ -112,9 +112,9 @@ public class FollowersFollowing extends Activity {
 		public void run() {
 			try {
 	        	m_intent = new Intent(FollowersFollowing.this, UserInfo.class);
-	        	if (m_type == "followers") {
+	        	if (m_type.equals("followers")) {
 	        		m_intent.putExtra("username", m_followersData.getJSONArray("users").getString(m_position));
-	        	} else if (m_type == "following") {
+	        	} else if (m_type.equals("following")) {
 	        		m_intent.putExtra("username", m_followingData.getJSONArray("users").getString(m_position));
 	        	}
 			} catch (JSONException e) {
@@ -135,16 +135,16 @@ public class FollowersFollowing extends Activity {
 		ListView following = (ListView) findViewById(R.id.lv_followers_following_following_list);
 		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
 
-		if (type == "" || type == null) {
-			type = (m_type == "followers") ? "following" : "followers";
+		if (type.equals("") || type == null) {
+			type = (m_type.equals("followers")) ? "following" : "followers";
 		}
 		m_type = type;
 
-		if (m_type == "followers") {
+		if (m_type.equals("followers")) {
 			followers.setVisibility(View.VISIBLE);
 			following.setVisibility(View.GONE);
 			title.setText("Followers");
-		} else if (m_type == "following") {
+		} else if (m_type.equals("following")) {
 			following.setVisibility(View.VISIBLE);
 			followers.setVisibility(View.GONE);
 			title.setText("Following");

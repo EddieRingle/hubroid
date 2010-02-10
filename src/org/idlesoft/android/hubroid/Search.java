@@ -74,7 +74,7 @@ public class Search extends Activity {
 					m_repositories_adapter = new RepositoriesListAdapter(
 							getApplicationContext(), m_repositoriesData);
 				}
-			} else if (m_type == "users") {
+			} else if (m_type.equals("users")) {
 				URL query = new URL(
 						"http://github.com/api/v2/json/user/search/"
 								+ URLEncoder
@@ -110,13 +110,13 @@ public class Search extends Activity {
 	private Runnable threadProc_itemClick = new Runnable() {
 		public void run() {
 			try {
-				if (m_type == "repositories") {
+				if (m_type.equals("repositories")) {
 					m_intent = new Intent(Search.this, RepositoryInfo.class);
 					m_intent.putExtra("repo_name", m_repositoriesData
 							.getJSONObject(m_position).getString("name"));
 					m_intent.putExtra("username", m_repositoriesData
 							.getJSONObject(m_position).getString("username"));
-				} else if (m_type == "users") {
+				} else if (m_type.equals("users")) {
 					m_intent = new Intent(Search.this, UserInfo.class);
 					m_intent.putExtra("username", m_usersData.getJSONObject(
 							m_position).getString("username"));
@@ -145,16 +145,16 @@ public class Search extends Activity {
 		ListView usersList = (ListView) findViewById(R.id.lv_search_users_list);
 		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
 
-		if (type == "" || type == null) {
-			type = (m_type == "repositories") ? "users" : "repositories";
+		if (type.equals("") || type == null) {
+			type = (m_type.equals("repositories")) ? "users" : "repositories";
 		}
 		m_type = type;
 
-		if (m_type == "repositories") {
+		if (m_type.equals("repositories")) {
 			repositoriesList.setVisibility(View.VISIBLE);
 			usersList.setVisibility(View.GONE);
 			title.setText("Search Repositories");
-		} else if (m_type == "users") {
+		} else if (m_type.equals("users")) {
 			usersList.setVisibility(View.VISIBLE);
 			repositoriesList.setVisibility(View.GONE);
 			title.setText("Search Users");
@@ -164,8 +164,8 @@ public class Search extends Activity {
 	private OnClickListener m_btnSearchListener = new OnClickListener() {
 		public void onClick(View v) {
 			EditText search_box = (EditText) findViewById(R.id.et_search_search_box);
-			if (search_box.getText().toString() != "") {
-				if (m_type == "repositories") {
+			if (!search_box.getText().toString().equals("")) {
+				if (m_type.equals("repositories")) {
 					m_progressDialog = ProgressDialog
 							.show(Search.this, "Please wait...",
 									"Searching Repositories...", true);
@@ -181,7 +181,7 @@ public class Search extends Activity {
 						}
 					});
 					thread.start();
-				} else if (m_type == "users") {
+				} else if (m_type.equals("users")) {
 					m_progressDialog = ProgressDialog.show(Search.this,
 							"Please wait...", "Searching Users...", true);
 					Thread thread = new Thread(new Runnable() {

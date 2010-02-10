@@ -44,7 +44,7 @@ public class CommitListAdapter extends BaseAdapter {
 		for (int i = 0; i < m_data.length(); i++) {
 			try {
 				String login = m_data.getJSONObject(i).getJSONObject("author").getString("login");
-				if (login != "") {
+				if (!login.equals("")) {
 					String id = Hubroid.getGravatarID(login);
 					m_gravatars[i] = Hubroid.getGravatar(id, 30);
 				} else {
