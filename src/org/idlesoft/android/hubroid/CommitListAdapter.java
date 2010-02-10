@@ -36,9 +36,12 @@ public class CommitListAdapter extends BaseAdapter {
 		public TextView commit_date;
 	}
 
+	/**
+	 * Get the Gravatars of all users in the commit log 
+	 */
 	public void loadGravatars()
 	{
-		for (int i = 0; !m_data.isNull(i); i++) {
+		for (int i = 0; i < m_data.length(); i++) {
 			try {
 				String login = m_data.getJSONObject(i).getJSONObject("author").getString("login");
 				if (login != "") {
