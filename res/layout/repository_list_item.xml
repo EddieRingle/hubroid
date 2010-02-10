@@ -1,51 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
-	android:orientation="vertical" android:layout_height="wrap_content" android:padding="10dip">
+	android:orientation="horizontal"
+	android:layout_height="wrap_content"
+	android:padding="10dip">
 	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:orientation="horizontal">
-		<TextView
-			android:id="@+id/repository_list_item_owner"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textColor="@color/gitHubBlue"/>
-		<TextView
-			android:id="@+id/repository_list_item_owner_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="@string/repository_list_item_owner_label"
-			android:layout_marginLeft="5dip"
-			android:layout_marginRight="5dip"
-			android:textColor="@color/textColor"/>
-		<TextView
-			android:id="@+id/repository_list_item_name"
-			android:layout_height="wrap_content"
-			android:textColor="@color/gitHubBlue"
-			android:textSize="24dip"
-			android:ellipsize="end"
-			android:maxLines="1"
-			android:layout_width="wrap_content"/>
+		android:orientation="vertical"
+		android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="1">
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="fill_parent"
+			android:orientation="horizontal" android:layout_weight="1" android:layout_height="wrap_content">
+			<TextView
+				android:id="@+id/repository_list_item_owner"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="user"
+				android:textColor="@color/textColor"/>
+			<TextView
+				android:id="@+id/repository_list_item_owner_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:text="@string/repository_list_item_owner_label"
+				android:layout_marginLeft="5dip"
+				android:layout_marginRight="5dip"
+				android:textColor="@color/textColor"/>
+			<TextView
+				android:id="@+id/repository_list_item_name"
+				android:layout_height="wrap_content"
+				android:textColor="@color/gitHubBlue"
+				android:ellipsize="end"
+				android:maxLines="1"
+				android:layout_width="wrap_content"
+				android:text="Repo"
+				android:textSize="24sp"/>
+		</LinearLayout>
+		<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+			android:layout_width="fill_parent"
+			android:orientation="horizontal" android:layout_weight="1" android:layout_height="wrap_content">
+			<TextView
+				android:id="@+id/repository_list_item_fork"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="@color/textColor"
+				android:typeface="normal"
+				android:textSize="10sp"/>
+			<TextView
+				android:id="@+id/repository_list_item_description"
+				android:layout_height="wrap_content"
+				android:ellipsize="end"
+				android:layout_width="wrap_content"
+				android:textColor="@color/textColor"
+				android:typeface="normal"
+				android:textSize="10sp"
+				android:text="My repo description goes here"/>
+		</LinearLayout>
 	</LinearLayout>
-	<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:orientation="horizontal">
-		<TextView
-			android:id="@+id/repository_list_item_fork"
+	<LinearLayout android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" android:layout_weight="1" android:layout_gravity="center_vertical">
+		<LinearLayout android:orientation="horizontal"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:textColor="@color/textColor"
-			android:typeface="normal"
-			android:textSize="10sp"/>
-		<TextView
-			android:id="@+id/repository_list_item_description"
-			android:layout_height="wrap_content"
-			android:ellipsize="end"
+			android:gravity="center_vertical"
+			android:layout_height="wrap_content" android:layout_gravity="right">
+			<TextView
+				android:layout_height="wrap_content"
+				android:ellipsize="end"
+				android:layout_width="wrap_content"
+				android:textColor="@color/textColor"
+				android:typeface="normal"
+				android:textSize="10sp"
+				android:id="@+id/repository_list_item_fork_count"
+				android:gravity="center_vertical"
+				android:textStyle="bold"
+				android:paddingRight="5dip"
+				android:text="2" android:layout_weight="1"/>
+			<ImageView
+				android:id="@+id/repository_list_item_forkcount"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/fork" android:layout_weight="1"/>
+		</LinearLayout>
+		<LinearLayout 
+			android:layout_height="fill_parent"
+			android:orientation="horizontal"
 			android:layout_width="wrap_content"
-			android:textColor="@color/textColor"
-			android:typeface="normal"
-			android:textSize="10sp"/>
+			android:isScrollContainer="false"
+			android:gravity="center_vertical" android:layout_gravity="right">
+			<TextView
+				android:id="@+id/repository_list_item_watch_count"
+				android:layout_height="wrap_content"
+				android:ellipsize="end"
+				android:layout_width="wrap_content"
+				android:textColor="@color/textColor"
+				android:typeface="normal"
+				android:textSize="10sp"
+				android:text="2"
+				android:gravity="center_vertical"
+				android:textStyle="bold"
+				android:paddingRight="5dip" android:layout_weight="1"/>
+			<ImageView
+				android:id="@+id/repository_list_item_watchcount"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:src="@drawable/group" android:layout_weight="1"/>
+		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>
