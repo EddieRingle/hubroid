@@ -204,27 +204,27 @@ public class UserInfo extends Activity {
 					String company, location, full_name, email, blog;
 
 					// Replace empty values with "N/A"
-					if (m_jsonData.has("company") && !m_jsonData.getString("company").equalsIgnoreCase("")) {
+					if (m_jsonData.has("company") && !m_jsonData.getString("company").equals("null") && !m_jsonData.getString("company").equals("")) {
 						company = m_jsonData.getString("company");
 					} else {
 						company = "N/A";
 					}
-					if (m_jsonData.has("location") && m_jsonData.getString("location") != "") {
+					if (m_jsonData.has("location") && !m_jsonData.getString("location").equals("null") && !m_jsonData.getString("location").equals("")) {
 						location = m_jsonData.getString("location");
 					} else {
 						location = "N/A";
 					}
-					if (m_jsonData.has("name") && m_jsonData.getString("name") != "") {
+					if (m_jsonData.has("name") && !m_jsonData.getString("name").equals("null")) {
 						full_name = m_jsonData.getString("name");
 					} else {
 						full_name = "N/A";
 					}
-					if (m_jsonData.has("email") && m_jsonData.getString("email") != "") {
+					if (m_jsonData.has("email") && !m_jsonData.getString("email").equals("null") && !m_jsonData.getString("email").equals("")) {
 						email = m_jsonData.getString("email");
 					} else {
 						email = "N/A";
 					}
-					if (m_jsonData.has("blog") && m_jsonData.getString("blog") != "") {
+					if (m_jsonData.has("blog") && !m_jsonData.getString("blog").equals("null") && !m_jsonData.getString("blog").equals("")) {
 						blog = m_jsonData.getString("blog");
 					} else {
 						blog = "N/A";
