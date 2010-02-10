@@ -1,3 +1,4 @@
 <resources><color name="background">#FFFFFFFF</color>
 <color name="textColor">#D333</color>
+<color name="gitHubBlue">#4183C4</color>
 </resources>
