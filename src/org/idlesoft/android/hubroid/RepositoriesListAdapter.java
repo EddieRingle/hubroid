@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,8 @@ public class RepositoriesListAdapter extends BaseAdapter {
 		public TextView repo_name;
 		public TextView repo_owner;
 		public TextView repo_owner_label;
+		public TextView repo_description;
+		public TextView repo_fork;
 	}
 
 	public RepositoriesListAdapter(final Context context, JSONArray jsonarray) {
@@ -60,6 +63,8 @@ public class RepositoriesListAdapter extends BaseAdapter {
 			holder.repo_name = (TextView) convertView.findViewById(R.id.repository_list_item_name);
 			holder.repo_owner = (TextView) convertView.findViewById(R.id.repository_list_item_owner);
 			holder.repo_owner_label = (TextView) convertView.findViewById(R.id.repository_list_item_owner_label);
+			holder.repo_description = (TextView) convertView.findViewById(R.id.repository_list_item_description);
+			holder.repo_fork = (TextView) convertView.findViewById(R.id.repository_list_item_fork);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -77,9 +82,15 @@ public class RepositoriesListAdapter extends BaseAdapter {
 		try {
 			holder.repo_name.setText(m_data.getJSONObject(index).getString("name"));
 			holder.repo_owner.setText(owner);
+			holder.repo_description.setText(m_data.getJSONObject(index).getString("description"));
+			if(m_data.getJSONObject(index).getBoolean("fork"))
+				holder.repo_fork.setText("(Fork) ");
+			else
+				holder.repo_fork.setText("");
 		} catch (JSONException e) {
 			holder.repo_owner.setVisibility(TextView.GONE);
 			holder.repo_owner_label.setVisibility(TextView.GONE);
+			holder.repo_description.setVisibility(TextView.GONE);
 		}
 		return convertView;
 	}
