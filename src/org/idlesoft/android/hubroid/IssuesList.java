@@ -119,10 +119,10 @@ public class IssuesList extends Activity {
 						ListView closedIssues = (ListView) findViewById(R.id.lv_issues_list_closed_list);
 						openIssues.setAdapter(m_openIssues_adapter);
 						closedIssues.setAdapter(m_closedIssues_adapter);
-						if (m_type == "open") {
+						if (m_type.equals("open")) {
 							toggleList("open");
 						}
-						if (m_type == "closed") {
+						if (m_type.equals("closed")) {
 							toggleList("closed");
 						}
 					}
@@ -137,10 +137,10 @@ public class IssuesList extends Activity {
 			/* Don't do anything just yet.
 			try {
 	        	m_intent = new Intent(IssuesList.this, RepositoryInfo.class);
-	        	if (m_type == "open") {
+	        	if (m_type.equals("open")) {
 	        		m_intent.putExtra("repo_name", m_openIssuesData.getJSONObject(m_position).getString("name"));
 		        	m_intent.putExtra("username", m_openIssuesData.getJSONObject(m_position).getString("owner"));
-	        	} else if (m_type == "private") {
+	        	} else if (m_type.equals("private")) {
 	        		m_intent.putExtra("repo_name", m_closedIssuesData.getJSONObject(m_position).getString("name"));
 		        	m_intent.putExtra("username", m_closedIssuesData.getJSONObject(m_position).getString("owner"));
 	        	}
@@ -162,16 +162,16 @@ public class IssuesList extends Activity {
 		ListView closedList = (ListView) findViewById(R.id.lv_issues_list_closed_list);
 		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
 
-		if (type == "" || type == null) {
-			type = (m_type == "open") ? "closed" : "public";
+		if (type.equals("") || type == null) {
+			type = (m_type.equals("open")) ? "closed" : "public";
 		}
 		m_type = type;
 
-		if (m_type == "open") {
+		if (m_type.equals("open")) {
 			openList.setVisibility(View.VISIBLE);
 			closedList.setVisibility(View.GONE);
 			title.setText("Open Issues");
-		} else if (m_type == "closed") {
+		} else if (m_type.equals("closed")) {
 			closedList.setVisibility(View.VISIBLE);
 			openList.setVisibility(View.GONE);
 			title.setText("Closed Issues");

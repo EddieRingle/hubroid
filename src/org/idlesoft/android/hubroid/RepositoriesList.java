@@ -96,10 +96,10 @@ public class RepositoriesList extends Activity {
 						ListView privateRepos = (ListView) findViewById(R.id.lv_repositories_list_private_list);
 						publicRepos.setAdapter(m_publicRepositories_adapter);
 						privateRepos.setAdapter(m_privateRepositories_adapter);
-						if (m_type == "public") {
+						if (m_type.equals("public")) {
 							toggleList("public");
 						}
-						if (m_type == "private") {
+						if (m_type.equals("private")) {
 							toggleList("private");
 						}
 					}
@@ -113,10 +113,10 @@ public class RepositoriesList extends Activity {
 		public void run() {
 			try {
 	        	m_intent = new Intent(RepositoriesList.this, RepositoryInfo.class);
-	        	if (m_type == "public") {
+	        	if (m_type.equals("public")) {
 	        		m_intent.putExtra("repo_name", m_publicRepoData.getJSONObject(m_position).getString("name"));
 		        	m_intent.putExtra("username", m_publicRepoData.getJSONObject(m_position).getString("owner"));
-	        	} else if (m_type == "private") {
+	        	} else if (m_type.equals("private")) {
 	        		m_intent.putExtra("repo_name", m_privateRepoData.getJSONObject(m_position).getString("name"));
 		        	m_intent.putExtra("username", m_privateRepoData.getJSONObject(m_position).getString("owner"));
 	        	}
@@ -138,16 +138,16 @@ public class RepositoriesList extends Activity {
 		ListView privateList = (ListView) findViewById(R.id.lv_repositories_list_private_list);
 		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
 
-		if (type == "" || type == null) {
-			type = (m_type == "public") ? "private" : "public";
+		if (type.equals("") || type == null) {
+			type = (m_type.equals("public")) ? "private" : "public";
 		}
 		m_type = type;
 
-		if (m_type == "public") {
+		if (m_type.equals("public")) {
 			publicList.setVisibility(View.VISIBLE);
 			privateList.setVisibility(View.GONE);
 			title.setText("Public Repos");
-		} else if (m_type == "private") {
+		} else if (m_type.equals("private")) {
 			privateList.setVisibility(View.VISIBLE);
 			publicList.setVisibility(View.GONE);
 			title.setText("Private Repos");
