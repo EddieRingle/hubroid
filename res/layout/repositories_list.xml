@@ -12,26 +12,26 @@
 		android:orientation="vertical"
 		android:layout_below="@id/include_top_bar"
 		android:background="@drawable/shadow" />
-	<RelativeLayout
+	<LinearLayout
 		android:id="@+id/rl_repositories_list_button_holder"
-		android:layout_width="wrap_content"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_centerHorizontal="true">
+		android:layout_alignParentBottom="true">
 		<Button
 			android:id="@+id/btn_repositories_list_public"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_weight="50"
 			android:background="@android:drawable/btn_default_small"
 			android:text="Public" />
 		<Button
 			android:id="@+id/btn_repositories_list_private"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/btn_repositories_list_public"
+			android:layout_weight="50"
 			android:background="@android:drawable/btn_default_small"
 			android:text="Private" />
-	</RelativeLayout>
+	</LinearLayout>
 	<RelativeLayout
 		android:id="@+id/rl_repositories_list_main_frame"
 		android:layout_above="@id/rl_repositories_list_button_holder"

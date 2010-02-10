@@ -13,26 +13,26 @@
 		android:orientation="vertical"
 		android:layout_below="@id/include_top_bar"
 		android:background="@drawable/shadow" />
-	<RelativeLayout
+	<LinearLayout
 		android:id="@+id/rl_followers_following_button_holder"
-		android:layout_width="wrap_content"
+		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true"
-		android:layout_centerHorizontal="true">
+		android:layout_alignParentBottom="true">
 		<Button
 			android:id="@+id/btn_followers_following_followers"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_weight="50"
 			android:text="Followers"
 			android:background="@android:drawable/btn_default_small" />
 		<Button
 			android:id="@+id/btn_followers_following_following"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:layout_toRightOf="@id/btn_followers_following_followers"
+			android:layout_weight="50"
 			android:background="@android:drawable/btn_default_small"
 			android:text="Following" />
-	</RelativeLayout>
+	</LinearLayout>
 	<RelativeLayout
 		android:id="@+id/rl_followers_following_main_frame"
 		android:layout_above="@id/rl_followers_following_button_holder"
