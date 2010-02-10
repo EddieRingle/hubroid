@@ -328,25 +328,36 @@ public class Hubroid extends Activity {
 											+ URLEncoder.encode(m_username)
 											+ "&token="
 											+ URLEncoder.encode(m_token));
-						m_userData = Hubroid.make_api_request(query).getJSONObject("user");
-	
-						runOnUiThread(new Runnable() {
-							public void run() {
-								ImageView gravatar = (ImageView)findViewById(R.id.iv_main_gravatar);
-								try {
-									gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 36));
-									TextView username = (TextView)findViewById(R.id.tv_main_username);
-									if (m_userData.getString("name").length() > 0) {
-										username.setText(m_userData.getString("name"));
-									} else {
-										username.setText(m_username);
+						
+						JSONObject result = Hubroid.make_api_request(query);
+						if(result != null){
+							m_userData = result.getJSONObject("user");
+
+							runOnUiThread(new Runnable() {
+								public void run() {
+									ImageView gravatar = (ImageView)findViewById(R.id.iv_main_gravatar);
+									try {
+										gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 36));
+										TextView username = (TextView)findViewById(R.id.tv_main_username);
+										if (m_userData.getString("name").length() > 0) {
+											username.setText(m_userData.getString("name"));
+										} else {
+											username.setText(m_username);
+										}
+									} catch (JSONException e) {
+										e.printStackTrace();
 									}
-								} catch (JSONException e) {
-									e.printStackTrace();
+									m_progressDialog.dismiss();
 								}
-								m_progressDialog.dismiss();
-							}
-						});
+							});
+						} else
+							
+							runOnUiThread(new Runnable() {
+								public void run() {
+									m_progressDialog.dismiss();
+									Toast.makeText(Hubroid.this, "Error gathering user data.", Toast.LENGTH_SHORT).show();
+								}
+							});
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					} catch (JSONException e) {
