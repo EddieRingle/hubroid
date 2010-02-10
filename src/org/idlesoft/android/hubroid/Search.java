@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -56,10 +57,9 @@ public class Search extends Activity {
 										.encode(((EditText) findViewById(R.id.et_search_search_box))
 												.getText().toString()));
 
-				m_repositoriesData = Hubroid.make_api_request(query)
-						.getJSONArray("repositories");
+				JSONObject response = Hubroid.make_api_request(query);
 
-				if (m_repositoriesData == null) {
+				if (response == null) {
 					runOnUiThread(new Runnable() {
 						public void run() {
 							Toast
@@ -70,6 +70,7 @@ public class Search extends Activity {
 						}
 					});
 				} else {
+					m_repositoriesData = response.getJSONArray("repositories");
 					m_repositories_adapter = new RepositoriesListAdapter(
 							getApplicationContext(), m_repositoriesData);
 				}
@@ -80,10 +81,9 @@ public class Search extends Activity {
 										.encode(((EditText) findViewById(R.id.et_search_search_box))
 												.getText().toString()));
 
-				m_usersData = Hubroid.make_api_request(query).getJSONArray(
-						"users");
+				JSONObject response = Hubroid.make_api_request(query);
 
-				if (m_usersData == null) {
+				if (response == null) {
 					runOnUiThread(new Runnable() {
 						public void run() {
 							Toast
@@ -94,6 +94,7 @@ public class Search extends Activity {
 						}
 					});
 				} else {
+					m_usersData = response.getJSONArray("users");
 					m_users_adapter = new SearchUsersListAdapter(
 							getApplicationContext(), m_usersData);
 				}
