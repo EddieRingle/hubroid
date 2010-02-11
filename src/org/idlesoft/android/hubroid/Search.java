@@ -50,7 +50,7 @@ public class Search extends Activity {
 
 	public void initializeList() {
 		try {
-			if (m_type == "repositories") {
+			if (m_type.equals("repositories")) {
 				URL query = new URL(
 						"http://github.com/api/v2/json/repos/search/"
 								+ URLEncoder
