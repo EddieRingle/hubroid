@@ -51,6 +51,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -312,9 +313,7 @@ public class Hubroid extends Activity {
 		} else {
 			// Start the show.
 	        setContentView(R.layout.main_menu);
-	
-	        m_progressDialog = ProgressDialog.show(Hubroid.this, "Please wait...", "Loading user data...");
-	
+
 	        m_menuList = (ListView)findViewById(R.id.lv_main_menu_list);
 	        m_menuList.setAdapter(new ArrayAdapter<String>(Hubroid.this, R.layout.main_menu_item, MAIN_MENU));
 	        m_menuList.setOnItemClickListener(onMenuItemSelected);
@@ -347,17 +346,21 @@ public class Hubroid extends Activity {
 									} catch (JSONException e) {
 										e.printStackTrace();
 									}
-									m_progressDialog.dismiss();
+
+									// Unhide the screen
+									((RelativeLayout)findViewById(R.id.rl_main_menu_root)).setVisibility(View.VISIBLE);
 								}
 							});
-						} else
-							
+						} else {
 							runOnUiThread(new Runnable() {
 								public void run() {
-									m_progressDialog.dismiss();
 									Toast.makeText(Hubroid.this, "Error gathering user data.", Toast.LENGTH_SHORT).show();
+
+									// Unhide the screen
+									((RelativeLayout)findViewById(R.id.rl_main_menu_root)).setVisibility(View.VISIBLE);
 								}
 							});
+						}
 					} catch (MalformedURLException e) {
 						e.printStackTrace();
 					} catch (JSONException e) {
