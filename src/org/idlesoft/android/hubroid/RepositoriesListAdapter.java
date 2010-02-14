@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ public class RepositoriesListAdapter extends BaseAdapter {
 	}
 
 	public RepositoriesListAdapter(final Context context, JSONArray jsonarray) {
+		Log.d("martin", "CONSTRUCTOR");
 		m_context = context;
 		m_inflater = LayoutInflater.from(m_context);
 		m_data = jsonarray;
@@ -87,7 +89,12 @@ public class RepositoriesListAdapter extends BaseAdapter {
 			holder.repo_owner.setText(owner);
 			holder.repo_description.setText(m_data.getJSONObject(index).getString("description"));
 			holder.repo_fork_count.setText(m_data.getJSONObject(index).getString("forks"));
-			holder.repo_watch_count.setText(m_data.getJSONObject(index).getString("watchers"));
+			try{
+				holder.repo_watch_count.setText(m_data.getJSONObject(index).getString("watchers"));
+			} catch(JSONException e){
+				holder.repo_watch_count.setText(m_data.getJSONObject(index).getString("followers"));
+			}
+
 			if(m_data.getJSONObject(index).getBoolean("fork"))
 				holder.repo_fork.setText("(Fork) ");
 			else
