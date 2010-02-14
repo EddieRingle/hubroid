@@ -36,6 +36,9 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class Search extends Activity {
+	private static final String REPO_TYPE = "repositories";
+	private static final String USER_TYPE = "users";
+
 	private RepositoriesListAdapter m_repositories_adapter;
 	private SearchUsersListAdapter m_users_adapter;
 	public ProgressDialog m_progressDialog;
@@ -50,7 +53,7 @@ public class Search extends Activity {
 
 	public void initializeList() {
 		try {
-			if (m_type.equals("repositories")) {
+			if (m_type.equals(REPO_TYPE)) {
 				URL query = new URL(
 						"http://github.com/api/v2/json/repos/search/"
 								+ URLEncoder
@@ -70,11 +73,11 @@ public class Search extends Activity {
 						}
 					});
 				} else {
-					m_repositoriesData = response.getJSONArray("repositories");
+					m_repositoriesData = response.getJSONArray(REPO_TYPE);
 					m_repositories_adapter = new RepositoriesListAdapter(
 							getApplicationContext(), m_repositoriesData);
 				}
-			} else if (m_type.equals("users")) {
+			} else if (m_type.equals(USER_TYPE)) {
 				URL query = new URL(
 						"http://github.com/api/v2/json/user/search/"
 								+ URLEncoder
@@ -94,7 +97,7 @@ public class Search extends Activity {
 						}
 					});
 				} else {
-					m_usersData = response.getJSONArray("users");
+					m_usersData = response.getJSONArray(USER_TYPE);
 					m_users_adapter = new SearchUsersListAdapter(
 							getApplicationContext(), m_usersData);
 				}
@@ -110,13 +113,13 @@ public class Search extends Activity {
 	private Runnable threadProc_itemClick = new Runnable() {
 		public void run() {
 			try {
-				if (m_type.equals("repositories")) {
+				if (m_type.equals(REPO_TYPE)) {
 					m_intent = new Intent(Search.this, RepositoryInfo.class);
 					m_intent.putExtra("repo_name", m_repositoriesData
 							.getJSONObject(m_position).getString("name"));
 					m_intent.putExtra("username", m_repositoriesData
 							.getJSONObject(m_position).getString("username"));
-				} else if (m_type.equals("users")) {
+				} else if (m_type.equals(USER_TYPE)) {
 					m_intent = new Intent(Search.this, UserInfo.class);
 					m_intent.putExtra("username", m_usersData.getJSONObject(
 							m_position).getString("username"));
@@ -146,15 +149,15 @@ public class Search extends Activity {
 		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
 
 		if (type.equals("") || type == null) {
-			type = (m_type.equals("repositories")) ? "users" : "repositories";
+			type = (m_type.equals(REPO_TYPE)) ? USER_TYPE : REPO_TYPE;
 		}
 		m_type = type;
 
-		if (m_type.equals("repositories")) {
+		if (m_type.equals(REPO_TYPE)) {
 			repositoriesList.setVisibility(View.VISIBLE);
 			usersList.setVisibility(View.GONE);
 			title.setText("Search Repositories");
-		} else if (m_type.equals("users")) {
+		} else if (m_type.equals(USER_TYPE)) {
 			usersList.setVisibility(View.VISIBLE);
 			repositoriesList.setVisibility(View.GONE);
 			title.setText("Search Users");
@@ -165,7 +168,7 @@ public class Search extends Activity {
 		public void onClick(View v) {
 			EditText search_box = (EditText) findViewById(R.id.et_search_search_box);
 			if (!search_box.getText().toString().equals("")) {
-				if (m_type.equals("repositories")) {
+				if (m_type.equals(REPO_TYPE)) {
 					m_progressDialog = ProgressDialog
 							.show(Search.this, "Please wait...",
 									"Searching Repositories...", true);
@@ -181,7 +184,7 @@ public class Search extends Activity {
 						}
 					});
 					thread.start();
-				} else if (m_type.equals("users")) {
+				} else if (m_type.equals(USER_TYPE)) {
 					m_progressDialog = ProgressDialog.show(Search.this,
 							"Please wait...", "Searching Users...", true);
 					Thread thread = new Thread(new Runnable() {
@@ -204,11 +207,11 @@ public class Search extends Activity {
 	private OnClickListener onButtonToggleClickListener = new OnClickListener() {
 		public void onClick(View v) {
 			if (v.getId() == R.id.btn_search_repositories) {
-				toggleList("repositories");
-				m_type = "repositories";
+				toggleList(REPO_TYPE);
+				m_type = REPO_TYPE;
 			} else if (v.getId() == R.id.btn_search_users) {
-				toggleList("users");
-				m_type = "users";
+				toggleList(USER_TYPE);
+				m_type = USER_TYPE;
 			}
 		}
 	};
@@ -264,7 +267,7 @@ public class Search extends Activity {
 
 		m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
 		m_editor = m_prefs.edit();
-		m_type = "repositories";
+		m_type = REPO_TYPE;
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
