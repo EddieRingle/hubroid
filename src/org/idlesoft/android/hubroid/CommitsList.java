@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -34,6 +35,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class CommitsList extends Activity {
@@ -43,6 +45,7 @@ public class CommitsList extends Activity {
 	public ProgressDialog m_progressDialog;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
+	public JSONArray m_commitData;
 	public String m_repo_owner;
 	public String m_repo_name;
 	public Intent m_intent;
@@ -59,6 +62,7 @@ public class CommitsList extends Activity {
 																		+ URLEncoder.encode(m_branches.get(m_position)))).getJSONArray("commits");
 				Log.d("debug1",commitsJSON.toString());
 				m_commitListAdapter = new CommitListAdapter(CommitsList.this, commitsJSON);
+				m_commitData = commitsJSON;
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (JSONException e) {
@@ -148,8 +152,8 @@ public class CommitsList extends Activity {
 				m_branches = new ArrayList<String>(branchesJson.length());
 				Iterator<String> keys = branchesJson.keys();
 				while (keys.hasNext()) {
-				String next_branch = keys.next();
-				m_branches.add(next_branch);
+					String next_branch = keys.next();
+					m_branches.add(next_branch);
 				}
 				
 				m_branchesAdapter = new ArrayAdapter<String>(CommitsList.this, android.R.layout.simple_spinner_item, m_branches);
@@ -165,4 +169,34 @@ public class CommitsList extends Activity {
 			}
         }
     }
+
+	private Runnable threadProc_itemClick = new Runnable() {
+		public void run() {		
+			try {
+				final String url = m_commitData.getJSONObject(m_position).getString("url");
+
+				runOnUiThread(new Runnable() {
+					public void run() {
+						CommitsList.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+					}
+				});
+					
+	        } catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+	
+	@Override
+	protected void onStart() {
+		super.onStart();
+		
+		((ListView)findViewById(R.id.lv_commits_list_list)).setOnItemClickListener(new OnItemClickListener(){
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+			        m_position = position;
+			        Thread thread = new Thread(null, threadProc_itemClick);
+			        thread.start();
+			}
+		});
+	}
 }
