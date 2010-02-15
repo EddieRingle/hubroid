@@ -4,7 +4,7 @@
  * Copyright (c) 2010 Eddie Ringle.
  * 
  * Licensed under the New BSD License.
- */
+ */L
 
 package org.idlesoft.android.hubroid;
 
@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,6 @@ public class RepositoriesListAdapter extends BaseAdapter {
 	}
 
 	public RepositoriesListAdapter(final Context context, JSONArray jsonarray) {
-		Log.d("martin", "CONSTRUCTOR");
 		m_context = context;
 		m_inflater = LayoutInflater.from(m_context);
 		m_data = jsonarray;
