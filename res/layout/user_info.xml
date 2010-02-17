@@ -116,11 +116,22 @@
 					android:layout_alignBaseline="@id/tv_user_info_blog_label"
 					android:layout_alignParentRight="true" />
 				<Button
-					android:id="@+id/btn_user_info_repositories"
+					android:id="@+id/btn_user_info_public_activity"
 					android:layout_width="175dip"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/tv_user_info_blog_label"
 					android:layout_marginTop="15dip"
+					android:layout_marginBottom="5dip"
+					android:layout_centerHorizontal="true"
+					android:drawableLeft="@drawable/feed"
+					android:drawableRight="@drawable/feed"
+					android:text="Latest Activity" />
+				<Button
+					android:id="@+id/btn_user_info_repositories"
+					android:layout_width="175dip"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/btn_user_info_public_activity"
+					android:layout_marginTop="5dip"
 					android:layout_marginBottom="5dip"
 					android:layout_centerHorizontal="true"
 					android:text="Repositories" />

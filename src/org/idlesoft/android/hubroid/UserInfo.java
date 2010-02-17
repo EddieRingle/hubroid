@@ -58,6 +58,12 @@ public class UserInfo extends Activity {
 			// Figure out what button was clicked
 			int id = v.getId();
 			switch (id) {
+			case R.id.btn_user_info_public_activity:
+				// View the user's public activity feed
+				intent = new Intent(UserInfo.this, PublicActivity.class);
+				intent.putExtra("username", m_targetUser);
+				startActivity(intent);
+				break;
 			case R.id.btn_user_info_repositories:
 				// Go to the user's list of repositories
 				intent = new Intent(UserInfo.this, RepositoriesList.class);
@@ -240,10 +246,12 @@ public class UserInfo extends Activity {
 					((TextView)findViewById(R.id.tv_user_info_blog)).setText(blog);
 
 					// Make the buttons work
+					Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
 					Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
 					Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
 					Button watchedRepositoriesBtn = (Button) findViewById(R.id.btn_user_info_watched_repositories);
 
+					activityBtn.setOnClickListener(onButtonClick);
 					repositoriesBtn.setOnClickListener(onButtonClick);
 					followersFollowingBtn.setOnClickListener(onButtonClick);
 					watchedRepositoriesBtn.setOnClickListener(onButtonClick);
