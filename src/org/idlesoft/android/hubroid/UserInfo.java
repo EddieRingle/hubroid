@@ -60,7 +60,7 @@ public class UserInfo extends Activity {
 			switch (id) {
 			case R.id.btn_user_info_public_activity:
 				// View the user's public activity feed
-				intent = new Intent(UserInfo.this, PublicActivity.class);
+				intent = new Intent(UserInfo.this, ActivityFeeds.class);
 				intent.putExtra("username", m_targetUser);
 				startActivity(intent);
 				break;

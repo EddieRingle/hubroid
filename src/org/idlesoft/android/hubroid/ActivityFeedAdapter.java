@@ -51,11 +51,11 @@ public class ActivityFeedAdapter extends BaseAdapter {
 		try {
 			if (m_single) {
 				// Load only the first gravatar
-				m_gravatars[0] = Hubroid.getGravatar(Hubroid.getGravatarID(m_data.getJSONObject(0).getString("actor")), 30);
+				m_gravatars[0] = Hubroid.getGravatar(Hubroid.getGravatarID(m_data.getJSONObject(0).getJSONObject("author").getString("name")), 30);
 			} else {
 				// Load all of 'em
 				for (int i = 0; i < m_data.length(); i++) {
-					String actor = m_data.getJSONObject(i).getString("actor");
+					String actor = m_data.getJSONObject(i).getJSONObject("author").getString("name");
 					if (!actor.equals("")) {
 						String id = Hubroid.getGravatarID(actor);
 						m_gravatars[i] = Hubroid.getGravatar(id, 30);
@@ -76,10 +76,10 @@ public class ActivityFeedAdapter extends BaseAdapter {
 	 * @param jsonarray
 	 * @param single - whether this is a public activity feed or not
 	 */
-	public ActivityFeedAdapter(final Context context, JSONArray jsonarray, boolean single) {
+	public ActivityFeedAdapter(final Context context, JSONArray json, boolean single) {
 		m_context = context;
 		m_inflater = LayoutInflater.from(m_context);
-		m_data = jsonarray;
+		m_data = json;
 		m_single = single;
 		m_gravatars = (!single) ? new Bitmap[m_data.length()] : new Bitmap[1];
 
@@ -117,10 +117,9 @@ public class ActivityFeedAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		try {
-			JSONObject payload = m_data.getJSONObject(index).getJSONObject("payload");
 			String end;
-			SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-			Date item_time = dateFormat.parse(m_data.getJSONObject(index).getString("created_at"));
+			SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
+			Date item_time = dateFormat.parse(m_data.getJSONObject(index).getString("published"));
 			Date current_time = dateFormat.parse(dateFormat.format(new Date()));
 			long ms = current_time.getTime() - item_time.getTime();
 			long sec = ms / 1000;
@@ -162,89 +161,38 @@ public class ActivityFeedAdapter extends BaseAdapter {
 				holder.gravatar.setImageBitmap(m_gravatars[index]);
 			}
 
-			String eventType = m_data.getJSONObject(index).getString("type");
-			String actor = m_data.getJSONObject(index).getString("actor");
-			String title = "";
-			if (eventType.equals("PushEvent")) {
-				String branch = payload.getString("ref").split("/")[2];
-				String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-				String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-				title = actor + " pushed to " + branch + " at " + owner + "/" + repository;
+			String eventType = m_data.getJSONObject(index).getString("id");
+			String title = m_data.getJSONObject(index).getString("title");
+			if (eventType.contains("PushEvent")) {
 				holder.icon.setImageResource(R.drawable.push);
-			} else if (eventType.equals("WatchEvent")) {
-				if (payload.getString("action").equals("started")) {
-					String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-					String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-					title = actor + " started watching " + owner + "/" + repository;
+			} else if (eventType.contains("WatchEvent")) {
+				if (title.contains(" started ")) {
 					holder.icon.setImageResource(R.drawable.watch_started);
 				} else {
-					String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-					String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-					title = actor + " stopped watching " + owner + "/" + repository;
 					holder.icon.setImageResource(R.drawable.watch_stopped);
 				}
-			} else if (eventType.equals("GistEvent")) {
-				if (payload.getString("action").equals("create")) {
-					title = actor + " created " + payload.getString("name");
-				} else {
-					title = actor + " updated " + payload.getString("name");
-				}
+			} else if (eventType.contains("GistEvent")) {
 				holder.icon.setImageResource(R.drawable.gist);
-			} else if (eventType.equals("ForkEvent")) {
-				String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-				String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-				title = actor + " forked " + owner + "/" + repository;
+			} else if (eventType.contains("ForkEvent")) {
 				holder.icon.setImageResource(R.drawable.fork);
-			} else if (eventType.equals("CommitCommentEvent")) {
-				String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-				String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-				title = actor + " commented on " + owner + "/" + repository;
+			} else if (eventType.contains("CommitCommentEvent")) {
 				holder.icon.setImageResource(R.drawable.comment);
-			} else if (eventType.equals("ForkApplyEvent")) {
-				String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-				String branch = payload.getString("head");
-				title = actor + " applied fork commits to " + repository + "/" + branch;
+			} else if (eventType.contains("ForkApplyEvent")) {
 				holder.icon.setImageResource(R.drawable.merge);
-			} else if (eventType.equals("FollowEvent")) {
-				title = actor + " started following " + payload.getString("target");
+			} else if (eventType.contains("FollowEvent")) {
 				holder.icon.setImageResource(R.drawable.follow);
-			} else if (eventType.equals("CreateEvent")) {
-				if (payload.getString("object").equals("branch")) {
-					String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-					String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-					title = actor + " created branch " + payload.getString("object_name") + " at " + owner + "/" + repository;
-				} else if (payload.getString("object").equals("repository")) {
-					title = actor + " created repository " + payload.getString("name");
-				} else if (payload.getString("object").equals("tag")) {
-					String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-					String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-					title = actor + " created tag " + payload.getString("object_name") + " at " + owner + "/" + repository;
-				}
+			} else if (eventType.contains("CreateEvent")) {
 				holder.icon.setImageResource(R.drawable.create);
-			} else if (eventType.equals("IssuesEvent")) {
-				if (payload.getString("action").equals("opened")) {
-					String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-					String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-					title = actor + " opened an issue at " + owner + "/" + repository;
+			} else if (eventType.contains("IssuesEvent")) {
+				if (title.contains(" opened ")) {
 					holder.icon.setImageResource(R.drawable.issues_open);
-				} else if (payload.getString("action").equals("closed")) {
-					String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-					String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-					title = actor + " closed an issue at " + owner + "/" + repository;
+				} else if (title.contains(" closed ")) {
 					holder.icon.setImageResource(R.drawable.issues_closed);
 				}
-			} else if (eventType.equals("DeleteEvent")) {
-				if (payload.getString("object").equals("branch")) {
-					String repository = payload.getString("name");
-					title = actor + " deleted branch " + payload.getString("object_name") + " at " + actor + "/" + repository;
-				} else if (payload.getString("object").equals("repository")) {
-					title = actor + " deleted repository " + payload.getString("name");
-				} else if (payload.getString("object").equals("tag")) {
-					String repository = m_data.getJSONObject(index).getJSONObject("repository").getString("name");
-					String owner = m_data.getJSONObject(index).getJSONObject("repository").getString("owner");
-					title = actor + " deleted tag " + payload.getString("object_name") + " at " + owner + "/" + repository;
-				}
+			} else if (eventType.contains("DeleteEvent")) {
 				holder.icon.setImageResource(R.drawable.delete);
+			} else if (eventType.contains("WikiEvent")) {
+				holder.icon.setImageResource(R.drawable.wiki);
 			}
 			holder.title.setText(title);
 		} catch (JSONException e) {
