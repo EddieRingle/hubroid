@@ -220,10 +220,10 @@ public class Hubroid extends Activity {
 	public static final String[] MAIN_MENU = new String[] {
 		"Watched Repos",
 		"Followers/Following",
-		//"Activity Feeds",
+		"Activity Feeds",
 		"My Repositories",
 		"Search",
-		"Profile"
+		"My Profile"
 	};
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -268,21 +268,20 @@ public class Hubroid extends Activity {
 				intent = new Intent(Hubroid.this, FollowersFollowing.class);
 				startActivity(intent);
 				break;
-			/*
-			 * Let's exclude this until I feel like writing the code supporting this...
 			case 2:
-				Toast.makeText(MainScreen.this, "Activity Feeds", Toast.LENGTH_SHORT).show();
-				break;
-			*/
-			case 2:
-				intent = new Intent(Hubroid.this, RepositoriesList.class);
+				intent = new Intent(Hubroid.this, ActivityFeeds.class);
+				intent.putExtra("username", m_username);
 				startActivity(intent);
 				break;
 			case 3:
-				intent = new Intent(Hubroid.this, Search.class);
+				intent = new Intent(Hubroid.this, RepositoriesList.class);
 				startActivity(intent);
 				break;
 			case 4:
+				intent = new Intent(Hubroid.this, Search.class);
+				startActivity(intent);
+				break;
+			case 5:
 				intent = new Intent(Hubroid.this, UserInfo.class);
 				intent.putExtra("username", m_username);
 				startActivity(intent);
