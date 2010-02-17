@@ -4,7 +4,7 @@
  * Copyright (c) 2010 Eddie Ringle.
  * 
  * Licensed under the New BSD License.
- */L
+ */
 
 package org.idlesoft.android.hubroid;
 
