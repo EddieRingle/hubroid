@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="lib" path="/ghapi/bin/ghapi.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
