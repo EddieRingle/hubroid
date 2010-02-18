@@ -26,10 +26,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class ActivityFeeds extends Activity {
 	private GitHubAPI gh;
@@ -42,6 +44,8 @@ public class ActivityFeeds extends Activity {
 	private String m_token;
 	private boolean m_privateDisabled;
 	private String m_type;
+	private JSONArray m_publicJSON;
+	private JSONArray m_privateJSON;
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
@@ -112,6 +116,30 @@ public class ActivityFeeds extends Activity {
 		}
 	};
 
+	private OnItemClickListener onPublicActivityItemClick = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			try {
+				Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
+				intent.putExtra("item_json", m_publicJSON.getJSONObject(arg2).toString());
+				startActivity(intent);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	private OnItemClickListener onPrivateActivityItemClick = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			try {
+				Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
+				intent.putExtra("item_json", m_privateJSON.getJSONObject(arg2).toString());
+				startActivity(intent);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
 	@Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
@@ -148,21 +176,25 @@ public class ActivityFeeds extends Activity {
 					try {
 						Response publicActivityFeedResp = gh.User.activity(m_targetUser);
 						if (publicActivityFeedResp.statusCode == 200) {
-							JSONArray feedJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
-							m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), feedJSON, true);
+							m_publicJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
+							m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_publicJSON, true);
 						}
 						if (!m_privateDisabled) {
 							Response privateActivityFeedResp = gh.User.activity(m_targetUser, m_token);
 							if (privateActivityFeedResp.statusCode == 200) {
-								JSONArray feedJSON = new JSONObject(privateActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
-								m_privateActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), feedJSON, false);
+								m_privateJSON = new JSONObject(privateActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
+								m_privateActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_privateJSON, false);
 							}
 						}
 						runOnUiThread(new Runnable() {
 							public void run() {
 								toggleList(m_type);
-								((ListView)findViewById(R.id.lv_activity_feeds_public_list)).setAdapter(m_publicActivityAdapter);
-								((ListView)findViewById(R.id.lv_activity_feeds_private_list)).setAdapter(m_privateActivityAdapter);
+								ListView publicList = (ListView)findViewById(R.id.lv_activity_feeds_public_list);
+								ListView privateList = (ListView)findViewById(R.id.lv_activity_feeds_private_list);
+								publicList.setAdapter(m_publicActivityAdapter);
+								privateList.setAdapter(m_privateActivityAdapter);
+								publicList.setOnItemClickListener(onPublicActivityItemClick);
+								privateList.setOnItemClickListener(onPrivateActivityItemClick);
 								m_progressDialog.dismiss();
 							}
 						});
