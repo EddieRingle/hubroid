@@ -9,14 +9,23 @@
 	
 	<style type="text/css">
 		body {
-  		margin-top: 1.0em;
+		  text-align: center;
+		  width: 100%;
   		background-color: #edeff7;
 		  font-family: "Helvetica,Arial,FreeSans"; 
   		color: #000000;
+  		margin: 0;
+  		padding: 0;
     }
     #container {
+      background-color: #FFF;
+      text-align: left;
       margin: 0 auto;
       width: 700px;
+      padding: 20px;
+      -webkit-box-shadow: #aaa 0 0 10px 5px;
+      -moz-box-shadow: #aaa 0 0 10px 5px;
+      box-shadow: #aaa 0 0 10px 5px;
     }
 		h1 { font-size: 3.8em; color: #121008; margin-bottom: 3px; }
 		h1 .small { font-size: 0.4em; }
@@ -29,6 +38,24 @@
 		pre { background: #000; color: #fff; padding: 15px;}
     hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
     .footer { text-align:center; padding-top:30px; font-style: italic; }
+    .widget_box {
+      float: left;
+      line-height: 0;
+      margin: 0;
+      margin-bottom: 1em;
+    }
+    .clear {
+      clear: both;
+    }
+    div.gadget { margin: 10px;font-size:75%;font-family:sans; }
+    div.gadget img { border: none; }
+    div.gadget p { line-height: 1.5em; margin: 0 0 0.5em 0; }
+    div.gadget h3 { margin-top: 0; border: none; }
+    div.gadget div.logo { float: left; }
+    div.gadget div.main { margin-left: 80px; }
+    div.gadget div.updated { clear: both; padding-top: 1em }
+    div.gadget div.updated p { font-size: smaller; color: #aaa; }
+    div.gadget div.more_at_ohloh { float: right; }
 	</style>
 	
 </head>
@@ -52,16 +79,27 @@
       The awesome GitHub app for Android.
     </div>
 
-    <p>Hubroid allows you to check up on your favorite GitHub repositories and users from your Android device. Search repositories and users, view specific information about each, read commit logs, activity feeds, issues, and much more!</p><h2>Install</h2>
-<p>Install from the Android Market or SlideME.</p>
+    <p>Hubroid allows you to check up on your favorite GitHub repositories and users from your Android device. Search repositories and users, view specific information about each, read commit logs, activity feeds, issues, and much more!</p>
+    <h2>Stats</h2>
+    <div class="widget_box">
+    <script type="text/javascript" src="http://www.ohloh.net/p/480470/widgets/project_basic_stats.js"></script>
+    </div>
+    <div class="widget_box">
+    <script type="text/javascript" src="http://www.ohloh.net/p/480470/widgets/project_factoids.js"></script>
+    </div>
+    <img src="https://www.ohloh.net/p/hubroid/analyses/998946/codehistory?project_id=480470&action=show&id=latest&controller=analyses&height=190&width=660" width="660" height="190" style="margin: 0 auto;" />
+    <div class="clear"></div>
+    <h2>Install</h2>
+<p>Install from the <a href="market://search?q=pname:org.idlesoft.android.hubroid">Android Market</a> or SlideME.</p>
 <h2>License</h2>
-<p>New BSD</p>
+<p>Licensed under the New BSD License.</p>
 <h2>Authors</h2>
-<p>Eddie Ringle (eddie@eringle.net)<br/>Martin Foot (martin@mfoot.com)<br/><br/>      </p>
+<p>Eddie Ringle (eddie@eringle.net)
+<br/>Martin Foot (martin@mfoot.com)
+<br/>      </p>
 <h2>Contact</h2>
-<p>Eddie Ringle (eddie@eringle.net)<br/>      </p>
-
-
+<p>Eddie Ringle (eddie@eringle.net)
+<br/>      </p>
     <h2>Download</h2>
     <p>
       You can download this project in either
@@ -78,7 +116,5 @@
     </div>
     
   </div>
-
-  
 </body>
 </html>
