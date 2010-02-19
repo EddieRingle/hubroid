@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,17 +49,12 @@ public class RepositoriesList extends Activity {
 	public JSONArray m_privateRepoData;
 	public Intent m_intent;
 	public int m_position;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	public void initializeList() {
 		JSONObject json = null;
 		try {
-			URL query = new URL("http://github.com/api/v2/json/repos/show/"
-								+ URLEncoder.encode(m_targetUser)
-								+ "?login=" + URLEncoder.encode(m_username)
-								+ "&token=" + URLEncoder.encode(m_token));
-			
-			json = Hubroid.make_api_request(query);
-
+			json = new JSONObject(gh.Repository.list(m_targetUser, m_username, m_token).resp);
 			if (json == null) {
 				runOnUiThread(new Runnable() {
 					public void run() {
@@ -78,8 +74,6 @@ public class RepositoriesList extends Activity {
 				m_publicRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_publicRepoData);
 				m_privateRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_privateRepoData);
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

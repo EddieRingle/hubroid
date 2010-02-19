@@ -9,10 +9,8 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -40,13 +38,12 @@ public class WatchedRepositories extends ListActivity {
 	public SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	public RepositoriesListAdapter initializeList() {
 		RepositoriesListAdapter adapter = null;
 		try {
-			URL query = new URL("http://github.com/api/v2/json/repos/watched/"
-								+ URLEncoder.encode(m_username));
-			m_jsonData = Hubroid.make_api_request(query);
+			m_jsonData = new JSONObject(gh.User.watching(m_username).resp);
 			if (m_jsonData == null) {
 				runOnUiThread(new Runnable() {
 					public void run() {
@@ -56,8 +53,6 @@ public class WatchedRepositories extends ListActivity {
 			} else {
 				adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData.getJSONArray("repositories"));
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

@@ -9,10 +9,8 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,6 +39,9 @@ public class NetworkList extends Activity {
 	public String m_repo_name;
 	public ForkListAdapter m_forkListAdapter;
 	public JSONArray m_jsonForkData;
+	private String m_username;
+	private String m_token;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	private Runnable threadProc_itemClick = new Runnable() {
 		public void run() {
@@ -113,6 +114,9 @@ public class NetworkList extends Activity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
+        m_username = m_prefs.getString("login", "");
+        m_token = m_prefs.getString("token", "");
+
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
         	m_repo_name = extras.getString("repo_name");
@@ -122,12 +126,8 @@ public class NetworkList extends Activity {
 				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
 				title.setText("Network");
 
-				URL forkrequest = new URL("http://github.com/api/v2/json/repos/show/"
-						+ URLEncoder.encode(m_repo_owner)
-						+ "/"
-						+ URLEncoder.encode(m_repo_name)
-						+ "/network");
-				JSONObject forkjson = Hubroid.make_api_request(forkrequest);
+				JSONObject forkjson = new JSONObject(gh.Repository.network(m_repo_owner, m_repo_name, m_username, m_token).resp);
+
 				m_jsonForkData = forkjson.getJSONArray("network");
 
 				m_forkListAdapter = new ForkListAdapter(NetworkList.this, m_jsonForkData);
@@ -136,8 +136,6 @@ public class NetworkList extends Activity {
 				repo_list.setAdapter(m_forkListAdapter);
 				repo_list.setOnItemClickListener(m_onForkListItemClick);
 			} catch (JSONException e) {
-				e.printStackTrace();
-			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
         }

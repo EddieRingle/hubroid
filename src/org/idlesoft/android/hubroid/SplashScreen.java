@@ -8,10 +8,8 @@
 
 package org.idlesoft.android.hubroid;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -34,6 +32,7 @@ public class SplashScreen extends Activity {
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	private Runnable threadProc_login = new Runnable() {
 		public void run() {
@@ -41,23 +40,16 @@ public class SplashScreen extends Activity {
 			EditText tokenBox = (EditText) findViewById(R.id.et_splash_login_token);
 			String login = loginBox.getText().toString();
 			String token = tokenBox.getText().toString();
-			URL query = null;
-			try {
-				query = new URL(
-						"http://github.com/api/v2/json/user/emails?login="
-								+ URLEncoder.encode(login) + "&token="
-								+ URLEncoder.encode(token));
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
+
 			runOnUiThread(new Runnable() {
 				public void run() {
 					m_progressDialog.setMessage("Authenticating...");
 					m_progressDialog.show();
 				}
 			});
-			JSONObject result = Hubroid.make_api_request(query);
-			if (result == null || result.has("error")) {
+			Response authResp = gh.User.info(login, token);
+
+			if (authResp.statusCode == 401) {
 				runOnUiThread(new Runnable() {
 					public void run() {
 						m_progressDialog.dismiss();
@@ -66,7 +58,7 @@ public class SplashScreen extends Activity {
 								Toast.LENGTH_LONG).show();
 					}
 				});
-			} else if (result.has("emails")) {
+			} else if (authResp.statusCode == 200) {
 				m_editor.putString("login", login);
 				m_editor.putString("token", token);
 				m_editor.putBoolean("isLoggedIn", true);

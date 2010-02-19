@@ -34,7 +34,7 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ActivityFeeds extends Activity {
-	private GitHubAPI gh;
+	private static final GitHubAPI gh = new GitHubAPI();
 	private ActivityFeedAdapter m_publicActivityAdapter;
 	private ActivityFeedAdapter m_privateActivityAdapter;
 	private ProgressDialog m_progressDialog;
@@ -148,8 +148,6 @@ public class ActivityFeeds extends Activity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
-
-        gh = new GitHubAPI();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
