@@ -1,3 +1,11 @@
+v1.1:
+* Follow/Unfollow users & Watch/Unwatch repos via a menu option
+* Show open/closed issues for a repo
+* Activity Feeds
+* Based on the Android 1.6 platform (w/ 1.5 compat.)
+* Splash UI glitch fixed (you're welcome riku)
+* Other UI enhancements
+
 v1.0:
 * Commit items show their how long ago the commit was pushed
 * Icons for various buttons
