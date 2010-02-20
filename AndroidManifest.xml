@@ -1,28 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="org.idlesoft.android.hubroid"
-      android:versionName="1.0" android:versionCode="18">
-    <application android:icon="@drawable/icon" android:label="@string/app_name">
-        <activity android:name=".Hubroid"
-                  android:label="@string/app_name"
-                  android:theme="@android:style/Theme.NoTitleBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name="SplashScreen"></activity>
-        <activity android:name="Search"></activity>
-    	<activity android:name="RepositoriesList" ></activity>
-		<activity android:name="RepositoryInfo"></activity>
-		<activity android:name="CommitsList"></activity>
-		<activity android:name="IssuesList"></activity>
-		<activity android:name="NetworkList"></activity>
-		<activity android:name="UserInfo"></activity>
-		<activity android:name="WatchedRepositories" />
-		<activity android:name="FollowersFollowing" />
+	package="org.idlesoft.android.hubroid" android:versionName="1.0"
+	android:versionCode="21">
+	<application android:icon="@drawable/icon" android:label="@string/app_name">
+		<activity android:name=".Hubroid" android:label="@string/app_name"
+			android:theme="@android:style/Theme.NoTitleBar">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name="SplashScreen" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="Search" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="RepositoriesList" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="RepositoryInfo" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="CommitsList" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="IssuesList" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="NetworkList" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="UserInfo" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="WatchedRepositories" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="FollowersFollowing" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="ActivityFeeds" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="SingleActivityItem" android:theme="@android:style/Theme.NoTitleBar" />
 	</application>
-    <uses-sdk android:minSdkVersion="3" />
-	<uses-permission android:name="android.permission.INTERNET"></uses-permission>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 </manifest>

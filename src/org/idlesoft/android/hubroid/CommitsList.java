@@ -9,12 +9,11 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,28 +42,23 @@ public class CommitsList extends Activity {
 	public ArrayAdapter<String> m_branchesAdapter;
 	public ArrayList<String> m_branches;
 	public ProgressDialog m_progressDialog;
+	private static final GitHubAPI gh = new GitHubAPI();
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public JSONArray m_commitData;
 	public String m_repo_owner;
 	public String m_repo_name;
+	private String m_username;
+	private String m_token;
 	public Intent m_intent;
 	public int m_position;
 
 	private Runnable threadProc_gatherCommits = new Runnable() {
 		public void run() {
 			try {
-				JSONArray commitsJSON = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/commits/list/"
-																		+ URLEncoder.encode(m_repo_owner)
-																		+ "/"
-																		+ URLEncoder.encode(m_repo_name)
-																		+ "/"
-																		+ URLEncoder.encode(m_branches.get(m_position)))).getJSONArray("commits");
+				JSONArray commitsJSON = new JSONObject(gh.Commits.list(m_repo_owner, m_repo_name, m_branches.get(m_position), m_username, m_token).resp).getJSONArray("commits");
 				Log.d("debug1",commitsJSON.toString());
 				m_commitListAdapter = new CommitListAdapter(CommitsList.this, commitsJSON);
-				m_commitData = commitsJSON;
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -135,6 +129,9 @@ public class CommitsList extends Activity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
+        m_username = m_prefs.getString("login", "");
+        m_token = m_prefs.getString("token", "");
+
         TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
         title.setText("Recent Commits");
 
@@ -144,11 +141,8 @@ public class CommitsList extends Activity {
         	m_repo_owner = extras.getString("username");
 
 			try {
-				JSONObject branchesJson = Hubroid.make_api_request(new URL("http://github.com/api/v2/json/repos/show/"
-						+ URLEncoder.encode(m_repo_owner)
-						+ "/"
-						+ URLEncoder.encode(m_repo_name)
-						+ "/branches")).getJSONObject("branches");
+				Response branchesResponse = gh.Repository.branches(m_repo_owner, m_repo_name, m_username, m_token);
+				JSONObject branchesJson = new JSONObject(branchesResponse.resp).getJSONObject("branches");
 				m_branches = new ArrayList<String>(branchesJson.length());
 				Iterator<String> keys = branchesJson.keys();
 				while (keys.hasNext()) {
@@ -162,8 +156,6 @@ public class CommitsList extends Activity {
 				Spinner branchesSpinner = (Spinner)findViewById(R.id.spn_commits_list_branch_select);
 				branchesSpinner.setAdapter(m_branchesAdapter);
 				branchesSpinner.setOnItemSelectedListener(m_onBranchSelect);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}

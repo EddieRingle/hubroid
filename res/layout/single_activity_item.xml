@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/sv_single_activity_item_root"
+	android:background="#FFF"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent">
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<ScrollView
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/include_top_bar">
+		<RelativeLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<include android:id="@+id/include_activity_item" layout="@layout/activity_item" />
+			<LinearLayout
+				android:id="@+id/ll_single_activity_item_strip"
+				android:layout_width="fill_parent"
+				android:layout_height="2.5dip"
+				android:layout_below="@id/include_activity_item"
+				android:background="@drawable/gray_strip" />
+			<LinearLayout
+				android:id="@+id/ll_single_activity_item_shadow"
+				android:layout_width="fill_parent"
+				android:layout_height="10dip"
+				android:layout_below="@id/ll_single_activity_item_strip"
+				android:background="@drawable/shadow" />
+			<WebView
+				android:id="@+id/wv_single_activity_item_content"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:layout_below="@+id/ll_single_activity_item_shadow" />
+		</RelativeLayout>
+	</ScrollView>
+</RelativeLayout>

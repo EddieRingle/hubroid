@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,67 +45,45 @@ public class Search extends Activity {
 	public ProgressDialog m_progressDialog;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
-	public String m_username;
+	private String m_username;
+	private String m_token;
 	public String m_type;
 	public JSONArray m_repositoriesData;
 	public JSONArray m_usersData;
 	public Intent m_intent;
 	public int m_position;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	public void initializeList() {
 		try {
+			String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
 			if (m_type.equals(REPO_TYPE)) {
-				URL query = new URL(
-						"http://github.com/api/v2/json/repos/search/"
-								+ URLEncoder
-										.encode(((EditText) findViewById(R.id.et_search_search_box))
-												.getText().toString()));
-
-				JSONObject response = Hubroid.make_api_request(query);
+				JSONObject response = new JSONObject(gh.Repository.search(query, m_username, m_token).resp);
 
 				if (response == null) {
 					runOnUiThread(new Runnable() {
 						public void run() {
-							Toast
-									.makeText(
-											Search.this,
-											"Error gathering repository data, please try again.",
-											Toast.LENGTH_SHORT).show();
+							Toast.makeText(Search.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
 						}
 					});
 				} else {
 					m_repositoriesData = response.getJSONArray(REPO_TYPE);
-					m_repositories_adapter = new RepositoriesListAdapter(
-							getApplicationContext(), m_repositoriesData);
+					m_repositories_adapter = new RepositoriesListAdapter(getApplicationContext(), m_repositoriesData);
 				}
 			} else if (m_type.equals(USER_TYPE)) {
-				URL query = new URL(
-						"http://github.com/api/v2/json/user/search/"
-								+ URLEncoder
-										.encode(((EditText) findViewById(R.id.et_search_search_box))
-												.getText().toString()));
-
-				JSONObject response = Hubroid.make_api_request(query);
+				JSONObject response = new JSONObject(gh.User.search(query).resp);
 
 				if (response == null) {
 					runOnUiThread(new Runnable() {
 						public void run() {
-							Toast
-									.makeText(
-											Search.this,
-											"Error gathering user data, please try again.",
-											Toast.LENGTH_SHORT).show();
+							Toast.makeText(Search.this, "Error gathering user data, please try again.", Toast.LENGTH_SHORT).show();
 						}
 					});
 				} else {
 					m_usersData = response.getJSONArray(USER_TYPE);
-					m_users_adapter = new SearchUsersListAdapter(
-							getApplicationContext(), m_usersData);
+					m_users_adapter = new SearchUsersListAdapter(getApplicationContext(), m_usersData);
 				}
 			}
-
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -169,9 +148,7 @@ public class Search extends Activity {
 			EditText search_box = (EditText) findViewById(R.id.et_search_search_box);
 			if (!search_box.getText().toString().equals("")) {
 				if (m_type.equals(REPO_TYPE)) {
-					m_progressDialog = ProgressDialog
-							.show(Search.this, "Please wait...",
-									"Searching Repositories...", true);
+					m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Repositories...", true);
 					Thread thread = new Thread(new Runnable() {
 						public void run() {
 							initializeList();
@@ -185,8 +162,7 @@ public class Search extends Activity {
 					});
 					thread.start();
 				} else if (m_type.equals(USER_TYPE)) {
-					m_progressDialog = ProgressDialog.show(Search.this,
-							"Please wait...", "Searching Users...", true);
+					m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Users...", true);
 					Thread thread = new Thread(new Runnable() {
 						public void run() {
 							initializeList();
@@ -217,8 +193,7 @@ public class Search extends Activity {
 	};
 
 	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> parent, View v, int position,
-				long id) {
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 			m_position = position;
 			Thread thread = new Thread(null, threadProc_itemClick);
 			thread.start();
@@ -268,6 +243,7 @@ public class Search extends Activity {
 		m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
 		m_editor = m_prefs.edit();
 		m_type = REPO_TYPE;
+		m_token = m_prefs.getString("token", "");
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {

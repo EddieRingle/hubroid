@@ -11,7 +11,6 @@ package org.idlesoft.android.hubroid;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -20,17 +19,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -70,13 +63,13 @@ public class Hubroid extends Activity {
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	/**
 	 * Sends an HTTP request to a server and returns the response JSON.
 	 * 
 	 * @param url
 	 * @return	the response JSON
-	 */
 	public static JSONObject make_api_request(URL url) {
 		JSONObject json = null;
 		HttpClient c = new DefaultHttpClient();
@@ -100,6 +93,7 @@ public class Hubroid extends Activity {
 		}
 		return json;
 	}
+	*/
 
 	/**
 	 * Returns a Gravatar ID associated with the provided name
@@ -133,7 +127,7 @@ public class Hubroid extends Activity {
 				} else {
 					URL query = new URL("http://github.com/api/v2/json/user/show/" + URLEncoder.encode(name));
 					try {
-						id = make_api_request(query).getJSONObject("user").getString("gravatar_id");
+						id = new JSONObject(gh.User.info(name).resp).getJSONObject("user").getString("gravatar_id");
 						FileWriter fw = new FileWriter(image);
 						BufferedWriter bw = new BufferedWriter(fw);
 						bw.write(id);
@@ -220,10 +214,10 @@ public class Hubroid extends Activity {
 	public static final String[] MAIN_MENU = new String[] {
 		"Watched Repos",
 		"Followers/Following",
-		//"Activity Feeds",
+		"Activity Feeds",
 		"My Repositories",
 		"Search",
-		"Profile"
+		"My Profile"
 	};
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -268,21 +262,20 @@ public class Hubroid extends Activity {
 				intent = new Intent(Hubroid.this, FollowersFollowing.class);
 				startActivity(intent);
 				break;
-			/*
-			 * Let's exclude this until I feel like writing the code supporting this...
 			case 2:
-				Toast.makeText(MainScreen.this, "Activity Feeds", Toast.LENGTH_SHORT).show();
-				break;
-			*/
-			case 2:
-				intent = new Intent(Hubroid.this, RepositoriesList.class);
+				intent = new Intent(Hubroid.this, ActivityFeeds.class);
+				intent.putExtra("username", m_username);
 				startActivity(intent);
 				break;
 			case 3:
-				intent = new Intent(Hubroid.this, Search.class);
+				intent = new Intent(Hubroid.this, RepositoriesList.class);
 				startActivity(intent);
 				break;
 			case 4:
+				intent = new Intent(Hubroid.this, Search.class);
+				startActivity(intent);
+				break;
+			case 5:
 				intent = new Intent(Hubroid.this, UserInfo.class);
 				intent.putExtra("username", m_username);
 				startActivity(intent);
@@ -328,7 +321,7 @@ public class Hubroid extends Activity {
 											+ "&token="
 											+ URLEncoder.encode(m_token));
 						
-						JSONObject result = Hubroid.make_api_request(query);
+						JSONObject result = new JSONObject(gh.User.info(m_username, m_token).resp);
 						if(result != null){
 							m_userData = result.getJSONObject("user");
 

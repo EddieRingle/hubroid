@@ -13,6 +13,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +44,7 @@ public class RepositoryInfo extends Activity {
 	private String m_repo_owner;
 	private String m_repo_name;
 	private boolean m_isWatching;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	/* bleh.
 	private Runnable threadProc_userInfo = new Runnable() {
@@ -121,23 +124,20 @@ public class RepositoryInfo extends Activity {
 		switch (item.getItemId()) {
 		case 3:
 			try {
-				URL command;
+				JSONObject newRepoInfo = null;
 				if (m_isWatching) {
-					command = new URL("http://github.com/api/v2/json/repos/unwatch/"
-										+ URLEncoder.encode(m_repo_owner) + "/"
-										+ URLEncoder.encode(m_repo_name) + "?login="
-										+ URLEncoder.encode(m_username) + "&token="
-										+ URLEncoder.encode(m_token));
-					m_isWatching = false;
+					Response unwatchResp = gh.Repository.unwatch(m_repo_owner, m_repo_name, m_username, m_token); 
+					if (unwatchResp.statusCode == 200) {
+						newRepoInfo = new JSONObject(unwatchResp.resp).getJSONObject("repository");
+						m_isWatching = false;
+					}
 				} else {
-					command = new URL("http://github.com/api/v2/json/repos/watch/"
-							+ URLEncoder.encode(m_repo_owner) + "/"
-							+ URLEncoder.encode(m_repo_name) + "?login="
-							+ URLEncoder.encode(m_username) + "&token="
-							+ URLEncoder.encode(m_token));
-					m_isWatching = true;
+					Response watchResp = gh.Repository.watch(m_repo_owner, m_repo_name, m_username, m_token);
+					if (watchResp.statusCode == 200) {
+						newRepoInfo = new JSONObject(watchResp.resp).getJSONObject("repository");
+						m_isWatching = true;
+					}
 				}
-				JSONObject newRepoInfo = Hubroid.make_api_request(command).getJSONObject("repository");
 				if (newRepoInfo != null) {
 					String newWatcherCount = newRepoInfo.getString("watchers");
 					if (newWatcherCount != m_jsonData.getString("watchers")) {
@@ -148,8 +148,6 @@ public class RepositoryInfo extends Activity {
 						}
 					}
 				}
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -195,36 +193,18 @@ public class RepositoryInfo extends Activity {
         if (extras != null) {
         	m_repo_name = extras.getString("repo_name");
         	m_repo_owner = extras.getString("username");
-			try {
-				URL repo_query = new URL("http://github.com/api/v2/json/repos/show/"
-						+ URLEncoder.encode(m_repo_owner) + "/"
-						+ URLEncoder.encode(m_repo_name) + "?login="
-						+ URLEncoder.encode(m_username) + "&token="
-						+ URLEncoder.encode(m_token));
-				m_jsonData = Hubroid.make_api_request(repo_query).getJSONObject("repository");
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
 
 			try {
-	        	URL watched_url = new URL("http://github.com/api/v2/json/repos/watched/"
-	        								+ URLEncoder.encode(m_username));
-	        	JSONArray watched_list = Hubroid.make_api_request(watched_url).getJSONArray("repositories");
+				m_jsonData = new JSONObject(gh.Repository.info(m_repo_owner, m_repo_name, m_username, m_token).resp).getJSONObject("repository");
+
+	        	JSONArray watched_list = new JSONObject(gh.User.watching(m_username).resp).getJSONArray("repositories");
 	        	int length = watched_list.length() - 1;
 	        	for (int i = 0; i <= length; i++) {
 	        		if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(m_repo_name)) {
 	        			m_isWatching = true;
 	        		}
 	        	}
-	        } catch (MalformedURLException e) {
-	        	e.printStackTrace();
-	        } catch (JSONException e) {
-	        	e.printStackTrace();
-	        }
 
-			try {
 				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
 				title.setText(m_jsonData.getString("name"));
 				TextView repo_name = (TextView)findViewById(R.id.tv_repository_info_name);

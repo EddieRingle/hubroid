@@ -9,10 +9,8 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +21,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,21 +47,14 @@ public class IssuesList extends Activity {
 	private JSONArray m_closedIssuesData;
 	private Intent m_intent;
 	private int m_position;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	public void initializeList() {
 		JSONObject json = null;
 		m_openIssuesData = new JSONArray();
 		m_closedIssuesData = new JSONArray();
-		URL query;
 		try {
-			query = new URL("http://github.com/api/v2/json/issues/list/"
-								+ URLEncoder.encode(m_targetUser) + "/"
-								+ URLEncoder.encode(m_targetRepo) + "/"
-								+ "open" + "?login="
-								+ URLEncoder.encode(m_username) + "&token="
-								+ URLEncoder.encode(m_token));
-			
-			json = Hubroid.make_api_request(query);
+			json = new JSONObject(gh.Issues.list(m_targetUser, m_targetRepo, "open", m_username, m_token).resp);
 
 			if (json == null) {
 				runOnUiThread(new Runnable() {
@@ -79,14 +69,8 @@ public class IssuesList extends Activity {
 				}
 				m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
 			}
-			query = new URL("http://github.com/api/v2/json/issues/list/"
-								+ URLEncoder.encode(m_targetUser) + "/"
-								+ URLEncoder.encode(m_targetRepo) + "/"
-								+ "closed" + "?login="
-								+ URLEncoder.encode(m_username) + "&token="
-								+ URLEncoder.encode(m_token));
 
-			json = Hubroid.make_api_request(query);
+			json = new JSONObject(gh.Issues.list(m_targetUser, m_targetRepo, "closed", m_username, m_token).resp);
 			
 			if (json == null) {
 				runOnUiThread(new Runnable() {
@@ -101,8 +85,6 @@ public class IssuesList extends Activity {
 				}
 				m_closedIssues_adapter = new IssuesListAdapter(IssuesList.this, m_closedIssuesData);
 			}
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

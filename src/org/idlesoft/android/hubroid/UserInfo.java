@@ -9,21 +9,9 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +39,7 @@ public class UserInfo extends Activity {
 	private String m_token;
 	private String m_targetUser;
 	private boolean m_isFollowing;
+	private static final GitHubAPI gh = new GitHubAPI();
 
 	private OnClickListener onButtonClick = new OnClickListener() {
 		public void onClick(View v) {
@@ -58,6 +47,12 @@ public class UserInfo extends Activity {
 			// Figure out what button was clicked
 			int id = v.getId();
 			switch (id) {
+			case R.id.btn_user_info_public_activity:
+				// View the user's public activity feed
+				intent = new Intent(UserInfo.this, ActivityFeeds.class);
+				intent.putExtra("username", m_targetUser);
+				startActivity(intent);
+				break;
 			case R.id.btn_user_info_repositories:
 				// Go to the user's list of repositories
 				intent = new Intent(UserInfo.this, RepositoriesList.class);
@@ -99,40 +94,20 @@ public class UserInfo extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 3:
-			try {
-				HttpClient client = new DefaultHttpClient();
-				URL command;
-				if (m_isFollowing) {
-					command = new URL("http://github.com/api/v2/json/user/unfollow/"
-										+ URLEncoder.encode(m_targetUser));
-				} else {
-					command = new URL("http://github.com/api/v2/json/user/follow/"
-							+ URLEncoder.encode(m_targetUser));
+			Response postResp;
+
+			if (m_isFollowing) {
+				postResp = gh.User.unfollow(m_targetUser, m_username, m_token);
+				if (postResp.statusCode == 200) {
+					Toast.makeText(this, "You are no longer following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
-
-				HttpPost post = new HttpPost(command.toString());
-				List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(2);
-		        nameValuePairs.add(new BasicNameValuePair("login", m_username));  
-		        nameValuePairs.add(new BasicNameValuePair("token", m_token));  
-		        post.setEntity(new UrlEncodedFormEntity(nameValuePairs));  
-
-		        // Execute HTTP Post Request  
-		        HttpResponse response = client.execute(post);
-
-				if (response.getStatusLine().getStatusCode() == 200) {
-					if (m_isFollowing) {
-						Toast.makeText(this, "You are no longer following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
-					} else {
-						Toast.makeText(this, "You are now following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
-					}
-					m_isFollowing = !m_isFollowing;
+				m_isFollowing = !m_isFollowing;
+			} else {
+				postResp = gh.User.follow(m_targetUser, m_username, m_token);
+				if (postResp.statusCode == 200) {
+					Toast.makeText(this, "You are now following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			} catch (ClientProtocolException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+				m_isFollowing = !m_isFollowing;
 			}
 			break;
 		case 0:
@@ -175,9 +150,8 @@ public class UserInfo extends Activity {
         if (extras != null) {
         	try {
         		m_targetUser = extras.getString("username");
-				URL user_query = new URL("http://github.com/api/v2/json/user/show/"
-										+ URLEncoder.encode(m_targetUser));
-				JSONObject json = Hubroid.make_api_request(user_query);
+
+				JSONObject json = new JSONObject(gh.User.info(m_targetUser, m_token).resp);
 				if (json == null) {
 					// User doesn't really exist, return to the previous activity
 					this.setResult(5005);
@@ -185,21 +159,13 @@ public class UserInfo extends Activity {
 				} else {
 					m_jsonData = json.getJSONObject("user");
 
-					try {
-			        	URL following_url = new URL("http://github.com/api/v2/json/user/show/"
-			        								+ URLEncoder.encode(m_username) + "/following");
-			        	JSONArray following_list = Hubroid.make_api_request(following_url).getJSONArray("users");
-			        	int length = following_list.length() - 1;
-			        	for (int i = 0; i <= length; i++) {
-			        		if (following_list.getString(i).equalsIgnoreCase(m_targetUser)) {
-			        			m_isFollowing = true;
-			        		}
-			        	}
-			        } catch (MalformedURLException e) {
-			        	e.printStackTrace();
-			        } catch (JSONException e) {
-			        	e.printStackTrace();
-			        }
+		        	JSONArray following_list = new JSONObject(gh.User.following(m_username).resp).getJSONArray("users");
+		        	int length = following_list.length() - 1;
+		        	for (int i = 0; i <= length; i++) {
+		        		if (following_list.getString(i).equalsIgnoreCase(m_targetUser)) {
+		        			m_isFollowing = true;
+		        		}
+		        	}
 
 					String company, location, full_name, email, blog;
 
@@ -240,16 +206,16 @@ public class UserInfo extends Activity {
 					((TextView)findViewById(R.id.tv_user_info_blog)).setText(blog);
 
 					// Make the buttons work
+					Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
 					Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
 					Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
 					Button watchedRepositoriesBtn = (Button) findViewById(R.id.btn_user_info_watched_repositories);
 
+					activityBtn.setOnClickListener(onButtonClick);
 					repositoriesBtn.setOnClickListener(onButtonClick);
 					followersFollowingBtn.setOnClickListener(onButtonClick);
 					watchedRepositoriesBtn.setOnClickListener(onButtonClick);
 				}
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
