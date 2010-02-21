@@ -8,7 +8,7 @@
 
 package org.idlesoft.android.hubroid;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.User;
 import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONObject;
 
@@ -32,7 +32,6 @@ public class SplashScreen extends Activity {
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	private Runnable threadProc_login = new Runnable() {
 		public void run() {
@@ -47,7 +46,7 @@ public class SplashScreen extends Activity {
 					m_progressDialog.show();
 				}
 			});
-			Response authResp = gh.User.info(login, token);
+			Response authResp = User.info(login, token);
 
 			if (authResp.statusCode == 401) {
 				runOnUiThread(new Runnable() {

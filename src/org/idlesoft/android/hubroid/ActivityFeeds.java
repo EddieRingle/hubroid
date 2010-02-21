@@ -10,7 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.User;
 import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,7 +34,6 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ActivityFeeds extends Activity {
-	private static final GitHubAPI gh = new GitHubAPI();
 	private ActivityFeedAdapter m_publicActivityAdapter;
 	private ActivityFeedAdapter m_privateActivityAdapter;
 	private ProgressDialog m_progressDialog;
@@ -172,13 +171,13 @@ public class ActivityFeeds extends Activity {
 				public void run()
 				{
 					try {
-						Response publicActivityFeedResp = gh.User.activity(m_targetUser);
+						Response publicActivityFeedResp = User.activity(m_targetUser);
 						if (publicActivityFeedResp.statusCode == 200) {
 							m_publicJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
 							m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_publicJSON, true);
 						}
 						if (!m_privateDisabled) {
-							Response privateActivityFeedResp = gh.User.activity(m_targetUser, m_token);
+							Response privateActivityFeedResp = User.activity(m_targetUser, m_token);
 							if (privateActivityFeedResp.statusCode == 200) {
 								m_privateJSON = new JSONObject(privateActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
 								m_privateActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_privateJSON, false);

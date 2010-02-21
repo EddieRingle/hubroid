@@ -9,11 +9,8 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.Repository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,12 +46,11 @@ public class RepositoriesList extends Activity {
 	public JSONArray m_privateRepoData;
 	public Intent m_intent;
 	public int m_position;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	public void initializeList() {
 		JSONObject json = null;
 		try {
-			json = new JSONObject(gh.Repository.list(m_targetUser, m_username, m_token).resp);
+			json = new JSONObject(Repository.list(m_targetUser, m_username, m_token).resp);
 			if (json == null) {
 				runOnUiThread(new Runnable() {
 					public void run() {

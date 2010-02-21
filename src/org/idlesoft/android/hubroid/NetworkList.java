@@ -10,7 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.Repository;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -41,7 +41,6 @@ public class NetworkList extends Activity {
 	public JSONArray m_jsonForkData;
 	private String m_username;
 	private String m_token;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	private Runnable threadProc_itemClick = new Runnable() {
 		public void run() {
@@ -126,7 +125,7 @@ public class NetworkList extends Activity {
 				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
 				title.setText("Network");
 
-				JSONObject forkjson = new JSONObject(gh.Repository.network(m_repo_owner, m_repo_name, m_username, m_token).resp);
+				JSONObject forkjson = new JSONObject(Repository.network(m_repo_owner, m_repo_name, m_username, m_token).resp);
 
 				m_jsonForkData = forkjson.getJSONArray("network");
 

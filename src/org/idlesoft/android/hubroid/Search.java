@@ -9,11 +9,9 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.Repository;
+import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,13 +50,12 @@ public class Search extends Activity {
 	public JSONArray m_usersData;
 	public Intent m_intent;
 	public int m_position;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	public void initializeList() {
 		try {
 			String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
 			if (m_type.equals(REPO_TYPE)) {
-				JSONObject response = new JSONObject(gh.Repository.search(query, m_username, m_token).resp);
+				JSONObject response = new JSONObject(Repository.search(query, m_username, m_token).resp);
 
 				if (response == null) {
 					runOnUiThread(new Runnable() {
@@ -71,7 +68,7 @@ public class Search extends Activity {
 					m_repositories_adapter = new RepositoriesListAdapter(getApplicationContext(), m_repositoriesData);
 				}
 			} else if (m_type.equals(USER_TYPE)) {
-				JSONObject response = new JSONObject(gh.User.search(query).resp);
+				JSONObject response = new JSONObject(User.search(query).resp);
 
 				if (response == null) {
 					runOnUiThread(new Runnable() {

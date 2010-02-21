@@ -18,12 +18,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -63,37 +62,6 @@ public class Hubroid extends Activity {
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
-	private static final GitHubAPI gh = new GitHubAPI();
-
-	/**
-	 * Sends an HTTP request to a server and returns the response JSON.
-	 * 
-	 * @param url
-	 * @return	the response JSON
-	public static JSONObject make_api_request(URL url) {
-		JSONObject json = null;
-		HttpClient c = new DefaultHttpClient();
-		HttpGet getReq;
-		try {
-			getReq = new HttpGet(url.toURI());
-			HttpResponse resp = c.execute(getReq);
-			if (resp.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-				ByteArrayOutputStream os = new ByteArrayOutputStream();
-				resp.getEntity().writeTo(os);
-				json = new JSONObject(os.toString());
-			}
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		return json;
-	}
-	*/
 
 	/**
 	 * Returns a Gravatar ID associated with the provided name
@@ -125,9 +93,8 @@ public class Hubroid extends Activity {
 					id = in.readLine();
 					in.close();
 				} else {
-					URL query = new URL("http://github.com/api/v2/json/user/show/" + URLEncoder.encode(name));
 					try {
-						id = new JSONObject(gh.User.info(name).resp).getJSONObject("user").getString("gravatar_id");
+						id = new JSONObject(User.info(name).resp).getJSONObject("user").getString("gravatar_id");
 						FileWriter fw = new FileWriter(image);
 						BufferedWriter bw = new BufferedWriter(fw);
 						bw.write(id);
@@ -313,15 +280,8 @@ public class Hubroid extends Activity {
 
 	        Thread thread = new Thread(new Runnable() {
 				public void run() {
-					try {
-						URL query = new URL("http://github.com/api/v2/json/user/show/"
-											+ URLEncoder.encode(m_username)
-											+ "?login="
-											+ URLEncoder.encode(m_username)
-											+ "&token="
-											+ URLEncoder.encode(m_token));
-						
-						JSONObject result = new JSONObject(gh.User.info(m_username, m_token).resp);
+					try {						
+						JSONObject result = new JSONObject(User.info(m_username, m_token).resp);
 						if(result != null){
 							m_userData = result.getJSONObject("user");
 
@@ -354,8 +314,6 @@ public class Hubroid extends Activity {
 								}
 							});
 						}
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
 					} catch (JSONException e) {
 						e.printStackTrace();
 					}

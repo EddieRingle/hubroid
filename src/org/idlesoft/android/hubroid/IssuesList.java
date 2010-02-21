@@ -10,7 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.Issues;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,14 +47,13 @@ public class IssuesList extends Activity {
 	private JSONArray m_closedIssuesData;
 	private Intent m_intent;
 	private int m_position;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	public void initializeList() {
 		JSONObject json = null;
 		m_openIssuesData = new JSONArray();
 		m_closedIssuesData = new JSONArray();
 		try {
-			json = new JSONObject(gh.Issues.list(m_targetUser, m_targetRepo, "open", m_username, m_token).resp);
+			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "open", m_username, m_token).resp);
 
 			if (json == null) {
 				runOnUiThread(new Runnable() {
@@ -70,7 +69,7 @@ public class IssuesList extends Activity {
 				m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
 			}
 
-			json = new JSONObject(gh.Issues.list(m_targetUser, m_targetRepo, "closed", m_username, m_token).resp);
+			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "closed", m_username, m_token).resp);
 			
 			if (json == null) {
 				runOnUiThread(new Runnable() {

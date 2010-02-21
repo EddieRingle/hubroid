@@ -10,7 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,12 +38,11 @@ public class WatchedRepositories extends ListActivity {
 	public SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	public RepositoriesListAdapter initializeList() {
 		RepositoriesListAdapter adapter = null;
 		try {
-			m_jsonData = new JSONObject(gh.User.watching(m_username).resp);
+			m_jsonData = new JSONObject(User.watching(m_username).resp);
 			if (m_jsonData == null) {
 				runOnUiThread(new Runnable() {
 					public void run() {

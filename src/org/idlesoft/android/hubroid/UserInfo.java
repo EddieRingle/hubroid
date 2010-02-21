@@ -10,7 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.User;
 import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,7 +39,6 @@ public class UserInfo extends Activity {
 	private String m_token;
 	private String m_targetUser;
 	private boolean m_isFollowing;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	private OnClickListener onButtonClick = new OnClickListener() {
 		public void onClick(View v) {
@@ -97,13 +96,13 @@ public class UserInfo extends Activity {
 			Response postResp;
 
 			if (m_isFollowing) {
-				postResp = gh.User.unfollow(m_targetUser, m_username, m_token);
+				postResp = User.unfollow(m_targetUser, m_username, m_token);
 				if (postResp.statusCode == 200) {
 					Toast.makeText(this, "You are no longer following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
 				m_isFollowing = !m_isFollowing;
 			} else {
-				postResp = gh.User.follow(m_targetUser, m_username, m_token);
+				postResp = User.follow(m_targetUser, m_username, m_token);
 				if (postResp.statusCode == 200) {
 					Toast.makeText(this, "You are now following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
@@ -153,9 +152,9 @@ public class UserInfo extends Activity {
 
         		Response userInfoResp;
         		if (m_targetUser.equalsIgnoreCase(m_username)) {
-        			userInfoResp = gh.User.info(m_username, m_token);
+        			userInfoResp = User.info(m_username, m_token);
         		} else {
-        			userInfoResp = gh.User.info(m_targetUser);
+        			userInfoResp = User.info(m_targetUser);
         		}
         		JSONObject json = null;
         		if (userInfoResp.statusCode == 200)
@@ -167,7 +166,7 @@ public class UserInfo extends Activity {
 				} else {
 					m_jsonData = json.getJSONObject("user");
 
-		        	JSONArray following_list = new JSONObject(gh.User.following(m_username).resp).getJSONArray("users");
+		        	JSONArray following_list = new JSONObject(User.following(m_username).resp).getJSONArray("users");
 		        	int length = following_list.length() - 1;
 		        	for (int i = 0; i <= length; i++) {
 		        		if (following_list.getString(i).equalsIgnoreCase(m_targetUser)) {

@@ -9,11 +9,9 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.Repository;
+import org.idlesoft.libraries.ghapi.User;
 import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,13 +36,11 @@ public class RepositoryInfo extends Activity {
 	public Intent m_intent;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
-	private int m_position;
 	private String m_username;
 	private String m_token;
 	private String m_repo_owner;
 	private String m_repo_name;
 	private boolean m_isWatching;
-	private static final GitHubAPI gh = new GitHubAPI();
 
 	/* bleh.
 	private Runnable threadProc_userInfo = new Runnable() {
@@ -126,13 +122,13 @@ public class RepositoryInfo extends Activity {
 			try {
 				JSONObject newRepoInfo = null;
 				if (m_isWatching) {
-					Response unwatchResp = gh.Repository.unwatch(m_repo_owner, m_repo_name, m_username, m_token); 
+					Response unwatchResp = Repository.unwatch(m_repo_owner, m_repo_name, m_username, m_token); 
 					if (unwatchResp.statusCode == 200) {
 						newRepoInfo = new JSONObject(unwatchResp.resp).getJSONObject("repository");
 						m_isWatching = false;
 					}
 				} else {
-					Response watchResp = gh.Repository.watch(m_repo_owner, m_repo_name, m_username, m_token);
+					Response watchResp = Repository.watch(m_repo_owner, m_repo_name, m_username, m_token);
 					if (watchResp.statusCode == 200) {
 						newRepoInfo = new JSONObject(watchResp.resp).getJSONObject("repository");
 						m_isWatching = true;
@@ -195,9 +191,9 @@ public class RepositoryInfo extends Activity {
         	m_repo_owner = extras.getString("username");
 
 			try {
-				m_jsonData = new JSONObject(gh.Repository.info(m_repo_owner, m_repo_name, m_username, m_token).resp).getJSONObject("repository");
+				m_jsonData = new JSONObject(Repository.info(m_repo_owner, m_repo_name, m_username, m_token).resp).getJSONObject("repository");
 
-	        	JSONArray watched_list = new JSONObject(gh.User.watching(m_username).resp).getJSONArray("repositories");
+	        	JSONArray watched_list = new JSONObject(User.watching(m_username).resp).getJSONArray("repositories");
 	        	int length = watched_list.length() - 1;
 	        	for (int i = 0; i <= length; i++) {
 	        		if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(m_repo_name)) {
