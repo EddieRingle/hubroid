@@ -8,14 +8,7 @@
 
 package org.idlesoft.android.hubroid;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,49 +99,6 @@ public class CommitChangeViewer extends Activity {
 		}
 		return false;
 	}
-
-	// TODO: Delete me after GHAPI has a blob fetching method
-	public Response HTTPGet(String url)
-	{
-		Response response = new Response();
-		try {
-			// Setup connection
-			HttpURLConnection conn = (HttpURLConnection) (new URL(url)).openConnection();
-			conn.setRequestMethod("GET");
-			conn.connect();
- 
-			// Get response from the server
-			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-			StringBuilder sb = new StringBuilder();
- 
-			for (String line = in.readLine(); line != null; line = in.readLine()) {
-				sb.append(line + '\n');
-			}
- 
-			// Store response in a Response object
-			response.statusCode = conn.getResponseCode();
-			response.resp = sb.toString();
- 
-			// Clean up
-			conn.disconnect();
-			conn = null;
-			in = null;
-			sb = null;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return response;
-	}
- 
-	// TODO: Delete me after GHAPI has a blob fetching method
-	public String encode(String str)
-	{
-		try {
-			return URLEncoder.encode(str, "UTF-8");
-		} catch (UnsupportedEncodingException e) {
-			return URLEncoder.encode(str);
-		}
-	}
  
 	public String getHumanDate(Date current_time, Date commit_time){
 		String end;
@@ -186,7 +136,6 @@ public class CommitChangeViewer extends Activity {
 			}
 			return sec + end;
 		}
-		
 	}
 	
 	@Override
@@ -210,7 +159,6 @@ public class CommitChangeViewer extends Activity {
         	m_id = extras.getString("id");
 
         	// Get the commit data for that commit ID so that we can get the tree ID and filename.
-        	// TODO: Make this work for private repositories too
         	try {
         		Response commitInfo = Commits.commit(m_repo_owner, m_repo_name, m_id, m_username, m_token);
         		JSONObject commitJSON = new JSONObject(commitInfo.resp).getJSONObject("commit");
@@ -259,7 +207,6 @@ public class CommitChangeViewer extends Activity {
         			Bitmap committerGravatar = loadGravatarByLoginName(committerName);
         			if(committerGravatar != null)
         				((ImageView) findViewById(R.id.commit_view_committer_gravatar)).setImageBitmap(committerGravatar);
-        			// TODO: Format the date like in the commit list
         		}
 
         		// Populate the ListView with the files that have changed 
