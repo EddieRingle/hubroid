@@ -12,7 +12,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.Commits;
+import org.idlesoft.libraries.ghapi.Repository;
 import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +23,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -42,10 +42,9 @@ public class CommitsList extends Activity {
 	public ArrayAdapter<String> m_branchesAdapter;
 	public ArrayList<String> m_branches;
 	public ProgressDialog m_progressDialog;
-	private static final GitHubAPI gh = new GitHubAPI();
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
-	public JSONArray m_commitData;
+	public JSONArray m_commitsJSON;
 	public String m_repo_owner;
 	public String m_repo_name;
 	private String m_username;
@@ -56,9 +55,9 @@ public class CommitsList extends Activity {
 	private Runnable threadProc_gatherCommits = new Runnable() {
 		public void run() {
 			try {
-				JSONArray commitsJSON = new JSONObject(gh.Commits.list(m_repo_owner, m_repo_name, m_branches.get(m_position), m_username, m_token).resp).getJSONArray("commits");
-				Log.d("debug1",commitsJSON.toString());
-				m_commitListAdapter = new CommitListAdapter(CommitsList.this, commitsJSON);
+				m_commitsJSON = new JSONObject(Commits.list(m_repo_owner, m_repo_name, m_branches.get(m_position), m_username, m_token).resp).getJSONArray("commits");
+				Log.d("debug1",m_commitsJSON.toString());
+				m_commitListAdapter = new CommitListAdapter(CommitsList.this, m_commitsJSON);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -141,7 +140,7 @@ public class CommitsList extends Activity {
         	m_repo_owner = extras.getString("username");
 
 			try {
-				Response branchesResponse = gh.Repository.branches(m_repo_owner, m_repo_name, m_username, m_token);
+				Response branchesResponse = Repository.branches(m_repo_owner, m_repo_name, m_username, m_token);
 				JSONObject branchesJson = new JSONObject(branchesResponse.resp).getJSONObject("branches");
 				m_branches = new ArrayList<String>(branchesJson.length());
 				Iterator<String> keys = branchesJson.keys();
@@ -165,11 +164,16 @@ public class CommitsList extends Activity {
 	private Runnable threadProc_itemClick = new Runnable() {
 		public void run() {		
 			try {
-				final String url = m_commitData.getJSONObject(m_position).getString("url");
+				//final String url = m_commitData.getJSONObject(m_position).getString("url");
+				final String id = m_commitsJSON.getJSONObject(m_position).getString("id");
 
 				runOnUiThread(new Runnable() {
 					public void run() {
-						CommitsList.this.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+						Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
+						i.putExtra("id", id);
+						i.putExtra("repo_name", m_repo_name);
+						i.putExtra("username", m_repo_owner);
+						CommitsList.this.startActivity(i);
 					}
 				});
 					
