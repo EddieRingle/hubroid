@@ -151,7 +151,15 @@ public class UserInfo extends Activity {
         	try {
         		m_targetUser = extras.getString("username");
 
-				JSONObject json = new JSONObject(gh.User.info(m_targetUser, m_token).resp);
+        		Response userInfoResp;
+        		if (m_targetUser.equalsIgnoreCase(m_username)) {
+        			userInfoResp = gh.User.info(m_username, m_token);
+        		} else {
+        			userInfoResp = gh.User.info(m_targetUser);
+        		}
+        		JSONObject json = null;
+        		if (userInfoResp.statusCode == 200)
+        			json = new JSONObject(userInfoResp.resp);
 				if (json == null) {
 					// User doesn't really exist, return to the previous activity
 					this.setResult(5005);
