@@ -113,30 +113,6 @@ public class IssuesList extends Activity {
 		}
 	};
 
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
-			/* Don't do anything just yet.
-			try {
-	        	m_intent = new Intent(IssuesList.this, RepositoryInfo.class);
-	        	if (m_type.equals("open")) {
-	        		m_intent.putExtra("repo_name", m_openIssuesData.getJSONObject(m_position).getString("name"));
-		        	m_intent.putExtra("username", m_openIssuesData.getJSONObject(m_position).getString("owner"));
-	        	} else if (m_type.equals("private")) {
-	        		m_intent.putExtra("repo_name", m_closedIssuesData.getJSONObject(m_position).getString("name"));
-		        	m_intent.putExtra("username", m_closedIssuesData.getJSONObject(m_position).getString("owner"));
-	        	}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					IssuesList.this.startActivity(m_intent);
-				}
-			}); */
-		}
-	};
-
 	public void toggleList(String type)
 	{
 		ListView openList = (ListView) findViewById(R.id.lv_issues_list_open_list);
@@ -173,9 +149,21 @@ public class IssuesList extends Activity {
 
 	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-	        m_position = position;
-	        Thread thread = new Thread(null, threadProc_itemClick);
-	        thread.start();
+			JSONObject json = null;
+			try {
+		        if (parent.getId() == R.id.lv_issues_list_open_list) {
+		        	json = m_openIssuesData.getJSONObject(position);
+		        } else {
+		        	json = m_closedIssuesData.getJSONObject(position);
+		        }
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+	        Intent intent = new Intent(getApplicationContext(), SingleIssue.class);
+	        intent.putExtra("repoOwner", m_targetUser);
+	        intent.putExtra("repoName", m_targetRepo);
+	        intent.putExtra("item_json", json.toString());
+	        startActivity(intent);
 		}
 	};
 

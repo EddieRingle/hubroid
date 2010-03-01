@@ -16,6 +16,7 @@
 		<activity android:name="RepositoryInfo" android:theme="@android:style/Theme.NoTitleBar" />
 		<activity android:name="CommitsList" android:theme="@android:style/Theme.NoTitleBar" />
 		<activity android:name="IssuesList" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="SingleIssue" android:theme="@android:style/Theme.NoTitleBar" />
 		<activity android:name="NetworkList" android:theme="@android:style/Theme.NoTitleBar" />
 		<activity android:name="UserInfo" android:theme="@android:style/Theme.NoTitleBar" />
 		<activity android:name="WatchedRepositories" android:theme="@android:style/Theme.NoTitleBar" />
