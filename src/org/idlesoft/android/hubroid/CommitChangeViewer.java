@@ -148,6 +148,7 @@ public class CommitChangeViewer extends Activity {
 
         m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
+        View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
 
         TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
         title.setText("Commit Viewer");
@@ -173,13 +174,13 @@ public class CommitChangeViewer extends Activity {
         		String committerName = committerInfo.getString("login");
 
         		// If the committer is the author then just show them as the author, otherwise show both people
-        		((TextView) findViewById(R.id.commit_view_author_name)).setText(committerName);
+        		((TextView) header.findViewById(R.id.commit_view_author_name)).setText(authorName);
         		
         		if(authorGravatar != null)
-        			((ImageView) findViewById(R.id.commit_view_author_gravatar)).setImageBitmap(authorGravatar);
+        			((ImageView) header.findViewById(R.id.commit_view_author_gravatar)).setImageBitmap(authorGravatar);
 
         		// Set the commit message
-        		((TextView) findViewById(R.id.commit_view_message)).setText(commitJSON.getString("message"));
+        		((TextView) header.findViewById(R.id.commit_view_message)).setText(commitJSON.getString("message"));
 
     			SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
     			Date commit_time;
@@ -189,7 +190,7 @@ public class CommitChangeViewer extends Activity {
     			try {
     				commit_time = dateFormat.parse(commitJSON.getString("authored_date"));
     				current_time = dateFormat.parse(dateFormat.format(new Date()));
-    				((TextView) findViewById(R.id.commit_view_author_time)).setText(getHumanDate(current_time, commit_time));
+    				((TextView) header.findViewById(R.id.commit_view_author_time)).setText(getHumanDate(current_time, commit_time));
     				
     				commit_time = dateFormat.parse(commitJSON.getString("committed_date"));
     				authorDate = getHumanDate(current_time, commit_time);
@@ -201,19 +202,20 @@ public class CommitChangeViewer extends Activity {
 
         		if(!authorName.equals(committerName)){
         			// They are not the same person, make the author visible and fill in the details
-        			((LinearLayout) findViewById(R.id.commit_view_author_layout)).setVisibility(View.VISIBLE);
-        			((TextView) findViewById(R.id.commit_view_committer_name)).setText(authorName);
-        			((TextView) findViewById(R.id.commit_view_committer_time)).setText(authorDate);
+        			((LinearLayout) header.findViewById(R.id.commit_view_author_layout)).setVisibility(View.VISIBLE);
+        			((TextView) header.findViewById(R.id.commit_view_committer_name)).setText(committerName);
+        			((TextView) header.findViewById(R.id.commit_view_committer_time)).setText(authorDate);
         			Bitmap committerGravatar = loadGravatarByLoginName(committerName);
         			if(committerGravatar != null)
-        				((ImageView) findViewById(R.id.commit_view_committer_gravatar)).setImageBitmap(committerGravatar);
+        				((ImageView) header.findViewById(R.id.commit_view_committer_gravatar)).setImageBitmap(committerGravatar);
         		}
 
         		// Populate the ListView with the files that have changed 
         		JSONArray changesJSON = commitJSON.getJSONArray("modified");
         		CommitChangeViewerDiffAdapter diffs = new CommitChangeViewerDiffAdapter(getApplicationContext(), changesJSON);
-        		((ListView) findViewById(R.id.commit_view_diffs_list)).setAdapter(diffs);
-
+        		ListView diffList = (ListView)findViewById(R.id.commit_view_diffs_list);
+        		diffList.addHeaderView(header);
+        		diffList.setAdapter(diffs);
         	} catch(JSONException e) {
         		e.printStackTrace();
         	}
