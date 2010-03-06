@@ -1,3 +1,9 @@
+v1.2:
+* View issue contents and comments
+* Full commit messages
+* Commit Diffs
+* Optimized Layouts
+
 v1.1:
 * Follow/Unfollow users & Watch/Unwatch repos via a menu option
 * Show open/closed issues for a repo

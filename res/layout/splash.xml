@@ -30,7 +30,7 @@
 		android:layout_marginTop="-13dip"
 		android:layout_marginRight="24dip"
 		android:textColor="#999"
-		android:text="v1.1" />
+		android:text="v1.2" />
 	<TextView
 		android:id="@+id/tv_splash_copyright"
 		android:layout_width="wrap_content"
