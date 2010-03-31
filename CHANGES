@@ -1,3 +1,7 @@
+v1.2.1:
+* Fix orientation change crash
+* Master branch is now default in the commit list
+
 v1.2:
 * View issue contents and comments
 * Full commit messages

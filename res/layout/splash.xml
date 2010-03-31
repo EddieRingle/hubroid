@@ -30,7 +30,7 @@
 		android:layout_marginTop="-13dip"
 		android:layout_marginRight="24dip"
 		android:textColor="#999"
-		android:text="v1.2" />
+		android:text="v1.2.1" />
 	<TextView
 		android:id="@+id/tv_splash_copyright"
 		android:layout_width="wrap_content"
@@ -95,7 +95,8 @@
 			android:id="@+id/tv_splash_link_get_token"
 			android:text="github.com/account"
 			android:autoLink="web"
-			android:textSize="12.5dip"/>
+			android:textSize="12.5dip"
+			android:textColorLink="#71B3F4"/>
 		<Button
 			android:layout_alignParentRight="true"
 			android:layout_alignBaseline="@id/tv_splash_login_token_label"
