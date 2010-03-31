@@ -148,6 +148,9 @@ public class CommitsList extends Activity {
 					String next_branch = keys.next();
 					m_branches.add(next_branch);
 				}
+
+				// Find the position of the master branch
+				int masterPos = m_branches.indexOf("master");
 				
 				m_branchesAdapter = new ArrayAdapter<String>(CommitsList.this, android.R.layout.simple_spinner_item, m_branches);
 				m_branchesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -155,6 +158,9 @@ public class CommitsList extends Activity {
 				Spinner branchesSpinner = (Spinner)findViewById(R.id.spn_commits_list_branch_select);
 				branchesSpinner.setAdapter(m_branchesAdapter);
 				branchesSpinner.setOnItemSelectedListener(m_onBranchSelect);
+				// Set the spinner to the master branch, if it exists, by default
+				if (masterPos > -1)
+					branchesSpinner.setSelection(masterPos);
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
