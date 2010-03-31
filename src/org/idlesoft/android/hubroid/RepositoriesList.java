@@ -51,26 +51,23 @@ public class RepositoriesList extends Activity {
 		JSONObject json = null;
 		try {
 			json = new JSONObject(Repository.list(m_targetUser, m_username, m_token).resp);
-			if (json == null) {
-				runOnUiThread(new Runnable() {
-					public void run() {
-						Toast.makeText(RepositoriesList.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
-					}
-				});
-			} else {
-				m_publicRepoData = new JSONArray();
-				m_privateRepoData = new JSONArray();
-				for (int i = 0; !json.getJSONArray("repositories").isNull(i); i++) {
-					if (json.getJSONArray("repositories").getJSONObject(i).getBoolean("private")) {
-						m_privateRepoData.put(json.getJSONArray("repositories").getJSONObject(i));
-					} else {
-						m_publicRepoData.put(json.getJSONArray("repositories").getJSONObject(i));
-					}
+			m_publicRepoData = new JSONArray();
+			m_privateRepoData = new JSONArray();
+			for (int i = 0; !json.getJSONArray("repositories").isNull(i); i++) {
+				if (json.getJSONArray("repositories").getJSONObject(i).getBoolean("private")) {
+					m_privateRepoData.put(json.getJSONArray("repositories").getJSONObject(i));
+				} else {
+					m_publicRepoData.put(json.getJSONArray("repositories").getJSONObject(i));
 				}
-				m_publicRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_publicRepoData);
-				m_privateRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_privateRepoData);
 			}
+			m_publicRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_publicRepoData);
+			m_privateRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_privateRepoData);
 		} catch (JSONException e) {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(RepositoriesList.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
+				}
+			});
 			e.printStackTrace();
 		}
 	}
