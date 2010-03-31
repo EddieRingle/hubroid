@@ -52,37 +52,33 @@ public class Search extends Activity {
 	public int m_position;
 
 	public void initializeList() {
-		try {
-			String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
-			if (m_type.equals(REPO_TYPE)) {
+		String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
+		if (m_type.equals(REPO_TYPE)) {
+			try {
 				JSONObject response = new JSONObject(Repository.search(query, m_username, m_token).resp);
-
-				if (response == null) {
-					runOnUiThread(new Runnable() {
-						public void run() {
-							Toast.makeText(Search.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
-						}
-					});
-				} else {
-					m_repositoriesData = response.getJSONArray(REPO_TYPE);
-					m_repositories_adapter = new RepositoriesListAdapter(getApplicationContext(), m_repositoriesData);
-				}
-			} else if (m_type.equals(USER_TYPE)) {
-				JSONObject response = new JSONObject(User.search(query).resp);
-
-				if (response == null) {
-					runOnUiThread(new Runnable() {
-						public void run() {
-							Toast.makeText(Search.this, "Error gathering user data, please try again.", Toast.LENGTH_SHORT).show();
-						}
-					});
-				} else {
-					m_usersData = response.getJSONArray(USER_TYPE);
-					m_users_adapter = new SearchUsersListAdapter(getApplicationContext(), m_usersData);
-				}
+				m_repositoriesData = response.getJSONArray(REPO_TYPE);
+				m_repositories_adapter = new RepositoriesListAdapter(getApplicationContext(), m_repositoriesData);
+			} catch (JSONException e) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						Toast.makeText(Search.this, "Error gathering repository data, please try again.", Toast.LENGTH_SHORT).show();
+					}
+				});
+				e.printStackTrace();
 			}
-		} catch (JSONException e) {
-			e.printStackTrace();
+		} else if (m_type.equals(USER_TYPE)) {
+			try {
+				JSONObject response = new JSONObject(User.search(query).resp);
+				m_usersData = response.getJSONArray(USER_TYPE);
+				m_users_adapter = new SearchUsersListAdapter(getApplicationContext(), m_usersData);
+			} catch (JSONException e) {
+				runOnUiThread(new Runnable() {
+					public void run() {
+						Toast.makeText(Search.this, "Error gathering user data, please try again.", Toast.LENGTH_SHORT).show();
+					}
+				});
+				e.printStackTrace();
+			}
 		}
 	}
 
