@@ -98,27 +98,6 @@ public class FollowersFollowing extends Activity {
 		}
 	};
 
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
-			try {
-	        	m_intent = new Intent(FollowersFollowing.this, UserInfo.class);
-	        	if (m_type.equals("followers")) {
-	        		m_intent.putExtra("username", m_followersData.getJSONArray("users").getString(m_position));
-	        	} else if (m_type.equals("following")) {
-	        		m_intent.putExtra("username", m_followingData.getJSONArray("users").getString(m_position));
-	        	}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					FollowersFollowing.this.startActivity(m_intent);
-				}
-			});
-		}
-	};
-
 	public void toggleList(String type)
 	{
 		ListView followers = (ListView) findViewById(R.id.lv_followers_following_followers_list);
@@ -156,8 +135,17 @@ public class FollowersFollowing extends Activity {
 	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	        m_position = position;
-	        Thread thread = new Thread(null, threadProc_itemClick);
-	        thread.start();
+	        try {
+	        	m_intent = new Intent(FollowersFollowing.this, UserInfo.class);
+	        	if (m_type.equals("followers")) {
+	        		m_intent.putExtra("username", m_followersData.getJSONArray("users").getString(m_position));
+	        	} else if (m_type.equals("following")) {
+	        		m_intent.putExtra("username", m_followingData.getJSONArray("users").getString(m_position));
+	        	}
+	        	FollowersFollowing.this.startActivity(m_intent);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 	};
 
