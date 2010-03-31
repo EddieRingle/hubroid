@@ -54,37 +54,24 @@ public class IssuesList extends Activity {
 		m_closedIssuesData = new JSONArray();
 		try {
 			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "open", m_username, m_token).resp);
-
-			if (json == null) {
-				runOnUiThread(new Runnable() {
-					public void run() {
-						Toast.makeText(IssuesList.this, "Error gathering issue data, please try again.", Toast.LENGTH_SHORT).show();
-					}
-				});
-			} else {
-				m_openIssuesData = new JSONArray();
-				for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
-					m_openIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
-				}
-				m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
+			m_openIssuesData = new JSONArray();
+			for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
+				m_openIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
 			}
+			m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
 
-			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "closed", m_username, m_token).resp);
-			
-			if (json == null) {
-				runOnUiThread(new Runnable() {
-					public void run() {
-						Toast.makeText(IssuesList.this, "Error gathering issue data, please try again.", Toast.LENGTH_SHORT).show();
-					}
-				});
-			} else {
-				m_closedIssuesData = new JSONArray();
-				for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
-					m_closedIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
-				}
-				m_closedIssues_adapter = new IssuesListAdapter(IssuesList.this, m_closedIssuesData);
+			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "closed", m_username, m_token).resp);		
+			m_closedIssuesData = new JSONArray();
+			for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
+				m_closedIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
 			}
+			m_closedIssues_adapter = new IssuesListAdapter(IssuesList.this, m_closedIssuesData);
 		} catch (JSONException e) {
+			runOnUiThread(new Runnable() {
+				public void run() {
+					Toast.makeText(IssuesList.this, "Error gathering issue data, please try again.", Toast.LENGTH_SHORT).show();
+				}
+			});
 			e.printStackTrace();
 		}
 	}
