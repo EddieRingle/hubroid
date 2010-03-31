@@ -96,29 +96,6 @@ public class RepositoriesList extends Activity {
 		}
 	};
 
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
-			try {
-	        	m_intent = new Intent(RepositoriesList.this, RepositoryInfo.class);
-	        	if (m_type.equals("public")) {
-	        		m_intent.putExtra("repo_name", m_publicRepoData.getJSONObject(m_position).getString("name"));
-		        	m_intent.putExtra("username", m_publicRepoData.getJSONObject(m_position).getString("owner"));
-	        	} else if (m_type.equals("private")) {
-	        		m_intent.putExtra("repo_name", m_privateRepoData.getJSONObject(m_position).getString("name"));
-		        	m_intent.putExtra("username", m_privateRepoData.getJSONObject(m_position).getString("owner"));
-	        	}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					RepositoriesList.this.startActivity(m_intent);
-				}
-			});
-		}
-	};
-
 	public void toggleList(String type)
 	{
 		ListView publicList = (ListView) findViewById(R.id.lv_repositories_list_public_list);
@@ -156,8 +133,19 @@ public class RepositoriesList extends Activity {
 	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 	        m_position = position;
-	        Thread thread = new Thread(null, threadProc_itemClick);
-	        thread.start();
+	        try {
+	        	m_intent = new Intent(RepositoriesList.this, RepositoryInfo.class);
+	        	if (m_type.equals("public")) {
+	        		m_intent.putExtra("repo_name", m_publicRepoData.getJSONObject(m_position).getString("name"));
+		        	m_intent.putExtra("username", m_publicRepoData.getJSONObject(m_position).getString("owner"));
+	        	} else if (m_type.equals("private")) {
+	        		m_intent.putExtra("repo_name", m_privateRepoData.getJSONObject(m_position).getString("name"));
+		        	m_intent.putExtra("username", m_privateRepoData.getJSONObject(m_position).getString("owner"));
+	        	}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			RepositoriesList.this.startActivity(m_intent);
 		}
 	};
 
