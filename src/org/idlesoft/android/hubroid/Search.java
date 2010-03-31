@@ -82,32 +82,6 @@ public class Search extends Activity {
 		}
 	}
 
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
-			try {
-				if (m_type.equals(REPO_TYPE)) {
-					m_intent = new Intent(Search.this, RepositoryInfo.class);
-					m_intent.putExtra("repo_name", m_repositoriesData
-							.getJSONObject(m_position).getString("name"));
-					m_intent.putExtra("username", m_repositoriesData
-							.getJSONObject(m_position).getString("username"));
-				} else if (m_type.equals(USER_TYPE)) {
-					m_intent = new Intent(Search.this, UserInfo.class);
-					m_intent.putExtra("username", m_usersData.getJSONObject(
-							m_position).getString("username"));
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					Search.this.startActivityForResult(m_intent, 5005);
-				}
-			});
-		}
-	};
-
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
 		if (resultCode == 5005) {
@@ -188,8 +162,22 @@ public class Search extends Activity {
 	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 			m_position = position;
-			Thread thread = new Thread(null, threadProc_itemClick);
-			thread.start();
+			try {
+				if (m_type.equals(REPO_TYPE)) {
+					m_intent = new Intent(Search.this, RepositoryInfo.class);
+					m_intent.putExtra("repo_name", m_repositoriesData
+							.getJSONObject(m_position).getString("name"));
+					m_intent.putExtra("username", m_repositoriesData
+							.getJSONObject(m_position).getString("username"));
+				} else if (m_type.equals(USER_TYPE)) {
+					m_intent = new Intent(Search.this, UserInfo.class);
+					m_intent.putExtra("username", m_usersData.getJSONObject(
+							m_position).getString("username"));
+				}
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			Search.this.startActivityForResult(m_intent, 5005);
 		}
 	};
 
@@ -286,8 +274,7 @@ public class Search extends Activity {
 		m_type = savedInstanceState.getString("type");
 		try {
 			if (savedInstanceState.containsKey("repositories_json")) {
-				m_repositoriesData = new JSONArray(savedInstanceState
-						.getString("repositories_json"));
+				m_repositoriesData = new JSONArray(savedInstanceState.getString("repositories_json"));
 			} else {
 				m_repositoriesData = new JSONArray();
 			}
@@ -296,8 +283,7 @@ public class Search extends Activity {
 		}
 		try {
 			if (savedInstanceState.containsKey("users_json")) {
-				m_usersData = new JSONArray(savedInstanceState
-						.getString("users_json"));
+				m_usersData = new JSONArray(savedInstanceState.getString("users_json"));
 			} else {
 				m_usersData = new JSONArray();
 			}
@@ -305,8 +291,7 @@ public class Search extends Activity {
 			m_usersData = new JSONArray();
 		}
  		if (m_repositoriesData.length() > 0) {
-			m_repositories_adapter = new RepositoriesListAdapter(
-					Search.this, m_repositoriesData);
+			m_repositories_adapter = new RepositoriesListAdapter(Search.this, m_repositoriesData);
 		} else {
 			m_repositories_adapter = null;
 		}

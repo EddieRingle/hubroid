@@ -73,8 +73,9 @@ public class WatchedRepositories extends ListActivity {
 		}
 	};
 
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
+	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+			m_position = position;
 			try {
 	        	m_intent = new Intent(WatchedRepositories.this, RepositoryInfo.class);
 	        	m_intent.putExtra("repo_name", m_jsonData.getJSONArray("repositories").getJSONObject(m_position).getString("name"));
@@ -82,20 +83,7 @@ public class WatchedRepositories extends ListActivity {
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					WatchedRepositories.this.startActivity(m_intent);
-				}
-			});
-		}
-	};
-	
-	private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-			m_position = position;
-			Thread thread = new Thread(null, threadProc_itemClick);
-			thread.start();
+			WatchedRepositories.this.startActivity(m_intent);
 		}
 	};
 
