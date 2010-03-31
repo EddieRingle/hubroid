@@ -35,6 +35,7 @@ public class SingleActivityItem extends Activity {
 	private SharedPreferences.Editor m_editor;
 	private String m_username;
 	private String m_token;
+	private Thread m_thread;
 
 	public static final String CSS =
 		"<style type=\"text/css\">" +
@@ -204,5 +205,15 @@ public class SingleActivityItem extends Activity {
 				e.printStackTrace();
 			}
         }
+    }
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

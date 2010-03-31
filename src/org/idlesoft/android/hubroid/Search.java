@@ -50,6 +50,7 @@ public class Search extends Activity {
 	public JSONArray m_usersData;
 	public Intent m_intent;
 	public int m_position;
+	private Thread m_thread;
 
 	public void initializeList() {
 		String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
@@ -116,7 +117,7 @@ public class Search extends Activity {
 			if (!search_box.getText().toString().equals("")) {
 				if (m_type.equals(REPO_TYPE)) {
 					m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Repositories...", true);
-					Thread thread = new Thread(new Runnable() {
+					m_thread = new Thread(new Runnable() {
 						public void run() {
 							initializeList();
 							runOnUiThread(new Runnable() {
@@ -127,10 +128,10 @@ public class Search extends Activity {
 							});
 						}
 					});
-					thread.start();
+					m_thread.start();
 				} else if (m_type.equals(USER_TYPE)) {
 					m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Users...", true);
-					Thread thread = new Thread(new Runnable() {
+					m_thread = new Thread(new Runnable() {
 						public void run() {
 							initializeList();
 							runOnUiThread(new Runnable() {
@@ -141,7 +142,7 @@ public class Search extends Activity {
 							});
 						}
 					});
-					thread.start();
+					m_thread.start();
 				}
 			}
 		}
@@ -312,4 +313,14 @@ public class Search extends Activity {
 		users.setAdapter(m_users_adapter);
 		toggleList(m_type);
 	}
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
+    }
 }

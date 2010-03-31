@@ -46,6 +46,7 @@ public class RepositoriesList extends Activity {
 	public JSONArray m_privateRepoData;
 	public Intent m_intent;
 	public int m_position;
+	private Thread m_thread;
 
 	public void initializeList() {
 		JSONObject json = null;
@@ -208,8 +209,8 @@ public class RepositoriesList extends Activity {
         }
 
         m_progressDialog = ProgressDialog.show(RepositoriesList.this, "Please wait...", "Loading Repositories...", true);
-		Thread thread = new Thread(null, threadProc_initializeList);
-		thread.start();
+		m_thread = new Thread(null, threadProc_initializeList);
+		m_thread.start();
     }
 
     @Override
@@ -272,5 +273,15 @@ public class RepositoriesList extends Activity {
     	publicList.setAdapter(m_publicRepositories_adapter);
     	privateList.setAdapter(m_privateRepositories_adapter);
     	toggleList(m_type);
+    }
+
+    @Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

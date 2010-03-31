@@ -32,6 +32,7 @@ public class SplashScreen extends Activity {
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
+	private Thread m_thread;
 
 	private Runnable threadProc_login = new Runnable() {
 		public void run() {
@@ -76,10 +77,10 @@ public class SplashScreen extends Activity {
 
 	private OnClickListener m_loginButtonClick = new OnClickListener() {
 		public void onClick(View v) {
-			Thread thread = new Thread(threadProc_login);
+			m_thread = new Thread(threadProc_login);
 			m_progressDialog = ProgressDialog.show(SplashScreen.this,
 					"Logging in...", "Initializing...");
-			thread.start();
+			m_thread.start();
 		}
 	};
 
@@ -95,4 +96,14 @@ public class SplashScreen extends Activity {
 		Button loginBtn = (Button) findViewById(R.id.btn_splash_login);
 		loginBtn.setOnClickListener(m_loginButtonClick);
 	}
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
+    }
 }

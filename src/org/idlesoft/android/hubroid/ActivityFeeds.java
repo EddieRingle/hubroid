@@ -45,6 +45,7 @@ public class ActivityFeeds extends Activity {
 	private String m_type;
 	private JSONArray m_publicJSON;
 	private JSONArray m_privateJSON;
+	private Thread m_thread;
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
@@ -167,7 +168,7 @@ public class ActivityFeeds extends Activity {
         		((Button)findViewById(R.id.btn_activity_feeds_public)).setOnClickListener(onButtonToggleClickListener);
         	}
         	m_progressDialog = ProgressDialog.show(this, "Please Wait", "Loading activity feeds... (this may take awhile)");
-            Thread thread = new Thread(new Runnable() {
+            m_thread = new Thread(new Runnable() {
 				public void run()
 				{
 					try {
@@ -200,7 +201,17 @@ public class ActivityFeeds extends Activity {
 					}
 				}
 			});
-            thread.start();
+            m_thread.start();
         }
+    }
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

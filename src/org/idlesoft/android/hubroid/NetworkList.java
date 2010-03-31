@@ -41,6 +41,7 @@ public class NetworkList extends Activity {
 	public JSONArray m_jsonForkData;
 	private String m_username;
 	private String m_token;
+	private Thread m_thread;
 
 	private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -124,5 +125,15 @@ public class NetworkList extends Activity {
 				e.printStackTrace();
 			}
         }
+    }
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

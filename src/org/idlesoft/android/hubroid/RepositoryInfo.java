@@ -41,6 +41,7 @@ public class RepositoryInfo extends Activity {
 	private String m_repo_owner;
 	private String m_repo_name;
 	private boolean m_isWatching;
+	private Thread m_thread;
 
 	/* bleh.
 	private Runnable threadProc_userInfo = new Runnable() {
@@ -279,5 +280,15 @@ public class RepositoryInfo extends Activity {
 			user_info_btn.setOnClickListener(username_onClickListener);
 			*/
         }
+    }
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

@@ -38,6 +38,7 @@ public class WatchedRepositories extends ListActivity {
 	public SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
+	private Thread m_thread;
 
 	public RepositoriesListAdapter initializeList() {
 		RepositoriesListAdapter adapter = null;
@@ -145,8 +146,8 @@ public class WatchedRepositories extends ListActivity {
         title.setText("Watched Repositories");
 
         m_progressDialog = ProgressDialog.show(WatchedRepositories.this, "Please wait...", "Loading Repositories...", true);
-		Thread thread = new Thread(null, threadProc_initializeList);
-		thread.start();
+		m_thread = new Thread(null, threadProc_initializeList);
+		m_thread.start();
 
         ListView list = (ListView)findViewById(android.R.id.list);
         list.setOnItemClickListener(m_MessageClickedHandler);
@@ -190,5 +191,15 @@ public class WatchedRepositories extends ListActivity {
     	if (m_adapter != null) {
     		setListAdapter(m_adapter);
     	}
+    }
+
+    @Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

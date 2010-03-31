@@ -51,6 +51,7 @@ public class CommitsList extends Activity {
 	private String m_token;
 	public Intent m_intent;
 	public int m_position;
+	private Thread m_thread;
 
 	private Runnable threadProc_gatherCommits = new Runnable() {
 		public void run() {
@@ -77,8 +78,8 @@ public class CommitsList extends Activity {
 		{
 			m_position = position;
 			m_progressDialog = ProgressDialog.show(CommitsList.this, "Please wait...", "Loading Repository's Commits...", true);
-			Thread thread = new Thread(null, threadProc_gatherCommits);
-			thread.start();
+			m_thread = new Thread(null, threadProc_gatherCommits);
+			m_thread.start();
 		}
 
 		public void onNothingSelected(AdapterView<?> arg0) {
@@ -186,4 +187,14 @@ public class CommitsList extends Activity {
 			}
 		});
 	}
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
+    }
 }

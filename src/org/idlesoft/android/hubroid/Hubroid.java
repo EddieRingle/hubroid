@@ -62,6 +62,7 @@ public class Hubroid extends Activity {
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
+	private Thread m_thread;
 
 	/**
 	 * Returns a Gravatar ID associated with the provided name
@@ -278,7 +279,7 @@ public class Hubroid extends Activity {
 	        m_menuList.setAdapter(new ArrayAdapter<String>(Hubroid.this, R.layout.main_menu_item, MAIN_MENU));
 	        m_menuList.setOnItemClickListener(onMenuItemSelected);
 
-	        Thread thread = new Thread(new Runnable() {
+	        m_thread = new Thread(new Runnable() {
 				public void run() {
 					try {						
 						JSONObject result = new JSONObject(User.info(m_username, m_token).resp);
@@ -316,7 +317,17 @@ public class Hubroid extends Activity {
 					}
 				}
 			});
-	        thread.start();
+	        m_thread.start();
 		}
+    }
+
+    @Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

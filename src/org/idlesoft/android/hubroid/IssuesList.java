@@ -47,6 +47,7 @@ public class IssuesList extends Activity {
 	private JSONArray m_closedIssuesData;
 	private Intent m_intent;
 	private int m_position;
+	private Thread m_thread;
 
 	public void initializeList() {
 		JSONObject json = null;
@@ -216,8 +217,8 @@ public class IssuesList extends Activity {
         }
 
         m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Loading Issues...", true);
-		Thread thread = new Thread(null, threadProc_initializeList);
-		thread.start();
+		m_thread = new Thread(null, threadProc_initializeList);
+		m_thread.start();
     }
 
     @Override
@@ -280,5 +281,15 @@ public class IssuesList extends Activity {
     	openList.setAdapter(m_openIssues_adapter);
     	closedList.setAdapter(m_closedIssues_adapter);
     	toggleList(m_type);
+    }
+
+    @Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

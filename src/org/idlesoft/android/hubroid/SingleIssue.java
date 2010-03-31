@@ -45,6 +45,7 @@ public class SingleIssue extends Activity {
 	private static final GitHubAPI gh = new GitHubAPI();
 	private View m_header;
 	private View m_issueBox;
+	private Thread m_thread;
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (menu.hasVisibleItems()) menu.clear();
@@ -164,7 +165,7 @@ public class SingleIssue extends Activity {
 				((ListView)findViewById(R.id.lv_single_issue_comments)).addHeaderView(m_header);
 				((TextView)m_header.findViewById(R.id.tv_single_issue_body)).setText(m_JSON.getString("body"));
 
-				Thread thread = new Thread(new Runnable() {
+				m_thread = new Thread(new Runnable() {
 					public void run() {
 						try {
 							Response response = gh.Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
@@ -179,10 +180,20 @@ public class SingleIssue extends Activity {
 						}
 					}
 				});
-				thread.start();
+				m_thread.start();
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
         }
+    }
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

@@ -51,6 +51,7 @@ public class CommitChangeViewer extends Activity {
 	private String m_id;
 	public Intent m_intent;
 	public int m_position;
+	private Thread m_thread;
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
@@ -220,5 +221,15 @@ public class CommitChangeViewer extends Activity {
         		e.printStackTrace();
         	}
         }
+    }
+
+	@Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }

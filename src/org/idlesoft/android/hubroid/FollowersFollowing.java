@@ -43,6 +43,7 @@ public class FollowersFollowing extends Activity {
 	public JSONObject m_followingData;
 	public Intent m_intent;
 	public int m_position;
+	private Thread m_thread;
 
 	public FollowersFollowingListAdapter initializeList(String username) {
 		FollowersFollowingListAdapter adapter = null;
@@ -205,8 +206,8 @@ public class FollowersFollowing extends Activity {
         }
 
         m_progressDialog = ProgressDialog.show(FollowersFollowing.this, "Please wait...", "Fetching User Information...", true);
-		Thread thread = new Thread(null, threadProc_initializeList);
-		thread.start();
+		m_thread = new Thread(null, threadProc_initializeList);
+		m_thread.start();
     }
 
     @Override
@@ -277,5 +278,15 @@ public class FollowersFollowing extends Activity {
     	followers.setAdapter(m_followers_adapter);
     	following.setAdapter(m_following_adapter);
     	toggleList(m_type);
+    }
+
+    @Override
+    public void onPause()
+    {
+    	if (m_thread != null && m_thread.isAlive())
+    		m_thread.stop();
+    	if (m_progressDialog != null && m_progressDialog.isShowing())
+    		m_progressDialog.dismiss();
+    	super.onPause();
     }
 }
