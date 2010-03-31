@@ -42,8 +42,9 @@ public class NetworkList extends Activity {
 	private String m_username;
 	private String m_token;
 
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {
+	private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+			m_position = position;
 			try {
 	        	m_intent = new Intent(NetworkList.this, RepositoryInfo.class);
 	        	m_intent.putExtra("repo_name", m_jsonForkData.getJSONObject(m_position).getString("name"));
@@ -52,21 +53,6 @@ public class NetworkList extends Activity {
 				e.printStackTrace();
 			}
 			NetworkList.this.startActivity(m_intent);
-
-			runOnUiThread(new Runnable() {
-				public void run() {
-					m_progressDialog.dismiss();
-				}
-			});
-		}
-	};
-
-	private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
-		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-			m_position = position;
-			m_progressDialog = ProgressDialog.show(NetworkList.this, "Please wait...", "Loading Repository's Network...", true);
-			Thread thread = new Thread(null, threadProc_itemClick);
-			thread.start();
 		}
 	};
 
