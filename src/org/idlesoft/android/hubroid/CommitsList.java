@@ -167,16 +167,16 @@ public class CommitsList extends Activity {
 		
 		((ListView)findViewById(R.id.lv_commits_list_list)).setOnItemClickListener(new OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-					try {
-				        m_position = position;
-				        Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
-						i.putExtra("id", m_commitsJSON.getJSONObject(m_position).getString("id"));
-						i.putExtra("repo_name", m_repo_name);
-						i.putExtra("username", m_repo_owner);
-						CommitsList.this.startActivity(i);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
+				try {
+			        m_position = position;
+			        Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
+					i.putExtra("id", m_commitsJSON.getJSONObject(m_position).getString("id"));
+					i.putExtra("repo_name", m_repo_name);
+					i.putExtra("username", m_repo_owner);
+					CommitsList.this.startActivity(i);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 		});
 	}
