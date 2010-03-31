@@ -160,28 +160,6 @@ public class CommitsList extends Activity {
 			}
         }
     }
-
-	private Runnable threadProc_itemClick = new Runnable() {
-		public void run() {		
-			try {
-				//final String url = m_commitData.getJSONObject(m_position).getString("url");
-				final String id = m_commitsJSON.getJSONObject(m_position).getString("id");
-
-				runOnUiThread(new Runnable() {
-					public void run() {
-						Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
-						i.putExtra("id", id);
-						i.putExtra("repo_name", m_repo_name);
-						i.putExtra("username", m_repo_owner);
-						CommitsList.this.startActivity(i);
-					}
-				});
-					
-	        } catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-	};
 	
 	@Override
 	protected void onStart() {
@@ -189,9 +167,16 @@ public class CommitsList extends Activity {
 		
 		((ListView)findViewById(R.id.lv_commits_list_list)).setOnItemClickListener(new OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-			        m_position = position;
-			        Thread thread = new Thread(null, threadProc_itemClick);
-			        thread.start();
+					try {
+				        m_position = position;
+				        Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
+						i.putExtra("id", m_commitsJSON.getJSONObject(m_position).getString("id"));
+						i.putExtra("repo_name", m_repo_name);
+						i.putExtra("username", m_repo_owner);
+						CommitsList.this.startActivity(i);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
 			}
 		});
 	}
