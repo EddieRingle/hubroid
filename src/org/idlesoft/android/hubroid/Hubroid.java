@@ -282,39 +282,36 @@ public class Hubroid extends Activity {
 				public void run() {
 					try {						
 						JSONObject result = new JSONObject(User.info(m_username, m_token).resp);
-						if(result != null){
-							m_userData = result.getJSONObject("user");
+						m_userData = result.getJSONObject("user");
 
-							runOnUiThread(new Runnable() {
-								public void run() {
-									ImageView gravatar = (ImageView)findViewById(R.id.iv_main_gravatar);
-									try {
-										gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 36));
-										TextView username = (TextView)findViewById(R.id.tv_main_username);
-										if (m_userData.getString("name").length() > 0) {
-											username.setText(m_userData.getString("name"));
-										} else {
-											username.setText(m_username);
-										}
-									} catch (JSONException e) {
-										e.printStackTrace();
+						runOnUiThread(new Runnable() {
+							public void run() {
+								ImageView gravatar = (ImageView)findViewById(R.id.iv_main_gravatar);
+								try {
+									gravatar.setImageBitmap(Hubroid.getGravatar(m_userData.getString("gravatar_id"), 36));
+									TextView username = (TextView)findViewById(R.id.tv_main_username);
+									if (m_userData.getString("name").length() > 0) {
+										username.setText(m_userData.getString("name"));
+									} else {
+										username.setText(m_username);
 									}
-
-									// Unhide the screen
-									((RelativeLayout)findViewById(R.id.rl_main_menu_root)).setVisibility(View.VISIBLE);
+								} catch (JSONException e) {
+									e.printStackTrace();
 								}
-							});
-						} else {
-							runOnUiThread(new Runnable() {
-								public void run() {
-									Toast.makeText(Hubroid.this, "Error gathering user data.", Toast.LENGTH_SHORT).show();
 
-									// Unhide the screen
-									((RelativeLayout)findViewById(R.id.rl_main_menu_root)).setVisibility(View.VISIBLE);
-								}
-							});
-						}
+								// Unhide the screen
+								((RelativeLayout)findViewById(R.id.rl_main_menu_root)).setVisibility(View.VISIBLE);
+							}
+						});
 					} catch (JSONException e) {
+						runOnUiThread(new Runnable() {
+							public void run() {
+								Toast.makeText(Hubroid.this, "Error gathering user data.", Toast.LENGTH_SHORT).show();
+
+								// Unhide the screen
+								((RelativeLayout)findViewById(R.id.rl_main_menu_root)).setVisibility(View.VISIBLE);
+							}
+						});
 						e.printStackTrace();
 					}
 				}
