@@ -21,6 +21,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ParseException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
@@ -99,34 +100,42 @@ public class SingleIssue extends Activity {
 			long min = sec / 60;
 			long hour = min / 60;
 			long day = hour / 24;
-			if (day > 0) {
+			long year = day / 365;
+			if (year > 0) {
+				if (year == 1) {
+					end = " year ago";
+				} else {
+					end = " years ago";
+				}
+				date.setText("Updated " + year + end);
+			} else if (day > 0) {
 				if (day == 1) {
 					end = " day ago";
 				} else {
 					end = " days ago";
 				}
-				date.setText(day + end);
+				date.setText("Updated " + day + end);
 			} else if (hour > 0) {
 				if (hour == 1) {
 					end = " hour ago";
 				} else {
 					end = " hours ago";
 				}
-				date.setText(hour + end);
+				date.setText("Updated " + hour + end);
 			} else if (min > 0) {
 				if (min == 1) {
 					end = " minute ago";
 				} else {
 					end = " minutes ago";
 				}
-				date.setText(min + end);
+				date.setText("Updated " + min + end);
 			} else {
 				if (sec == 1) {
 					end = " second ago";
 				} else {
 					end = " seconds ago";
 				}
-				date.setText(sec + end);
+				date.setText("Updated " + sec + end);
 			}
 			if (m_JSON.getString("state").equalsIgnoreCase("open")) {
 				icon.setImageResource(R.drawable.issues_open);
@@ -163,7 +172,56 @@ public class SingleIssue extends Activity {
 				m_header = getLayoutInflater().inflate(R.layout.issue_header, null);
 				loadIssueItemBox();
 				((ListView)findViewById(R.id.lv_single_issue_comments)).addHeaderView(m_header);
-				((TextView)m_header.findViewById(R.id.tv_single_issue_body)).setText(m_JSON.getString("body"));
+				((ImageView)m_header.findViewById(R.id.iv_single_issue_gravatar)).setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(m_JSON.getString("user")), 30));
+				((TextView)m_header.findViewById(R.id.tv_single_issue_body)).setText(m_JSON.getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
+
+				String end;
+				SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+				Date item_time = dateFormat.parse(m_JSON.getString("created_at"));
+				Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+				long ms = current_time.getTime() - item_time.getTime();
+				long sec = ms / 1000;
+				long min = sec / 60;
+				long hour = min / 60;
+				long day = hour / 24;
+				long year = day / 365;
+				if (year > 0) {
+					if (year == 1) {
+						end = " year ago";
+					} else {
+						end = " years ago";
+					}
+					((TextView)m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + year + end + " by " + m_JSON.getString("user"));
+				}
+				if (day > 0) {
+					if (day == 1) {
+						end = " day ago";
+					} else {
+						end = " days ago";
+					}
+					((TextView)m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + day + end + " by " + m_JSON.getString("user"));
+				} else if (hour > 0) {
+					if (hour == 1) {
+						end = " hour ago";
+					} else {
+						end = " hours ago";
+					}
+					((TextView)m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + hour + end + " by " + m_JSON.getString("user"));
+				} else if (min > 0) {
+					if (min == 1) {
+						end = " minute ago";
+					} else {
+						end = " minutes ago";
+					}
+					((TextView)m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + min + end + " by " + m_JSON.getString("user"));
+				} else {
+					if (sec == 1) {
+						end = " second ago";
+					} else {
+						end = " seconds ago";
+					}
+					((TextView)m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + sec + end + " by " + m_JSON.getString("user"));
+				}
 
 				m_thread = new Thread(new Runnable() {
 					public void run() {
@@ -182,6 +240,8 @@ public class SingleIssue extends Activity {
 				});
 				m_thread.start();
 			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (java.text.ParseException e) {
 				e.printStackTrace();
 			}
         }

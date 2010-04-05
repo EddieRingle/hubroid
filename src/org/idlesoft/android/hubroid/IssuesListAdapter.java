@@ -81,34 +81,43 @@ public class IssuesListAdapter extends BaseAdapter {
 			long min = sec / 60;
 			long hour = min / 60;
 			long day = hour / 24;
+			long year = day / 365;
+			if (year > 0) {
+				if (year == 1) {
+					end = " year ago";
+				} else {
+					end = " years ago";
+				}
+				holder.issueLastUpdatedDate.setText("Updated " + year + end);
+			}
 			if (day > 0) {
 				if (day == 1) {
 					end = " day ago";
 				} else {
 					end = " days ago";
 				}
-				holder.issueLastUpdatedDate.setText(day + end);
+				holder.issueLastUpdatedDate.setText("Updated " + day + end);
 			} else if (hour > 0) {
 				if (hour == 1) {
 					end = " hour ago";
 				} else {
 					end = " hours ago";
 				}
-				holder.issueLastUpdatedDate.setText(hour + end);
+				holder.issueLastUpdatedDate.setText("Updated " + hour + end);
 			} else if (min > 0) {
 				if (min == 1) {
 					end = " minute ago";
 				} else {
 					end = " minutes ago";
 				}
-				holder.issueLastUpdatedDate.setText(min + end);
+				holder.issueLastUpdatedDate.setText("Updated " + min + end);
 			} else {
 				if (sec == 1) {
 					end = " second ago";
 				} else {
 					end = " seconds ago";
 				}
-				holder.issueLastUpdatedDate.setText(sec + end);
+				holder.issueLastUpdatedDate.setText("Updated " + sec + end);
 			}
 			if (m_data.getJSONObject(index).getString("state").equalsIgnoreCase("open")) {
 				holder.issueIcon.setImageResource(R.drawable.issues_open);

@@ -3,6 +3,7 @@
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
 	android:padding="10dip"
+	android:background="#FFF"
 	android:orientation="horizontal">
 	<ImageView
 		android:id="@+id/iv_issue_comment_gravatar"
@@ -23,6 +24,7 @@
 			android:layout_height="wrap_content"
 			android:text="Posted 24 hours ago by eddieringle"
 			android:layout_width="wrap_content"
+			android:textColor="@color/lightText"
 			android:textSize="12dip"/>
 		<TextView
 			android:id="@+id/tv_issue_comment_body"
