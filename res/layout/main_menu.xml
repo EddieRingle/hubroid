@@ -47,7 +47,7 @@
 			android:layout_width="240dip"
 			android:layout_height="wrap_content"
 			android:cacheColorHint="#FFF"
-			android:padding="3dip"
+			android:padding="4dip"
 			android:background="@drawable/main_menu_border" />
 	</LinearLayout>
 </RelativeLayout>
