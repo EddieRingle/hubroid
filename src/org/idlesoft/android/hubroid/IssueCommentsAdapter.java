@@ -153,7 +153,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
 				holder.meta.setText("Posted " + sec + end + " by " + m_data.getJSONObject(index).getString("user"));
 			}
 			holder.gravatar.setImageBitmap(m_gravatars[index]);
-			holder.body.setText(m_data.getJSONObject(index).getString("body"));
+			holder.body.setText(m_data.getJSONObject(index).getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {

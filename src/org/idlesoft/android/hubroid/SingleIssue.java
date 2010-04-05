@@ -13,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.Issues;
 import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,16 +22,18 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.ParseException;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SingleIssue extends Activity {
 	public ProgressDialog m_progressDialog;
@@ -43,8 +46,8 @@ public class SingleIssue extends Activity {
 	private String m_repoName;
 	private String m_username;
 	private String m_token;
-	private static final GitHubAPI gh = new GitHubAPI();
 	private View m_header;
+	private View m_commentArea;
 	private View m_issueBox;
 	private Thread m_thread;
 
@@ -144,7 +147,7 @@ public class SingleIssue extends Activity {
 			}
 			number.setText("#" + m_JSON.getString("number"));
 			title.setText(m_JSON.getString("title"));
-			topbar.setText(number.getText().toString());
+			topbar.setText("Issue " + number.getText().toString());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -223,10 +226,49 @@ public class SingleIssue extends Activity {
 					((TextView)m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + sec + end + " by " + m_JSON.getString("user"));
 				}
 
+				m_commentArea = getLayoutInflater().inflate(R.layout.issue_comment_area, null);
+				((ListView)findViewById(R.id.lv_single_issue_comments)).addFooterView(m_commentArea);
+				((Button)m_commentArea.findViewById(R.id.btn_issue_comment_area_submit)).setOnClickListener(new OnClickListener() {
+					public void onClick(View v) {					
+						String comment_body = ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString();
+						if (!comment_body.equals("")) {
+							((ProgressBar)m_commentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.VISIBLE);
+							m_thread = new Thread(new Runnable() {
+								public void run() {
+									try {
+										if (Issues.add_comment(m_repoOwner, m_repoName, m_JSON.getInt("number"), ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString(), m_username, m_token).statusCode == 200) {
+											runOnUiThread(new Runnable() {
+												public void run() {
+													((ProgressBar)m_commentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.GONE);
+													m_progressDialog = ProgressDialog.show(SingleIssue.this, "Please wait...", "Refreshing Comments...", true);
+												}
+											});
+											Response response = Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
+											m_adapter = new IssueCommentsAdapter(getApplicationContext(), new JSONObject(response.resp).getJSONArray("comments"));
+											runOnUiThread(new Runnable() {
+												public void run() {
+													((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).setText("");
+													((ListView)findViewById(R.id.lv_single_issue_comments)).setAdapter(m_adapter);
+													m_progressDialog.dismiss();
+												}
+											});
+										} else {
+											Toast.makeText(getApplicationContext(), "Error posting comment.", Toast.LENGTH_SHORT);
+										}
+									} catch (JSONException e) {
+										e.printStackTrace();
+									}
+								}
+							});
+							m_thread.start();
+						}
+					}
+				});
+
 				m_thread = new Thread(new Runnable() {
 					public void run() {
 						try {
-							Response response = gh.Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
+							Response response = Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
 							m_adapter = new IssueCommentsAdapter(getApplicationContext(), new JSONObject(response.resp).getJSONArray("comments"));
 							runOnUiThread(new Runnable() {
 								public void run() {
