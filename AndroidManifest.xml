@@ -10,20 +10,20 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name="SplashScreen" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="Search" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="RepositoriesList" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="RepositoryInfo" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="CommitsList" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="IssuesList" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="SingleIssue" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="NetworkList" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="UserInfo" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="WatchedRepositories" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="FollowersFollowing" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="ActivityFeeds" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="SingleActivityItem" android:theme="@android:style/Theme.NoTitleBar" />
-		<activity android:name="CommitChangeViewer" android:theme="@android:style/Theme.NoTitleBar" />
+		<activity android:name="SplashScreen" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="Search" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="RepositoriesList" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="RepositoryInfo" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="CommitsList" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="IssuesList" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="SingleIssue" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="NetworkList" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="UserInfo" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="WatchedRepositories" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="FollowersFollowing" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="ActivityFeeds" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="SingleActivityItem" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="CommitChangeViewer" android:theme="@android:style/Theme.Light.NoTitleBar" />
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="4" />
 	<uses-permission android:name="android.permission.INTERNET" />
