@@ -21,16 +21,20 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 public class IssuesList extends Activity {
 	private IssuesListAdapter m_openIssues_adapter;
@@ -155,6 +159,64 @@ public class IssuesList extends Activity {
 		}
 	};
 
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		int id = v.getId();
+		if (id == R.id.lv_issues_list_open_list) {
+			menu.add(0, 0, 0, "View");
+			if (m_username.equals(m_targetUser))
+				menu.add(0, 1, 0,  "Close");
+		} else if (id == R.id.lv_issues_list_closed_list) {
+			menu.add(0, 0, 0, "View");
+			if (m_username.equals(m_targetUser))
+				menu.add(0, 2, 0, "Reopen");
+		}
+	}
+	
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		JSONObject json = null;
+		try {
+	        if (m_type.equals("open")) {
+	        	json = m_openIssuesData.getJSONObject(info.position);
+	        } else {
+	        	json = m_closedIssuesData.getJSONObject(info.position);
+	        }
+			switch (item.getItemId()) {
+			case 0:
+		        Intent intent = new Intent(getApplicationContext(), SingleIssue.class);
+		        intent.putExtra("repoOwner", m_targetUser);
+		        intent.putExtra("repoName", m_targetRepo);
+		        intent.putExtra("item_json", json.toString());
+		        startActivity(intent);
+				return true;
+			case 1:
+				if (Issues.close(m_targetUser, m_targetRepo, json.getInt("number"), m_username, m_token).statusCode == 200) {
+					m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Refreshing Issue List...", true);
+					m_thread = new Thread(null, threadProc_initializeList);
+					m_thread.start();
+				} else {
+					Toast.makeText(getApplicationContext(), "Error closing issue.", Toast.LENGTH_SHORT);
+				}
+				return true;
+			case 2:
+				if (Issues.reopen(m_targetUser, m_targetRepo, json.getInt("number"), m_username, m_token).statusCode == 200) {
+					m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Refreshing Issue List...", true);
+					m_thread = new Thread(null, threadProc_initializeList);
+					m_thread.start();
+				} else {
+					Toast.makeText(getApplicationContext(), "Error reopening issue.", Toast.LENGTH_SHORT);
+				}
+				return true;
+			default:
+				return super.onContextItemSelected(item);
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
 			menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
@@ -230,6 +292,8 @@ public class IssuesList extends Activity {
 
         ((ListView)findViewById(R.id.lv_issues_list_open_list)).setOnItemClickListener(m_MessageClickedHandler);
         ((ListView)findViewById(R.id.lv_issues_list_closed_list)).setOnItemClickListener(m_MessageClickedHandler);
+        registerForContextMenu((ListView)findViewById(R.id.lv_issues_list_open_list));
+        registerForContextMenu((ListView)findViewById(R.id.lv_issues_list_closed_list));
     }
 
     @Override
