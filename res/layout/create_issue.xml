@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/rl_create_issue_root"
+	android:background="#FFF"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:isScrollContainer="true">
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<LinearLayout
+		android:id="@+id/ll_create_issue_shadow"
+		android:layout_width="fill_parent"
+		android:layout_height="10dip"
+		android:orientation="vertical"
+		android:layout_below="@id/include_top_bar"
+		android:background="@drawable/shadow" />
+	<ScrollView
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/ll_create_issue_shadow">
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:padding="5dip"
+			android:orientation="vertical"
+			android:isScrollContainer="true">
+			<TextView
+				android:id="@+id/tv_create_issue_title_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="18dip"
+				android:textColor="@color/textColor"
+				android:text="Title" />
+			<EditText
+				android:id="@+id/et_create_issue_title"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:maxLines="1" />
+			<TextView
+				android:id="@+id/tv_create_issue_body_label"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textSize="18dip"
+				android:textColor="@color/textColor"
+				android:text="Body" />
+			<EditText
+				android:id="@+id/et_create_issue_body"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:minLines="4" />
+			<Button
+				android:id="@+id/btn_create_issue_submit"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="right"
+				android:text="Submit" />
+		</LinearLayout>
+	</ScrollView>
+</RelativeLayout>

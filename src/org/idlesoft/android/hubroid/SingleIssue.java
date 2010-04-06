@@ -12,7 +12,6 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.Issues;
 import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONException;
@@ -50,6 +49,7 @@ public class SingleIssue extends Activity {
 	private View m_header;
 	private View m_commentArea;
 	private View m_issueBox;
+	private View m_clickedBtn;
 	private Thread m_thread;
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -85,6 +85,71 @@ public class SingleIssue extends Activity {
 		}
 		return false;
 	}
+
+	private OnClickListener m_onSubmitClickListener = new OnClickListener() {
+		public void onClick(View v) {
+			m_clickedBtn = v;
+			String comment_body = ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString();
+			if (!comment_body.equals("")) {
+				((ProgressBar)m_commentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.VISIBLE);
+				m_thread = new Thread(new Runnable() {
+					public void run() {
+						try {
+							if (Issues.add_comment(m_repoOwner, m_repoName, m_JSON.getInt("number"), ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString(), m_username, m_token).statusCode == 200) {
+								runOnUiThread(new Runnable() {
+									public void run() {
+										((ProgressBar)m_commentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.GONE);
+										m_progressDialog = ProgressDialog.show(SingleIssue.this, "Please wait...", "Refreshing Comments...", true);
+									}
+								});
+								if (m_clickedBtn.getId() == R.id.btn_issue_comment_area_submit_and_close) {
+									runOnUiThread(new Runnable() {
+										public void run() {
+											m_progressDialog.setMessage("Closing issue...");
+										}
+									});
+									int statusCode = Issues.close(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token).statusCode;
+									if (statusCode == 200) {
+										runOnUiThread(new Runnable() {
+											public void run() {
+												m_progressDialog.setMessage("Refreshing Issue...");
+											}
+										});
+										m_JSON = new JSONObject(Issues.issue(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token).resp).getJSONObject("issue");
+										runOnUiThread(new Runnable() {
+											public void run() {
+												loadIssueItemBox();
+											}
+										});
+									} else {
+										runOnUiThread(new Runnable() {
+											public void run() {
+												Toast.makeText(SingleIssue.this, "Error closing issue.", Toast.LENGTH_SHORT).show();
+											}
+										});
+									}
+								}
+								Response response = Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
+								m_adapter = new IssueCommentsAdapter(getApplicationContext(), new JSONObject(response.resp).getJSONArray("comments"));
+								runOnUiThread(new Runnable() {
+									public void run() {
+										((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).setText("");
+										((ListView)findViewById(R.id.lv_single_issue_comments)).setAdapter(m_adapter);
+										m_progressDialog.dismiss();
+									}
+								});
+							} else {
+								Toast.makeText(getApplicationContext(), "Error posting comment.", Toast.LENGTH_SHORT).show();
+							}
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					}
+				});
+				m_thread.start();
+			}
+		}
+	};
 
 	private void loadIssueItemBox() {
 		TextView date = (TextView)m_header.findViewById(R.id.tv_issue_list_item_updated_date);
@@ -196,8 +261,7 @@ public class SingleIssue extends Activity {
 						end = " years ago";
 					}
 					((TextView)m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + year + end + " by " + m_JSON.getString("user"));
-				}
-				if (day > 0) {
+				} else 	if (day > 0) {
 					if (day == 1) {
 						end = " day ago";
 					} else {
@@ -229,42 +293,8 @@ public class SingleIssue extends Activity {
 
 				m_commentArea = getLayoutInflater().inflate(R.layout.issue_comment_area, null);
 				((ListView)findViewById(R.id.lv_single_issue_comments)).addFooterView(m_commentArea);
-				((Button)m_commentArea.findViewById(R.id.btn_issue_comment_area_submit)).setOnClickListener(new OnClickListener() {
-					public void onClick(View v) {					
-						String comment_body = ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString();
-						if (!comment_body.equals("")) {
-							((ProgressBar)m_commentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.VISIBLE);
-							m_thread = new Thread(new Runnable() {
-								public void run() {
-									try {
-										if (Issues.add_comment(m_repoOwner, m_repoName, m_JSON.getInt("number"), ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString(), m_username, m_token).statusCode == 200) {
-											runOnUiThread(new Runnable() {
-												public void run() {
-													((ProgressBar)m_commentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.GONE);
-													m_progressDialog = ProgressDialog.show(SingleIssue.this, "Please wait...", "Refreshing Comments...", true);
-												}
-											});
-											Response response = Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
-											m_adapter = new IssueCommentsAdapter(getApplicationContext(), new JSONObject(response.resp).getJSONArray("comments"));
-											runOnUiThread(new Runnable() {
-												public void run() {
-													((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).setText("");
-													((ListView)findViewById(R.id.lv_single_issue_comments)).setAdapter(m_adapter);
-													m_progressDialog.dismiss();
-												}
-											});
-										} else {
-											Toast.makeText(getApplicationContext(), "Error posting comment.", Toast.LENGTH_SHORT).show();
-										}
-									} catch (JSONException e) {
-										e.printStackTrace();
-									}
-								}
-							});
-							m_thread.start();
-						}
-					}
-				});
+				((Button)m_commentArea.findViewById(R.id.btn_issue_comment_area_submit)).setOnClickListener(m_onSubmitClickListener);
+				((Button)m_commentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close)).setOnClickListener(m_onSubmitClickListener);
 
 				m_thread = new Thread(new Runnable() {
 					public void run() {

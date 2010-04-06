@@ -57,6 +57,7 @@
 		android:layout_height="wrap_content"
 		android:textSize="16dip"
 		android:textStyle="bold"
+		android:padding="10dip"
 		android:textColor="@color/darkText"
 		android:text="Comments" />
 </LinearLayout>

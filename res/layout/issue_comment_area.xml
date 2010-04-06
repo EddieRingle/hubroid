@@ -53,6 +53,12 @@
 				android:layout_gravity="center_vertical"
 				android:text="Submit"
 				android:layout_width="wrap_content"/>
+			<Button
+				android:id="@+id/btn_issue_comment_area_submit_and_close"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center_vertical"
+				android:text="Submit &amp; Close"
+				android:layout_width="wrap_content"/>
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>
