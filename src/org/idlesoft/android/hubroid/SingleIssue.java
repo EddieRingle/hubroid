@@ -309,7 +309,7 @@ public class SingleIssue extends Activity {
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState) {
     	super.onRestoreInstanceState(savedInstanceState);
-    		if (savedInstanceState.containsKey("commentExt")) {
+    		if (savedInstanceState.containsKey("commentText")) {
     			((EditText)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).setText(savedInstanceState.getString("commentText"));
     		}
     }
