@@ -196,7 +196,7 @@ public class IssuesList extends Activity {
 					m_thread = new Thread(null, threadProc_initializeList);
 					m_thread.start();
 				} else {
-					Toast.makeText(getApplicationContext(), "Error closing issue.", Toast.LENGTH_SHORT);
+					Toast.makeText(getApplicationContext(), "Error closing issue.", Toast.LENGTH_SHORT).show();
 				}
 				return true;
 			case 2:
@@ -205,7 +205,7 @@ public class IssuesList extends Activity {
 					m_thread = new Thread(null, threadProc_initializeList);
 					m_thread.start();
 				} else {
-					Toast.makeText(getApplicationContext(), "Error reopening issue.", Toast.LENGTH_SHORT);
+					Toast.makeText(getApplicationContext(), "Error reopening issue.", Toast.LENGTH_SHORT).show();
 				}
 				return true;
 			default:

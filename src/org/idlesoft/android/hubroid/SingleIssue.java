@@ -253,7 +253,7 @@ public class SingleIssue extends Activity {
 												}
 											});
 										} else {
-											Toast.makeText(getApplicationContext(), "Error posting comment.", Toast.LENGTH_SHORT);
+											Toast.makeText(getApplicationContext(), "Error posting comment.", Toast.LENGTH_SHORT).show();
 										}
 									} catch (JSONException e) {
 										e.printStackTrace();
