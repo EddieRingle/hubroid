@@ -302,7 +302,7 @@ public class SingleIssue extends Activity {
 
 	@Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-		savedInstanceState.putString("commentText", ((EditText)findViewById(R.id.et_issue_comment_area_body)).getText().toString());
+		savedInstanceState.putString("commentText", ((EditText)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString());
     	super.onSaveInstanceState(savedInstanceState);
     }
 
@@ -310,7 +310,7 @@ public class SingleIssue extends Activity {
     public void onRestoreInstanceState(Bundle savedInstanceState) {
     	super.onRestoreInstanceState(savedInstanceState);
     		if (savedInstanceState.containsKey("commentExt")) {
-    			((EditText)findViewById(R.id.et_issue_comment_area_body)).setText(savedInstanceState.getString("commentText"));
+    			((EditText)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).setText(savedInstanceState.getString("commentText"));
     		}
     }
 }
