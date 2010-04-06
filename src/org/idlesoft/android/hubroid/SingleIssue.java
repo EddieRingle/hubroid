@@ -29,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -297,5 +298,19 @@ public class SingleIssue extends Activity {
     	if (m_progressDialog != null && m_progressDialog.isShowing())
     		m_progressDialog.dismiss();
     	super.onPause();
+    }
+
+	@Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putString("commentText", ((EditText)findViewById(R.id.et_issue_comment_area_body)).getText().toString());
+    	super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    	super.onRestoreInstanceState(savedInstanceState);
+    		if (savedInstanceState.containsKey("commentExt")) {
+    			((EditText)findViewById(R.id.et_issue_comment_area_body)).setText(savedInstanceState.getString("commentText"));
+    		}
     }
 }
