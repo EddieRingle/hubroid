@@ -48,6 +48,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.flurry.android.FlurryAgent;
+
 public class Hubroid extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
 	// Time format used by GitHub in their responses
@@ -319,6 +321,20 @@ public class Hubroid extends Activity {
 			});
 	        m_thread.start();
 		}
+    }
+
+    @Override
+    public void onStart()
+    {
+       super.onStart();
+       FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+    }
+
+    @Override
+    public void onStop()
+    {
+       super.onStop();
+       FlurryAgent.onEndSession(this);
     }
 
     @Override

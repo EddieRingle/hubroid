@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.flurry.android.FlurryAgent;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -217,11 +219,20 @@ public class RepositoriesList extends Activity {
     public void onStart() {
     	super.onStart();
 
+    	FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+
     	((Button)findViewById(R.id.btn_repositories_list_public)).setOnClickListener(onButtonToggleClickListener);
         ((Button)findViewById(R.id.btn_repositories_list_private)).setOnClickListener(onButtonToggleClickListener);
 
         ((ListView)findViewById(R.id.lv_repositories_list_public_list)).setOnItemClickListener(m_MessageClickedHandler);
         ((ListView)findViewById(R.id.lv_repositories_list_private_list)).setOnItemClickListener(m_MessageClickedHandler);
+    }
+
+    @Override
+    public void onStop()
+    {
+       super.onStop();
+       FlurryAgent.onEndSession(this);
     }
 
     @Override

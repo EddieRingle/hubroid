@@ -19,6 +19,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.flurry.android.FlurryAgent;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -171,7 +173,9 @@ public class CommitsList extends Activity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		
+
+		FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+
 		((ListView)findViewById(R.id.lv_commits_list_list)).setOnItemClickListener(new OnItemClickListener(){
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				try {
@@ -187,6 +191,13 @@ public class CommitsList extends Activity {
 			}
 		});
 	}
+
+    @Override
+    public void onStop()
+    {
+       super.onStop();
+       FlurryAgent.onEndSession(this);
+    }
 
 	@Override
     public void onPause()

@@ -5,6 +5,8 @@ import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.flurry.android.FlurryAgent;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -95,6 +97,20 @@ public class CreateIssue extends Activity {
 			}
 		});
 	}
+
+	@Override
+    public void onStart()
+    {
+       super.onStart();
+       FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+    }
+
+    @Override
+    public void onStop()
+    {
+       super.onStop();
+       FlurryAgent.onEndSession(this);
+    }
 
 	@Override
     public void onPause()

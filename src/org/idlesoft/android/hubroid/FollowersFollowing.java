@@ -14,6 +14,8 @@ import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.flurry.android.FlurryAgent;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -214,11 +216,20 @@ public class FollowersFollowing extends Activity {
     public void onStart() {
     	super.onStart();
 
+    	FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+
     	((Button)findViewById(R.id.btn_followers_following_followers)).setOnClickListener(onButtonToggleClickListener);
         ((Button)findViewById(R.id.btn_followers_following_following)).setOnClickListener(onButtonToggleClickListener);
 
         ((ListView)findViewById(R.id.lv_followers_following_followers_list)).setOnItemClickListener(m_MessageClickedHandler);
         ((ListView)findViewById(R.id.lv_followers_following_following_list)).setOnItemClickListener(m_MessageClickedHandler);
+    }
+
+    @Override
+    public void onStop()
+    {
+       super.onStop();
+       FlurryAgent.onEndSession(this);
     }
 
     @Override

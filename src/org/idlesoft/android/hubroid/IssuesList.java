@@ -15,6 +15,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.flurry.android.FlurryAgent;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -295,6 +297,8 @@ public class IssuesList extends Activity {
     public void onStart() {
     	super.onStart();
 
+    	FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+
     	((Button)findViewById(R.id.btn_issues_list_open)).setOnClickListener(onButtonToggleClickListener);
         ((Button)findViewById(R.id.btn_issues_list_closed)).setOnClickListener(onButtonToggleClickListener);
 
@@ -302,6 +306,13 @@ public class IssuesList extends Activity {
         ((ListView)findViewById(R.id.lv_issues_list_closed_list)).setOnItemClickListener(m_MessageClickedHandler);
         registerForContextMenu((ListView)findViewById(R.id.lv_issues_list_open_list));
         registerForContextMenu((ListView)findViewById(R.id.lv_issues_list_closed_list));
+    }
+
+    @Override
+    public void onStop()
+    {
+       super.onStop();
+       FlurryAgent.onEndSession(this);
     }
 
     @Override

@@ -16,6 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.flurry.android.FlurryAgent;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -243,6 +245,8 @@ public class Search extends Activity {
 	public void onStart() {
 		super.onStart();
 
+		FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+
 		((Button) findViewById(R.id.btn_search_repositories))
 				.setOnClickListener(onButtonToggleClickListener);
 		((Button) findViewById(R.id.btn_search_users))
@@ -255,6 +259,13 @@ public class Search extends Activity {
 		((ListView) findViewById(R.id.lv_search_users_list))
 				.setOnItemClickListener(m_MessageClickedHandler);
 	}
+
+    @Override
+    public void onStop()
+    {
+       super.onStop();
+       FlurryAgent.onEndSession(this);
+    }
 
 	@Override
 	public void onSaveInstanceState(Bundle savedInstanceState) {
