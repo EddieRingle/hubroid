@@ -47,11 +47,11 @@ public class IssueCommentsAdapter extends BaseAdapter {
 	public void loadGravatars()
 	{
 		try {
-			for (int i = 0; i < m_data.length(); i++) {
+			int length = m_data.length();
+			for (int i = 0; i < length; i++) {
 				String actor = m_data.getJSONObject(i).getString("user");
 				if (!m_gravatars.containsKey(actor)) {
-					String id = Hubroid.getGravatarID(actor);
-					m_gravatars.put(actor, Hubroid.getGravatar(id, 30));
+					m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
 				}
 			}
 		} catch (JSONException e) {

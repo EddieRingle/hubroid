@@ -26,7 +26,8 @@ public class FollowersFollowingListAdapter extends UsersListAdapter {
 
 	public void loadGravatars()
 	{
-		for (int i = 0; !m_data.isNull(i); i++) {
+		int length = m_data.length();
+		for (int i = 0; i < length; i++) {
 			try {
 				String username = m_data.getString(i);
 				m_gravatars.put(username, Hubroid.getGravatar(Hubroid.getGravatarID(username), 30));

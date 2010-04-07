@@ -55,11 +55,11 @@ public class ActivityFeedAdapter extends BaseAdapter {
 				m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
 			} else {
 				// Load all of 'em
-				for (int i = 0; i < m_data.length(); i++) {
+				int length = m_data.length();
+				for (int i = 0; i < length; i++) {
 					String actor = m_data.getJSONObject(i).getJSONObject("author").getString("name");
 					if (!m_gravatars.containsKey(actor)) {
-						String id = Hubroid.getGravatarID(actor);
-						m_gravatars.put(actor, Hubroid.getGravatar(id, 30));
+						m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
 					}
 				}
 			}
@@ -154,8 +154,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
 				}
 				holder.date.setText(sec + end);
 			}
-			String actor = m_data.getJSONObject(index).getJSONObject("author").getString("name");
-			holder.gravatar.setImageBitmap(m_gravatars.get(actor));
+			holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index).getJSONObject("author").getString("name")));
 
 			String eventType = m_data.getJSONObject(index).getString("id");
 			String title = m_data.getJSONObject(index).getString("title");

@@ -42,12 +42,12 @@ public class CommitListAdapter extends BaseAdapter {
 	 */
 	public void loadGravatars()
 	{
-		for (int i = 0; i < m_data.length(); i++) {
+		int length = m_data.length();
+		for (int i = 0; i < length; i++) {
 			try {
 				String login = m_data.getJSONObject(i).getJSONObject("author").getString("login");
 				if (!m_gravatars.containsKey(login)) {
-					String id = Hubroid.getGravatarID(login);
-					m_gravatars.put(login, Hubroid.getGravatar(id, 30));
+					m_gravatars.put(login, Hubroid.getGravatar(Hubroid.getGravatarID(login), 30));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -133,8 +133,7 @@ public class CommitListAdapter extends BaseAdapter {
 				holder.commit_date.setText(sec + end);
 			}
 			holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index).getJSONObject("author").getString("login")));
-			String description = m_data.getJSONObject(index).getString("message");
-			holder.commit_shortdesc.setText(description.split("\n")[0]);
+			holder.commit_shortdesc.setText(m_data.getJSONObject(index).getString("message").split("\n")[0]);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
