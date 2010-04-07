@@ -11,6 +11,7 @@ package org.idlesoft.android.hubroid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +29,7 @@ public class CommitListAdapter extends BaseAdapter {
 	private JSONArray m_data = new JSONArray();
 	private Context m_context;
 	private LayoutInflater m_inflater;
-	private Bitmap[] m_gravatars;
+	private HashMap<String, Bitmap> m_gravatars;
 
 	public static class ViewHolder {
 		public TextView commit_shortdesc;
@@ -44,11 +45,9 @@ public class CommitListAdapter extends BaseAdapter {
 		for (int i = 0; i < m_data.length(); i++) {
 			try {
 				String login = m_data.getJSONObject(i).getJSONObject("author").getString("login");
-				if (!login.equals("")) {
+				if (!m_gravatars.containsKey(login)) {
 					String id = Hubroid.getGravatarID(login);
-					m_gravatars[i] = Hubroid.getGravatar(id, 30);
-				} else {
-					m_gravatars[i] = null;
+					m_gravatars.put(login, Hubroid.getGravatar(id, 30));
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -60,7 +59,7 @@ public class CommitListAdapter extends BaseAdapter {
 		m_context = context;
 		m_inflater = LayoutInflater.from(m_context);
 		m_data = jsonarray;
-		m_gravatars = new Bitmap[m_data.length()];
+		m_gravatars = new HashMap<String, Bitmap>(m_data.length());
 
 		this.loadGravatars();
 	}
@@ -133,7 +132,7 @@ public class CommitListAdapter extends BaseAdapter {
 				}
 				holder.commit_date.setText(sec + end);
 			}
-			holder.gravatar.setImageBitmap(m_gravatars[index]);
+			holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index).getJSONObject("author").getString("login")));
 			String description = m_data.getJSONObject(index).getString("message");
 			holder.commit_shortdesc.setText(description.split("\n")[0]);
 		} catch (JSONException e) {

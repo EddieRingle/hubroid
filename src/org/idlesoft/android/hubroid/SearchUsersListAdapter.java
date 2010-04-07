@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,20 +24,18 @@ public class SearchUsersListAdapter extends UsersListAdapter {
 		this.loadGravatars();
 	}
 
-	@Override
 	public void loadGravatars()
 	{
 		for (int i = 0; !m_data.isNull(i); i++) {
 			try {
-				Log.d("debug_gravatars", "Loading gravatar #" + i);
-				m_gravatars[i] = Hubroid.getGravatar(Hubroid.getGravatarID(m_data.getJSONObject(i).getString("username")), 30);
+				String username = m_data.getJSONObject(i).getString("username");
+				m_gravatars.put(username, Hubroid.getGravatar(Hubroid.getGravatarID(username), 30));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	@Override
 	public View getView(int index, View convertView, ViewGroup parent) {
 		m_currentIndex = index;
 		if (convertView == null) {
@@ -53,7 +50,7 @@ public class SearchUsersListAdapter extends UsersListAdapter {
 		m_currentViewHolder.text.setTextColor(R.color.textColor);
 		try {
 			m_currentViewHolder.text.setText(m_data.getJSONObject(m_currentIndex).getString("username"));
-			m_currentViewHolder.gravatar.setImageBitmap(m_gravatars[m_currentIndex]);
+			m_currentViewHolder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(m_currentIndex).getString("username")));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

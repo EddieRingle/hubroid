@@ -24,19 +24,18 @@ public class FollowersFollowingListAdapter extends UsersListAdapter {
 		this.loadGravatars();
 	}
 
-	@Override
 	public void loadGravatars()
 	{
 		for (int i = 0; !m_data.isNull(i); i++) {
 			try {
-				m_gravatars[i] = Hubroid.getGravatar(Hubroid.getGravatarID(m_data.getString(i)), 30);
+				String username = m_data.getString(i);
+				m_gravatars.put(username, Hubroid.getGravatar(Hubroid.getGravatarID(username), 30));
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
 		}
 	}
 
-	@Override
 	public View getView(int index, View convertView, ViewGroup parent) {
 		m_currentIndex = index;
 		if (convertView == null) {
@@ -51,7 +50,7 @@ public class FollowersFollowingListAdapter extends UsersListAdapter {
 		m_currentViewHolder.text.setTextColor(R.color.textColor);
 		try {
 			m_currentViewHolder.text.setText(m_data.getString(m_currentIndex));
-			m_currentViewHolder.gravatar.setImageBitmap(m_gravatars[m_currentIndex]);
+			m_currentViewHolder.gravatar.setImageBitmap(m_gravatars.get(m_data.getString(m_currentIndex)));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

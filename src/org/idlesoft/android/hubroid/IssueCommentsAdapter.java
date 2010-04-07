@@ -11,6 +11,7 @@ package org.idlesoft.android.hubroid;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +29,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
 	private JSONArray m_data = new JSONArray();
 	private Context m_context;
 	private LayoutInflater m_inflater;
-	private Bitmap[] m_gravatars;
+	private HashMap<String, Bitmap> m_gravatars;
 
 	public static class ViewHolder {
 		public TextView body;
@@ -48,11 +49,9 @@ public class IssueCommentsAdapter extends BaseAdapter {
 		try {
 			for (int i = 0; i < m_data.length(); i++) {
 				String actor = m_data.getJSONObject(i).getString("user");
-				if (!actor.equals("")) {
+				if (!m_gravatars.containsKey(actor)) {
 					String id = Hubroid.getGravatarID(actor);
-					m_gravatars[i] = Hubroid.getGravatar(id, 30);
-				} else {
-					m_gravatars[i] = null;
+					m_gravatars.put(actor, Hubroid.getGravatar(id, 30));
 				}
 			}
 		} catch (JSONException e) {
@@ -70,7 +69,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
 		m_context = context;
 		m_inflater = LayoutInflater.from(m_context);
 		m_data = json;
-		m_gravatars = new Bitmap[m_data.length()];
+		m_gravatars = new HashMap<String, Bitmap>(m_data.length());
 
 		this.loadGravatars();
 	}
@@ -152,7 +151,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
 				}
 				holder.meta.setText("Posted " + sec + end + " by " + m_data.getJSONObject(index).getString("user"));
 			}
-			holder.gravatar.setImageBitmap(m_gravatars[index]);
+			holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index).getString("user")));
 			holder.body.setText(m_data.getJSONObject(index).getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 		} catch (JSONException e) {
 			e.printStackTrace();
