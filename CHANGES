@@ -1,3 +1,9 @@
+v1.3:
+* Ability to add and comment on issues
+* New logo from prash
+* UI tweaks
+* Optimized Gravatar loading
+
 v1.2.1:
 * Fix orientation change crash
 * Master branch is now default in the commit list
