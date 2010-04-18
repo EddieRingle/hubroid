@@ -16,25 +16,31 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.flurry.android.FlurryAgent;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethod;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.TextView.OnEditorActionListener;
+
+import com.flurry.android.FlurryAgent;
 
 public class Search extends Activity {
 	private static final String REPO_TYPE = "repositories";
@@ -53,6 +59,7 @@ public class Search extends Activity {
 	public Intent m_intent;
 	public int m_position;
 	private Thread m_thread;
+	public InputMethodManager m_imm;
 
 	public void initializeList() {
 		String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
@@ -113,42 +120,41 @@ public class Search extends Activity {
 		}
 	}
 
-	private OnClickListener m_btnSearchListener = new OnClickListener() {
-		public void onClick(View v) {
-			EditText search_box = (EditText) findViewById(R.id.et_search_search_box);
-			if (!search_box.getText().toString().equals("")) {
-				if (m_type.equals(REPO_TYPE)) {
-					m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Repositories...", true);
-					m_thread = new Thread(new Runnable() {
-						public void run() {
-							initializeList();
-							runOnUiThread(new Runnable() {
-								public void run() {
-									((ListView)findViewById(R.id.lv_search_repositories_list)).setAdapter(m_repositories_adapter);
-									m_progressDialog.dismiss();
-								}
-							});
-						}
-					});
-					m_thread.start();
-				} else if (m_type.equals(USER_TYPE)) {
-					m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Users...", true);
-					m_thread = new Thread(new Runnable() {
-						public void run() {
-							initializeList();
-							runOnUiThread(new Runnable() {
-								public void run() {
-									((ListView)findViewById(R.id.lv_search_users_list)).setAdapter(m_users_adapter);
-									m_progressDialog.dismiss();
-								}
-							});
-						}
-					});
-					m_thread.start();
-				}
+	public void search()
+	{
+		EditText search_box = (EditText) findViewById(R.id.et_search_search_box);
+		if (!search_box.getText().toString().equals("")) {
+			if (m_type.equals(REPO_TYPE)) {
+				m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Repositories...", true);
+				m_thread = new Thread(new Runnable() {
+					public void run() {
+						initializeList();
+						runOnUiThread(new Runnable() {
+							public void run() {
+								((ListView)findViewById(R.id.lv_search_repositories_list)).setAdapter(m_repositories_adapter);
+								m_progressDialog.dismiss();
+							}
+						});
+					}
+				});
+				m_thread.start();
+			} else if (m_type.equals(USER_TYPE)) {
+				m_progressDialog = ProgressDialog.show(Search.this, "Please wait...", "Searching Users...", true);
+				m_thread = new Thread(new Runnable() {
+					public void run() {
+						initializeList();
+						runOnUiThread(new Runnable() {
+							public void run() {
+								((ListView)findViewById(R.id.lv_search_users_list)).setAdapter(m_users_adapter);
+								m_progressDialog.dismiss();
+							}
+						});
+					}
+				});
+				m_thread.start();
 			}
 		}
-	};
+	}
 
 	private OnClickListener onButtonToggleClickListener = new OnClickListener() {
 		public void onClick(View v) {
@@ -247,12 +253,27 @@ public class Search extends Activity {
 
 		FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
 
+		m_imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+
 		((Button) findViewById(R.id.btn_search_repositories))
 				.setOnClickListener(onButtonToggleClickListener);
 		((Button) findViewById(R.id.btn_search_users))
 				.setOnClickListener(onButtonToggleClickListener);
-		((Button) findViewById(R.id.btn_search_go))
-				.setOnClickListener(m_btnSearchListener);
+		((ImageButton) findViewById(R.id.btn_search_go)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v)
+			{
+				m_imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+				search();
+			}
+		});
+		((EditText) findViewById(R.id.et_search_search_box)).setOnEditorActionListener(new OnEditorActionListener() {
+			public boolean onEditorAction(TextView v, int actionCode, KeyEvent arg2)
+			{
+				if (actionCode == EditorInfo.IME_ACTION_SEARCH)
+					search();
+				return false;
+			}
+		});
 
 		((ListView) findViewById(R.id.lv_search_repositories_list))
 				.setOnItemClickListener(m_MessageClickedHandler);
