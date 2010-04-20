@@ -36,7 +36,9 @@ public class WatchedRepositories extends ListActivity {
 	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
 	public int m_position;
+	public String m_targetUser;
 	public String m_username;
+	public String m_token;
 	public SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
@@ -45,7 +47,7 @@ public class WatchedRepositories extends ListActivity {
 	public RepositoriesListAdapter initializeList() {
 		RepositoriesListAdapter adapter = null;
 		try {
-			m_jsonData = new JSONObject(User.watching(m_username).resp);
+			m_jsonData = new JSONObject(User.watching(m_targetUser, m_username, m_token).resp);
 			if (m_jsonData == null) {
 				runOnUiThread(new Runnable() {
 					public void run() {
@@ -133,15 +135,18 @@ public class WatchedRepositories extends ListActivity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
+        m_username = m_prefs.getString("login", "");
+        m_token = m_prefs.getString("token", "");
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
 	        if(extras.containsKey("username")) {
-	        	m_username = extras.getString("username");
+	        	m_targetUser = extras.getString("username");
 	        } else {
-	        	m_username = m_prefs.getString("login", "");
+	        	m_targetUser = m_username;
 	        }
         } else {
-        	m_username = m_prefs.getString("login", "");
+        	m_targetUser = m_username;
         }
 
         TextView title = (TextView)findViewById(R.id.tv_watched_repositories_title);
