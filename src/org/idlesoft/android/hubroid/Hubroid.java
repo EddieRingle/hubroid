@@ -49,6 +49,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 import com.flurry.android.FlurryAgent;
+import com.nullwire.trace.ExceptionHandler;
 
 public class Hubroid extends Activity {
 	public static final String PREFS_NAME = "HubroidPrefs";
@@ -260,6 +261,8 @@ public class Hubroid extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        ExceptionHandler.register(this, "http://eringle.net/android/server.php");
 
         m_prefs = getSharedPreferences(PREFS_NAME, 0);
     	m_editor = m_prefs.edit();
