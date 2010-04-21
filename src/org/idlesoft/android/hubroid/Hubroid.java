@@ -27,9 +27,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
@@ -192,6 +194,8 @@ public class Hubroid extends Activity {
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
+			if (!m_isLoggedIn)
+				menu.add(0, 0, 0, "Login");
 			menu.add(0, 1, 0, "Clear Preferences");
 			menu.add(0, 2, 0, "Clear Cache");
 		}
@@ -200,6 +204,11 @@ public class Hubroid extends Activity {
 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case 0:
+			Dialog loginDialog = new Dialog(getApplicationContext());
+			loginDialog.setCancelable(true);
+			loginDialog.setTitle("Login");
+			loginDialog.setContentView(R.layout.login_dialog);
 		case 1:
 			m_editor.clear().commit();
 			Intent intent = new Intent(Hubroid.this, Hubroid.class);
