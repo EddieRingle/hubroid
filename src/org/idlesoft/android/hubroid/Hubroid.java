@@ -23,6 +23,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import org.idlesoft.libraries.ghapi.User;
+import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -31,21 +32,25 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources.Theme;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.SlidingDrawer;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -67,6 +72,7 @@ public class Hubroid extends Activity {
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
 	private Thread m_thread;
+	private Dialog m_loginDialog;
 
 	/**
 	 * Returns a Gravatar ID associated with the provided name
@@ -192,11 +198,68 @@ public class Hubroid extends Activity {
 		"My Profile"
 	};
 
+	public Dialog onCreateDialog(int id)
+	{
+		m_loginDialog = new Dialog(Hubroid.this);
+		m_loginDialog.setCancelable(true);
+		m_loginDialog.setTitle("Login");
+		m_loginDialog.setContentView(R.layout.login_dialog);
+		Button loginBtn = (Button) m_loginDialog.findViewById(R.id.btn_loginDialog_login);
+		loginBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				m_progressDialog = ProgressDialog.show(Hubroid.this, null, "Logging in...");
+				m_thread = new Thread(new Runnable() {
+					public void run() {
+						String username = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_userField)).getText().toString();
+						String token = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_tokenField)).getText().toString();
+
+						if (username.equals("") || token.equals("")) {
+							runOnUiThread(new Runnable() {
+								public void run() {
+									m_progressDialog.dismiss();
+									Toast.makeText(Hubroid.this, "Login details cannot be blank", Toast.LENGTH_LONG).show();
+								}
+							});
+						} else {
+							Response authResp = User.info(username, token);
+	
+							if (authResp.statusCode == 401) {
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										Toast.makeText(Hubroid.this, "Error authenticating with server", Toast.LENGTH_LONG).show();
+									}
+								});
+							} else if (authResp.statusCode == 200) {
+								m_editor.putString("login", username);
+								m_editor.putString("token", token);
+								m_editor.putBoolean("isLoggedIn", true);
+								m_editor.commit();
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										dismissDialog(0);
+										Intent intent = new Intent(Hubroid.this, Hubroid.class);
+										startActivity(intent);
+										finish();
+									}
+								});
+							}
+						}
+					}
+				});
+				m_thread.start();
+			}
+		});
+		return m_loginDialog;
+	}
+
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
 			if (!m_isLoggedIn)
 				menu.add(0, 0, 0, "Login");
-			menu.add(0, 1, 0, "Clear Preferences");
+			else if (m_isLoggedIn)
+				menu.add(0, 1, 0, "Logout");
 			menu.add(0, 2, 0, "Clear Cache");
 		}
 		return true;
@@ -205,14 +268,13 @@ public class Hubroid extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 0:
-			Dialog loginDialog = new Dialog(getApplicationContext());
-			loginDialog.setCancelable(true);
-			loginDialog.setTitle("Login");
-			loginDialog.setContentView(R.layout.login_dialog);
+			showDialog(0);
+			return true;
 		case 1:
 			m_editor.clear().commit();
-			Intent intent = new Intent(Hubroid.this, Hubroid.class);
+			Intent intent = new Intent(getApplicationContext(), Hubroid.class);
 			startActivity(intent);
+			finish();
         	return true;
 		case 2:
 			File root = Environment.getExternalStorageDirectory();
@@ -276,12 +338,18 @@ public class Hubroid extends Activity {
         m_token = m_prefs.getString("token", "");
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 
-        // Check to see if the user is already logged in
-        if (!m_isLoggedIn) {
-        	// Launch the splash screen if not logged in so the user can do so
-			Intent intent = new Intent(Hubroid.this, SplashScreen.class);
-			startActivity(intent);
-			Hubroid.this.finish();
+        startActivity(new Intent(Hubroid.this, Splash.class));
+    }
+
+    @Override
+    public void onStart()
+    {
+       super.onStart();
+
+       // Check to see if the user is already logged in
+       if (!m_isLoggedIn) {
+       	// Show guest-mode main screen
+       	setContentView(R.layout.main_menu_guest);
 		} else {
 			// Start the show.
 	        setContentView(R.layout.main_menu);
@@ -330,12 +398,7 @@ public class Hubroid extends Activity {
 			});
 	        m_thread.start();
 		}
-    }
 
-    @Override
-    public void onStart()
-    {
-       super.onStart();
        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
     }
 
