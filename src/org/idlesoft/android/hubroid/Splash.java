@@ -14,7 +14,7 @@ public class Splash extends Activity {
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
 				long time = SystemClock.uptimeMillis();
-				while ((SystemClock.uptimeMillis() - time) < 4000);
+				while ((SystemClock.uptimeMillis() - time) < 3000);
 				runOnUiThread(new Runnable() {
 					public void run() {
 						finish();
