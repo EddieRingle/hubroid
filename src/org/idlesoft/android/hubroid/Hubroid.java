@@ -339,8 +339,10 @@ public class Hubroid extends Activity {
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 
         startActivity(new Intent(Hubroid.this, Splash.class));
+        finish();
     }
 
+    /*
     @Override
     public void onStart()
     {
@@ -402,12 +404,14 @@ public class Hubroid extends Activity {
        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
     }
 
+
     @Override
     public void onStop()
     {
        super.onStop();
        FlurryAgent.onEndSession(this);
     }
+    */
 
     @Override
     public void onPause()
