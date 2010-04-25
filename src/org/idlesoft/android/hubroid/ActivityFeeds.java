@@ -36,7 +36,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
+import com.flurry.android.FlurryAgent;
+
 public class ActivityFeeds extends Activity {
+	private ActivityFeedAdapter m_timelineActivityAdapter;
 	private ActivityFeedAdapter m_publicActivityAdapter;
 	private ActivityFeedAdapter m_privateActivityAdapter;
 	private ProgressDialog m_progressDialog;
@@ -49,6 +52,7 @@ public class ActivityFeeds extends Activity {
 	private String m_type;
 	private JSONArray m_publicJSON;
 	private JSONArray m_privateJSON;
+	private JSONArray m_timelineJSON;
 	private Thread m_thread;
 	private Dialog m_loginDialog;
 
@@ -147,23 +151,31 @@ public class ActivityFeeds extends Activity {
 
 	private void toggleList(String type)
 	{
+		ListView timelineList = (ListView) findViewById(R.id.lv_activity_feeds_timeline_list);
 		ListView publicList = (ListView) findViewById(R.id.lv_activity_feeds_public_list);
 		ListView privateList = (ListView) findViewById(R.id.lv_activity_feeds_private_list);
 		TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
 
-		if (type.equals("") || type == null) {
-			type = (m_type.equals("public")) ? "private" : "public";
-		}
 		m_type = type;
 
 		if (m_type.equals("public")) {
 			publicList.setVisibility(View.VISIBLE);
 			privateList.setVisibility(View.GONE);
-			title.setText(m_targetUser + "'s Activity");
+			timelineList.setVisibility(View.GONE);
+			if (m_isLoggedIn && m_targetUser == null)
+				title.setText(m_username + "'s Activity");
+			else
+				title.setText(m_targetUser + "'s Activity");
 		} else if (m_type.equals("private")) {
 			privateList.setVisibility(View.VISIBLE);
 			publicList.setVisibility(View.GONE);
+			timelineList.setVisibility(View.GONE);
 			title.setText("News Feed");
+		} else if (m_type.equals("timeline")) {
+			timelineList.setVisibility(View.VISIBLE);
+			publicList.setVisibility(View.GONE);
+			privateList.setVisibility(View.GONE);
+			title.setText("GitHub Timeline");
 		}
 	}
 
@@ -175,6 +187,9 @@ public class ActivityFeeds extends Activity {
 			} else if(v.getId() == R.id.btn_activity_feeds_private) {
 				toggleList("private");
 				m_type = "private";
+			} else if(v.getId() == R.id.btn_activity_feeds_timeline) {
+				toggleList("timeline");
+				m_type = "timeline";
 			}
 		}
 	};
@@ -203,69 +218,151 @@ public class ActivityFeeds extends Activity {
 		}
 	};
 
+	private OnItemClickListener onTimelineActivityItemClick = new OnItemClickListener() {
+		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+			try {
+				Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
+				intent.putExtra("item_json", m_timelineJSON.getJSONObject(arg2).toString());
+				startActivity(intent);
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	};
+
+	public void navBarOnClickSetup()
+	{
+		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(ActivityFeeds.this, ActivityFeeds.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_repositories)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(ActivityFeeds.this, RepositoriesList.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_profile)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(ActivityFeeds.this, UserInfo.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_search)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(ActivityFeeds.this, Search.class));
+				finish();
+			}
+		});
+
+		((Button)findViewById(R.id.btn_navbar_activity)).setEnabled(false);
+		if (!m_isLoggedIn) { 
+			((Button)findViewById(R.id.btn_navbar_profile)).setVisibility(View.GONE);
+			((Button)findViewById(R.id.btn_navbar_repositories)).setVisibility(View.GONE);
+		}
+	}
+
 	@Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.activity_feeds);
 
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        m_editor = m_prefs.edit();
         m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
+        m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
         	m_targetUser = extras.getString("username");
-        	m_privateDisabled = (m_targetUser.equalsIgnoreCase(m_username)) ? false : true;
-
-        	if (m_privateDisabled) {
+        }
+    	TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
+        if (m_isLoggedIn) {
+        	if (m_targetUser != null && !m_targetUser.equals(m_username)) {
+        		((LinearLayout)findViewById(R.id.ll_activity_feeds_navbar)).setVisibility(View.GONE);
         		m_type = "public";
         		((ListView)findViewById(R.id.lv_activity_feeds_private_list)).setVisibility(View.GONE);
-        		TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
+        		((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).setVisibility(View.GONE);
         		title.setText(m_targetUser + "'s Activity");
         		((LinearLayout)findViewById(R.id.ll_activity_feeds_button_holder)).setVisibility(View.GONE);
-        	} else {
+        	} else if (m_targetUser == null) {
         		m_type = "private";
-        		TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
         		title.setText("News Feed");
         		((Button)findViewById(R.id.btn_activity_feeds_private)).setOnClickListener(onButtonToggleClickListener);
         		((Button)findViewById(R.id.btn_activity_feeds_public)).setOnClickListener(onButtonToggleClickListener);
+        		((Button)findViewById(R.id.btn_activity_feeds_timeline)).setOnClickListener(onButtonToggleClickListener);
         	}
-        	m_progressDialog = ProgressDialog.show(this, "Please Wait", "Loading activity feeds... (this may take awhile)");
-            m_thread = new Thread(new Runnable() {
-				public void run()
-				{
-					try {
+    	} else {
+    		((LinearLayout)findViewById(R.id.ll_activity_feeds_button_holder)).setVisibility(View.GONE);
+    		if (m_targetUser != null) {
+    			((LinearLayout)findViewById(R.id.ll_activity_feeds_navbar)).setVisibility(View.GONE);
+        		m_type = "public";
+        		((ListView)findViewById(R.id.lv_activity_feeds_private_list)).setVisibility(View.GONE);
+        		((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).setVisibility(View.GONE);
+        		title.setText(m_targetUser + "'s Activity");
+        	} else if (m_targetUser == null) {
+        		m_type = "timeline";
+        		title.setText("GitHub Timeline");
+        		((ListView)findViewById(R.id.lv_activity_feeds_private_list)).setVisibility(View.GONE);
+        		((ListView)findViewById(R.id.lv_activity_feeds_public_list)).setVisibility(View.GONE);
+        	}
+    	}
+    	m_progressDialog = ProgressDialog.show(this, "Please Wait", "Loading activity feeds... (this may take awhile)");
+        m_thread = new Thread(new Runnable() {
+			public void run()
+			{
+				try {
+					if (m_targetUser != null) {
 						Response publicActivityFeedResp = User.activity(m_targetUser);
 						if (publicActivityFeedResp.statusCode == 200) {
 							m_publicJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
 							m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_publicJSON, true);
 						}
-						if (!m_privateDisabled) {
-							Response privateActivityFeedResp = User.activity(m_targetUser, m_token);
+					} else {
+						if (m_isLoggedIn) {
+							Response publicActivityFeedResp = User.activity(m_username);
+							if (publicActivityFeedResp.statusCode == 200) {
+								m_publicJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
+								m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_publicJSON, true);
+							}
+							Response privateActivityFeedResp = User.activity(m_username, m_token);
 							if (privateActivityFeedResp.statusCode == 200) {
 								m_privateJSON = new JSONObject(privateActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
 								m_privateActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_privateJSON, false);
 							}
 						}
-						runOnUiThread(new Runnable() {
-							public void run() {
-								toggleList(m_type);
-								ListView publicList = (ListView)findViewById(R.id.lv_activity_feeds_public_list);
-								ListView privateList = (ListView)findViewById(R.id.lv_activity_feeds_private_list);
-								publicList.setAdapter(m_publicActivityAdapter);
-								privateList.setAdapter(m_privateActivityAdapter);
-								publicList.setOnItemClickListener(onPublicActivityItemClick);
-								privateList.setOnItemClickListener(onPrivateActivityItemClick);
-								m_progressDialog.dismiss();
-							}
-						});
-					} catch (JSONException e) {
-						e.printStackTrace();
+						Response timelineActivityFeedResp = User.timeline();
+						if (timelineActivityFeedResp.statusCode == 200) {
+							m_timelineJSON = new JSONObject(timelineActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
+							m_timelineActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_timelineJSON, false);
+						}
 					}
+					runOnUiThread(new Runnable() {
+						public void run() {
+							toggleList(m_type);
+							ListView publicList = (ListView)findViewById(R.id.lv_activity_feeds_public_list);
+							ListView privateList = (ListView)findViewById(R.id.lv_activity_feeds_private_list);
+							ListView timelineList = (ListView)findViewById(R.id.lv_activity_feeds_timeline_list);
+							publicList.setAdapter(m_publicActivityAdapter);
+							privateList.setAdapter(m_privateActivityAdapter);
+							timelineList.setAdapter(m_timelineActivityAdapter);
+							publicList.setOnItemClickListener(onPublicActivityItemClick);
+							privateList.setOnItemClickListener(onPrivateActivityItemClick);
+							timelineList.setOnItemClickListener(onTimelineActivityItemClick);
+							m_progressDialog.dismiss();
+						}
+					});
+				} catch (JSONException e) {
+					e.printStackTrace();
 				}
-			});
-            m_thread.start();
-        }
+			}
+		});
+        m_thread.start();
+
+        navBarOnClickSetup();
     }
 
 	@Override
