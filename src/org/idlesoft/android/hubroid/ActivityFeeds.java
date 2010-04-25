@@ -55,6 +55,7 @@ public class ActivityFeeds extends Activity {
 	private JSONArray m_timelineJSON;
 	private Thread m_thread;
 	private Dialog m_loginDialog;
+	public View loadingItem;
 
 	public Dialog onCreateDialog(int id)
 	{
@@ -310,7 +311,13 @@ public class ActivityFeeds extends Activity {
         		((ListView)findViewById(R.id.lv_activity_feeds_public_list)).setVisibility(View.GONE);
         	}
     	}
-    	m_progressDialog = ProgressDialog.show(this, "Please Wait", "Loading activity feeds... (this may take awhile)");
+        loadingItem = getLayoutInflater().inflate(R.layout.loading_feed_item, null);
+        ((ListView)findViewById(R.id.lv_activity_feeds_private_list)).addHeaderView(loadingItem);
+        ((ListView)findViewById(R.id.lv_activity_feeds_private_list)).setAdapter(null);
+        ((ListView)findViewById(R.id.lv_activity_feeds_public_list)).addHeaderView(loadingItem);
+        ((ListView)findViewById(R.id.lv_activity_feeds_public_list)).setAdapter(null);
+        ((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).addHeaderView(loadingItem);
+        ((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).setAdapter(null);
         m_thread = new Thread(new Runnable() {
 			public void run()
 			{
@@ -352,7 +359,9 @@ public class ActivityFeeds extends Activity {
 							publicList.setOnItemClickListener(onPublicActivityItemClick);
 							privateList.setOnItemClickListener(onPrivateActivityItemClick);
 							timelineList.setOnItemClickListener(onTimelineActivityItemClick);
-							m_progressDialog.dismiss();
+							((ListView)findViewById(R.id.lv_activity_feeds_private_list)).removeHeaderView(loadingItem);
+					        ((ListView)findViewById(R.id.lv_activity_feeds_public_list)).removeHeaderView(loadingItem);
+					        ((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).removeHeaderView(loadingItem);
 						}
 					});
 				} catch (JSONException e) {
