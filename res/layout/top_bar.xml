@@ -3,13 +3,13 @@
 	android:id="@+id/rl_top_bar_root"
 	android:background="@drawable/top_bar"
 	android:layout_width="fill_parent"
-	android:layout_height="56dip">
+	android:layout_height="42dip">
 	<TextView
 		android:id="@+id/tv_top_bar_title"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_centerInParent="true"
 		android:textColor="@color/textColor"
-		android:textSize="24dip"
+		android:textSize="22dip"
 		android:textStyle="bold" />
 </RelativeLayout>
