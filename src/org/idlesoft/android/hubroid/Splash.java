@@ -1,6 +1,7 @@
 package org.idlesoft.android.hubroid;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 
@@ -17,6 +18,7 @@ public class Splash extends Activity {
 				while ((SystemClock.uptimeMillis() - time) < 3000);
 				runOnUiThread(new Runnable() {
 					public void run() {
+						startActivity(new Intent(Splash.this, ActivityFeeds.class));
 						finish();
 					}
 				});
