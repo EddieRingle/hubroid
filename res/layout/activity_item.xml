@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="wrap_content"
-	android:padding="10dip"
+	android:padding="5dip"
 	android:orientation="horizontal">
 	<ImageView
 		android:id="@+id/iv_activity_item_gravatar"
@@ -26,13 +26,13 @@
 			android:text="eddieringle pushed to master at eddieringle/hubroid"
 			android:layout_width="wrap_content"
 			android:maxLines="2"
-			android:textSize="16sp"/>
+			android:textSize="13dip"/>
 		<TextView
 			android:id="@+id/tv_activity_item_date"
 			android:layout_height="wrap_content"
 			android:text="24 hours ago"
 			android:layout_width="wrap_content"
-			android:textSize="12sp"/>
+			android:textSize="12dip"/>
 	</LinearLayout>	
 	<ImageView
 		android:id="@+id/iv_activity_item_icon"
