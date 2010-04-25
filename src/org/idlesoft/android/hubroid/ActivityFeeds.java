@@ -16,9 +16,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.flurry.android.FlurryAgent;
-
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -30,9 +29,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ActivityFeeds extends Activity {
@@ -41,18 +42,78 @@ public class ActivityFeeds extends Activity {
 	private ProgressDialog m_progressDialog;
 	private String m_targetUser;
 	private SharedPreferences m_prefs;
+	private SharedPreferences.Editor m_editor;
 	private String m_username;
 	private String m_token;
-	private boolean m_privateDisabled;
+	private boolean m_isLoggedIn;
 	private String m_type;
 	private JSONArray m_publicJSON;
 	private JSONArray m_privateJSON;
 	private Thread m_thread;
+	private Dialog m_loginDialog;
+
+	public Dialog onCreateDialog(int id)
+	{
+		m_loginDialog = new Dialog(ActivityFeeds.this);
+		m_loginDialog.setCancelable(true);
+		m_loginDialog.setTitle("Login");
+		m_loginDialog.setContentView(R.layout.login_dialog);
+		Button loginBtn = (Button) m_loginDialog.findViewById(R.id.btn_loginDialog_login);
+		loginBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				m_progressDialog = ProgressDialog.show(ActivityFeeds.this, null, "Logging in...");
+				m_thread = new Thread(new Runnable() {
+					public void run() {
+						String username = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_userField)).getText().toString();
+						String token = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_tokenField)).getText().toString();
+
+						if (username.equals("") || token.equals("")) {
+							runOnUiThread(new Runnable() {
+								public void run() {
+									m_progressDialog.dismiss();
+									Toast.makeText(ActivityFeeds.this, "Login details cannot be blank", Toast.LENGTH_LONG).show();
+								}
+							});
+						} else {
+							Response authResp = User.info(username, token);
+	
+							if (authResp.statusCode == 401) {
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										Toast.makeText(ActivityFeeds.this, "Error authenticating with server", Toast.LENGTH_LONG).show();
+									}
+								});
+							} else if (authResp.statusCode == 200) {
+								m_editor.putString("login", username);
+								m_editor.putString("token", token);
+								m_editor.putBoolean("isLoggedIn", true);
+								m_editor.commit();
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										dismissDialog(0);
+										Intent intent = new Intent(ActivityFeeds.this, Hubroid.class);
+										startActivity(intent);
+										finish();
+									}
+								});
+							}
+						}
+					}
+				});
+				m_thread.start();
+			}
+		});
+		return m_loginDialog;
+	}
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
-			menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-			menu.add(0, 1, 0, "Clear Preferences");
+			if (!m_isLoggedIn)
+				menu.add(0, 0, 0, "Login");
+			else if (m_isLoggedIn)
+				menu.add(0, 1, 0, "Logout");
 			menu.add(0, 2, 0, "Clear Cache");
 		}
 		return true;
@@ -61,13 +122,13 @@ public class ActivityFeeds extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 0:
-			Intent i1 = new Intent(this, Hubroid.class);
-			startActivity(i1);
+			showDialog(0);
 			return true;
 		case 1:
-			getSharedPreferences(Hubroid.PREFS_NAME, 0).edit().clear().commit();
-			Intent intent = new Intent(this, Hubroid.class);
+			m_editor.clear().commit();
+			Intent intent = new Intent(getApplicationContext(), Hubroid.class);
 			startActivity(intent);
+			finish();
         	return true;
 		case 2:
 			File root = Environment.getExternalStorageDirectory();
