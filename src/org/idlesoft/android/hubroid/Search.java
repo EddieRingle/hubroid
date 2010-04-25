@@ -12,11 +12,13 @@ import java.io.File;
 
 import org.idlesoft.libraries.ghapi.Repository;
 import org.idlesoft.libraries.ghapi.User;
+import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -50,6 +52,8 @@ public class Search extends Activity {
 	public ProgressDialog m_progressDialog;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
+	private boolean m_isLoggedIn;
+	private Dialog m_loginDialog;
 	private String m_username;
 	private String m_token;
 	public String m_type;
@@ -64,7 +68,11 @@ public class Search extends Activity {
 		String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
 		if (m_type.equals(REPO_TYPE)) {
 			try {
-				JSONObject response = new JSONObject(Repository.search(query, m_username, m_token).resp);
+				JSONObject response;
+				if (m_isLoggedIn)
+					response = new JSONObject(Repository.search(query, m_username, m_token).resp);
+				else
+					response = new JSONObject(Repository.search(query).resp); 
 				m_repositoriesData = response.getJSONArray(REPO_TYPE);
 				m_repositories_adapter = new RepositoriesListAdapter(getApplicationContext(), m_repositoriesData);
 			} catch (JSONException e) {
@@ -189,10 +197,68 @@ public class Search extends Activity {
 		}
 	};
 
+	public Dialog onCreateDialog(int id)
+	{
+		m_loginDialog = new Dialog(Search.this);
+		m_loginDialog.setCancelable(true);
+		m_loginDialog.setTitle("Login");
+		m_loginDialog.setContentView(R.layout.login_dialog);
+		Button loginBtn = (Button) m_loginDialog.findViewById(R.id.btn_loginDialog_login);
+		loginBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				m_progressDialog = ProgressDialog.show(Search.this, null, "Logging in...");
+				m_thread = new Thread(new Runnable() {
+					public void run() {
+						String username = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_userField)).getText().toString();
+						String token = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_tokenField)).getText().toString();
+
+						if (username.equals("") || token.equals("")) {
+							runOnUiThread(new Runnable() {
+								public void run() {
+									m_progressDialog.dismiss();
+									Toast.makeText(Search.this, "Login details cannot be blank", Toast.LENGTH_LONG).show();
+								}
+							});
+						} else {
+							Response authResp = User.info(username, token);
+	
+							if (authResp.statusCode == 401) {
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										Toast.makeText(Search.this, "Error authenticating with server", Toast.LENGTH_LONG).show();
+									}
+								});
+							} else if (authResp.statusCode == 200) {
+								m_editor.putString("login", username);
+								m_editor.putString("token", token);
+								m_editor.putBoolean("isLoggedIn", true);
+								m_editor.commit();
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										dismissDialog(0);
+										Intent intent = new Intent(Search.this, Hubroid.class);
+										startActivity(intent);
+										finish();
+									}
+								});
+							}
+						}
+					}
+				});
+				m_thread.start();
+			}
+		});
+		return m_loginDialog;
+	}
+
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
-			menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-			menu.add(0, 1, 0, "Clear Preferences");
+			if (!m_isLoggedIn)
+				menu.add(0, 0, 0, "Login");
+			else if (m_isLoggedIn)
+				menu.add(0, 1, 0, "Logout");
 			menu.add(0, 2, 0, "Clear Cache");
 		}
 		return true;
@@ -201,13 +267,13 @@ public class Search extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case 0:
-			Intent i1 = new Intent(this, Hubroid.class);
-			startActivity(i1);
+			showDialog(0);
 			return true;
 		case 1:
 			m_editor.clear().commit();
-			Intent intent = new Intent(this, Hubroid.class);
+			Intent intent = new Intent(getApplicationContext(), Hubroid.class);
 			startActivity(intent);
+			finish();
         	return true;
 		case 2:
 			File root = Environment.getExternalStorageDirectory();
@@ -224,6 +290,40 @@ public class Search extends Activity {
 		return false;
 	}
 
+	public void navBarOnClickSetup()
+	{
+		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(Search.this, ActivityFeeds.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_repositories)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(Search.this, RepositoriesList.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_profile)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(Search.this, UserInfo.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_search)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(Search.this, Search.class));
+				finish();
+			}
+		});
+
+		((Button)findViewById(R.id.btn_navbar_search)).setEnabled(false);
+		if (!m_isLoggedIn) { 
+			((Button)findViewById(R.id.btn_navbar_profile)).setVisibility(View.GONE);
+			((Button)findViewById(R.id.btn_navbar_repositories)).setVisibility(View.GONE);
+		}
+	}
+
 	@Override
 	public void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
@@ -232,18 +332,9 @@ public class Search extends Activity {
 		m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
 		m_editor = m_prefs.edit();
 		m_type = REPO_TYPE;
+		m_username = m_prefs.getString("login", "");
 		m_token = m_prefs.getString("token", "");
-
-		Bundle extras = getIntent().getExtras();
-		if (extras != null) {
-			if (extras.containsKey("username")) {
-				m_username = icicle.getString("username");
-			} else {
-				m_username = m_prefs.getString("login", "");
-			}
-		} else {
-			m_username = m_prefs.getString("login", "");
-		}
+		m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 	}
 
 	@Override
@@ -278,6 +369,8 @@ public class Search extends Activity {
 				.setOnItemClickListener(m_MessageClickedHandler);
 		((ListView) findViewById(R.id.lv_search_users_list))
 				.setOnItemClickListener(m_MessageClickedHandler);
+
+		navBarOnClickSetup();
 	}
 
     @Override

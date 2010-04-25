@@ -37,7 +37,7 @@
 		android:id="@+id/rl_search_button_holder"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true">
+		android:layout_below="@id/ll_search_search_area">
 		<Button
 			android:id="@+id/btn_search_repositories"
 			android:layout_width="wrap_content"
@@ -53,10 +53,53 @@
 			android:background="@android:drawable/btn_default_small"
 			android:text="Users" />
 	</LinearLayout>
+	<LinearLayout android:id="@+id/ll_search_navbar"
+		android:layout_alignParentBottom="true"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="vertical"
+		android:weightSum="100">
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_navbar_activity"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableLeft="@drawable/feed"
+				android:background="@android:drawable/btn_default_small"
+				android:text="Activity"
+				android:layout_weight="50" />
+			<Button android:id="@+id/btn_navbar_search"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableRight="@drawable/search"
+				android:background="@android:drawable/btn_default_small"
+				android:text="Search"
+				android:layout_weight="54" />
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_navbar_profile"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableLeft="@drawable/user"
+				android:background="@android:drawable/btn_default_small"
+				android:text="My Profile"
+				android:layout_weight="50" />
+			<Button android:id="@+id/btn_navbar_repositories"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableRight="@drawable/push"
+				android:background="@android:drawable/btn_default_small"
+				android:text="Repositories"
+				android:layout_weight="40" />
+		</LinearLayout>
+	</LinearLayout>
 	<RelativeLayout
 		android:id="@+id/rl_search_main_frame"
-		android:layout_above="@id/rl_search_button_holder"
-		android:layout_below="@id/ll_search_search_area"
+		android:layout_above="@id/ll_search_navbar"
+		android:layout_below="@id/rl_search_button_holder"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent">
 		<ListView

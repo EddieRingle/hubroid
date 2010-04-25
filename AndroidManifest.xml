@@ -11,7 +11,9 @@
 			</intent-filter>
 		</activity>
 		<activity android:name="Splash" android:theme="@android:style/Theme.Light.NoTitleBar" />
-		<activity android:name="Search" android:theme="@android:style/Theme.Light.NoTitleBar" />
+		<activity android:name="Search"
+			android:theme="@android:style/Theme.Light.NoTitleBar"
+			android:windowSoftInputMode="adjustPan" />
 		<activity android:name="RepositoriesList" android:theme="@android:style/Theme.Light.NoTitleBar" />
 		<activity android:name="RepositoryInfo" android:theme="@android:style/Theme.Light.NoTitleBar" />
 		<activity android:name="CommitsList" android:theme="@android:style/Theme.Light.NoTitleBar" />
