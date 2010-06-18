@@ -23,7 +23,7 @@
 			android:layout_height="wrap_content"
 			android:layout_weight="50"
 			android:background="@android:drawable/btn_default_small"
-			android:text="My Repos" />
+			android:text="User's Repos" />
 		<Button
 			android:id="@+id/btn_repositories_list_watchedRepos"
 			android:layout_width="wrap_content"
