@@ -259,89 +259,89 @@ public class UserInfo extends Activity {
         m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
         m_isFollowing = false;
+        m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-        	try {
-        		m_targetUser = extras.getString("username");
+        if (extras != null)
+        	m_targetUser = extras.getString("username");
+    	try {
+    		if (m_targetUser == null || m_targetUser.equals("")) {
+    			m_targetUser = m_username;
+    			navBarOnClickSetup();
+    		}
+    		Response userInfoResp;
+    		userInfoResp = (m_targetUser.equals(m_username)) ? User.info(m_targetUser, m_token) : User.info(m_targetUser);
+    		JSONObject json = null;
+    		if (userInfoResp.statusCode == 200)
+    			json = new JSONObject(userInfoResp.resp);
+			if (json == null) {
+				Log.d("debug","woot1");
+				// User doesn't really exist, return to the previous activity
+				this.setResult(5005);
+				this.finish();
+			} else {
+				m_jsonData = json.getJSONObject("user");
 
-        		Response userInfoResp;
-        		if (m_targetUser.equalsIgnoreCase(m_username)) {
-        			userInfoResp = User.info(m_username, m_token);
-        		} else {
-        			userInfoResp = User.info(m_targetUser);
-        		}
-        		JSONObject json = null;
-        		if (userInfoResp.statusCode == 200)
-        			json = new JSONObject(userInfoResp.resp);
-				if (json == null) {
-					// User doesn't really exist, return to the previous activity
-					this.setResult(5005);
-					this.finish();
+	        	JSONArray following_list = new JSONObject(User.following(m_username).resp).getJSONArray("users");
+	        	int length = following_list.length() - 1;
+	        	for (int i = 0; i <= length; i++) {
+	        		if (following_list.getString(i).equalsIgnoreCase(m_targetUser)) {
+	        			m_isFollowing = true;
+	        		}
+	        	}
+
+				String company, location, full_name, email, blog;
+
+				// Replace empty values with "N/A"
+				if (m_jsonData.has("company") && !m_jsonData.getString("company").equals("null") && !m_jsonData.getString("company").equals("")) {
+					company = m_jsonData.getString("company");
 				} else {
-					m_jsonData = json.getJSONObject("user");
-
-		        	JSONArray following_list = new JSONObject(User.following(m_username).resp).getJSONArray("users");
-		        	int length = following_list.length() - 1;
-		        	for (int i = 0; i <= length; i++) {
-		        		if (following_list.getString(i).equalsIgnoreCase(m_targetUser)) {
-		        			m_isFollowing = true;
-		        		}
-		        	}
-
-					String company, location, full_name, email, blog;
-
-					// Replace empty values with "N/A"
-					if (m_jsonData.has("company") && !m_jsonData.getString("company").equals("null") && !m_jsonData.getString("company").equals("")) {
-						company = m_jsonData.getString("company");
-					} else {
-						company = "N/A";
-					}
-					if (m_jsonData.has("location") && !m_jsonData.getString("location").equals("null") && !m_jsonData.getString("location").equals("")) {
-						location = m_jsonData.getString("location");
-					} else {
-						location = "N/A";
-					}
-					if (m_jsonData.has("name") && !m_jsonData.getString("name").equals("null")) {
-						full_name = m_jsonData.getString("name");
-					} else {
-						full_name = "N/A";
-					}
-					if (m_jsonData.has("email") && !m_jsonData.getString("email").equals("null") && !m_jsonData.getString("email").equals("")) {
-						email = m_jsonData.getString("email");
-					} else {
-						email = "N/A";
-					}
-					if (m_jsonData.has("blog") && !m_jsonData.getString("blog").equals("null") && !m_jsonData.getString("blog").equals("")) {
-						blog = m_jsonData.getString("blog");
-					} else {
-						blog = "N/A";
-					}
-
-					// Set all the values in the layout
-					((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
-					((ImageView)findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(m_targetUser), 50));
-					((TextView)findViewById(R.id.tv_user_info_full_name)).setText(full_name);
-					((TextView)findViewById(R.id.tv_user_info_company)).setText(company);
-					((TextView)findViewById(R.id.tv_user_info_email)).setText(email);
-					((TextView)findViewById(R.id.tv_user_info_location)).setText(location);
-					((TextView)findViewById(R.id.tv_user_info_blog)).setText(blog);
-
-					// Make the buttons work
-					Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
-					Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
-					Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
-					Button watchedRepositoriesBtn = (Button) findViewById(R.id.btn_user_info_watched_repositories);
-
-					activityBtn.setOnClickListener(onButtonClick);
-					repositoriesBtn.setOnClickListener(onButtonClick);
-					followersFollowingBtn.setOnClickListener(onButtonClick);
-					watchedRepositoriesBtn.setOnClickListener(onButtonClick);
+					company = "N/A";
 				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+				if (m_jsonData.has("location") && !m_jsonData.getString("location").equals("null") && !m_jsonData.getString("location").equals("")) {
+					location = m_jsonData.getString("location");
+				} else {
+					location = "N/A";
+				}
+				if (m_jsonData.has("name") && !m_jsonData.getString("name").equals("null")) {
+					full_name = m_jsonData.getString("name");
+				} else {
+					full_name = "N/A";
+				}
+				if (m_jsonData.has("email") && !m_jsonData.getString("email").equals("null") && !m_jsonData.getString("email").equals("")) {
+					email = m_jsonData.getString("email");
+				} else {
+					email = "N/A";
+				}
+				if (m_jsonData.has("blog") && !m_jsonData.getString("blog").equals("null") && !m_jsonData.getString("blog").equals("")) {
+					blog = m_jsonData.getString("blog");
+				} else {
+					blog = "N/A";
+				}
+
+				// Set all the values in the layout
+				((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
+				((ImageView)findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(m_targetUser), 50));
+				((TextView)findViewById(R.id.tv_user_info_full_name)).setText(full_name);
+				((TextView)findViewById(R.id.tv_user_info_company)).setText(company);
+				((TextView)findViewById(R.id.tv_user_info_email)).setText(email);
+				((TextView)findViewById(R.id.tv_user_info_location)).setText(location);
+				((TextView)findViewById(R.id.tv_user_info_blog)).setText(blog);
+
+				// Make the buttons work
+				Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
+				Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
+				Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
+				Button watchedRepositoriesBtn = (Button) findViewById(R.id.btn_user_info_watched_repositories);
+
+				activityBtn.setOnClickListener(onButtonClick);
+				repositoriesBtn.setOnClickListener(onButtonClick);
+				followersFollowingBtn.setOnClickListener(onButtonClick);
+				watchedRepositoriesBtn.setOnClickListener(onButtonClick);
 			}
-        }
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
     }
 
 	@Override
