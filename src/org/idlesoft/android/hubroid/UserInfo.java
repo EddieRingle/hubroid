@@ -79,12 +79,6 @@ public class UserInfo extends Activity {
 				intent.putExtra("username", m_targetUser);
 				startActivity(intent);
 				break;
-			case R.id.btn_user_info_watched_repositories:
-				// Go to the Watched Repositories screen
-				intent = new Intent(UserInfo.this, WatchedRepositories.class);
-				intent.putExtra("username", m_targetUser);
-				startActivity(intent);
-				break;
 			default:
 				// oh well...
 				break;
@@ -332,12 +326,10 @@ public class UserInfo extends Activity {
 				Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
 				Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
 				Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
-				Button watchedRepositoriesBtn = (Button) findViewById(R.id.btn_user_info_watched_repositories);
 
 				activityBtn.setOnClickListener(onButtonClick);
 				repositoriesBtn.setOnClickListener(onButtonClick);
 				followersFollowingBtn.setOnClickListener(onButtonClick);
-				watchedRepositoriesBtn.setOnClickListener(onButtonClick);
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();

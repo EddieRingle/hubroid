@@ -9,7 +9,7 @@
 	<!-- Contain the rest in a scroll view to give the views more space -->
 	<ScrollView android:id="@+id/sv_userInfo"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="fill_parent"
 		android:layout_below="@id/include_top_bar">
 		<RelativeLayout
 			android:layout_width="fill_parent"
@@ -134,6 +134,8 @@
 					android:layout_marginTop="5dip"
 					android:layout_marginBottom="5dip"
 					android:layout_centerHorizontal="true"
+					android:drawableLeft="@drawable/push"
+					android:drawableRight="@drawable/push"
 					android:text="Repositories" />
 				<Button
 					android:id="@+id/btn_user_info_followers_following"
@@ -141,20 +143,11 @@
 					android:layout_height="wrap_content"
 					android:layout_below="@id/btn_user_info_repositories"
 					android:layout_marginTop="5dip"
-					android:layout_marginBottom="5dip"
+					android:layout_marginBottom="15dip"
 					android:layout_centerHorizontal="true"
 					android:drawableLeft="@drawable/group"
 					android:drawableRight="@drawable/group"
 					android:text="Followers &amp; Following" />
-				<Button
-					android:id="@+id/btn_user_info_watched_repositories"
-					android:layout_width="175dip"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/btn_user_info_followers_following"
-					android:layout_marginTop="5dip"
-					android:layout_marginBottom="15dip"
-					android:layout_centerHorizontal="true"
-					android:text="Watched Repositories" />
 			</RelativeLayout>
 		</RelativeLayout>
 	</ScrollView>
