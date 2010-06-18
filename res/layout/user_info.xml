@@ -7,9 +7,9 @@
 	<!-- Top Bar -->
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<!-- Contain the rest in a scroll view to give the views more space -->
-	<ScrollView
+	<ScrollView android:id="@+id/sv_userInfo"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
+		android:layout_height="wrap_content"
 		android:layout_below="@id/include_top_bar">
 		<RelativeLayout
 			android:layout_width="fill_parent"
@@ -158,4 +158,49 @@
 			</RelativeLayout>
 		</RelativeLayout>
 	</ScrollView>
+	<LinearLayout android:id="@+id/ll_user_info_navbar"
+		android:layout_below="@id/sv_userInfo"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="-72dip"
+		android:orientation="vertical"
+		android:visibility="gone"
+		android:weightSum="100">
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_navbar_activity"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableLeft="@drawable/feed"
+				android:background="@android:drawable/btn_default_small"
+				android:text="Activity"
+				android:layout_weight="50" />
+			<Button android:id="@+id/btn_navbar_search"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableRight="@drawable/search"
+				android:background="@android:drawable/btn_default_small"
+				android:text="Search"
+				android:layout_weight="54" />
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_navbar_profile"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableLeft="@drawable/user"
+				android:background="@android:drawable/btn_default_small"
+				android:text="My Profile"
+				android:layout_weight="50" />
+			<Button android:id="@+id/btn_navbar_repositories"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:drawableRight="@drawable/push"
+				android:background="@android:drawable/btn_default_small"
+				android:text="Repositories"
+				android:layout_weight="40" />
+		</LinearLayout>
+	</LinearLayout>
 </RelativeLayout>

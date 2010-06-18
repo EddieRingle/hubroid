@@ -16,22 +16,30 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.flurry.android.FlurryAgent;
-
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.MarginLayoutParams;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.RelativeLayout.LayoutParams;
+
+import com.flurry.android.FlurryAgent;
 
 public class UserInfo extends Activity {
 	public JSONObject m_jsonData;
@@ -41,9 +49,11 @@ public class UserInfo extends Activity {
 	private String m_username;
 	private String m_token;
 	private String m_targetUser;
+	private boolean m_isLoggedIn;
 	private boolean m_isFollowing;
 	private Thread m_thread;
 	private ProgressDialog m_progressDialog;
+	private Dialog m_loginDialog;
 
 	private OnClickListener onButtonClick = new OnClickListener() {
 		public void onClick(View v) {
@@ -136,6 +146,47 @@ public class UserInfo extends Activity {
 			}
 		}
 		return false;
+	}
+
+	public void navBarOnClickSetup()
+	{
+		((LinearLayout)findViewById(R.id.ll_user_info_navbar)).setVisibility(View.VISIBLE);
+		if (m_targetUser.equals(m_username)) {
+			ScrollView sv = (ScrollView)findViewById(R.id.sv_userInfo);
+			RelativeLayout.LayoutParams svParams = new RelativeLayout.LayoutParams(sv.getLayoutParams());
+			svParams.setMargins(0, 0, 0, (int)(72.0f * getApplicationContext().getResources().getDisplayMetrics().density + 0.5f));
+			sv.setLayoutParams(svParams);
+		}
+		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(UserInfo.this, ActivityFeeds.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_repositories)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(UserInfo.this, RepositoriesList.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_profile)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(UserInfo.this, UserInfo.class));
+				finish();
+			}
+		});
+		((Button)findViewById(R.id.btn_navbar_search)).setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				startActivity(new Intent(UserInfo.this, Search.class));
+				finish();
+			}
+		});
+
+		((Button)findViewById(R.id.btn_navbar_profile)).setEnabled(false);
+		if (!m_isLoggedIn) { 
+			((Button)findViewById(R.id.btn_navbar_profile)).setVisibility(View.GONE);
+			((Button)findViewById(R.id.btn_navbar_repositories)).setVisibility(View.GONE);
+		}
 	}
 
 	@Override

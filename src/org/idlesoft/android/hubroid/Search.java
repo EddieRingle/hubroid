@@ -35,6 +35,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -292,6 +293,7 @@ public class Search extends Activity {
 
 	public void navBarOnClickSetup()
 	{
+		((LinearLayout)findViewById(R.id.ll_search_navbar)).setVisibility(View.VISIBLE);
 		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(Search.this, ActivityFeeds.class));
@@ -335,6 +337,11 @@ public class Search extends Activity {
 		m_username = m_prefs.getString("login", "");
 		m_token = m_prefs.getString("token", "");
 		m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
+
+		Bundle extras = getIntent().getExtras();
+		if (extras == null) {
+			navBarOnClickSetup();
+		}
 	}
 
 	@Override
@@ -369,8 +376,6 @@ public class Search extends Activity {
 				.setOnItemClickListener(m_MessageClickedHandler);
 		((ListView) findViewById(R.id.lv_search_users_list))
 				.setOnItemClickListener(m_MessageClickedHandler);
-
-		navBarOnClickSetup();
 	}
 
     @Override

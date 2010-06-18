@@ -233,6 +233,7 @@ public class ActivityFeeds extends Activity {
 
 	public void navBarOnClickSetup()
 	{
+		((LinearLayout)findViewById(R.id.ll_activity_feeds_navbar)).setVisibility(View.VISIBLE);
 		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(ActivityFeeds.this, ActivityFeeds.class));
@@ -279,6 +280,8 @@ public class ActivityFeeds extends Activity {
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
         	m_targetUser = extras.getString("username");
+        } else {
+        	navBarOnClickSetup();
         }
     	TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
         if (m_isLoggedIn) {
@@ -370,8 +373,6 @@ public class ActivityFeeds extends Activity {
 			}
 		});
         m_thread.start();
-
-        navBarOnClickSetup();
     }
 
 	@Override

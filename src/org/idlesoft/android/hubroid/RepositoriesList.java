@@ -31,6 +31,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -242,6 +243,7 @@ public class RepositoriesList extends Activity {
 
 	public void navBarOnClickSetup()
 	{
+		((LinearLayout)findViewById(R.id.ll_repositories_list_navbar)).setVisibility(View.VISIBLE);
 		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(RepositoriesList.this, ActivityFeeds.class));
@@ -296,13 +298,12 @@ public class RepositoriesList extends Activity {
 	        }
         } else {
         	m_targetUser = m_username;
+        	navBarOnClickSetup();
         }
 
         m_progressDialog = ProgressDialog.show(RepositoriesList.this, "Please wait...", "Loading Repositories...", true);
 		m_thread = new Thread(null, threadProc_initializeList);
 		m_thread.start();
-
-		navBarOnClickSetup();
     }
 
     @Override
