@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -269,7 +268,6 @@ public class UserInfo extends Activity {
     		if (userInfoResp.statusCode == 200)
     			json = new JSONObject(userInfoResp.resp);
 			if (json == null) {
-				Log.d("debug","woot1");
 				// User doesn't really exist, return to the previous activity
 				this.setResult(5005);
 				this.finish();
