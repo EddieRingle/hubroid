@@ -92,15 +92,75 @@ public class UserInfo extends Activity {
 		}
 	};
 
+	public Dialog onCreateDialog(int id)
+	{
+		m_loginDialog = new Dialog(UserInfo.this);
+		m_loginDialog.setCancelable(true);
+		m_loginDialog.setTitle("Login");
+		m_loginDialog.setContentView(R.layout.login_dialog);
+		Button loginBtn = (Button) m_loginDialog.findViewById(R.id.btn_loginDialog_login);
+		loginBtn.setOnClickListener(new OnClickListener() {
+			public void onClick(View arg0) {
+				m_progressDialog = ProgressDialog.show(UserInfo.this, null, "Logging in...");
+				m_thread = new Thread(new Runnable() {
+					public void run() {
+						String username = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_userField)).getText().toString();
+						String token = ((EditText)m_loginDialog.findViewById(R.id.et_loginDialog_tokenField)).getText().toString();
+
+						if (username.equals("") || token.equals("")) {
+							runOnUiThread(new Runnable() {
+								public void run() {
+									m_progressDialog.dismiss();
+									Toast.makeText(UserInfo.this, "Login details cannot be blank", Toast.LENGTH_LONG).show();
+								}
+							});
+						} else {
+							Response authResp = User.info(username, token);
+	
+							if (authResp.statusCode == 401) {
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										Toast.makeText(UserInfo.this, "Error authenticating with server", Toast.LENGTH_LONG).show();
+									}
+								});
+							} else if (authResp.statusCode == 200) {
+								m_editor.putString("login", username);
+								m_editor.putString("token", token);
+								m_editor.putBoolean("isLoggedIn", true);
+								m_editor.commit();
+								runOnUiThread(new Runnable() {
+									public void run() {
+										m_progressDialog.dismiss();
+										dismissDialog(0);
+										Intent intent = new Intent(UserInfo.this, Hubroid.class);
+										startActivity(intent);
+										finish();
+									}
+								});
+							}
+						}
+					}
+				});
+				m_thread.start();
+			}
+		});
+		return m_loginDialog;
+	}
+
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (menu.hasVisibleItems()) menu.clear();
-		if (m_isFollowing) {
-			menu.add(0, 3, 0, "Unfollow");
-		} else {
-			menu.add(0, 3, 0, "Follow");
+		if (m_targetUser != m_username) {
+			if (m_isFollowing) {
+				menu.add(0, 3, 0, "Unfollow");
+			} else {
+				menu.add(0, 3, 0, "Follow");
+			}
 		}
-		menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-		menu.add(0, 1, 0, "Clear Preferences");
+		if (!m_isLoggedIn)
+			menu.add(0, 0, 0, "Login");
+		else if (m_isLoggedIn)
+			menu.add(0, 1, 0, "Logout");
 		menu.add(0, 2, 0, "Clear Cache");
 		return true;
 	}
@@ -125,8 +185,7 @@ public class UserInfo extends Activity {
 			}
 			break;
 		case 0:
-			Intent i1 = new Intent(this, Hubroid.class);
-			startActivity(i1);
+			showDialog(0);
 			return true;
 		case 1:
 			m_editor.clear().commit();
