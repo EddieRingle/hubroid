@@ -17,8 +17,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.flurry.android.FlurryAgent;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -31,6 +29,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+
+import com.flurry.android.FlurryAgent;
 
 public class RepositoryInfo extends Activity {
 	public ProgressDialog m_progressDialog;

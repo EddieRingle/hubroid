@@ -19,8 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.flurry.android.FlurryAgent;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -38,6 +36,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+
+import com.flurry.android.FlurryAgent;
 
 public class CommitsList extends Activity {
 	public CommitListAdapter m_commitListAdapter;

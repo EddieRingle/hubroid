@@ -9,13 +9,12 @@
 package org.idlesoft.android.hubroid;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -28,6 +27,8 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.flurry.android.FlurryAgent;
 
 public class SingleActivityItem extends Activity {
 	public ProgressDialog m_progressDialog;

@@ -5,8 +5,6 @@ import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.flurry.android.FlurryAgent;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -18,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.flurry.android.FlurryAgent;
 
 public class CreateIssue extends Activity {
 	private SharedPreferences m_prefs;

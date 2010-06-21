@@ -15,8 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.flurry.android.FlurryAgent;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -30,6 +28,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.flurry.android.FlurryAgent;
 
 public class NetworkList extends Activity {
 	public ProgressDialog m_progressDialog;
