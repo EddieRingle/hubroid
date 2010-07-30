@@ -146,9 +146,9 @@ public class CommitsList extends Activity {
 				Response branchesResponse = Repository.branches(m_repo_owner, m_repo_name, m_username, m_token);
 				JSONObject branchesJson = new JSONObject(branchesResponse.resp).getJSONObject("branches");
 				m_branches = new ArrayList<String>(branchesJson.length());
-				Iterator<String> keys = branchesJson.keys();
+				Iterator<?> keys = branchesJson.keys();
 				while (keys.hasNext()) {
-					String next_branch = keys.next();
+					String next_branch = (String)keys.next();
 					m_branches.add(next_branch);
 				}
 

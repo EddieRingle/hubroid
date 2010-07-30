@@ -23,7 +23,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -51,11 +50,17 @@ public class ActivityFeeds extends Activity {
 	private String m_token;
 	private boolean m_isLoggedIn;
 	private String m_type;
-	private JSONArray m_publicJSON;
-	private JSONArray m_privateJSON;
-	private JSONArray m_timelineJSON;
-	private Thread m_thread;
+	public JSONArray m_publicJSON;
+	public JSONArray m_displayedPublicJSON;
+	public JSONArray m_privateJSON;
+	public JSONArray m_displayedPrivateJSON;
+	public JSONArray m_timelineJSON;
+	public JSONArray m_displayedTimelineJSON;
+	private loadTimelineTask m_loadTimelineTask;
+	private loadPublicTask m_loadPublicTask;
+	private loadPrivateTask m_loadPrivateTask;
 	private Dialog m_loginDialog;
+	private Thread m_thread;
 	public View loadingItem;
 
 	public Dialog onCreateDialog(int id)
@@ -200,7 +205,7 @@ public class ActivityFeeds extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			try {
 				Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
-				intent.putExtra("item_json", m_publicJSON.getJSONObject(arg2).toString());
+				intent.putExtra("item_json", m_displayedPublicJSON.getJSONObject(arg2).toString());
 				startActivity(intent);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -212,7 +217,7 @@ public class ActivityFeeds extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			try {
 				Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
-				intent.putExtra("item_json", m_privateJSON.getJSONObject(arg2).toString());
+				intent.putExtra("item_json", m_displayedPrivateJSON.getJSONObject(arg2).toString());
 				startActivity(intent);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -224,7 +229,7 @@ public class ActivityFeeds extends Activity {
 		public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 			try {
 				Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
-				intent.putExtra("item_json", m_timelineJSON.getJSONObject(arg2).toString());
+				intent.putExtra("item_json", m_displayedTimelineJSON.getJSONObject(arg2).toString());
 				startActivity(intent);
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -316,65 +321,222 @@ public class ActivityFeeds extends Activity {
         	}
     	}
         loadingItem = getLayoutInflater().inflate(R.layout.loading_feed_item, null);
-        ((ListView)findViewById(R.id.lv_activity_feeds_private_list)).addHeaderView(loadingItem);
-        ((ListView)findViewById(R.id.lv_activity_feeds_private_list)).setAdapter(null);
-        ((ListView)findViewById(R.id.lv_activity_feeds_public_list)).addHeaderView(loadingItem);
-        ((ListView)findViewById(R.id.lv_activity_feeds_public_list)).setAdapter(null);
-        ((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).addHeaderView(loadingItem);
-        ((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).setAdapter(null);
-        m_thread = new Thread(new Runnable() {
-			public void run()
-			{
+
+        toggleList(m_type);
+
+		if (m_targetUser != null) {
+			m_loadPublicTask = new loadPublicTask();
+			m_loadPublicTask.execute(this);
+		} else {
+			if (m_isLoggedIn) {
+				m_targetUser = m_username;
+				m_loadPublicTask = new loadPublicTask();
+				m_loadPublicTask.execute(this);
+				m_loadPrivateTask = new loadPrivateTask();
+				m_loadPrivateTask.execute(this);
+			}
+			m_loadTimelineTask = new loadTimelineTask();
+			m_loadTimelineTask.execute(this);
+		}
+    }
+
+	private static class loadTimelineTask extends AsyncTask<ActivityFeeds, Integer, Boolean> {
+		public ActivityFeeds parent;
+
+		protected void setLoadingView()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_timeline_list)).addHeaderView(parent.loadingItem);
+	        ((ListView)parent.findViewById(R.id.lv_activity_feeds_timeline_list)).setAdapter(null);
+		}
+
+		protected void removeLoadingView()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_timeline_list)).removeHeaderView(parent.loadingItem);
+		}
+
+		protected void setAdapter()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_timeline_list)).setAdapter(parent.m_timelineActivityAdapter);
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_timeline_list)).setOnItemClickListener(parent.onTimelineActivityItemClick);
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress)
+		{
+			if (progress[0] == 0) {
+				setLoadingView();
+			} else if (progress[0] == 100) {
+				setAdapter();
+				removeLoadingView();
+			}
+		}
+
+		@Override
+		protected Boolean doInBackground(ActivityFeeds... params)
+		{
+			parent = params[0];
+			publishProgress(0);
+			if (parent.m_timelineJSON == null) {
 				try {
-					if (m_targetUser != null) {
-						Response publicActivityFeedResp = User.activity(m_targetUser);
-						if (publicActivityFeedResp.statusCode == 200) {
-							m_publicJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
-							m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_publicJSON, true);
-						}
-					} else {
-						if (m_isLoggedIn) {
-							Response publicActivityFeedResp = User.activity(m_username);
-							if (publicActivityFeedResp.statusCode == 200) {
-								m_publicJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
-								m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_publicJSON, true);
-							}
-							Response privateActivityFeedResp = User.activity(m_username, m_token);
-							if (privateActivityFeedResp.statusCode == 200) {
-								m_privateJSON = new JSONObject(privateActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
-								m_privateActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_privateJSON, false);
-							}
-						}
-						Response timelineActivityFeedResp = User.timeline();
-						if (timelineActivityFeedResp.statusCode == 200) {
-							m_timelineJSON = new JSONObject(timelineActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
-							m_timelineActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_timelineJSON, false);
-						}
-					}
-					runOnUiThread(new Runnable() {
-						public void run() {
-							toggleList(m_type);
-							ListView publicList = (ListView)findViewById(R.id.lv_activity_feeds_public_list);
-							ListView privateList = (ListView)findViewById(R.id.lv_activity_feeds_private_list);
-							ListView timelineList = (ListView)findViewById(R.id.lv_activity_feeds_timeline_list);
-							publicList.setAdapter(m_publicActivityAdapter);
-							privateList.setAdapter(m_privateActivityAdapter);
-							timelineList.setAdapter(m_timelineActivityAdapter);
-							publicList.setOnItemClickListener(onPublicActivityItemClick);
-							privateList.setOnItemClickListener(onPrivateActivityItemClick);
-							timelineList.setOnItemClickListener(onTimelineActivityItemClick);
-							((ListView)findViewById(R.id.lv_activity_feeds_private_list)).removeHeaderView(loadingItem);
-					        ((ListView)findViewById(R.id.lv_activity_feeds_public_list)).removeHeaderView(loadingItem);
-					        ((ListView)findViewById(R.id.lv_activity_feeds_timeline_list)).removeHeaderView(loadingItem);
-						}
-					});
+					Response resp = User.timeline();
+					if (resp.statusCode != 200)
+						return false;
+					parent.m_timelineJSON = new JSONArray(resp.resp);
 				} catch (JSONException e) {
 					e.printStackTrace();
+					return false;
 				}
 			}
-		});
-        m_thread.start();
-    }
+			if (parent.m_displayedTimelineJSON == null)
+				parent.m_displayedTimelineJSON = new JSONArray();
+			int length = parent.m_displayedTimelineJSON.length();
+			for (int i = length; i < length + 10; i++) {
+				if (parent.m_timelineJSON.isNull(i))
+					break;
+				try {
+					parent.m_displayedTimelineJSON.put(parent.m_timelineJSON.get(i));
+				} catch (JSONException e) {
+					e.printStackTrace();
+					break;
+				}
+			}
+			parent.m_timelineActivityAdapter = new ActivityFeedAdapter(parent.getApplicationContext(), parent.m_displayedTimelineJSON, false);
+			publishProgress(100);
+			return true;
+		}
+	}
+
+	private static class loadPublicTask extends AsyncTask<ActivityFeeds, Integer, Boolean> {
+		public ActivityFeeds parent;
+
+		protected void setLoadingView()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_public_list)).addHeaderView(parent.loadingItem);
+	        ((ListView)parent.findViewById(R.id.lv_activity_feeds_public_list)).setAdapter(null);
+		}
+
+		protected void removeLoadingView()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_public_list)).removeHeaderView(parent.loadingItem);
+		}
+
+		protected void setAdapter()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_public_list)).setAdapter(parent.m_publicActivityAdapter);
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_public_list)).setOnItemClickListener(parent.onPublicActivityItemClick);
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress)
+		{
+			if (progress[0] == 0) {
+				setLoadingView();
+			} else if (progress[0] == 100) {
+				setAdapter();
+				removeLoadingView();
+			}
+		}
+
+		@Override
+		protected Boolean doInBackground(ActivityFeeds... params)
+		{
+			parent = params[0];
+			publishProgress(0);
+			if (parent.m_publicJSON == null) {
+				try {
+					Response resp = User.activity(parent.m_targetUser);
+					if (resp.statusCode != 200)
+						return false;
+					parent.m_publicJSON = new JSONArray(resp.resp);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			if (parent.m_displayedPublicJSON == null)
+				parent.m_displayedPublicJSON = new JSONArray();
+			int length = parent.m_displayedPublicJSON.length();
+			for (int i = length; i < length + 10; i++) {
+				if (parent.m_publicJSON.isNull(i))
+					break;
+				try {
+					parent.m_displayedPublicJSON.put(parent.m_publicJSON.get(i));
+				} catch (JSONException e) {
+					e.printStackTrace();
+					break;
+				}
+			}
+			parent.m_publicActivityAdapter = new ActivityFeedAdapter(parent.getApplicationContext(), parent.m_displayedPublicJSON, false);
+			publishProgress(100);
+			return true;
+		}
+	}
+
+	private static class loadPrivateTask extends AsyncTask<ActivityFeeds, Integer, Boolean> {
+		public ActivityFeeds parent;
+
+		protected void setLoadingView()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_private_list)).addHeaderView(parent.loadingItem);
+	        ((ListView)parent.findViewById(R.id.lv_activity_feeds_private_list)).setAdapter(null);
+		}
+
+		protected void removeLoadingView()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_private_list)).removeHeaderView(parent.loadingItem);
+		}
+
+		protected void setAdapter()
+		{
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_private_list)).setAdapter(parent.m_privateActivityAdapter);
+			((ListView)parent.findViewById(R.id.lv_activity_feeds_private_list)).setOnItemClickListener(parent.onPrivateActivityItemClick);
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... progress)
+		{
+			if (progress[0] == 0) {
+				setLoadingView();
+			} else if (progress[0] == 100) {
+				setAdapter();
+				removeLoadingView();
+			}
+		}
+
+		@Override
+		protected Boolean doInBackground(ActivityFeeds... params)
+		{
+			parent = params[0];
+			publishProgress(0);
+			if (parent.m_privateJSON == null) {
+				try {
+					Response resp = User.activity(parent.m_username, parent.m_token);
+					if (resp.statusCode != 200)
+						return false;
+					parent.m_privateJSON = new JSONArray(resp.resp);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					return false;
+				}
+			}
+			if (parent.m_displayedPrivateJSON == null)
+				parent.m_displayedPrivateJSON = new JSONArray();
+			int length = parent.m_displayedPrivateJSON.length();
+			for (int i = length; i < length + 10; i++) {
+				if (parent.m_privateJSON.isNull(i))
+					break;
+				try {
+					parent.m_displayedPrivateJSON.put(parent.m_privateJSON.get(i));
+				} catch (JSONException e) {
+					e.printStackTrace();
+					break;
+				}
+			}
+			parent.m_privateActivityAdapter = new ActivityFeedAdapter(parent.getApplicationContext(), parent.m_displayedPrivateJSON, false);
+			publishProgress(100);
+			return true;
+		}
+	}
 
 	@Override
     public void onPause()

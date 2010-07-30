@@ -52,13 +52,13 @@ public class ActivityFeedAdapter extends BaseAdapter {
 		try {
 			if (m_single) {
 				// Load only the first gravatar
-				String actor = m_data.getJSONObject(0).getJSONObject("author").getString("name");
+				String actor = m_data.getJSONObject(0).getString("actor");
 				m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
 			} else {
 				// Load all of 'em
 				int length = m_data.length();
 				for (int i = 0; i < length; i++) {
-					String actor = m_data.getJSONObject(i).getJSONObject("author").getString("name");
+					String actor = m_data.getJSONObject(i).getString("actor");
 					if (!m_gravatars.containsKey(actor)) {
 						m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
 					}
@@ -117,9 +117,11 @@ public class ActivityFeedAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 		try {
+			JSONObject entry = m_data.getJSONObject(index);
+			JSONObject payload = entry.getJSONObject("payload");
 			String end;
-			SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
-			Date item_time = dateFormat.parse(m_data.getJSONObject(index).getString("published"));
+			SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+			Date item_time = dateFormat.parse(entry.getString("created_at"));
 			Date current_time = dateFormat.parse(dateFormat.format(new Date()));
 			long ms = current_time.getTime() - item_time.getTime();
 			long sec = ms / 1000;
@@ -155,40 +157,151 @@ public class ActivityFeedAdapter extends BaseAdapter {
 				}
 				holder.date.setText(sec + end);
 			}
-			holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index).getJSONObject("author").getString("name")));
 
-			String eventType = m_data.getJSONObject(index).getString("id");
-			String title = m_data.getJSONObject(index).getString("title");
+			String actor = entry.getString("actor");
+			String eventType = entry.getString("type");
+			String title = actor + " did something...";
+			holder.gravatar.setImageBitmap(m_gravatars.get(actor));
+
 			if (eventType.contains("PushEvent")) {
 				holder.icon.setImageResource(R.drawable.push);
+				title = actor
+						+ " pushed to "
+						+ payload.getString("ref").split("/")[2]
+						+ " at "
+						+ entry.getJSONObject("repository").getString("owner")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("WatchEvent")) {
-				if (title.contains(" started ")) {
+				String action = payload.getString("action");
+				if (action.equalsIgnoreCase("started")) {
 					holder.icon.setImageResource(R.drawable.watch_started);
 				} else {
 					holder.icon.setImageResource(R.drawable.watch_stopped);
 				}
+				title = actor
+						+ " "
+						+ action
+						+ " watching "
+						+ entry.getJSONObject("repository").getString("owner")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("GistEvent")) {
+				String action = payload.getString("action");
 				holder.icon.setImageResource(R.drawable.gist);
+				title = actor
+						+ " "
+						+ action + "d "
+						+ payload.getString("name");
 			} else if (eventType.contains("ForkEvent")) {
 				holder.icon.setImageResource(R.drawable.fork);
+				title = actor
+						+ " forked "
+						+ entry.getJSONObject("repository").getString("name")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("owner");
 			} else if (eventType.contains("CommitCommentEvent")) {
 				holder.icon.setImageResource(R.drawable.comment);
+				title = actor
+						+ " commented on "
+						+ entry.getJSONObject("repository").getString("owner")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("ForkApplyEvent")) {
 				holder.icon.setImageResource(R.drawable.merge);
+				title = actor
+						+ " applied fork commits to "
+						+ entry.getJSONObject("repository").getString("owner")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("FollowEvent")) {
 				holder.icon.setImageResource(R.drawable.follow);
+				title = actor
+						+ " started following "
+						+ payload.getString("target");
 			} else if (eventType.contains("CreateEvent")) {
 				holder.icon.setImageResource(R.drawable.create);
+				if (payload.getString("object").contains("repository")) {
+					title = actor
+							+ " created repository "
+							+ payload.getString("name");
+				} else if (payload.getString("object").contains("branch")) {
+					title = actor
+							+ " created branch "
+							+ payload.getString("object_name")
+							+ " at "
+							+ entry.getJSONObject("repository").getString("owner")
+							+ "/"
+							+ entry.getJSONObject("repository").getString("name");
+				} else if (payload.getString("object").contains("tag")) {
+					title = actor
+							+ " created tag "
+							+ payload.getString("object_name")
+							+ " at "
+							+ entry.getJSONObject("repository").getString("owner")
+							+ "/"
+							+ entry.getJSONObject("repository").getString("name");
+				}
 			} else if (eventType.contains("IssuesEvent")) {
-				if (title.contains(" opened ")) {
+				if (payload.getString("action").equalsIgnoreCase("opened")) {
 					holder.icon.setImageResource(R.drawable.issues_open);
-				} else if (title.contains(" closed ")) {
+				} else {
 					holder.icon.setImageResource(R.drawable.issues_closed);
 				}
+				title = actor
+						+ " "
+						+ payload.getString("action")
+						+ " issue "
+						+ payload.getInt("number")
+						+ " on "
+						+ entry.getJSONObject("repository").getString("owner")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("DeleteEvent")) {
 				holder.icon.setImageResource(R.drawable.delete);
+				if (payload.getString("object").contains("repository")) {
+					title = actor
+							+ " deleted repository "
+							+ payload.getString("name");
+				} else if (payload.getString("object").contains("branch")) {
+					title = actor
+							+ " deleted branch "
+							+ payload.getString("object_name")
+							+ " at "
+							+ entry.getJSONObject("repository").getString("owner")
+							+ "/"
+							+ entry.getJSONObject("repository").getString("name");
+				} else if (payload.getString("object").contains("tag")) {
+					title = actor
+					+ " deleted tag "
+					+ payload.getString("object_name")
+					+ " at "
+					+ entry.getJSONObject("repository").getString("owner")
+					+ "/"
+					+ entry.getJSONObject("repository").getString("name");
+				}
 			} else if (eventType.contains("WikiEvent")) {
 				holder.icon.setImageResource(R.drawable.wiki);
+				title = actor
+						+ " "
+						+ payload.getString("action")
+						+ " a page in the "
+						+ entry.getJSONObject("repository").getString("owner")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("name")
+						+ " wiki";
+			} else if (eventType.contains("DownloadEvent")) {
+				holder.icon.setImageResource(R.drawable.download);
+				title = actor
+						+ " uploaded a file to "
+						+ entry.getJSONObject("repository").getString("owner")
+						+ "/"
+						+ entry.getJSONObject("repository").getString("name");
+			} else if (eventType.contains("PublicEvent")) {
+				holder.icon.setImageResource(R.drawable.opensource);
+				title = actor
+						+ " open sourced "
+						+ entry.getJSONObject("repository").getString("name");
 			}
 			holder.title.setText(title);
 		} catch (JSONException e) {
