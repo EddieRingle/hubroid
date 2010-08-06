@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="40dip"
+		android:padding="5dip"
+		android:gravity="center_vertical"
+		android:background="@drawable/top_bar">
+		<TextView
+			android:textSize="22dip"
+			android:textStyle="bold"
+			android:textColor="#555"
+			android:text="Hubroid"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content" />
+	</LinearLayout>
+	<LinearLayout
+		android:orientation="horizontal"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:gravity="center">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_dashboard_newsfeed"
+				android:layout_width="150dip"
+				android:layout_height="100dip"
+				android:text="News Feed" />
+			<Button android:id="@+id/btn_dashboard_myprofile"
+				android:layout_width="150dip"
+				android:layout_height="100dip"
+				android:text="My Profile" />
+		</LinearLayout>
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_dashboard_watchedrepositories"
+				android:layout_width="150dip"
+				android:layout_height="100dip"
+				android:text="Watched Repositories" />
+			<Button android:id="@+id/btn_dashboard_myrepositories"
+				android:layout_width="150dip"
+				android:layout_height="100dip"
+				android:text="My Repositories" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

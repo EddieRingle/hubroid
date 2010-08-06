@@ -2,6 +2,7 @@ package org.idlesoft.android.hubroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.SystemClock;
 
@@ -12,18 +13,34 @@ public class Splash extends Activity {
 		super.onCreate(icicle);
 		setContentView(R.layout.splash);
 
-		Thread thread = new Thread(new Runnable() {
-			public void run() {
-				long time = SystemClock.uptimeMillis();
-				while ((SystemClock.uptimeMillis() - time) < 3000);
-				runOnUiThread(new Runnable() {
-					public void run() {
-						startActivity(new Intent(Splash.this, ActivityFeeds.class));
-						finish();
-					}
-				});
-			}
-		});
-		thread.start();
+		SharedPreferences prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+		if (prefs.contains("username") && prefs.contains("password")) {
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					long time = SystemClock.uptimeMillis();
+					while ((SystemClock.uptimeMillis() - time) < 3000);
+					runOnUiThread(new Runnable() {
+						public void run() {
+							finish();
+						}
+					});
+				}
+			});
+			thread.start();
+		} else {
+			Thread thread = new Thread(new Runnable() {
+				public void run() {
+					long time = SystemClock.uptimeMillis();
+					while ((SystemClock.uptimeMillis() - time) < 3000);
+					runOnUiThread(new Runnable() {
+						public void run() {
+							startActivity(new Intent(Splash.this, Login.class));
+							finish();
+						}
+					});
+				}
+			});
+			thread.start();
+		}
 	}
 }

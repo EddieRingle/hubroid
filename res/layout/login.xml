@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:padding="10dip"
+	android:gravity="left">
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingBottom="10dip"
+		android:textColor="#333"
+		android:textSize="20dip"
+		android:text="Hubroid" />
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingLeft="5dip"
+		android:text="Username" />
+	<EditText android:id="@+id/et_login_username"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:background="@android:drawable/editbox_background_normal" />
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:paddingTop="5dip"
+		android:paddingLeft="5dip"
+		android:text="Password" />
+	<EditText android:id="@+id/et_login_password"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:inputType="textPassword"
+		android:background="@android:drawable/editbox_background_normal" />
+	<Button android:id="@+id/btn_login_login"
+		android:layout_width="90dip"
+		android:layout_height="45dip"
+		android:layout_gravity="right"
+		android:background="@android:drawable/btn_default_small"
+		android:text="Sign in" />
+</LinearLayout>

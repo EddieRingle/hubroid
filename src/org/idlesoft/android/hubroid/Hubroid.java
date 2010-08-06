@@ -22,6 +22,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,7 +74,7 @@ public class Hubroid extends Activity {
 					in.close();
 				} else {
 					try {
-						id = new JSONObject(User.info(name).resp).getJSONObject("user").getString("gravatar_id");
+						id = new JSONObject(new GitHubAPI().user.info(name).resp).getJSONObject("user").getString("gravatar_id");
 						FileWriter fw = new FileWriter(image);
 						BufferedWriter bw = new BufferedWriter(fw);
 						bw.write(id);
@@ -160,8 +161,7 @@ public class Hubroid extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         startActivity(new Intent(Hubroid.this, Splash.class));
-        finish();
+        setContentView(R.layout.dashboard);
     }
 }

@@ -10,8 +10,8 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -28,13 +28,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.flurry.android.FlurryAgent;
 
@@ -62,6 +62,7 @@ public class ActivityFeeds extends Activity {
 	private Dialog m_loginDialog;
 	private Thread m_thread;
 	public View loadingItem;
+	public GitHubAPI gapi;
 
 	public Dialog onCreateDialog(int id)
 	{
@@ -86,7 +87,7 @@ public class ActivityFeeds extends Activity {
 								}
 							});
 						} else {
-							Response authResp = User.info(username, token);
+							Response authResp = gapi.user.info(username, token);
 	
 							if (authResp.statusCode == 401) {
 								runOnUiThread(new Runnable() {
