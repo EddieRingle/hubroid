@@ -6,12 +6,12 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -51,6 +51,7 @@ public class UserInfo extends Activity {
 	private Thread m_thread;
 	private ProgressDialog m_progressDialog;
 	private Dialog m_loginDialog;
+	private GitHubAPI _gapi;
 
 	private OnClickListener onButtonClick = new OnClickListener() {
 		public void onClick(View v) {
@@ -58,12 +59,6 @@ public class UserInfo extends Activity {
 			// Figure out what button was clicked
 			int id = v.getId();
 			switch (id) {
-			case R.id.btn_user_info_public_activity:
-				// View the user's public activity feed
-				intent = new Intent(UserInfo.this, ActivityFeeds.class);
-				intent.putExtra("username", m_targetUser);
-				startActivity(intent);
-				break;
 			case R.id.btn_user_info_repositories:
 				// Go to the user's list of repositories
 				intent = new Intent(UserInfo.this, RepositoriesList.class);
@@ -106,7 +101,7 @@ public class UserInfo extends Activity {
 								}
 							});
 						} else {
-							Response authResp = User.info(username, token);
+							Response authResp = _gapi.user.info(username);
 	
 							if (authResp.statusCode == 401) {
 								runOnUiThread(new Runnable() {
@@ -162,13 +157,13 @@ public class UserInfo extends Activity {
 			Response postResp;
 
 			if (m_isFollowing) {
-				postResp = User.unfollow(m_targetUser, m_username, m_token);
+				postResp = _gapi.user.unfollow(m_targetUser);
 				if (postResp.statusCode == 200) {
 					Toast.makeText(this, "You are no longer following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
 				m_isFollowing = !m_isFollowing;
 			} else {
-				postResp = User.follow(m_targetUser, m_username, m_token);
+				postResp = _gapi.user.follow(m_targetUser);
 				if (postResp.statusCode == 200) {
 					Toast.makeText(this, "You are now following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
@@ -207,12 +202,6 @@ public class UserInfo extends Activity {
 			svParams.setMargins(0, 0, 0, (int)(72.0f * getApplicationContext().getResources().getDisplayMetrics().density + 0.5f));
 			sv.setLayoutParams(svParams);
 		}
-		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				startActivity(new Intent(UserInfo.this, ActivityFeeds.class));
-				finish();
-			}
-		});
 		((Button)findViewById(R.id.btn_navbar_repositories)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(UserInfo.this, RepositoriesList.class));
@@ -252,6 +241,8 @@ public class UserInfo extends Activity {
         m_isFollowing = false;
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 
+        _gapi = new GitHubAPI();
+
         Bundle extras = getIntent().getExtras();
         if (extras != null)
         	m_targetUser = extras.getString("username");
@@ -261,7 +252,7 @@ public class UserInfo extends Activity {
     			navBarOnClickSetup();
     		}
     		Response userInfoResp;
-    		userInfoResp = (m_targetUser.equals(m_username)) ? User.info(m_targetUser, m_token) : User.info(m_targetUser);
+    		userInfoResp = (m_targetUser.equals(m_username)) ? _gapi.user.info(m_targetUser) : _gapi.user.info(m_targetUser);
     		JSONObject json = null;
     		if (userInfoResp.statusCode == 200)
     			json = new JSONObject(userInfoResp.resp);
@@ -272,7 +263,7 @@ public class UserInfo extends Activity {
 			} else {
 				m_jsonData = json.getJSONObject("user");
 
-	        	JSONArray following_list = new JSONObject(User.following(m_username).resp).getJSONArray("users");
+	        	JSONArray following_list = new JSONObject(_gapi.user.following(m_username).resp).getJSONArray("users");
 	        	int length = following_list.length() - 1;
 	        	for (int i = 0; i <= length; i++) {
 	        		if (following_list.getString(i).equalsIgnoreCase(m_targetUser)) {

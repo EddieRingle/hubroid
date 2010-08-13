@@ -6,14 +6,14 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.idlesoft.libraries.ghapi.Issues;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -53,6 +53,7 @@ public class SingleIssue extends Activity {
 	private View m_issueBox;
 	private View m_clickedBtn;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (menu.hasVisibleItems()) menu.clear();
@@ -97,7 +98,7 @@ public class SingleIssue extends Activity {
 				m_thread = new Thread(new Runnable() {
 					public void run() {
 						try {
-							if (Issues.add_comment(m_repoOwner, m_repoName, m_JSON.getInt("number"), ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString(), m_username, m_token).statusCode == 200) {
+							if (_gapi.issues.add_comment(m_repoOwner, m_repoName, m_JSON.getInt("number"), ((TextView)m_commentArea.findViewById(R.id.et_issue_comment_area_body)).getText().toString()).statusCode == 200) {
 								runOnUiThread(new Runnable() {
 									public void run() {
 										((ProgressBar)m_commentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.GONE);
@@ -110,14 +111,14 @@ public class SingleIssue extends Activity {
 											m_progressDialog.setMessage("Closing issue...");
 										}
 									});
-									int statusCode = Issues.close(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token).statusCode;
+									int statusCode = _gapi.issues.close(m_repoOwner, m_repoName, m_JSON.getInt("number")).statusCode;
 									if (statusCode == 200) {
 										runOnUiThread(new Runnable() {
 											public void run() {
 												m_progressDialog.setMessage("Refreshing Issue...");
 											}
 										});
-										m_JSON = new JSONObject(Issues.issue(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token).resp).getJSONObject("issue");
+										m_JSON = new JSONObject(_gapi.issues.issue(m_repoOwner, m_repoName, m_JSON.getInt("number")).resp).getJSONObject("issue");
 										runOnUiThread(new Runnable() {
 											public void run() {
 												loadIssueItemBox();
@@ -131,7 +132,7 @@ public class SingleIssue extends Activity {
 										});
 									}
 								}
-								Response response = Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
+								Response response = _gapi.issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"));
 								m_adapter = new IssueCommentsAdapter(getApplicationContext(), new JSONObject(response.resp).getJSONArray("comments"));
 								runOnUiThread(new Runnable() {
 									public void run() {
@@ -301,7 +302,7 @@ public class SingleIssue extends Activity {
 				m_thread = new Thread(new Runnable() {
 					public void run() {
 						try {
-							Response response = Issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"), m_username, m_token);
+							Response response = _gapi.issues.list_comments(m_repoOwner, m_repoName, m_JSON.getInt("number"));
 							m_adapter = new IssueCommentsAdapter(getApplicationContext(), new JSONObject(response.resp).getJSONArray("comments"));
 							runOnUiThread(new Runnable() {
 								public void run() {

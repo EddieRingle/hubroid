@@ -6,15 +6,14 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.idlesoft.libraries.ghapi.Commits;
-import org.idlesoft.libraries.ghapi.Repository;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,12 +29,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemSelectedListener;
 
 import com.flurry.android.FlurryAgent;
 
@@ -54,11 +53,12 @@ public class CommitsList extends Activity {
 	public Intent m_intent;
 	public int m_position;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	private Runnable threadProc_gatherCommits = new Runnable() {
 		public void run() {
 			try {
-				m_commitsJSON = new JSONObject(Commits.list(m_repo_owner, m_repo_name, m_branches.get(m_position), m_username, m_token).resp).getJSONArray("commits");
+				m_commitsJSON = new JSONObject(_gapi.commits.list(m_repo_owner, m_repo_name, m_branches.get(m_position)).resp).getJSONArray("commits");
 				Log.d("debug1",m_commitsJSON.toString());
 				m_commitListAdapter = new CommitListAdapter(CommitsList.this, m_commitsJSON);
 			} catch (JSONException e) {
@@ -134,6 +134,8 @@ public class CommitsList extends Activity {
         m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
 
+        _gapi = new GitHubAPI();
+
         TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
         title.setText("Recent Commits");
 
@@ -143,7 +145,7 @@ public class CommitsList extends Activity {
         	m_repo_owner = extras.getString("username");
 
 			try {
-				Response branchesResponse = Repository.branches(m_repo_owner, m_repo_name, m_username, m_token);
+				Response branchesResponse = _gapi.repo.branches(m_repo_owner, m_repo_name);
 				JSONObject branchesJson = new JSONObject(branchesResponse.resp).getJSONObject("branches");
 				m_branches = new ArrayList<String>(branchesJson.length());
 				Iterator<?> keys = branchesJson.keys();

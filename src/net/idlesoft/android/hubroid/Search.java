@@ -6,13 +6,12 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.Repository;
-import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,15 +31,14 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 
@@ -64,6 +62,7 @@ public class Search extends Activity {
 	public int m_position;
 	private Thread m_thread;
 	public InputMethodManager m_imm;
+	private GitHubAPI _gapi;
 
 	public void initializeList() {
 		String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
@@ -71,9 +70,9 @@ public class Search extends Activity {
 			try {
 				JSONObject response;
 				if (m_isLoggedIn)
-					response = new JSONObject(Repository.search(query, m_username, m_token).resp);
+					response = new JSONObject(_gapi.repo.search(query).resp);
 				else
-					response = new JSONObject(Repository.search(query).resp); 
+					response = new JSONObject(_gapi.repo.search(query).resp); 
 				m_repositoriesData = response.getJSONArray(REPO_TYPE);
 				m_repositories_adapter = new RepositoriesListAdapter(getApplicationContext(), m_repositoriesData);
 			} catch (JSONException e) {
@@ -86,7 +85,7 @@ public class Search extends Activity {
 			}
 		} else if (m_type.equals(USER_TYPE)) {
 			try {
-				JSONObject response = new JSONObject(User.search(query).resp);
+				JSONObject response = new JSONObject(_gapi.user.search(query).resp);
 				m_usersData = response.getJSONArray(USER_TYPE);
 				m_users_adapter = new SearchUsersListAdapter(getApplicationContext(), m_usersData);
 			} catch (JSONException e) {
@@ -221,7 +220,7 @@ public class Search extends Activity {
 								}
 							});
 						} else {
-							Response authResp = User.info(username, token);
+							Response authResp = _gapi.user.info(username);
 	
 							if (authResp.statusCode == 401) {
 								runOnUiThread(new Runnable() {
@@ -293,13 +292,6 @@ public class Search extends Activity {
 
 	public void navBarOnClickSetup()
 	{
-		((LinearLayout)findViewById(R.id.ll_search_navbar)).setVisibility(View.VISIBLE);
-		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				startActivity(new Intent(Search.this, ActivityFeeds.class));
-				finish();
-			}
-		});
 		((Button)findViewById(R.id.btn_navbar_repositories)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(Search.this, RepositoriesList.class));

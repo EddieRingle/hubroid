@@ -6,11 +6,11 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.Repository;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,9 +25,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.flurry.android.FlurryAgent;
 
@@ -44,6 +44,7 @@ public class NetworkList extends Activity {
 	private String m_username;
 	private String m_token;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -114,7 +115,7 @@ public class NetworkList extends Activity {
 				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
 				title.setText("Network");
 
-				JSONObject forkjson = new JSONObject(Repository.network(m_repo_owner, m_repo_name, m_username, m_token).resp);
+				JSONObject forkjson = new JSONObject(_gapi.repo.network(m_repo_owner, m_repo_name).resp);
 
 				m_jsonForkData = forkjson.getJSONArray("network");
 

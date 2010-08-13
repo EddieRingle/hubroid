@@ -6,11 +6,11 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.User;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,11 +25,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.flurry.android.FlurryAgent;
 
@@ -46,16 +46,17 @@ public class FollowersFollowing extends Activity {
 	public Intent m_intent;
 	public int m_position;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	public FollowersFollowingListAdapter initializeList(String username) {
 		FollowersFollowingListAdapter adapter = null;
 		JSONObject json = null;
 		try {
 			if (m_type.equals("followers")) {
-				json = new JSONObject(User.followers(username).resp);
+				json = new JSONObject(_gapi.user.followers(username).resp);
 				m_followersData = json;
 			} else if (m_type.equals("following")) {
-				json = new JSONObject(User.following(username).resp);
+				json = new JSONObject(_gapi.user.following(username).resp);
 				m_followingData = json;
 			}
 

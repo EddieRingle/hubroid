@@ -6,13 +6,12 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.Repository;
-import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,13 +28,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.flurry.android.FlurryAgent;
 
@@ -56,13 +54,14 @@ public class RepositoriesList extends Activity {
 	public int m_position;
 	private Thread m_thread;
 	private Dialog m_loginDialog;
+	private GitHubAPI _gapi;
 
 	public void initializeList() {
 		JSONObject json = null;
 		try {
-			json = new JSONObject(Repository.list(m_targetUser, m_username, m_token).resp);
+			json = new JSONObject(_gapi.repo.list(m_targetUser).resp);
 			m_usersRepoData = json.getJSONArray("repositories");
-			json = new JSONObject(User.watching(m_targetUser, m_username, m_token).resp);
+			json = new JSONObject(_gapi.user.watching(m_targetUser).resp);
 			m_watchedRepoData = json.getJSONArray("repositories");
 			m_usersRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_usersRepoData);
 			m_watchedRepositories_adapter = new RepositoriesListAdapter(RepositoriesList.this, m_watchedRepoData);
@@ -171,7 +170,7 @@ public class RepositoriesList extends Activity {
 								}
 							});
 						} else {
-							Response authResp = User.info(username, token);
+							Response authResp = _gapi.user.info(username);
 	
 							if (authResp.statusCode == 401) {
 								runOnUiThread(new Runnable() {
@@ -243,13 +242,6 @@ public class RepositoriesList extends Activity {
 
 	public void navBarOnClickSetup()
 	{
-		((LinearLayout)findViewById(R.id.ll_repositories_list_navbar)).setVisibility(View.VISIBLE);
-		((Button)findViewById(R.id.btn_navbar_activity)).setOnClickListener(new OnClickListener() {
-			public void onClick(View v) {
-				startActivity(new Intent(RepositoriesList.this, ActivityFeeds.class));
-				finish();
-			}
-		});
 		((Button)findViewById(R.id.btn_navbar_repositories)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				startActivity(new Intent(RepositoriesList.this, RepositoriesList.class));

@@ -1,7 +1,7 @@
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
-import org.idlesoft.libraries.ghapi.Issues;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -29,6 +29,7 @@ public class CreateIssue extends Activity {
 	private String m_token;
 	private String m_targetUser;
 	private String m_targetRepo;
+	private GitHubAPI _gapi;
 
 	@Override
 	public void onCreate(Bundle icicle)
@@ -41,6 +42,8 @@ public class CreateIssue extends Activity {
 
 		m_username = m_prefs.getString("login", "");
 		m_token = m_prefs.getString("token", "");
+
+		_gapi = new GitHubAPI();
 
 		Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -65,12 +68,12 @@ public class CreateIssue extends Activity {
 						String title = ((TextView)findViewById(R.id.et_create_issue_title)).getText().toString();
 						String body = ((TextView)findViewById(R.id.et_create_issue_body)).getText().toString();
 						if (!title.equals("") && !body.equals("")) {
-							Response createResp = Issues.open(m_targetUser, m_targetRepo, title, body, m_username, m_token);
+							Response createResp = _gapi.issues.open(m_targetUser, m_targetRepo, title, body);
 							if (createResp.statusCode == 200) {
 								try {
 									JSONObject response = new JSONObject(createResp.resp).getJSONObject("issue");
 									int number = response.getInt("number");
-									JSONObject issueJSON = new JSONObject(Issues.issue(m_targetUser, m_targetRepo, number, m_username, m_token).resp).getJSONObject("issue");
+									JSONObject issueJSON = new JSONObject(_gapi.issues.issue(m_targetUser, m_targetRepo, number).resp).getJSONObject("issue");
 									m_intent = new Intent(CreateIssue.this, SingleIssue.class);
 									m_intent.putExtra("repoOwner", m_targetUser);
 									m_intent.putExtra("repoName", m_targetRepo);

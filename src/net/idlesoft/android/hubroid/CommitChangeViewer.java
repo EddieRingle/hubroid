@@ -6,7 +6,7 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 import java.text.ParseException;
@@ -14,8 +14,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import org.idlesoft.libraries.ghapi.Commits;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +54,7 @@ public class CommitChangeViewer extends Activity {
 	public Intent m_intent;
 	public int m_position;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
@@ -153,6 +154,8 @@ public class CommitChangeViewer extends Activity {
         m_token = m_prefs.getString("token", "");
         View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
 
+        _gapi = new GitHubAPI();
+
         TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
         title.setText("Commit Viewer");
 
@@ -164,7 +167,7 @@ public class CommitChangeViewer extends Activity {
 
         	// Get the commit data for that commit ID so that we can get the tree ID and filename.
         	try {
-        		Response commitInfo = Commits.commit(m_repo_owner, m_repo_name, m_id, m_username, m_token);
+        		Response commitInfo = _gapi.commits.commit(m_repo_owner, m_repo_name, m_id);
         		JSONObject commitJSON = new JSONObject(commitInfo.resp).getJSONObject("commit");
         		
         		// Display the committer and author

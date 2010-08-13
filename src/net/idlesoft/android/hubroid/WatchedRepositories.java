@@ -6,11 +6,11 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.User;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,10 +24,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.flurry.android.FlurryAgent;
 
@@ -43,11 +43,12 @@ public class WatchedRepositories extends ListActivity {
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	public RepositoriesListAdapter initializeList() {
 		RepositoriesListAdapter adapter = null;
 		try {
-			m_jsonData = new JSONObject(User.watching(m_targetUser, m_username, m_token).resp);
+			m_jsonData = new JSONObject(_gapi.user.watching(m_targetUser).resp);
 			if (m_jsonData == null) {
 				runOnUiThread(new Runnable() {
 					public void run() {

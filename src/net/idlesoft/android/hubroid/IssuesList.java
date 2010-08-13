@@ -6,11 +6,11 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.Issues;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,18 +22,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
 
 import com.flurry.android.FlurryAgent;
 
@@ -53,20 +53,21 @@ public class IssuesList extends Activity {
 	private Intent m_intent;
 	private int m_position;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	public void initializeList() {
 		JSONObject json = null;
 		m_openIssuesData = new JSONArray();
 		m_closedIssuesData = new JSONArray();
 		try {
-			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "open", m_username, m_token).resp);
+			json = new JSONObject(_gapi.issues.list(m_targetUser, m_targetRepo, "open").resp);
 			m_openIssuesData = new JSONArray();
 			for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
 				m_openIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
 			}
 			m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
 
-			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "closed", m_username, m_token).resp);		
+			json = new JSONObject(_gapi.issues.list(m_targetUser, m_targetRepo, "closed").resp);		
 			m_closedIssuesData = new JSONArray();
 			for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
 				m_closedIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
@@ -192,7 +193,7 @@ public class IssuesList extends Activity {
 		        startActivity(intent);
 				return true;
 			case 1:
-				if (Issues.close(m_targetUser, m_targetRepo, json.getInt("number"), m_username, m_token).statusCode == 200) {
+				if (_gapi.issues.close(m_targetUser, m_targetRepo, json.getInt("number")).statusCode == 200) {
 					m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Refreshing Issue List...", true);
 					m_thread = new Thread(null, threadProc_initializeList);
 					m_thread.start();
@@ -201,7 +202,7 @@ public class IssuesList extends Activity {
 				}
 				return true;
 			case 2:
-				if (Issues.reopen(m_targetUser, m_targetRepo, json.getInt("number"), m_username, m_token).statusCode == 200) {
+				if (_gapi.issues.reopen(m_targetUser, m_targetRepo, json.getInt("number")).statusCode == 200) {
 					m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Refreshing Issue List...", true);
 					m_thread = new Thread(null, threadProc_initializeList);
 					m_thread.start();

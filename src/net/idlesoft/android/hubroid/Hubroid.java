@@ -6,7 +6,7 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -23,15 +23,14 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 
 import org.idlesoft.libraries.ghapi.GitHubAPI;
-import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Bitmap.CompressFormat;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -161,7 +160,11 @@ public class Hubroid extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        startActivity(new Intent(Hubroid.this, Splash.class));
-        setContentView(R.layout.dashboard);
+        if (!getSharedPreferences(PREFS_NAME, 0).contains("username")) {
+        	startActivity(new Intent(Hubroid.this, Login.class));
+        } else {
+        	startActivity(new Intent(Hubroid.this, Dashboard.class));
+        }
+        finish();
     }
 }

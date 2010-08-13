@@ -6,7 +6,7 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import org.json.JSONArray;
 import org.json.JSONException;

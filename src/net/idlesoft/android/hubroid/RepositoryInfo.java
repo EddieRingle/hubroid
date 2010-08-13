@@ -6,13 +6,12 @@
  * Licensed under the New BSD License.
  */
 
-package org.idlesoft.android.hubroid;
+package net.idlesoft.android.hubroid;
 
 import java.io.File;
 
-import org.idlesoft.libraries.ghapi.Repository;
-import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +43,7 @@ public class RepositoryInfo extends Activity {
 	private String m_repo_name;
 	private boolean m_isWatching;
 	private Thread m_thread;
+	private GitHubAPI _gapi;
 
 	/* bleh.
 	private Runnable threadProc_userInfo = new Runnable() {
@@ -125,13 +125,13 @@ public class RepositoryInfo extends Activity {
 			try {
 				JSONObject newRepoInfo = null;
 				if (m_isWatching) {
-					Response unwatchResp = Repository.unwatch(m_repo_owner, m_repo_name, m_username, m_token); 
+					Response unwatchResp = _gapi.repo.unwatch(m_repo_owner, m_repo_name); 
 					if (unwatchResp.statusCode == 200) {
 						newRepoInfo = new JSONObject(unwatchResp.resp).getJSONObject("repository");
 						m_isWatching = false;
 					}
 				} else {
-					Response watchResp = Repository.watch(m_repo_owner, m_repo_name, m_username, m_token);
+					Response watchResp = _gapi.repo.watch(m_repo_owner, m_repo_name);
 					if (watchResp.statusCode == 200) {
 						newRepoInfo = new JSONObject(watchResp.resp).getJSONObject("repository");
 						m_isWatching = true;
@@ -194,9 +194,9 @@ public class RepositoryInfo extends Activity {
         	m_repo_owner = extras.getString("username");
 
 			try {
-				m_jsonData = new JSONObject(Repository.info(m_repo_owner, m_repo_name, m_username, m_token).resp).getJSONObject("repository");
+				m_jsonData = new JSONObject(_gapi.repo.info(m_repo_owner, m_repo_name).resp).getJSONObject("repository");
 
-	        	JSONArray watched_list = new JSONObject(User.watching(m_username).resp).getJSONArray("repositories");
+	        	JSONArray watched_list = new JSONObject(_gapi.user.watching(m_username).resp).getJSONArray("repositories");
 	        	int length = watched_list.length() - 1;
 	        	for (int i = 0; i <= length; i++) {
 	        		if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(m_repo_name)) {
