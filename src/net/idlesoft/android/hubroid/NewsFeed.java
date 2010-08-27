@@ -21,13 +21,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
 
@@ -98,11 +98,9 @@ public class NewsFeed extends Activity {
         _username = _prefs.getString("username", "");
         _password = _prefs.getString("password", "");
 
-    	TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
-
     	_gapi.authenticate(_username, _password);
 
-		title.setText("News Feed");
+    	Log.d("user", _username);
 
         _loadingItem = getLayoutInflater().inflate(R.layout.loading_feed_item, null);
 
@@ -119,19 +117,19 @@ public class NewsFeed extends Activity {
 
 		protected void setLoadingView()
 		{
-			((ListView)activity.findViewById(R.id.lv_activity_feeds_private_list)).addHeaderView(activity._loadingItem);
-	        ((ListView)activity.findViewById(R.id.lv_activity_feeds_private_list)).setAdapter(null);
+			((ListView)activity.findViewById(R.id.lv_news_feed)).addHeaderView(activity._loadingItem);
+			((ListView)activity.findViewById(R.id.lv_news_feed)).setAdapter(null);
 		}
 
 		protected void removeLoadingView()
 		{
-			((ListView)activity.findViewById(R.id.lv_activity_feeds_private_list)).removeHeaderView(activity._loadingItem);
+			((ListView)activity.findViewById(R.id.lv_news_feed)).removeHeaderView(activity._loadingItem);
 		}
 
 		protected void setAdapter()
 		{
-			((ListView)activity.findViewById(R.id.lv_activity_feeds_private_list)).setAdapter(activity._privateActivityAdapter);
-			((ListView)activity.findViewById(R.id.lv_activity_feeds_private_list)).setOnItemClickListener(activity.onPrivateActivityItemClick);
+			((ListView)activity.findViewById(R.id.lv_news_feed)).setAdapter(activity._privateActivityAdapter);
+			((ListView)activity.findViewById(R.id.lv_news_feed)).setOnItemClickListener(activity.onPrivateActivityItemClick);
 		}
 
 		@Override
@@ -186,6 +184,59 @@ public class NewsFeed extends Activity {
 		return _loadPrivateTask;
 	}
 
+	@Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+    	if (_displayedPrivateJSON != null) {
+    		savedInstanceState.putString("displayed_json", _displayedPrivateJSON.toString());
+    	}
+    	if (_privateJSON != null) {
+    		savedInstanceState.putString("json", _privateJSON.toString());
+    	}
+    	super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    	super.onRestoreInstanceState(savedInstanceState);
+    	boolean keepGoing = true;
+    	try {
+    		if (savedInstanceState.containsKey("json")) {
+    			_privateJSON = new JSONArray(savedInstanceState.getString("json"));
+    		} else {
+    			keepGoing = false;
+    		}
+    		if (savedInstanceState.containsKey("displayed_json")) {
+    			_displayedPrivateJSON = new JSONArray(savedInstanceState.getString("displayed_json"));
+    		} else {
+    			_displayedPrivateJSON = new JSONArray();
+    			int length = _displayedPrivateJSON.length();
+    			for (int i = length; i < length + 10; i++) {
+    				if (_privateJSON.isNull(i))
+    					break;
+    				try {
+    					_displayedPrivateJSON.put(_privateJSON.get(i));
+    				} catch (JSONException e) {
+    					e.printStackTrace();
+    					break;
+    				}
+    			}
+    		}
+		} catch (JSONException e) {
+			keepGoing = false;
+		}
+		if (keepGoing == true) {
+			_privateActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, _displayedPrivateJSON, false);
+		} else {
+			_privateActivityAdapter = null;
+		}
+    }
+
+    @Override
+    public void onResume()
+    {
+    	super.onResume();
+    	((ListView)findViewById(R.id.lv_news_feed)).setAdapter(_privateActivityAdapter);
+    }
 	@Override
     public void onStart()
     {
