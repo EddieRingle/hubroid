@@ -31,14 +31,12 @@ import android.widget.TextView;
 import com.flurry.android.FlurryAgent;
 
 public class SingleActivityItem extends Activity {
-	public ProgressDialog m_progressDialog;
-	public Intent m_intent;
-	private JSONObject m_JSON = new JSONObject();
-	private SharedPreferences m_prefs;
-	private SharedPreferences.Editor m_editor;
-	private String m_username;
-	private String m_token;
-	private Thread m_thread;
+	public Intent _intent;
+	private JSONObject _JSON = new JSONObject();
+	private SharedPreferences _prefs;
+	private SharedPreferences.Editor _editor;
+	private String _username;
+	private String _password;
 
 	public static final String CSS =
 		"<style type=\"text/css\">" +
@@ -66,7 +64,7 @@ public class SingleActivityItem extends Activity {
 			startActivity(i1);
 			return true;
 		case 1:
-			m_editor.clear().commit();
+			_editor.clear().commit();
 			Intent intent = new Intent(this, Hubroid.class);
 			startActivity(intent);
         	return true;
@@ -91,10 +89,8 @@ public class SingleActivityItem extends Activity {
 		ImageView icon	= (ImageView)findViewById(R.id.iv_activity_item_icon);
 		TextView title_tv = (TextView)findViewById(R.id.tv_activity_item_title);
 
-		TextView topbar = (TextView)findViewById(R.id.tv_top_bar_title);
-
 		try {
-			JSONObject entry = m_JSON;
+			JSONObject entry = _JSON;
 			JSONObject payload = entry.getJSONObject("payload");
 			String end;
 			SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
@@ -141,7 +137,6 @@ public class SingleActivityItem extends Activity {
 			gravatar.setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
 
 			if (eventType.contains("PushEvent")) {
-				topbar.setText("Push");
 				icon.setImageResource(R.drawable.push);
 				title = actor
 						+ " pushed to "
@@ -151,7 +146,6 @@ public class SingleActivityItem extends Activity {
 						+ "/"
 						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("WatchEvent")) {
-				topbar.setText("Watch");
 				String action = payload.getString("action");
 				if (action.equalsIgnoreCase("started")) {
 					icon.setImageResource(R.drawable.watch_started);
@@ -166,7 +160,6 @@ public class SingleActivityItem extends Activity {
 						+ "/"
 						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("GistEvent")) {
-				topbar.setText("Gist");
 				String action = payload.getString("action");
 				icon.setImageResource(R.drawable.gist);
 				title = actor
@@ -174,7 +167,6 @@ public class SingleActivityItem extends Activity {
 						+ action + "d "
 						+ payload.getString("name");
 			} else if (eventType.contains("ForkEvent")) {
-				topbar.setText("Fork");
 				icon.setImageResource(R.drawable.fork);
 				title = actor
 						+ " forked "
@@ -182,7 +174,6 @@ public class SingleActivityItem extends Activity {
 						+ "/"
 						+ entry.getJSONObject("repository").getString("owner");
 			} else if (eventType.contains("CommitCommentEvent")) {
-				topbar.setText("Comment");
 				icon.setImageResource(R.drawable.comment);
 				title = actor
 						+ " commented on "
@@ -190,7 +181,6 @@ public class SingleActivityItem extends Activity {
 						+ "/"
 						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("ForkApplyEvent")) {
-				topbar.setText("Merge");
 				icon.setImageResource(R.drawable.merge);
 				title = actor
 						+ " applied fork commits to "
@@ -198,13 +188,11 @@ public class SingleActivityItem extends Activity {
 						+ "/"
 						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("FollowEvent")) {
-				topbar.setText("Follow");
 				icon.setImageResource(R.drawable.follow);
 				title = actor
 						+ " started following "
 						+ payload.getString("target");
 			} else if (eventType.contains("CreateEvent")) {
-				topbar.setText("Create");
 				icon.setImageResource(R.drawable.create);
 				if (payload.getString("object").contains("repository")) {
 					title = actor
@@ -228,7 +216,6 @@ public class SingleActivityItem extends Activity {
 					+ entry.getJSONObject("repository").getString("name");
 				}
 			} else if (eventType.contains("IssuesEvent")) {
-				topbar.setText("Issues");
 				if (payload.getString("action").equalsIgnoreCase("opened")) {
 					icon.setImageResource(R.drawable.issues_open);
 				} else {
@@ -244,7 +231,6 @@ public class SingleActivityItem extends Activity {
 						+ "/"
 						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("DeleteEvent")) {
-				topbar.setText("Delete");
 				icon.setImageResource(R.drawable.delete);
 				if (payload.getString("object").contains("repository")) {
 					title = actor
@@ -268,7 +254,6 @@ public class SingleActivityItem extends Activity {
 					+ entry.getJSONObject("repository").getString("name");
 				}
 			} else if (eventType.contains("WikiEvent")) {
-				topbar.setText("Wiki");
 				icon.setImageResource(R.drawable.wiki);
 				title = actor
 						+ " "
@@ -279,7 +264,6 @@ public class SingleActivityItem extends Activity {
 						+ entry.getJSONObject("repository").getString("name")
 						+ " wiki";
 			} else if (eventType.contains("DownloadEvent")) {
-				topbar.setText("Download");
 				icon.setImageResource(R.drawable.download);
 				title = actor
 						+ " uploaded a file to "
@@ -287,7 +271,6 @@ public class SingleActivityItem extends Activity {
 						+ "/"
 						+ entry.getJSONObject("repository").getString("name");
 			} else if (eventType.contains("PublicEvent")) {
-				topbar.setText("Public");
 				icon.setImageResource(R.drawable.opensource);
 				title = actor
 						+ " open sourced "
@@ -336,22 +319,22 @@ public class SingleActivityItem extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.single_activity_item);
 
-        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        m_editor = m_prefs.edit();
+        _prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        _editor = _prefs.edit();
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        _username = _prefs.getString("username", "");
+        _password = _prefs.getString("password", "");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
         	try {
-				m_JSON = new JSONObject(extras.getString("item_json"));
+				_JSON = new JSONObject(extras.getString("item_json"));
 				loadActivityItemBox();
 				WebView content = (WebView)findViewById(R.id.wv_single_activity_item_content);
-				String html = m_JSON.getJSONObject("content").getString("content");
+				String html = _JSON.getJSONObject("content").getString("content");
 				html = html.replace('\n', ' ');
 				String out = CSS + html;
-				content.loadData(out, "text/" + m_JSON.getJSONObject("content").getString("type"), "UTF-8");
+				content.loadData(out, "text/" + _JSON.getJSONObject("content").getString("type"), "UTF-8");
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
@@ -361,10 +344,6 @@ public class SingleActivityItem extends Activity {
 	@Override
     public void onPause()
     {
-    	if (m_thread != null && m_thread.isAlive())
-    		m_thread.stop();
-    	if (m_progressDialog != null && m_progressDialog.isShowing())
-    		m_progressDialog.dismiss();
     	super.onPause();
     }
 
