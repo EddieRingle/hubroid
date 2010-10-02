@@ -14,34 +14,48 @@
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content">
 			<Button android:id="@+id/btn_dashboard_newsfeed"
-				android:layout_width="150dip"
+				android:layout_width="120dip"
 				android:layout_height="100dip"
-				android:text="News Feed" />
-			<Button android:id="@+id/btn_dashboard_following"
-				android:layout_width="150dip"
+				android:background="#00ffffff"
+				android:text="News Feed"
+				android:textColor="#555"
+				android:drawableTop="@drawable/dash_feeds_button" />
+			<Button android:id="@+id/btn_dashboard_gists"
+				android:layout_width="120dip"
 				android:layout_height="100dip"
-				android:text="Following" />
+				android:background="#00ffffff"
+				android:drawableTop="@drawable/dash_gists_button"
+				android:textColor="#555"
+				android:text="Gists" />
 		</LinearLayout>
 		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content">
-			<Button android:id="@+id/btn_dashboard_watchedrepositories"
-				android:layout_width="150dip"
+			<Button android:id="@+id/btn_dashboard_repositories"
+				android:layout_width="120dip"
 				android:layout_height="100dip"
-				android:layout_marginTop="-10dip"
-				android:text="Watched Repositories" />
-			<Button android:id="@+id/btn_dashboard_myrepositories"
-				android:layout_width="150dip"
+				android:background="#00ffffff"
+				android:drawableTop="@drawable/dash_repos_button"
+				android:textColor="#555"
+				android:text="Repositories" />
+			<Button android:id="@+id/btn_dashboard_users"
+				android:layout_width="120dip"
 				android:layout_height="100dip"
-				android:text="My Repositories" />
+				android:background="#00ffffff"
+				android:drawableTop="@drawable/dash_users_button"
+				android:textColor="#555"
+				android:text="Users" />
 		</LinearLayout>
 		<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content">
 			<Button android:id="@+id/btn_dashboard_myprofile"
-				android:layout_width="150dip"
+				android:layout_width="80dip"
 				android:layout_height="100dip"
-				android:text="My Profile" />
+				android:background="#00ffffff"
+				android:drawableTop="@drawable/dash_profile_button"
+				android:textColor="#555"
+				android:text="Profile" />
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

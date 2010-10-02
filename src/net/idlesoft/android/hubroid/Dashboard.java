@@ -14,7 +14,6 @@ public class Dashboard extends Activity {
 		setContentView(R.layout.dashboard);
 
 		((Button)findViewById(R.id.btn_dashboard_newsfeed)).setOnClickListener(new OnClickListener() {
-			@Override
 			public void onClick(View v)
 			{
 				startActivity(new Intent(Dashboard.this, NewsFeed.class));

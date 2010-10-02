@@ -6,4 +6,8 @@
 	<color name="gitHubBlue">#4183C4</color>
 	<color name="addedText">#DDFFDD</color>
 	<color name="removedText">#FFDDDD</color>
+	<color name="orange1">#FF6600</color>
+	<color name="orange2">#FF9900</color>
+	<color name="yellow">#FFCC00</color>
+	<color name="gray">#808080</color>
 </resources>
