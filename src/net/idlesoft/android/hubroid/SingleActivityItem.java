@@ -292,7 +292,37 @@ public class SingleActivityItem extends Activity {
 				title = actor
 						+ " open sourced "
 						+ entry.getJSONObject("repository").getString("name");
-			}
+			} else if (eventType.contains("PullRequestEvent")) {
+                if (payload.getString("action").equalsIgnoreCase("opened")) {
+                    icon.setImageResource(R.drawable.issues_open);
+                    title = actor
+                            + " opened pull request "
+                            + payload.getInt("number")
+                            + " on "
+                            + entry.getJSONObject("repository").getString("owner")
+                            + "/"
+                            + entry.getJSONObject("repository").getString("name");
+                } else if (payload.getString("action").equalsIgnoreCase("closed")) {
+                    icon.setImageResource(R.drawable.issues_closed);
+                    title = actor
+                            + " closed pull request "
+                            + payload.getInt("number")
+                            + " on "
+                            + entry.getJSONObject("repository").getString("owner")
+                            + "/"
+                            + entry.getJSONObject("repository").getString("name");
+                }
+            } else if (eventType.contains("MemberEvent")) {
+                icon.setImageResource(R.drawable.follow);
+                title = actor
+                        + " added "
+                        + payload.getString("member")
+                        + " to "
+                        + entry.getJSONObject("repository").getString("owner")
+                        + "/"
+                        + entry.getJSONObject("repository").getString("name");
+            }
+
 			title_tv.setText(title);
 		} catch (JSONException e) {
 			e.printStackTrace();
