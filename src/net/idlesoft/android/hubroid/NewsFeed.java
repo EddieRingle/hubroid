@@ -21,13 +21,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.flurry.android.FlurryAgent;
 
@@ -100,7 +100,7 @@ public class NewsFeed extends Activity {
 
     	_gapi.authenticate(_username, _password);
 
-    	Log.d("user", _username);
+    	((TextView)findViewById(R.id.tv_page_title)).setText("News Feed");
 
         _loadingItem = getLayoutInflater().inflate(R.layout.loading_feed_item, null);
 
