@@ -44,7 +44,7 @@ public class UserInfo extends Activity {
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private String m_targetUser;
 	private boolean m_isLoggedIn;
 	private boolean m_isFollowing;
@@ -237,7 +237,7 @@ public class UserInfo extends Activity {
         m_editor = m_prefs.edit();
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("token", "");
         m_isFollowing = false;
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
 
@@ -301,7 +301,7 @@ public class UserInfo extends Activity {
 				}
 
 				// Set all the values in the layout
-				((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
+				//((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
 				((ImageView)findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(m_targetUser), 50));
 				((TextView)findViewById(R.id.tv_user_info_full_name)).setText(full_name);
 				((TextView)findViewById(R.id.tv_user_info_company)).setText(company);

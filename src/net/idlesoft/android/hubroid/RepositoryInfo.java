@@ -38,7 +38,7 @@ public class RepositoryInfo extends Activity {
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private String m_repo_owner;
 	private String m_repo_name;
 	private boolean m_isWatching;
@@ -184,9 +184,11 @@ public class RepositoryInfo extends Activity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_username = m_prefs.getString("username", "");
+        m_password = m_prefs.getString("password", "");
         m_isWatching = false;
+
+        _gapi = new GitHubAPI();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -204,8 +206,8 @@ public class RepositoryInfo extends Activity {
 	        		}
 	        	}
 
-				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
-				title.setText(m_jsonData.getString("name"));
+				//TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
+				//title.setText(m_jsonData.getString("name"));
 				TextView repo_name = (TextView)findViewById(R.id.tv_repository_info_name);
 				repo_name.setText(m_jsonData.getString("name"));
 				TextView repo_desc = (TextView)findViewById(R.id.tv_repository_info_description);
