@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 
 public class Dashboard extends Activity {
 	@Override
@@ -13,6 +14,11 @@ public class Dashboard extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.dashboard);
 
+		((ImageButton)findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(Dashboard.this, Search.class));
+            }
+        });
 		((Button)findViewById(R.id.btn_dashboard_newsfeed)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v)
 			{
