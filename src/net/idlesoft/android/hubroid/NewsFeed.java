@@ -102,7 +102,8 @@ public class NewsFeed extends Activity {
 
     	((TextView)findViewById(R.id.tv_page_title)).setText("News Feed");
 
-        _loadingItem = getLayoutInflater().inflate(R.layout.loading_feed_item, null);
+        _loadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
+        ((TextView)_loadingItem.findViewById(R.id.tv_loadingListItem_loadingText)).setText("Loading Feed, Please Wait...");
 
         _loadPrivateTask = (LoadPrivateFeedTask) getLastNonConfigurationInstance();
         if (_loadPrivateTask == null)
