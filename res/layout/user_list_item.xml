@@ -2,15 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
-	android:paddingTop="7.5dip"
-	android:paddingBottom="7.5dip">
+	android:paddingTop="10dip"
+	android:paddingBottom="10dip"
+	android:paddingLeft="15dip"
+	android:paddingRight="15dip">
 	<ImageView
 		android:id="@+id/iv_user_list_gravatar"
-		android:layout_width="36px"
-		android:layout_marginLeft="10dip"
-		android:layout_marginRight="10dip"
-		android:layout_height="36px"
+		android:layout_width="34dip"
+		android:layout_height="34dip"
 		android:scaleType="center"
+		android:layout_centerVertical="true"
+		android:layout_marginRight="10dip"
 		android:background="@drawable/gravatar_border" />
 	<TextView
 		android:id="@+id/tv_user_list_item_name"

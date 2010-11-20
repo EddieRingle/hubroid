@@ -36,6 +36,8 @@ public abstract class UsersListAdapter extends BaseAdapter {
         public ImageView gravatar;
     }
 
+    public abstract void loadGravatars();
+
     public UsersListAdapter(final Context context, JSONArray jsonarray) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
