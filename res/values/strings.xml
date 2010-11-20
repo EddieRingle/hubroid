@@ -5,8 +5,8 @@
 
 	<string name="copyright">Copyright © 2010 Idlesoft</string>
 
-	<string name="my_repos">My Repos</string>
-	<string name="watched_repos">Watched Repos</string>
+	<string name="my_repos">Repositories</string>
+	<string name="watched_repos">Watching</string>
 
 	<string name="repositories_tab_label">Repositories</string>
 	<string name="users_tab_label">Users</string>
