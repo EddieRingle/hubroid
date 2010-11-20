@@ -14,6 +14,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.idlesoft.android.hubroid.R;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -128,7 +129,9 @@ public class SingleActivityItem extends Activity {
             String actor = entry.getString("actor");
             String eventType = entry.getString("type");
             String title = actor + " did something...";
-            gravatar.setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
+            gravatar.setImageBitmap(GravatarCache.getDipGravatar(
+                    GravatarCache.getGravatarID(actor), 30.0f,
+                    getResources().getDisplayMetrics().density));
 
             if (eventType.contains("PushEvent")) {
                 icon.setImageResource(R.drawable.push);

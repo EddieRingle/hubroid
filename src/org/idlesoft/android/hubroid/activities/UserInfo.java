@@ -11,6 +11,7 @@ package org.idlesoft.android.hubroid.activities;
 import java.io.File;
 
 import org.idlesoft.android.hubroid.R;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
@@ -318,8 +319,10 @@ public class UserInfo extends Activity {
 
                 // Set all the values in the layout
                 // ((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
-                ((ImageView) findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(Hubroid
-                        .getGravatar(Hubroid.getGravatarID(m_targetUser), 50));
+                ((ImageView) findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(
+                        GravatarCache.getDipGravatar(
+                                GravatarCache.getGravatarID(m_targetUser), 50.0f,
+                                getResources().getDisplayMetrics().density));
                 ((TextView) findViewById(R.id.tv_user_info_full_name)).setText(full_name);
                 ((TextView) findViewById(R.id.tv_user_info_company)).setText(company);
                 ((TextView) findViewById(R.id.tv_user_info_email)).setText(email);

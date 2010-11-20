@@ -17,6 +17,7 @@ import java.util.Date;
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.adapters.CommitChangeViewerDiffAdapter;
 import org.idlesoft.android.hubroid.adapters.CommitListAdapter;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
@@ -73,8 +74,8 @@ public class CommitChangeViewer extends Activity {
      */
     public Bitmap loadGravatarByLoginName(String login) {
         if (!login.equals("")) {
-            String id = Hubroid.getGravatarID(login);
-            return Hubroid.getGravatar(id, 30);
+            return GravatarCache.getDipGravatar(GravatarCache.getGravatarID(login), 30.0f,
+                    getResources().getDisplayMetrics().density);
         } else {
             return null;
         }

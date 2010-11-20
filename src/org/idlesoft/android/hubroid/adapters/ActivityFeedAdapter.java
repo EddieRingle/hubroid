@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +55,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
             if (m_single) {
                 // Load only the first gravatar
                 String actor = m_data.getJSONObject(0).getString("actor");
-                m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), mGravatarSize));
+                m_gravatars.put(actor, GravatarCache.getGravatar(GravatarCache.getGravatarID(actor), mGravatarSize));
             } else {
                 // Load all of 'em
                 int length = m_data.length();
@@ -62,7 +63,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
                     String actor = m_data.getJSONObject(i).getString("actor");
                     if (!m_gravatars.containsKey(actor)) {
                         m_gravatars.put(actor,
-                                Hubroid.getGravatar(Hubroid.getGravatarID(actor), mGravatarSize));
+                                GravatarCache.getGravatar(GravatarCache.getGravatarID(actor), mGravatarSize));
                     }
                 }
             }

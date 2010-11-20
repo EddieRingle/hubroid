@@ -15,6 +15,7 @@ import java.util.HashMap;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -48,7 +49,9 @@ public class CommitListAdapter extends BaseAdapter {
             try {
                 String login = m_data.getJSONObject(i).getJSONObject("author").getString("login");
                 if (!m_gravatars.containsKey(login)) {
-                    m_gravatars.put(login, Hubroid.getGravatar(Hubroid.getGravatarID(login), 30));
+                    m_gravatars.put(login, GravatarCache.getDipGravatar(
+                            GravatarCache.getGravatarID(login), 30.0f,
+                            m_context.getResources().getDisplayMetrics().density));
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

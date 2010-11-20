@@ -10,6 +10,7 @@ package org.idlesoft.android.hubroid.adapters;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -31,7 +32,9 @@ public class FollowersFollowingListAdapter extends UsersListAdapter {
         for (int i = 0; i < length; i++) {
             try {
                 String username = m_data.getString(i);
-                m_gravatars.put(username, Hubroid.getGravatar(Hubroid.getGravatarID(username), 30));
+                m_gravatars.put(username, GravatarCache.getDipGravatar(
+                        GravatarCache.getGravatarID(username), 30.0f,
+                        m_context.getResources().getDisplayMetrics().density));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

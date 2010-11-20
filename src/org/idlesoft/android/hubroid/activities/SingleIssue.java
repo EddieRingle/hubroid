@@ -14,6 +14,7 @@ import java.util.Date;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.adapters.IssueCommentsAdapter;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
@@ -267,8 +268,9 @@ public class SingleIssue extends Activity {
                 loadIssueItemBox();
                 ((ListView) findViewById(R.id.lv_single_issue_comments)).addHeaderView(m_header);
                 ((ImageView) m_header.findViewById(R.id.iv_single_issue_gravatar))
-                        .setImageBitmap(Hubroid.getGravatar(
-                                Hubroid.getGravatarID(m_JSON.getString("user")), 30));
+                        .setImageBitmap(GravatarCache.getDipGravatar(
+                                GravatarCache.getGravatarID(m_JSON.getString("user")), 30.0f,
+                                getResources().getDisplayMetrics().density));
                 ((TextView) m_header.findViewById(R.id.tv_single_issue_body)).setText(m_JSON
                         .getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 

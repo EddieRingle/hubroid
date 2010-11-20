@@ -11,6 +11,7 @@ package org.idlesoft.android.hubroid.activities;
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.tabs.MyRepos;
 import org.idlesoft.android.hubroid.activities.tabs.WatchedRepos;
+import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 
 import android.app.TabActivity;
@@ -53,10 +54,10 @@ public class Repositories extends TabActivity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        final float scale = getResources().getDisplayMetrics().density;
-        final int gravatarSize = (int) (38.0f * scale + 0.5f);
         ((ImageView) findViewById(R.id.iv_repositories_gravatar))
-                .setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(mUsername), gravatarSize));
+                .setImageBitmap(GravatarCache.getDipGravatar(
+                        GravatarCache.getGravatarID(mUsername), 38.0f,
+                        getResources().getDisplayMetrics().density));
         ((TextView) findViewById(R.id.tv_page_title)).setText(mUsername);
 
         mTabHost = getTabHost();
