@@ -53,6 +53,18 @@ public class GravatarCache {
     }
 
     /**
+     * Returns a density-independent Bitmap of the Gravatar associated with the provided ID.
+     * The image will be scaled to a variable pixel size dependent on the provided dip size.
+     *
+     * @param id
+     * @param size - Size in density-independent pixels (dip)
+     * @param densityScale - Scale provided by android.util.DisplayMetrics.density
+     */
+    public static Bitmap getDipGravatar(String id, float size, float densityScale) {
+        return getGravatar(id, (int) (size * densityScale + 0.5f));
+    }
+
+    /**
      * Returns a Gravatar ID associated with the provided name
      *
      * @param name
