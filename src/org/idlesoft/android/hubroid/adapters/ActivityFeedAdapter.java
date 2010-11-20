@@ -34,6 +34,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
     private LayoutInflater m_inflater;
     private HashMap<String, Bitmap> m_gravatars;
     private boolean m_single;
+    public final int mGravatarSize;
 
     public static class ViewHolder {
         public TextView title;
@@ -53,7 +54,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
             if (m_single) {
                 // Load only the first gravatar
                 String actor = m_data.getJSONObject(0).getString("actor");
-                m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
+                m_gravatars.put(actor, Hubroid.getGravatar(Hubroid.getGravatarID(actor), mGravatarSize));
             } else {
                 // Load all of 'em
                 int length = m_data.length();
@@ -61,7 +62,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
                     String actor = m_data.getJSONObject(i).getString("actor");
                     if (!m_gravatars.containsKey(actor)) {
                         m_gravatars.put(actor,
-                                Hubroid.getGravatar(Hubroid.getGravatarID(actor), 30));
+                                Hubroid.getGravatar(Hubroid.getGravatarID(actor), mGravatarSize));
                     }
                 }
             }
@@ -84,6 +85,9 @@ public class ActivityFeedAdapter extends BaseAdapter {
         m_data = json;
         m_single = single;
         m_gravatars = new HashMap<String, Bitmap>(m_data.length());
+
+        final float scale = context.getResources().getDisplayMetrics().density;
+        mGravatarSize = (int) (32.0f * scale + 0.5f);
 
         this.loadGravatars();
     }

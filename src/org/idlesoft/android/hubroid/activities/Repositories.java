@@ -18,6 +18,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -51,6 +52,12 @@ public class Repositories extends TabActivity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        final float scale = getResources().getDisplayMetrics().density;
+        final int gravatarSize = (int) (38.0f * scale + 0.5f);
+        ((ImageView) findViewById(R.id.iv_repositories_gravatar))
+                .setImageBitmap(Hubroid.getGravatar(Hubroid.getGravatarID(mUsername), gravatarSize));
+        ((TextView) findViewById(R.id.tv_page_title)).setText(mUsername);
 
         mTabHost = getTabHost();
 
