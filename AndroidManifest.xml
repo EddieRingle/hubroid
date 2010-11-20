@@ -9,10 +9,17 @@
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
+		<activity android:name=".activities.Login" />
+		<activity android:name=".activities.Dashboard" />
+		<activity android:name=".activities.NewsFeed" />
 		<activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" />
 		<activity android:name=".activities.Repositories" />
 		<activity android:name=".activities.tabs.MyRepos" />
 		<activity android:name=".activities.tabs.WatchedRepos" />
+		<activity android:name=".activities.Users" />
+		<activity android:name=".activities.tabs.Followers" />
+		<activity android:name=".activities.tabs.Following" />
+
 		<activity android:name=".activities.RepositoryInfo" />
 		<activity android:name=".activities.CommitsList" />
 		<activity android:name=".activities.IssuesList" />
@@ -21,12 +28,8 @@
 		<activity android:name=".activities.NetworkList" />
 		<activity android:name=".activities.UserInfo" />
 		<activity android:name=".activities.WatchedRepositories" />
-		<activity android:name=".activities.FollowersFollowing" />
 		<activity android:name=".activities.SingleActivityItem" />
 		<activity android:name=".activities.CommitChangeViewer" />
-		<activity android:name=".activities.Login" />
-		<activity android:name=".activities.Dashboard" />
-		<activity android:name=".activities.NewsFeed" />
 	</application>
 	<uses-sdk android:minSdkVersion="3" android:targetSdkVersion="8"/>
 	<uses-permission android:name="android.permission.INTERNET" />

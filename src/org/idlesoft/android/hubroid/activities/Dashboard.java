@@ -21,16 +21,25 @@ public class Dashboard extends Activity {
                 startActivity(new Intent(Dashboard.this, Search.class));
             }
         });
+
         ((Button) findViewById(R.id.btn_dashboard_newsfeed))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
                         startActivity(new Intent(Dashboard.this, NewsFeed.class));
                     }
                 });
+
         ((Button) findViewById(R.id.btn_dashboard_repositories))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View arg0) {
                         startActivity(new Intent(Dashboard.this, Repositories.class));
+                    }
+                });
+
+        ((Button) findViewById(R.id.btn_dashboard_users))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(View arg0) {
+                        startActivity(new Intent(Dashboard.this, Users.class));
                     }
                 });
     }

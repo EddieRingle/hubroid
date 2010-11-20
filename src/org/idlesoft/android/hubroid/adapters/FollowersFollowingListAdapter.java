@@ -9,7 +9,6 @@
 package org.idlesoft.android.hubroid.adapters;
 
 import org.idlesoft.android.hubroid.R;
-import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.json.JSONArray;
 import org.json.JSONException;

@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<!-- Application -->
     <string name="app_name">Hubroid</string>
     <string name="app_version">2.0</string>
 
+	<!-- Splash/Login Activity -->
 	<string name="copyright">Copyright © 2010 Idlesoft</string>
 
+	<!-- Repositories Activity -->
 	<string name="my_repos">Repositories</string>
 	<string name="watched_repos">Watching</string>
+
+	<!-- Users Activity -->
+	<string name="followers">Followers</string>
+	<string name="following">Following</string>
 
 	<string name="repositories_tab_label">Repositories</string>
 	<string name="users_tab_label">Users</string>
