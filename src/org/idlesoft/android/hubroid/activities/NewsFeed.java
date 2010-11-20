@@ -34,21 +34,20 @@ import android.widget.TextView;
 import com.flurry.android.FlurryAgent;
 
 public class NewsFeed extends Activity {
-    private ActivityFeedAdapter _privateActivityAdapter;
-    private SharedPreferences _prefs;
-    private SharedPreferences.Editor _editor;
-    private String _username;
-    private String _password;
-    private boolean _isLoggedIn;
-    public JSONArray _privateJSON;
-    public JSONArray _displayedPrivateJSON;
-    private LoadPrivateFeedTask _loadPrivateTask;
-    public View _loadingItem;
-    public GitHubAPI _gapi = new GitHubAPI();
+    private ActivityFeedAdapter mPrivateActivityAdapter;
+    private SharedPreferences mPrefs;
+    private SharedPreferences.Editor mEditor;
+    private String mUsername;
+    private String mPassword;
+    public JSONArray mPrivateJSON;
+    public JSONArray mDisplayedPrivateJSON;
+    private LoadPrivateFeedTask mLoadPrivateTask;
+    public View mLoadingItem;
+    public GitHubAPI mGapi = new GitHubAPI();
 
     public boolean onPrepareOptionsMenu(Menu menu) {
         if (!menu.hasVisibleItems()) {
-            if (_isLoggedIn)
+            if (!mUsername.equals(null) && !mPassword.equals(null))
                 menu.add(0, 1, 0, "Sign out");
             menu.add(0, 2, 0, "Clear Cache");
         }
@@ -58,7 +57,7 @@ public class NewsFeed extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
         case 1:
-            _editor.clear().commit();
+            mEditor.clear().commit();
             Intent intent = new Intent(NewsFeed.this, Hubroid.class);
             startActivity(intent);
             finish();
@@ -82,7 +81,7 @@ public class NewsFeed extends Activity {
         public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
             try {
                 Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
-                intent.putExtra("item_json", _displayedPrivateJSON.getJSONObject(arg2).toString());
+                intent.putExtra("item_json", mDisplayedPrivateJSON.getJSONObject(arg2).toString());
                 startActivity(intent);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -95,25 +94,25 @@ public class NewsFeed extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.news_feed);
 
-        _prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        _editor = _prefs.edit();
-        _username = _prefs.getString("username", "");
-        _password = _prefs.getString("password", "");
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
 
-        _gapi.authenticate(_username, _password);
+        mGapi.authenticate(mUsername, mPassword);
 
         ((TextView) findViewById(R.id.tv_page_title)).setText("News Feed");
 
-        _loadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
-        ((TextView) _loadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
+        mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
+        ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
                 .setText("Loading Feed, Please Wait...");
 
-        _loadPrivateTask = (LoadPrivateFeedTask) getLastNonConfigurationInstance();
-        if (_loadPrivateTask == null)
-            _loadPrivateTask = new LoadPrivateFeedTask();
-        _loadPrivateTask.activity = this;
-        if (_loadPrivateTask.getStatus() == AsyncTask.Status.PENDING)
-            _loadPrivateTask.execute();
+        mLoadPrivateTask = (LoadPrivateFeedTask) getLastNonConfigurationInstance();
+        if (mLoadPrivateTask == null)
+            mLoadPrivateTask = new LoadPrivateFeedTask();
+        mLoadPrivateTask.activity = this;
+        if (mLoadPrivateTask.getStatus() == AsyncTask.Status.PENDING)
+            mLoadPrivateTask.execute();
     }
 
     private static class LoadPrivateFeedTask extends AsyncTask<Void, Void, Void> {
@@ -121,18 +120,18 @@ public class NewsFeed extends Activity {
 
         protected void setLoadingView() {
             ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .addHeaderView(activity._loadingItem);
+                    .addHeaderView(activity.mLoadingItem);
             ((ListView) activity.findViewById(R.id.lv_news_feed)).setAdapter(null);
         }
 
         protected void removeLoadingView() {
             ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .removeHeaderView(activity._loadingItem);
+                    .removeHeaderView(activity.mLoadingItem);
         }
 
         protected void setAdapter() {
             ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .setAdapter(activity._privateActivityAdapter);
+                    .setAdapter(activity.mPrivateActivityAdapter);
             ((ListView) activity.findViewById(R.id.lv_news_feed))
                     .setOnItemClickListener(activity.onPrivateActivityItemClick);
         }
@@ -150,49 +149,49 @@ public class NewsFeed extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            if (activity._privateJSON == null) {
+            if (activity.mPrivateJSON == null) {
                 try {
-                    Response resp = activity._gapi.user.private_activity();
+                    Response resp = activity.mGapi.user.private_activity();
                     if (resp.statusCode != 200) {
                         /* Let the user know something went wrong */
                         return null;
                     }
-                    activity._privateJSON = new JSONArray(resp.resp);
+                    activity.mPrivateJSON = new JSONArray(resp.resp);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
-            if (activity._displayedPrivateJSON == null)
-                activity._displayedPrivateJSON = new JSONArray();
-            int length = activity._displayedPrivateJSON.length();
+            if (activity.mDisplayedPrivateJSON == null)
+                activity.mDisplayedPrivateJSON = new JSONArray();
+            int length = activity.mDisplayedPrivateJSON.length();
             for (int i = length; i < length + 10; i++) {
-                if (activity._privateJSON.isNull(i))
+                if (activity.mPrivateJSON.isNull(i))
                     break;
                 try {
-                    activity._displayedPrivateJSON.put(activity._privateJSON.get(i));
+                    activity.mDisplayedPrivateJSON.put(activity.mPrivateJSON.get(i));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     break;
                 }
             }
-            activity._privateActivityAdapter = new ActivityFeedAdapter(
-                    activity.getApplicationContext(), activity._displayedPrivateJSON, false);
+            activity.mPrivateActivityAdapter = new ActivityFeedAdapter(
+                    activity.getApplicationContext(), activity.mDisplayedPrivateJSON, false);
             return null;
         }
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return _loadPrivateTask;
+        return mLoadPrivateTask;
     }
 
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState) {
-        if (_displayedPrivateJSON != null) {
-            savedInstanceState.putString("displayed_json", _displayedPrivateJSON.toString());
+        if (mDisplayedPrivateJSON != null) {
+            savedInstanceState.putString("displayed_json", mDisplayedPrivateJSON.toString());
         }
-        if (_privateJSON != null) {
-            savedInstanceState.putString("json", _privateJSON.toString());
+        if (mPrivateJSON != null) {
+            savedInstanceState.putString("json", mPrivateJSON.toString());
         }
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -203,21 +202,21 @@ public class NewsFeed extends Activity {
         boolean keepGoing = true;
         try {
             if (savedInstanceState.containsKey("json")) {
-                _privateJSON = new JSONArray(savedInstanceState.getString("json"));
+                mPrivateJSON = new JSONArray(savedInstanceState.getString("json"));
             } else {
                 keepGoing = false;
             }
             if (savedInstanceState.containsKey("displayed_json")) {
-                _displayedPrivateJSON = new JSONArray(
+                mDisplayedPrivateJSON = new JSONArray(
                         savedInstanceState.getString("displayed_json"));
             } else {
-                _displayedPrivateJSON = new JSONArray();
-                int length = _displayedPrivateJSON.length();
+                mDisplayedPrivateJSON = new JSONArray();
+                int length = mDisplayedPrivateJSON.length();
                 for (int i = length; i < length + 10; i++) {
-                    if (_privateJSON.isNull(i))
+                    if (mPrivateJSON.isNull(i))
                         break;
                     try {
-                        _displayedPrivateJSON.put(_privateJSON.get(i));
+                        mDisplayedPrivateJSON.put(mPrivateJSON.get(i));
                     } catch (JSONException e) {
                         e.printStackTrace();
                         break;
@@ -228,17 +227,17 @@ public class NewsFeed extends Activity {
             keepGoing = false;
         }
         if (keepGoing == true) {
-            _privateActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, _displayedPrivateJSON,
+            mPrivateActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mDisplayedPrivateJSON,
                     false);
         } else {
-            _privateActivityAdapter = null;
+            mPrivateActivityAdapter = null;
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((ListView) findViewById(R.id.lv_news_feed)).setAdapter(_privateActivityAdapter);
+        ((ListView) findViewById(R.id.lv_news_feed)).setAdapter(mPrivateActivityAdapter);
     }
 
     @Override
