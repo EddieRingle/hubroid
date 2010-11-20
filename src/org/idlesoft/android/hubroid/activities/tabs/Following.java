@@ -49,7 +49,7 @@ public class Following extends Activity {
         protected Void doInBackground(Void... params) {
             if (mActivity.mJson == null) {
                 try {
-                    Response resp = mActivity.mGapi.user.followers(mActivity.mGapi.api.login);
+                    Response resp = mActivity.mGapi.user.following(mActivity.mGapi.api.login);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
