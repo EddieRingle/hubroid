@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+	<style name="Theme.Hubroid" parent="android:style/Theme.Light">
+		<item name="android:windowNoTitle">true</item>
+		<item name="android:windowContentOverlay">@null</item>
+	</style>
 	<style name="code" parent="@android:style/TextAppearance">
     	<item name="android:textSize">12sp</item>
     	<item name="android:textColor">@android:color/black</item>

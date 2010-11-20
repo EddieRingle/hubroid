@@ -62,7 +62,7 @@ public class UserInfo extends Activity {
             switch (id) {
             case R.id.btn_user_info_repositories:
                 // Go to the user's list of repositories
-                intent = new Intent(UserInfo.this, RepositoriesList.class);
+                intent = new Intent(UserInfo.this, Repositories.class);
                 intent.putExtra("username", m_targetUser);
                 startActivity(intent);
                 break;
@@ -214,7 +214,7 @@ public class UserInfo extends Activity {
         ((Button) findViewById(R.id.btn_navbar_repositories))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
-                        startActivity(new Intent(UserInfo.this, RepositoriesList.class));
+                        startActivity(new Intent(UserInfo.this, Repositories.class));
                         finish();
                     }
                 });

@@ -3,7 +3,8 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:gravity="center"
-	android:background="#FFF">
+	android:background="@color/background"
+	android:padding="15dip">
 	<ProgressBar
 		android:id="@+id/pb_loadingListItem_progress"
 		android:layout_height="24px"

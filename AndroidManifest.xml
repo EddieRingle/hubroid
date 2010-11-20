@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.idlesoft.android.hubroid" android:versionName="@string/app_version"
 	android:versionCode="2010111800">
-	<application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@android:style/Theme.Light.NoTitleBar">
+	<application android:icon="@drawable/icon" android:label="@string/app_name" android:theme="@style/Theme.Hubroid">
 		<activity android:name=".activities.Hubroid" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -10,7 +10,9 @@
 			</intent-filter>
 		</activity>
 		<activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" />
-		<activity android:name=".activities.RepositoriesList" />
+		<activity android:name=".activities.Repositories" />
+		<activity android:name=".activities.tabs.MyRepos" />
+		<activity android:name=".activities.tabs.WatchedRepos" />
 		<activity android:name=".activities.RepositoryInfo" />
 		<activity android:name=".activities.CommitsList" />
 		<activity android:name=".activities.IssuesList" />
