@@ -3,7 +3,6 @@ package org.idlesoft.android.hubroid.activities.tabs;
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.idlesoft.android.hubroid.adapters.FollowersFollowingListAdapter;
-import org.idlesoft.android.hubroid.adapters.RepositoriesListAdapter;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
@@ -25,6 +24,7 @@ public class Followers extends Activity {
     private FollowersFollowingListAdapter mAdapter;
     private JSONArray mJson;
     private GitHubAPI mGapi = new GitHubAPI();
+    private String mTarget;
     private FollowersTask mTask;
     public View mLoadingItem;
 
@@ -49,7 +49,7 @@ public class Followers extends Activity {
         protected Void doInBackground(Void... params) {
             if (mActivity.mJson == null) {
                 try {
-                    Response resp = mActivity.mGapi.user.followers(mActivity.mGapi.api.login);
+                    Response resp = mActivity.mGapi.user.followers(mActivity.mTarget);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
@@ -82,6 +82,12 @@ public class Followers extends Activity {
         mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
         ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
                 .setText("Loading...");
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null)
+            mTarget = extras.getString("target");
+        if (mTarget == null || mTarget.equals(""))
+            mTarget = prefs.getString("username", "");
 
         mTask = (FollowersTask) getLastNonConfigurationInstance();
         if (mTask == null)

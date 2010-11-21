@@ -29,6 +29,7 @@ public class Users extends TabActivity {
     private SharedPreferences mPrefs;
     private String mUsername;
     private String mPassword;
+    private String mTarget;
     private GitHubAPI mGapi = new GitHubAPI();
     private TabHost mTabHost;
 
@@ -54,20 +55,30 @@ public class Users extends TabActivity {
 
         mGapi.authenticate(mUsername, mPassword);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null)
+            mTarget = extras.getString("target");
+        if (mTarget == null || mTarget.equals(""))
+            mTarget = mUsername;
+
         ((ImageView) findViewById(R.id.iv_users_gravatar))
                 .setImageBitmap(GravatarCache.getDipGravatar(
-                        GravatarCache.getGravatarID(mUsername), 38.0f,
+                        GravatarCache.getGravatarID(mTarget), 38.0f,
                         getResources().getDisplayMetrics().density));
-        ((TextView) findViewById(R.id.tv_page_title)).setText(mUsername);
+        ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget);
 
         mTabHost = getTabHost();
 
+        Intent intent = new Intent(getApplicationContext(), Followers.class);
+        intent.putExtra("target", mTarget);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS)
                 .setIndicator(buildIndicator(R.string.followers))
-                .setContent(new Intent(getApplicationContext(), Followers.class)));
+                .setContent(intent));
+
+        intent.setClass(getApplicationContext(), Following.class);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING)
                 .setIndicator(buildIndicator(R.string.following))
-                .setContent(new Intent(getApplicationContext(), Following.class)));
+                .setContent(intent));
     }
 
     @Override

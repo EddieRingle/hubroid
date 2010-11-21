@@ -24,6 +24,7 @@ public class WatchedRepos extends Activity {
     private RepositoriesListAdapter mAdapter;
     private JSONArray mJson;
     private GitHubAPI mGapi = new GitHubAPI();
+    private String mTarget;
     private WatchedReposTask mTask;
     public View mLoadingItem;
 
@@ -48,7 +49,7 @@ public class WatchedRepos extends Activity {
         protected Void doInBackground(Void... params) {
             if (mActivity.mJson == null) {
                 try {
-                    Response resp = mActivity.mGapi.user.watching(mActivity.mGapi.api.login);
+                    Response resp = mActivity.mGapi.user.watching(mActivity.mTarget);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
@@ -81,6 +82,12 @@ public class WatchedRepos extends Activity {
         mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
         ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
                 .setText("Loading...");
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null)
+            mTarget = extras.getString("target");
+        if (mTarget == null || mTarget.equals(""))
+            mTarget = prefs.getString("username", "");
 
         mTask = (WatchedReposTask) getLastNonConfigurationInstance();
         if (mTask == null)

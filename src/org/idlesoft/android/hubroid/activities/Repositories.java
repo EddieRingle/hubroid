@@ -29,6 +29,7 @@ public class Repositories extends TabActivity {
     private SharedPreferences mPrefs;
     private String mUsername;
     private String mPassword;
+    private String mTarget;
     private GitHubAPI mGapi = new GitHubAPI();
     private TabHost mTabHost;
 
@@ -54,20 +55,30 @@ public class Repositories extends TabActivity {
 
         mGapi.authenticate(mUsername, mPassword);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null)
+            mTarget = extras.getString("target");
+        if (mTarget == null || mTarget.equals(""))
+            mTarget = mUsername;
+
         ((ImageView) findViewById(R.id.iv_repositories_gravatar))
                 .setImageBitmap(GravatarCache.getDipGravatar(
-                        GravatarCache.getGravatarID(mUsername), 38.0f,
+                        GravatarCache.getGravatarID(mTarget), 38.0f,
                         getResources().getDisplayMetrics().density));
-        ((TextView) findViewById(R.id.tv_page_title)).setText(mUsername);
+        ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget);
 
         mTabHost = getTabHost();
 
+        Intent intent = new Intent(getApplicationContext(), MyRepos.class);
+        intent.putExtra("target", mTarget);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_MY_REPOS)
                 .setIndicator(buildIndicator(R.string.my_repos))
-                .setContent(new Intent(getApplicationContext(), MyRepos.class)));
+                .setContent(intent));
+
+        intent.setClass(getApplicationContext(), WatchedRepos.class);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_WATCHED_REPOS)
                 .setIndicator(buildIndicator(R.string.watched_repos))
-                .setContent(new Intent(getApplicationContext(), WatchedRepos.class)));
+                .setContent(intent));
     }
 
     @Override
