@@ -15,6 +15,7 @@
   	android:id="@+id/commit_view_item_diff_text"
   	android:layout_height="wrap_content"
   	android:layout_width="fill_parent"
+  	android:scrollbars="horizontal"
   	android:scrollHorizontally="true"
   	android:textColor="@color/textColor"
   	android:textAppearance="@style/code"
