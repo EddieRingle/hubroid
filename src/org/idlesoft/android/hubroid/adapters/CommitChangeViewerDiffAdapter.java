@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.text.Spannable;
 import android.text.Spanned;
+import android.text.method.ScrollingMovementMethod;
 import android.text.style.BackgroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,6 +68,7 @@ public class CommitChangeViewerDiffAdapter extends BaseAdapter {
             holder = new ViewHolder();
             holder.diffContents = (TextView) convertView
                     .findViewById(R.id.commit_view_item_diff_text);
+            holder.diffContents.setMovementMethod(ScrollingMovementMethod.getInstance());
             holder.fileName = (TextView) convertView.findViewById(R.id.commit_view_item_filename);
             convertView.setTag(holder);
         } else {
