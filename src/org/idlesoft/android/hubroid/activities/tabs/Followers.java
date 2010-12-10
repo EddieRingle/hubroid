@@ -90,11 +90,12 @@ public class Followers extends Activity {
             mTarget = prefs.getString("username", "");
 
         mTask = (FollowersTask) getLastNonConfigurationInstance();
-        if (mTask == null)
+        if (mTask == null || mTask.getStatus() == AsyncTask.Status.FINISHED)
             mTask = new FollowersTask(Followers.this);
         mTask.mActivity = this;
-        if (mTask.getStatus() == AsyncTask.Status.PENDING)
+        if (mTask.getStatus() == AsyncTask.Status.PENDING) {
             mTask.execute();
+        }
     }
 
     public Object onRetainNonConfigurationInstance() {

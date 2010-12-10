@@ -90,7 +90,7 @@ public class Following extends Activity {
             mTarget = prefs.getString("username", "");
 
         mTask = (FollowingTask) getLastNonConfigurationInstance();
-        if (mTask == null)
+        if (mTask == null || mTask.getStatus() == AsyncTask.Status.FINISHED)
             mTask = new FollowingTask(Following.this);
         mTask.mActivity = this;
         if (mTask.getStatus() == AsyncTask.Status.PENDING)

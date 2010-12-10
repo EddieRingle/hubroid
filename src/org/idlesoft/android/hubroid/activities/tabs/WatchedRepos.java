@@ -90,7 +90,7 @@ public class WatchedRepos extends Activity {
             mTarget = prefs.getString("username", "");
 
         mTask = (WatchedReposTask) getLastNonConfigurationInstance();
-        if (mTask == null)
+        if (mTask == null || mTask.getStatus() == AsyncTask.Status.FINISHED)
             mTask = new WatchedReposTask(WatchedRepos.this);
         mTask.mActivity = this;
         if (mTask.getStatus() == AsyncTask.Status.PENDING)

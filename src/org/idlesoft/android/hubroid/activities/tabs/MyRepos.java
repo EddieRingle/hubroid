@@ -90,7 +90,7 @@ public class MyRepos extends Activity {
             mTarget = prefs.getString("username", "");
 
         mTask = (MyReposTask) getLastNonConfigurationInstance();
-        if (mTask == null)
+        if (mTask == null || mTask.getStatus() == AsyncTask.Status.FINISHED)
             mTask = new MyReposTask(MyRepos.this);
         mTask.mActivity = this;
         if (mTask.getStatus() == AsyncTask.Status.PENDING)
