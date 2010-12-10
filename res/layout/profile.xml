@@ -10,7 +10,8 @@
 	<ScrollView android:id="@+id/sv_userInfo"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:layout_below="@id/include_top_bar">
+		android:layout_below="@id/include_top_bar"
+		android:fadingEdge="none">
 		<RelativeLayout
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
@@ -22,8 +23,8 @@
 				android:padding="10dip">
 				<ImageView
 					android:id="@+id/iv_user_info_gravatar"
-					android:layout_width="56px"
-					android:layout_height="56px"
+					android:layout_width="54dip"
+					android:layout_height="54dip"
 					android:scaleType="center"
 					android:layout_alignParentLeft="true"
 					android:layout_marginRight="10dip"

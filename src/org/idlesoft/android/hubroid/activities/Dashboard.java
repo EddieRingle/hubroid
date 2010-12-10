@@ -31,15 +31,22 @@ public class Dashboard extends Activity {
 
         ((Button) findViewById(R.id.btn_dashboard_repositories))
                 .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
+                    public void onClick(View v) {
                         startActivity(new Intent(Dashboard.this, Repositories.class));
                     }
                 });
 
         ((Button) findViewById(R.id.btn_dashboard_users))
                 .setOnClickListener(new OnClickListener() {
-                    public void onClick(View arg0) {
+                    public void onClick(View v) {
                         startActivity(new Intent(Dashboard.this, Users.class));
+                    }
+                });
+
+        ((Button) findViewById(R.id.btn_dashboard_myprofile))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
+                        startActivity(new Intent(Dashboard.this, Profile.class));
                     }
                 });
     }

@@ -19,6 +19,7 @@
 		<activity android:name=".activities.Users" />
 		<activity android:name=".activities.tabs.Followers" />
 		<activity android:name=".activities.tabs.Following" />
+		<activity android:name=".activities.Profile" />
 
 		<activity android:name=".activities.RepositoryInfo" />
 		<activity android:name=".activities.CommitsList" />
@@ -26,7 +27,6 @@
 		<activity android:name=".activities.CreateIssue" />
 		<activity android:name=".activities.SingleIssue" />
 		<activity android:name=".activities.NetworkList" />
-		<activity android:name=".activities.UserInfo" />
 		<activity android:name=".activities.WatchedRepositories" />
 		<activity android:name=".activities.SingleActivityItem" />
 		<activity android:name=".activities.CommitChangeViewer" />

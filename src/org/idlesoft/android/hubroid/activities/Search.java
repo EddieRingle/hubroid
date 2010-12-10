@@ -183,7 +183,7 @@ public class Search extends Activity {
                     m_intent.putExtra("username", m_repositoriesData.getJSONObject(m_position)
                             .getString("username"));
                 } else if (m_type.equals(USER_TYPE)) {
-                    m_intent = new Intent(Search.this, UserInfo.class);
+                    m_intent = new Intent(Search.this, Profile.class);
                     m_intent.putExtra("username",
                             m_usersData.getJSONObject(m_position).getString("username"));
                 }
