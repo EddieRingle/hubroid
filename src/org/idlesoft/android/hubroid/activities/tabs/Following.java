@@ -2,6 +2,7 @@ package org.idlesoft.android.hubroid.activities.tabs;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
+import org.idlesoft.android.hubroid.activities.Profile;
 import org.idlesoft.android.hubroid.adapters.FollowersFollowingListAdapter;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
@@ -10,6 +11,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -66,6 +68,13 @@ public class Following extends Activity {
 
     private OnItemClickListener onListItemClick = new OnItemClickListener() {
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        	Intent i = new Intent(getApplicationContext(), Profile.class);
+        	try {
+        		i.putExtra("username", mJson.getString(position));
+        	} catch (JSONException e) {
+        		e.printStackTrace();
+        	}
+        	startActivity(i);
             return;
         }
     };
