@@ -9,7 +9,6 @@
 package org.idlesoft.android.hubroid.adapters;
 
 import org.idlesoft.android.hubroid.R;
-import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,26 +21,12 @@ import android.widget.TextView;
 
 public class SearchUsersListAdapter extends UsersListAdapter {
 
-    public SearchUsersListAdapter(Context context, JSONArray jsonarray) {
+    public SearchUsersListAdapter(final Context context, final JSONArray jsonarray) {
         super(context, jsonarray);
-        this.loadGravatars();
+        loadGravatars();
     }
 
-    public void loadGravatars() {
-        int length = m_data.length();
-        for (int i = 0; i < length; i++) {
-            try {
-                String username = m_data.getJSONObject(i).getString("username");
-                m_gravatars.put(username, GravatarCache.getDipGravatar(
-                        GravatarCache.getGravatarID(username), 30.0f,
-                        m_context.getResources().getDisplayMetrics().density));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         m_currentIndex = index;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.user_list_item, null);
@@ -60,9 +45,24 @@ public class SearchUsersListAdapter extends UsersListAdapter {
                     "username"));
             m_currentViewHolder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(
                     m_currentIndex).getString("username")));
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
         }
         return convertView;
+    }
+
+    @Override
+    public void loadGravatars() {
+        final int length = m_data.length();
+        for (int i = 0; i < length; i++) {
+            try {
+                final String username = m_data.getJSONObject(i).getString("username");
+                m_gravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
+                        .getGravatarID(username), 30.0f, m_context.getResources()
+                        .getDisplayMetrics().density));
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

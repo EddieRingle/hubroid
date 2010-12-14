@@ -20,21 +20,29 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class RepositoriesListAdapter extends BaseAdapter {
-    private JSONArray m_data = new JSONArray();
-    private Context m_context;
-    private LayoutInflater m_inflater;
-
     public static class ViewHolder {
-        public TextView repo_name;
-        public TextView repo_owner;
-        public TextView repo_owner_label;
         public TextView repo_description;
+
         public TextView repo_fork;
-        public TextView repo_watch_count;
+
         public TextView repo_fork_count;
+
+        public TextView repo_name;
+
+        public TextView repo_owner;
+
+        public TextView repo_owner_label;
+
+        public TextView repo_watch_count;
     }
 
-    public RepositoriesListAdapter(final Context context, JSONArray jsonarray) {
+    private final Context m_context;
+
+    private JSONArray m_data = new JSONArray();
+
+    private final LayoutInflater m_inflater;
+
+    public RepositoriesListAdapter(final Context context, final JSONArray jsonarray) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
         m_data = jsonarray;
@@ -44,20 +52,20 @@ public class RepositoriesListAdapter extends BaseAdapter {
         return m_data.length();
     }
 
-    public Object getItem(int i) {
+    public Object getItem(final int i) {
         try {
             return m_data.get(i);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int i) {
+    public long getItemId(final int i) {
         return i;
     }
 
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.repository_list_item, null);
@@ -81,10 +89,10 @@ public class RepositoriesListAdapter extends BaseAdapter {
         String owner = "";
         try {
             owner = m_data.getJSONObject(index).getString("username");
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             try {
                 owner = m_data.getJSONObject(index).getString("owner");
-            } catch (JSONException e1) {
+            } catch (final JSONException e1) {
                 e1.printStackTrace();
             }
         }
@@ -95,18 +103,19 @@ public class RepositoriesListAdapter extends BaseAdapter {
             holder.repo_fork_count.setText(m_data.getJSONObject(index).getString("forks"));
             try {
                 holder.repo_watch_count.setText(m_data.getJSONObject(index).getString("watchers"));
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 holder.repo_watch_count.setText(m_data.getJSONObject(index).getString("followers"));
             }
 
-            if (m_data.getJSONObject(index).getBoolean("fork"))
+            if (m_data.getJSONObject(index).getBoolean("fork")) {
                 holder.repo_fork.setText("(Fork) ");
-            else
+            } else {
                 holder.repo_fork.setText("");
-        } catch (JSONException e) {
-            holder.repo_owner.setVisibility(TextView.GONE);
-            holder.repo_owner_label.setVisibility(TextView.GONE);
-            holder.repo_description.setVisibility(TextView.GONE);
+            }
+        } catch (final JSONException e) {
+            holder.repo_owner.setVisibility(View.GONE);
+            holder.repo_owner_label.setVisibility(View.GONE);
+            holder.repo_description.setVisibility(View.GONE);
         }
         return convertView;
     }

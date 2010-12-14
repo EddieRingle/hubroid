@@ -8,10 +8,6 @@
 
 package org.idlesoft.android.hubroid.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.json.JSONArray;
@@ -25,19 +21,28 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class IssuesListAdapter extends BaseAdapter {
-    private JSONArray m_data = new JSONArray();
-    private Context m_context;
-    private LayoutInflater m_inflater;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+public class IssuesListAdapter extends BaseAdapter {
     public static class ViewHolder {
-        public TextView issueTitle;
-        public TextView issueLastUpdatedDate;
-        public TextView issueNumber;
         public ImageView issueIcon;
+
+        public TextView issueLastUpdatedDate;
+
+        public TextView issueNumber;
+
+        public TextView issueTitle;
     }
 
-    public IssuesListAdapter(final Context context, JSONArray jsonarray) {
+    private final Context m_context;
+
+    private JSONArray m_data = new JSONArray();
+
+    private final LayoutInflater m_inflater;
+
+    public IssuesListAdapter(final Context context, final JSONArray jsonarray) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
         m_data = jsonarray;
@@ -47,20 +52,20 @@ public class IssuesListAdapter extends BaseAdapter {
         return m_data.length();
     }
 
-    public Object getItem(int i) {
+    public Object getItem(final int i) {
         try {
             return m_data.get(i);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int i) {
+    public long getItemId(final int i) {
         return i;
     }
 
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.issue_list_item, null);
@@ -77,16 +82,17 @@ public class IssuesListAdapter extends BaseAdapter {
         }
         try {
             String end;
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            Date commit_time = dateFormat
-                    .parse(m_data.getJSONObject(index).getString("updated_at"));
-            Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-            long ms = current_time.getTime() - commit_time.getTime();
-            long sec = ms / 1000;
-            long min = sec / 60;
-            long hour = min / 60;
-            long day = hour / 24;
-            long year = day / 365;
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+            final Date commit_time = dateFormat.parse(m_data.getJSONObject(index).getString(
+                    "updated_at"));
+            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final long ms = current_time.getTime() - commit_time.getTime();
+            final long sec = ms / 1000;
+            final long min = sec / 60;
+            final long hour = min / 60;
+            final long day = hour / 24;
+            final long year = day / 365;
             if (year > 0) {
                 if (year == 1) {
                     end = " year ago";
@@ -131,9 +137,9 @@ public class IssuesListAdapter extends BaseAdapter {
             }
             holder.issueNumber.setText("#" + m_data.getJSONObject(index).getString("number"));
             holder.issueTitle.setText(m_data.getJSONObject(index).getString("title"));
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             e.printStackTrace();
         }
         return convertView;

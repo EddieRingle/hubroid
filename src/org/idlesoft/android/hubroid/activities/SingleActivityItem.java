@@ -8,10 +8,7 @@
 
 package org.idlesoft.android.hubroid.activities;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.flurry.android.FlurryAgent;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
@@ -29,73 +26,47 @@ import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SingleActivityItem extends Activity {
-    public Intent _intent;
-    private JSONObject _JSON = new JSONObject();
-    private SharedPreferences _prefs;
-    private SharedPreferences.Editor _editor;
-    private String _username;
-    private String _password;
-
     public static final String CSS = "<style type=\"text/css\">" + "div, ul, li, blockquote {"
             + "font-size: 14px;" + "}" + "blockquote {" + "color: #999;" + "margin: 0;" + "}"
             + "</style>";
 
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (menu.hasVisibleItems())
-            menu.clear();
-        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(0, 1, 0, "Clear Preferences");
-        menu.add(0, 2, 0, "Clear Cache");
-        return true;
-    }
+    private SharedPreferences.Editor _editor;
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case 0:
-            Intent i1 = new Intent(this, Hubroid.class);
-            startActivity(i1);
-            return true;
-        case 1:
-            _editor.clear().commit();
-            Intent intent = new Intent(this, Hubroid.class);
-            startActivity(intent);
-            return true;
-        case 2:
-            File root = Environment.getExternalStorageDirectory();
-            if (root.canWrite()) {
-                File hubroid = new File(root, "hubroid");
-                if (!hubroid.exists() && !hubroid.isDirectory()) {
-                    return true;
-                } else {
-                    hubroid.delete();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    public Intent _intent;
+
+    private JSONObject _JSON = new JSONObject();
+
+    private String _password;
+
+    private SharedPreferences _prefs;
+
+    private String _username;
 
     private void loadActivityItemBox() {
-        TextView date = (TextView) findViewById(R.id.tv_activity_item_date);
-        ImageView gravatar = (ImageView) findViewById(R.id.iv_activity_item_gravatar);
-        ImageView icon = (ImageView) findViewById(R.id.iv_activity_item_icon);
-        TextView title_tv = (TextView) findViewById(R.id.tv_activity_item_title);
+        final TextView date = (TextView) findViewById(R.id.tv_activity_item_date);
+        final ImageView gravatar = (ImageView) findViewById(R.id.iv_activity_item_gravatar);
+        final ImageView icon = (ImageView) findViewById(R.id.iv_activity_item_icon);
+        final TextView title_tv = (TextView) findViewById(R.id.tv_activity_item_title);
 
         try {
-            JSONObject entry = _JSON;
-            JSONObject payload = entry.getJSONObject("payload");
+            final JSONObject entry = _JSON;
+            final JSONObject payload = entry.getJSONObject("payload");
             String end;
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            Date item_time = dateFormat.parse(entry.getString("created_at"));
-            Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-            long ms = current_time.getTime() - item_time.getTime();
-            long sec = ms / 1000;
-            long min = sec / 60;
-            long hour = min / 60;
-            long day = hour / 24;
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+            final Date item_time = dateFormat.parse(entry.getString("created_at"));
+            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final long ms = current_time.getTime() - item_time.getTime();
+            final long sec = ms / 1000;
+            final long min = sec / 60;
+            final long hour = min / 60;
+            final long day = hour / 24;
             if (day > 0) {
                 if (day == 1) {
                     end = " day ago";
@@ -126,8 +97,8 @@ public class SingleActivityItem extends Activity {
                 date.setText(sec + end);
             }
 
-            String actor = entry.getString("actor");
-            String eventType = entry.getString("type");
+            final String actor = entry.getString("actor");
+            final String eventType = entry.getString("type");
             String title = actor + " did something...";
             gravatar.setImageBitmap(GravatarCache.getDipGravatar(
                     GravatarCache.getGravatarID(actor), 30.0f,
@@ -139,7 +110,7 @@ public class SingleActivityItem extends Activity {
                         + entry.getJSONObject("repository").getString("owner") + "/"
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("WatchEvent")) {
-                String action = payload.getString("action");
+                final String action = payload.getString("action");
                 if (action.equalsIgnoreCase("started")) {
                     icon.setImageResource(R.drawable.watch_started);
                 } else {
@@ -149,7 +120,7 @@ public class SingleActivityItem extends Activity {
                         + entry.getJSONObject("repository").getString("owner") + "/"
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("GistEvent")) {
-                String action = payload.getString("action");
+                final String action = payload.getString("action");
                 icon.setImageResource(R.drawable.gist);
                 title = actor + " " + action + "d " + payload.getString("name");
             } else if (eventType.contains("ForkEvent")) {
@@ -239,15 +210,15 @@ public class SingleActivityItem extends Activity {
             }
 
             title_tv.setText(title);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.single_activity_item);
 
@@ -262,21 +233,57 @@ public class SingleActivityItem extends Activity {
             try {
                 _JSON = new JSONObject(extras.getString("item_json"));
                 loadActivityItemBox();
-                WebView content = (WebView) findViewById(R.id.wv_single_activity_item_content);
+                final WebView content = (WebView) findViewById(R.id.wv_single_activity_item_content);
                 String html = _JSON.getJSONObject("content").getString("content");
                 html = html.replace('\n', ' ');
-                String out = CSS + html;
+                final String out = CSS + html;
                 content.loadData(out, "text/" + _JSON.getJSONObject("content").getString("type"),
                         "UTF-8");
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                final Intent i1 = new Intent(this, Hubroid.class);
+                startActivity(i1);
+                return true;
+            case 1:
+                _editor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 2:
+                final File root = Environment.getExternalStorageDirectory();
+                if (root.canWrite()) {
+                    final File hubroid = new File(root, "hubroid");
+                    if (!hubroid.exists() && !hubroid.isDirectory()) {
+                        return true;
+                    } else {
+                        hubroid.delete();
+                        return true;
+                    }
+                }
+        }
+        return false;
+    }
+
     @Override
     public void onPause() {
         super.onPause();
+    }
+
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (menu.hasVisibleItems()) {
+            menu.clear();
+        }
+        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 1, 0, "Clear Preferences");
+        menu.add(0, 2, 0, "Clear Cache");
+        return true;
     }
 
     @Override

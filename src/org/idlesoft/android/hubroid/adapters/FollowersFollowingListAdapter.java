@@ -21,26 +21,12 @@ import android.widget.TextView;
 
 public class FollowersFollowingListAdapter extends UsersListAdapter {
 
-    public FollowersFollowingListAdapter(Context context, JSONArray jsonarray) {
+    public FollowersFollowingListAdapter(final Context context, final JSONArray jsonarray) {
         super(context, jsonarray);
-        this.loadGravatars();
+        loadGravatars();
     }
 
-    public void loadGravatars() {
-        int length = m_data.length();
-        for (int i = 0; i < length; i++) {
-            try {
-                String username = m_data.getString(i);
-                m_gravatars.put(username, GravatarCache.getDipGravatar(
-                        GravatarCache.getGravatarID(username), 30.0f,
-                        m_context.getResources().getDisplayMetrics().density));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         m_currentIndex = index;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.user_list_item, null);
@@ -58,9 +44,24 @@ public class FollowersFollowingListAdapter extends UsersListAdapter {
             m_currentViewHolder.text.setText(m_data.getString(m_currentIndex));
             m_currentViewHolder.gravatar.setImageBitmap(m_gravatars.get(m_data
                     .getString(m_currentIndex)));
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
         }
         return convertView;
+    }
+
+    @Override
+    public void loadGravatars() {
+        final int length = m_data.length();
+        for (int i = 0; i < length; i++) {
+            try {
+                final String username = m_data.getString(i);
+                m_gravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
+                        .getGravatarID(username), 30.0f, m_context.getResources()
+                        .getDisplayMetrics().density));
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

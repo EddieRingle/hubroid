@@ -8,8 +8,6 @@
 
 package org.idlesoft.android.hubroid.adapters;
 
-import java.util.HashMap;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -21,24 +19,32 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public abstract class UsersListAdapter extends BaseAdapter {
-    protected JSONArray m_data = new JSONArray();
-    public int m_currentIndex;
-    protected ViewHolder m_currentViewHolder;
-    protected Context m_context;
-    protected LayoutInflater m_inflater;
-    protected HashMap<String, Bitmap> m_gravatars;
-    protected SharedPreferences m_prefs;
-    protected SharedPreferences.Editor m_editor;
+import java.util.HashMap;
 
+public abstract class UsersListAdapter extends BaseAdapter {
     public class ViewHolder {
-        public TextView text;
         public ImageView gravatar;
+
+        public TextView text;
     }
 
-    public abstract void loadGravatars();
+    protected Context m_context;
 
-    public UsersListAdapter(final Context context, JSONArray jsonarray) {
+    public int m_currentIndex;
+
+    protected ViewHolder m_currentViewHolder;
+
+    protected JSONArray m_data = new JSONArray();
+
+    protected SharedPreferences.Editor m_editor;
+
+    protected HashMap<String, Bitmap> m_gravatars;
+
+    protected LayoutInflater m_inflater;
+
+    protected SharedPreferences m_prefs;
+
+    public UsersListAdapter(final Context context, final JSONArray jsonarray) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
         m_data = jsonarray;
@@ -49,16 +55,18 @@ public abstract class UsersListAdapter extends BaseAdapter {
         return m_data.length();
     }
 
-    public Object getItem(int i) {
+    public Object getItem(final int i) {
         try {
             return m_data.get(i);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int i) {
+    public long getItemId(final int i) {
         return i;
     }
+
+    public abstract void loadGravatars();
 }

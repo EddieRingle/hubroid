@@ -8,7 +8,7 @@
 
 package org.idlesoft.android.hubroid.activities;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.adapters.RepositoriesListAdapter;
@@ -26,50 +26,56 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
 
 public class WatchedRepositories extends ListActivity {
-    private RepositoriesListAdapter m_adapter;
-    public ProgressDialog m_progressDialog;
-    public JSONObject m_jsonData;
-    public int m_position;
-    public String m_targetUser;
-    public String m_username;
-    public String m_token;
-    public SharedPreferences m_prefs;
-    private SharedPreferences.Editor m_editor;
-    public Intent m_intent;
-    private Thread m_thread;
     private GitHubAPI _gapi;
 
-    public RepositoriesListAdapter initializeList() {
-        RepositoriesListAdapter adapter = null;
-        try {
-            m_jsonData = new JSONObject(_gapi.user.watching(m_targetUser).resp);
-            if (m_jsonData == null) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        Toast.makeText(WatchedRepositories.this,
-                                "Error gathering repository data, please try again.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-            } else {
-                adapter = new RepositoriesListAdapter(getApplicationContext(),
-                        m_jsonData.getJSONArray("repositories"));
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return adapter;
-    }
+    private RepositoriesListAdapter m_adapter;
 
-    private Runnable threadProc_initializeList = new Runnable() {
+    private SharedPreferences.Editor m_editor;
+
+    public Intent m_intent;
+
+    public JSONObject m_jsonData;
+
+    private final OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
+        public void onItemClick(final AdapterView<?> parent, final View v, final int position,
+                final long id) {
+            m_position = position;
+            try {
+                m_intent = new Intent(WatchedRepositories.this, RepositoryInfo.class);
+                m_intent.putExtra("repo_name", m_jsonData.getJSONArray("repositories")
+                        .getJSONObject(m_position).getString("name"));
+                m_intent.putExtra("username", m_jsonData.getJSONArray("repositories")
+                        .getJSONObject(m_position).getString("owner"));
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+            WatchedRepositories.this.startActivity(m_intent);
+        }
+    };
+
+    public int m_position;
+
+    public SharedPreferences m_prefs;
+
+    public ProgressDialog m_progressDialog;
+
+    public String m_targetUser;
+
+    private Thread m_thread;
+
+    public String m_token;
+
+    public String m_username;
+
+    private final Runnable threadProc_initializeList = new Runnable() {
         public void run() {
             m_adapter = initializeList();
 
@@ -84,59 +90,30 @@ public class WatchedRepositories extends ListActivity {
         }
     };
 
-    private OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            m_position = position;
-            try {
-                m_intent = new Intent(WatchedRepositories.this, RepositoryInfo.class);
-                m_intent.putExtra("repo_name", m_jsonData.getJSONArray("repositories")
-                        .getJSONObject(m_position).getString("name"));
-                m_intent.putExtra("username", m_jsonData.getJSONArray("repositories")
-                        .getJSONObject(m_position).getString("owner"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+    public RepositoriesListAdapter initializeList() {
+        RepositoriesListAdapter adapter = null;
+        try {
+            m_jsonData = new JSONObject(_gapi.user.watching(m_targetUser).resp);
+            if (m_jsonData == null) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(WatchedRepositories.this,
+                                "Error gathering repository data, please try again.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } else {
+                adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData
+                        .getJSONArray("repositories"));
             }
-            WatchedRepositories.this.startActivity(m_intent);
+        } catch (final JSONException e) {
+            e.printStackTrace();
         }
-    };
-
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!menu.hasVisibleItems()) {
-            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-            menu.add(0, 1, 0, "Clear Preferences");
-            menu.add(0, 2, 0, "Clear Cache");
-        }
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case 0:
-            Intent i1 = new Intent(this, Hubroid.class);
-            startActivity(i1);
-            return true;
-        case 1:
-            m_editor.clear().commit();
-            Intent intent = new Intent(this, Hubroid.class);
-            startActivity(intent);
-            return true;
-        case 2:
-            File root = Environment.getExternalStorageDirectory();
-            if (root.canWrite()) {
-                File hubroid = new File(root, "hubroid");
-                if (!hubroid.exists() && !hubroid.isDirectory()) {
-                    return true;
-                } else {
-                    hubroid.delete();
-                    return true;
-                }
-            }
-        }
-        return false;
+        return adapter;
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.watched_repositories);
 
@@ -146,7 +123,7 @@ public class WatchedRepositories extends ListActivity {
         m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
 
-        Bundle extras = getIntent().getExtras();
+        final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("username")) {
                 m_targetUser = extras.getString("username");
@@ -157,7 +134,7 @@ public class WatchedRepositories extends ListActivity {
             m_targetUser = m_username;
         }
 
-        TextView title = (TextView) findViewById(R.id.tv_watched_repositories_title);
+        final TextView title = (TextView) findViewById(R.id.tv_watched_repositories_title);
         title.setText("Watched Repositories");
 
         m_progressDialog = ProgressDialog.show(WatchedRepositories.this, "Please wait...",
@@ -165,20 +142,60 @@ public class WatchedRepositories extends ListActivity {
         m_thread = new Thread(null, threadProc_initializeList);
         m_thread.start();
 
-        ListView list = (ListView) findViewById(android.R.id.list);
+        final ListView list = (ListView) findViewById(android.R.id.list);
         list.setOnItemClickListener(m_MessageClickedHandler);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        if (m_jsonData != null) {
-            savedInstanceState.putString("json", m_jsonData.toString());
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                final Intent i1 = new Intent(this, Hubroid.class);
+                startActivity(i1);
+                return true;
+            case 1:
+                m_editor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 2:
+                final File root = Environment.getExternalStorageDirectory();
+                if (root.canWrite()) {
+                    final File hubroid = new File(root, "hubroid");
+                    if (!hubroid.exists() && !hubroid.isDirectory()) {
+                        return true;
+                    } else {
+                        hubroid.delete();
+                        return true;
+                    }
+                }
         }
-        super.onSaveInstanceState(savedInstanceState);
+        return false;
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onPause() {
+        if ((m_thread != null) && m_thread.isAlive()) {
+            m_thread.stop();
+        }
+        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
+            m_progressDialog.dismiss();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (!menu.hasVisibleItems()) {
+            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+            menu.add(0, 1, 0, "Clear Preferences");
+            menu.add(0, 2, 0, "Clear Cache");
+        }
+        return true;
+    }
+
+    @Override
+    public void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         boolean keepGoing = true;
         try {
@@ -187,14 +204,14 @@ public class WatchedRepositories extends ListActivity {
             } else {
                 keepGoing = false;
             }
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             keepGoing = false;
         }
         if (keepGoing == true) {
             try {
-                m_adapter = new RepositoriesListAdapter(getApplicationContext(),
-                        m_jsonData.getJSONArray("repositories"));
-            } catch (JSONException e) {
+                m_adapter = new RepositoriesListAdapter(getApplicationContext(), m_jsonData
+                        .getJSONArray("repositories"));
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
         } else {
@@ -211,12 +228,11 @@ public class WatchedRepositories extends ListActivity {
     }
 
     @Override
-    public void onPause() {
-        if (m_thread != null && m_thread.isAlive())
-            m_thread.stop();
-        if (m_progressDialog != null && m_progressDialog.isShowing())
-            m_progressDialog.dismiss();
-        super.onPause();
+    public void onSaveInstanceState(final Bundle savedInstanceState) {
+        if (m_jsonData != null) {
+            savedInstanceState.putString("json", m_jsonData.toString());
+        }
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override

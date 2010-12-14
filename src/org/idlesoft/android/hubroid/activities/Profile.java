@@ -8,75 +8,70 @@
 
 package org.idlesoft.android.hubroid.activities;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.flurry.android.FlurryAgent;
 
 public class Profile extends Activity {
-    public JSONObject mJson;
-    private SharedPreferences mPrefs;
-    private String mUsername;
-    private String mPassword;
-    private String mTarget;
-    private boolean mIsLoggedIn;
-    private boolean mIsFollowing;
     private GitHubAPI mGapi;
 
-    private OnClickListener onButtonClick = new OnClickListener() {
-        public void onClick(View v) {
+    private boolean mIsFollowing;
+
+    private boolean mIsLoggedIn;
+
+    public JSONObject mJson;
+
+    private String mPassword;
+
+    private SharedPreferences mPrefs;
+
+    private String mTarget;
+
+    private String mUsername;
+
+    private final OnClickListener onButtonClick = new OnClickListener() {
+        public void onClick(final View v) {
             Intent intent;
             /* Figure out what button was clicked */
-            int id = v.getId();
+            final int id = v.getId();
             switch (id) {
-            case R.id.btn_user_info_repositories:
-                /* Go to the user's list of repositories */
-                intent = new Intent(Profile.this, Repositories.class);
-                intent.putExtra("target", mTarget);
-                startActivity(intent);
-                break;
-            case R.id.btn_user_info_followers_following:
-                /* Go to the Followers/Following screen */
-                intent = new Intent(Profile.this, Users.class);
-                intent.putExtra("target", mTarget);
-                startActivity(intent);
-                break;
-            default:
-                /* oh well... */
-                break;
+                case R.id.btn_user_info_repositories:
+                    /* Go to the user's list of repositories */
+                    intent = new Intent(Profile.this, Repositories.class);
+                    intent.putExtra("target", mTarget);
+                    startActivity(intent);
+                    break;
+                case R.id.btn_user_info_followers_following:
+                    /* Go to the Followers/Following screen */
+                    intent = new Intent(Profile.this, Users.class);
+                    intent.putExtra("target", mTarget);
+                    startActivity(intent);
+                    break;
+                default:
+                    /* oh well... */
+                    break;
             }
         }
     };
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.profile);
 
@@ -89,27 +84,29 @@ public class Profile extends Activity {
         mGapi = new GitHubAPI();
         mGapi.authenticate(mUsername, mPassword);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null)
+        final Bundle extras = getIntent().getExtras();
+        if (extras != null) {
             mTarget = extras.getString("username");
+        }
         try {
-            if (mTarget == null || mTarget.equals("")) {
+            if ((mTarget == null) || mTarget.equals("")) {
                 mTarget = mUsername;
             }
             Response userInfoResp;
             userInfoResp = mGapi.user.info(mTarget);
-            if (userInfoResp.statusCode == 200)
+            if (userInfoResp.statusCode == 200) {
                 mJson = new JSONObject(userInfoResp.resp);
+            }
             if (mJson == null) {
                 // User doesn't really exist, return to the previous activity
                 this.setResult(5005);
-                this.finish();
+                finish();
             } else {
                 mJson = mJson.getJSONObject("user");
 
-                JSONArray following_list = new JSONObject(mGapi.user.following(mUsername).resp)
-                        .getJSONArray("users");
-                int length = following_list.length() - 1;
+                final JSONArray following_list = new JSONObject(
+                        mGapi.user.following(mUsername).resp).getJSONArray("users");
+                final int length = following_list.length() - 1;
                 for (int i = 0; i <= length; i++) {
                     if (following_list.getString(i).equalsIgnoreCase(mTarget)) {
                         mIsFollowing = true;
@@ -151,10 +148,9 @@ public class Profile extends Activity {
 
                 // Set all the values in the layout
                 // ((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
-                ((ImageView) findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(
-                        GravatarCache.getDipGravatar(
-                                GravatarCache.getGravatarID(mTarget), 50.0f,
-                                getResources().getDisplayMetrics().density));
+                ((ImageView) findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(GravatarCache
+                        .getDipGravatar(GravatarCache.getGravatarID(mTarget), 50.0f, getResources()
+                                .getDisplayMetrics().density));
                 ((TextView) findViewById(R.id.tv_user_info_full_name)).setText(full_name);
                 ((TextView) findViewById(R.id.tv_user_info_company)).setText(company);
                 ((TextView) findViewById(R.id.tv_user_info_email)).setText(email);
@@ -162,15 +158,15 @@ public class Profile extends Activity {
                 ((TextView) findViewById(R.id.tv_user_info_blog)).setText(blog);
 
                 // Make the buttons work
-                Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
-                Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
-                Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
+                final Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
+                final Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
+                final Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
 
                 activityBtn.setOnClickListener(onButtonClick);
                 repositoriesBtn.setOnClickListener(onButtonClick);
                 followersFollowingBtn.setOnClickListener(onButtonClick);
             }
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
         }
     }

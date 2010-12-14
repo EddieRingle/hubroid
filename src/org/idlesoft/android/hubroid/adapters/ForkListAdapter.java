@@ -21,15 +21,17 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 public class ForkListAdapter extends BaseAdapter {
-    private JSONArray m_data = new JSONArray();
-    private Context m_context;
-    private LayoutInflater m_inflater;
-
     public static class ViewHolder {
         public TextView text;
     }
 
-    public ForkListAdapter(final Context context, JSONArray jsonarray) {
+    private final Context m_context;
+
+    private JSONArray m_data = new JSONArray();
+
+    private final LayoutInflater m_inflater;
+
+    public ForkListAdapter(final Context context, final JSONArray jsonarray) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
         m_data = jsonarray;
@@ -39,20 +41,20 @@ public class ForkListAdapter extends BaseAdapter {
         return m_data.length();
     }
 
-    public Object getItem(int i) {
+    public Object getItem(final int i) {
         try {
             return m_data.get(i);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int i) {
+    public long getItemId(final int i) {
         return i;
     }
 
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.network_list_item, null);
@@ -67,7 +69,7 @@ public class ForkListAdapter extends BaseAdapter {
             holder.text.setEllipsize(TruncateAt.END);
             holder.text.setTextColor(R.color.textColor);
             holder.text.setMaxLines(1);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
         }
         return convertView;

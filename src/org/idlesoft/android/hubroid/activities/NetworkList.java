@@ -8,7 +8,7 @@
 
 package org.idlesoft.android.hubroid.activities;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.adapters.ForkListAdapter;
@@ -27,80 +27,58 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
 
 public class NetworkList extends Activity {
-    public ProgressDialog m_progressDialog;
-    public Intent m_intent;
-    private SharedPreferences m_prefs;
-    private SharedPreferences.Editor m_editor;
-    public int m_position;
-    public String m_repo_owner;
-    public String m_repo_name;
-    public ForkListAdapter m_forkListAdapter;
-    public JSONArray m_jsonForkData;
-    private String m_username;
-    private String m_token;
-    private Thread m_thread;
     private GitHubAPI _gapi;
 
-    private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+    private SharedPreferences.Editor m_editor;
+
+    public ForkListAdapter m_forkListAdapter;
+
+    public Intent m_intent;
+
+    public JSONArray m_jsonForkData;
+
+    private final OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
+        public void onItemClick(final AdapterView<?> parent, final View v, final int position,
+                final long id) {
             m_position = position;
             try {
                 m_intent = new Intent(NetworkList.this, RepositoryInfo.class);
-                m_intent.putExtra("repo_name",
-                        m_jsonForkData.getJSONObject(m_position).getString("name"));
-                m_intent.putExtra("username",
-                        m_jsonForkData.getJSONObject(m_position).getString("owner"));
-            } catch (JSONException e) {
+                m_intent.putExtra("repo_name", m_jsonForkData.getJSONObject(m_position).getString(
+                        "name"));
+                m_intent.putExtra("username", m_jsonForkData.getJSONObject(m_position).getString(
+                        "owner"));
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
             NetworkList.this.startActivity(m_intent);
         }
     };
 
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!menu.hasVisibleItems()) {
-            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-            menu.add(0, 1, 0, "Clear Preferences");
-            menu.add(0, 2, 0, "Clear Cache");
-        }
-        return true;
-    }
+    public int m_position;
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case 0:
-            Intent i1 = new Intent(this, Hubroid.class);
-            startActivity(i1);
-            return true;
-        case 1:
-            m_editor.clear().commit();
-            Intent intent = new Intent(this, Hubroid.class);
-            startActivity(intent);
-            return true;
-        case 2:
-            File root = Environment.getExternalStorageDirectory();
-            if (root.canWrite()) {
-                File hubroid = new File(root, "hubroid");
-                if (!hubroid.exists() && !hubroid.isDirectory()) {
-                    return true;
-                } else {
-                    hubroid.delete();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    private SharedPreferences m_prefs;
+
+    public ProgressDialog m_progressDialog;
+
+    public String m_repo_name;
+
+    public String m_repo_owner;
+
+    private Thread m_thread;
+
+    private String m_token;
+
+    private String m_username;
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.network);
 
@@ -116,32 +94,71 @@ public class NetworkList extends Activity {
             m_repo_owner = extras.getString("username");
 
             try {
-                TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
+                final TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
                 title.setText("Network");
 
-                JSONObject forkjson = new JSONObject(
-                        _gapi.repo.network(m_repo_owner, m_repo_name).resp);
+                final JSONObject forkjson = new JSONObject(_gapi.repo.network(m_repo_owner,
+                        m_repo_name).resp);
 
                 m_jsonForkData = forkjson.getJSONArray("network");
 
                 m_forkListAdapter = new ForkListAdapter(NetworkList.this, m_jsonForkData);
 
-                ListView repo_list = (ListView) findViewById(R.id.lv_network_list);
+                final ListView repo_list = (ListView) findViewById(R.id.lv_network_list);
                 repo_list.setAdapter(m_forkListAdapter);
                 repo_list.setOnItemClickListener(m_onForkListItemClick);
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
     @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                final Intent i1 = new Intent(this, Hubroid.class);
+                startActivity(i1);
+                return true;
+            case 1:
+                m_editor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 2:
+                final File root = Environment.getExternalStorageDirectory();
+                if (root.canWrite()) {
+                    final File hubroid = new File(root, "hubroid");
+                    if (!hubroid.exists() && !hubroid.isDirectory()) {
+                        return true;
+                    } else {
+                        hubroid.delete();
+                        return true;
+                    }
+                }
+        }
+        return false;
+    }
+
+    @Override
     public void onPause() {
-        if (m_thread != null && m_thread.isAlive())
+        if ((m_thread != null) && m_thread.isAlive()) {
             m_thread.stop();
-        if (m_progressDialog != null && m_progressDialog.isShowing())
+        }
+        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
             m_progressDialog.dismiss();
+        }
         super.onPause();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (!menu.hasVisibleItems()) {
+            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+            menu.add(0, 1, 0, "Clear Preferences");
+            menu.add(0, 2, 0, "Clear Cache");
+        }
+        return true;
     }
 
     @Override

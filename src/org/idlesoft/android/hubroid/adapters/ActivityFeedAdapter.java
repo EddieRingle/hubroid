@@ -8,11 +8,6 @@
 
 package org.idlesoft.android.hubroid.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
@@ -29,88 +24,67 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 public class ActivityFeedAdapter extends BaseAdapter {
-    private JSONArray m_data = new JSONArray();
-    private Context m_context;
-    private LayoutInflater m_inflater;
-    private HashMap<String, Bitmap> m_gravatars;
-    private boolean m_single;
-
     public static class ViewHolder {
-        public TextView title;
-        public ImageView gravatar;
-        public ImageView icon;
         public TextView date;
+
+        public ImageView gravatar;
+
+        public ImageView icon;
+
+        public TextView title;
     }
 
-    /**
-     * Get the Gravatars of all users in the commit log
-     * 
-     * This method is different from the gravatar loaders in other adapters, in that we only need to
-     * get the first one if we are displaying a public activity feed for a single user
-     */
-    public void loadGravatars() {
-        try {
-            if (m_single) {
-                // Load only the first gravatar
-                String actor = m_data.getJSONObject(0).getString("actor");
-                m_gravatars.put(actor, GravatarCache.getDipGravatar(
-                        GravatarCache.getGravatarID(actor), 30.0f,
-                        m_context.getResources().getDisplayMetrics().density));
-            } else {
-                // Load all of 'em
-                int length = m_data.length();
-                for (int i = 0; i < length; i++) {
-                    String actor = m_data.getJSONObject(i).getString("actor");
-                    if (!m_gravatars.containsKey(actor)) {
-                        m_gravatars.put(actor,
-                                GravatarCache.getDipGravatar(
-                                        GravatarCache.getGravatarID(actor), 30.0f,
-                                        m_context.getResources().getDisplayMetrics().density));
-                    }
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+    private final Context m_context;
+
+    private JSONArray m_data = new JSONArray();
+
+    private final HashMap<String, Bitmap> m_gravatars;
+
+    private final LayoutInflater m_inflater;
+
+    private final boolean m_single;
 
     /**
      * Create a new ActivityFeedAdapter
      * 
      * @param context
      * @param jsonarray
-     * @param single
-     *            - whether this is a public activity feed or not
+     * @param single - whether this is a public activity feed or not
      */
-    public ActivityFeedAdapter(final Context context, JSONArray json, boolean single) {
+    public ActivityFeedAdapter(final Context context, final JSONArray json, final boolean single) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
         m_data = json;
         m_single = single;
         m_gravatars = new HashMap<String, Bitmap>(m_data.length());
 
-        this.loadGravatars();
+        loadGravatars();
     }
 
     public int getCount() {
         return m_data.length();
     }
 
-    public Object getItem(int i) {
+    public Object getItem(final int i) {
         try {
             return m_data.get(i);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int i) {
+    public long getItemId(final int i) {
         return i;
     }
 
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.activity_item, null);
@@ -124,17 +98,18 @@ public class ActivityFeedAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         try {
-            JSONObject entry = m_data.getJSONObject(index);
-            JSONObject payload = entry.getJSONObject("payload");
+            final JSONObject entry = m_data.getJSONObject(index);
+            final JSONObject payload = entry.getJSONObject("payload");
             String end;
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            Date item_time = dateFormat.parse(entry.getString("created_at"));
-            Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-            long ms = current_time.getTime() - item_time.getTime();
-            long sec = ms / 1000;
-            long min = sec / 60;
-            long hour = min / 60;
-            long day = hour / 24;
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+            final Date item_time = dateFormat.parse(entry.getString("created_at"));
+            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final long ms = current_time.getTime() - item_time.getTime();
+            final long sec = ms / 1000;
+            final long min = sec / 60;
+            final long hour = min / 60;
+            final long day = hour / 24;
             if (day > 0) {
                 if (day == 1) {
                     end = " day ago";
@@ -165,8 +140,8 @@ public class ActivityFeedAdapter extends BaseAdapter {
                 holder.date.setText(sec + end);
             }
 
-            String actor = entry.getString("actor");
-            String eventType = entry.getString("type");
+            final String actor = entry.getString("actor");
+            final String eventType = entry.getString("type");
             String title = actor + " did something...";
             holder.gravatar.setImageBitmap(m_gravatars.get(actor));
 
@@ -176,7 +151,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
                         + entry.getJSONObject("repository").getString("owner") + "/"
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("WatchEvent")) {
-                String action = payload.getString("action");
+                final String action = payload.getString("action");
                 if (action.equalsIgnoreCase("started")) {
                     holder.icon.setImageResource(R.drawable.watch_started);
                 } else {
@@ -186,7 +161,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
                         + entry.getJSONObject("repository").getString("owner") + "/"
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("GistEvent")) {
-                String action = payload.getString("action");
+                final String action = payload.getString("action");
                 holder.icon.setImageResource(R.drawable.gist);
                 title = actor + " " + action + "d " + payload.getString("name");
             } else if (eventType.contains("ForkEvent")) {
@@ -275,11 +250,42 @@ public class ActivityFeedAdapter extends BaseAdapter {
                         + entry.getJSONObject("repository").getString("name");
             }
             holder.title.setText(title);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             e.printStackTrace();
         }
         return convertView;
+    }
+
+    /**
+     * Get the Gravatars of all users in the commit log This method is different
+     * from the gravatar loaders in other adapters, in that we only need to get
+     * the first one if we are displaying a public activity feed for a single
+     * user
+     */
+    public void loadGravatars() {
+        try {
+            if (m_single) {
+                // Load only the first gravatar
+                final String actor = m_data.getJSONObject(0).getString("actor");
+                m_gravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+                        .getGravatarID(actor), 30.0f,
+                        m_context.getResources().getDisplayMetrics().density));
+            } else {
+                // Load all of 'em
+                final int length = m_data.length();
+                for (int i = 0; i < length; i++) {
+                    final String actor = m_data.getJSONObject(i).getString("actor");
+                    if (!m_gravatars.containsKey(actor)) {
+                        m_gravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+                                .getGravatarID(actor), 30.0f, m_context.getResources()
+                                .getDisplayMetrics().density));
+                    }
+                }
+            }
+        } catch (final JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,3 +1,4 @@
+
 package org.idlesoft.android.hubroid.activities;
 
 import org.idlesoft.android.hubroid.R;
@@ -17,64 +18,29 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 public class Login extends Activity {
-    public LoginTask mLoginTask;
-    public ProgressDialog mProgressDialog;
-
-    @Override
-    public void onCreate(Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.login);
-
-        mProgressDialog = new ProgressDialog(this);
-
-        mLoginTask = (LoginTask) getLastNonConfigurationInstance();
-        if (mLoginTask != null) {
-            mLoginTask.mActivity = this;
-            if (mLoginTask.getStatus() == AsyncTask.Status.RUNNING && !mProgressDialog.isShowing()) {
-                mProgressDialog = ProgressDialog.show(this, null, "Logging in...");
-            }
-        }
-        ((Button) findViewById(R.id.btn_login_login)).setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                if (mLoginTask == null) {
-                    mLoginTask = new LoginTask(Login.this);
-                } else if (mLoginTask.getStatus() == AsyncTask.Status.FINISHED) {
-                    mLoginTask = new LoginTask(Login.this);
-                }
-                mLoginTask.execute();
-            }
-        });
-    }
-
-    public Object onRetainNonConfigurationInstance() {
-        return mLoginTask;
-    }
-
     static private class LoginTask extends AsyncTask<Void, Void, Integer> {
         public Login mActivity;
 
-        public LoginTask(Login activity) {
+        public LoginTask(final Login activity) {
             mActivity = activity;
         }
 
-        protected void onPreExecute() {
-            mActivity.mProgressDialog = ProgressDialog.show(mActivity, null, "Logging in...");
-        }
-
-        protected Integer doInBackground(Void... params) {
-            String user = ((EditText) mActivity.findViewById(R.id.et_login_username)).getText()
-                    .toString();
-            String pass = ((EditText) mActivity.findViewById(R.id.et_login_password)).getText()
-                    .toString();
+        @Override
+        protected Integer doInBackground(final Void... params) {
+            final String user = ((EditText) mActivity.findViewById(R.id.et_login_username))
+                    .getText().toString();
+            final String pass = ((EditText) mActivity.findViewById(R.id.et_login_password))
+                    .getText().toString();
             if (user.equals("") || pass.equals("")) {
                 return 100;
             }
-            GitHubAPI ghapi = new GitHubAPI();
+            final GitHubAPI ghapi = new GitHubAPI();
             ghapi.authenticate(user, pass);
-            int returnCode = ghapi.user.private_activity().statusCode;
+            final int returnCode = ghapi.user.private_activity().statusCode;
             if (returnCode == 200) {
-                SharedPreferences prefs = mActivity.getSharedPreferences(Hubroid.PREFS_NAME, 0);
-                Editor edit = prefs.edit();
+                final SharedPreferences prefs = mActivity.getSharedPreferences(Hubroid.PREFS_NAME,
+                        0);
+                final Editor edit = prefs.edit();
                 edit.putString("username", user);
                 edit.putString("password", pass);
                 edit.commit();
@@ -82,7 +48,8 @@ public class Login extends Activity {
             return returnCode;
         }
 
-        protected void onPostExecute(Integer result) {
+        @Override
+        protected void onPostExecute(final Integer result) {
             mActivity.mProgressDialog.dismiss();
             if (result == 401) {
                 Toast.makeText(mActivity, "Login details incorrect, try again", Toast.LENGTH_SHORT)
@@ -99,5 +66,46 @@ public class Login extends Activity {
                         .show();
             }
         }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.mProgressDialog = ProgressDialog.show(mActivity, null, "Logging in...");
+        }
+    }
+
+    public LoginTask mLoginTask;
+
+    public ProgressDialog mProgressDialog;
+
+    @Override
+    public void onCreate(final Bundle icicle) {
+        super.onCreate(icicle);
+        setContentView(R.layout.login);
+
+        mProgressDialog = new ProgressDialog(this);
+
+        mLoginTask = (LoginTask) getLastNonConfigurationInstance();
+        if (mLoginTask != null) {
+            mLoginTask.mActivity = this;
+            if ((mLoginTask.getStatus() == AsyncTask.Status.RUNNING)
+                    && !mProgressDialog.isShowing()) {
+                mProgressDialog = ProgressDialog.show(this, null, "Logging in...");
+            }
+        }
+        ((Button) findViewById(R.id.btn_login_login)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                if (mLoginTask == null) {
+                    mLoginTask = new LoginTask(Login.this);
+                } else if (mLoginTask.getStatus() == AsyncTask.Status.FINISHED) {
+                    mLoginTask = new LoginTask(Login.this);
+                }
+                mLoginTask.execute();
+            }
+        });
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mLoginTask;
     }
 }

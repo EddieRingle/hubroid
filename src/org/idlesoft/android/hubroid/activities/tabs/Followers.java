@@ -1,11 +1,12 @@
+
 package org.idlesoft.android.hubroid.activities.tabs;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.idlesoft.android.hubroid.activities.Profile;
 import org.idlesoft.android.hubroid.adapters.FollowersFollowingListAdapter;
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -17,72 +18,84 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Followers extends Activity {
-    private ListView mListView;
-    private FollowersFollowingListAdapter mAdapter;
-    private JSONArray mJson;
-    private GitHubAPI mGapi = new GitHubAPI();
-    private String mTarget;
-    private FollowersTask mTask;
-    public View mLoadingItem;
-
     private static class FollowersTask extends AsyncTask<Void, Void, Void> {
         public Followers mActivity;
 
-        public FollowersTask(Followers activity) {
+        public FollowersTask(final Followers activity) {
             mActivity = activity;
         }
 
-        protected void onPreExecute() {
-            mActivity.mListView.addHeaderView(mActivity.mLoadingItem);
-            mActivity.mListView.setAdapter(null);
-        }
-
-        protected void onPostExecute(Void result) {
-            mActivity.mListView.setAdapter(mActivity.mAdapter);
-            mActivity.mListView.setOnItemClickListener(mActivity.onListItemClick);
-            mActivity.mListView.removeHeaderView(mActivity.mLoadingItem);
-        }
-
-        protected Void doInBackground(Void... params) {
+        @Override
+        protected Void doInBackground(final Void... params) {
             if (mActivity.mJson == null) {
                 try {
-                    Response resp = mActivity.mGapi.user.followers(mActivity.mTarget);
+                    final Response resp = mActivity.mGapi.user.followers(mActivity.mTarget);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
                     }
                     mActivity.mJson = (new JSONObject(resp.resp)).getJSONArray("users");
-                } catch (JSONException e) {
+                } catch (final JSONException e) {
                     e.printStackTrace();
                 }
             }
-            mActivity.mAdapter = new FollowersFollowingListAdapter(mActivity.getApplicationContext(), mActivity.mJson);
+            mActivity.mAdapter = new FollowersFollowingListAdapter(mActivity
+                    .getApplicationContext(), mActivity.mJson);
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void result) {
+            mActivity.mListView.setAdapter(mActivity.mAdapter);
+            mActivity.mListView.setOnItemClickListener(mActivity.onListItemClick);
+            mActivity.mListView.removeHeaderView(mActivity.mLoadingItem);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            mActivity.mListView.addHeaderView(mActivity.mLoadingItem);
+            mActivity.mListView.setAdapter(null);
         }
     }
 
-    private OnItemClickListener onListItemClick = new OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        	Intent i = new Intent(getApplicationContext(), Profile.class);
-        	try {
-        		i.putExtra("username", mJson.getString(position));
-        	} catch (JSONException e) {
-        		e.printStackTrace();
-        	}
-        	startActivity(i);
+    private FollowersFollowingListAdapter mAdapter;
+
+    private final GitHubAPI mGapi = new GitHubAPI();
+
+    private JSONArray mJson;
+
+    private ListView mListView;
+
+    public View mLoadingItem;
+
+    private String mTarget;
+
+    private FollowersTask mTask;
+
+    private final OnItemClickListener onListItemClick = new OnItemClickListener() {
+        public void onItemClick(final AdapterView<?> parent, final View view, final int position,
+                final long id) {
+            final Intent i = new Intent(getApplicationContext(), Profile.class);
+            try {
+                i.putExtra("username", mJson.getString(position));
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(i);
             return;
         }
     };
 
-    public void onCreate(Bundle icicle) {
+    @Override
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
 
-        SharedPreferences prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        final SharedPreferences prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         mGapi.authenticate(prefs.getString("username", ""), prefs.getString("password", ""));
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
@@ -92,33 +105,26 @@ public class Followers extends Activity {
         ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
                 .setText("Loading...");
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null)
+        final Bundle extras = getIntent().getExtras();
+        if (extras != null) {
             mTarget = extras.getString("target");
-        if (mTarget == null || mTarget.equals(""))
+        }
+        if ((mTarget == null) || mTarget.equals("")) {
             mTarget = prefs.getString("username", "");
+        }
 
         mTask = (FollowersTask) getLastNonConfigurationInstance();
-        if (mTask == null || mTask.getStatus() == AsyncTask.Status.FINISHED)
+        if ((mTask == null) || (mTask.getStatus() == AsyncTask.Status.FINISHED)) {
             mTask = new FollowersTask(Followers.this);
+        }
         mTask.mActivity = this;
         if (mTask.getStatus() == AsyncTask.Status.PENDING) {
             mTask.execute();
         }
     }
 
-    public Object onRetainNonConfigurationInstance() {
-        return mTask;
-    }
-
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        if (mJson != null) {
-            savedInstanceState.putString("json", mJson.toString());
-        }
-        super.onSaveInstanceState(savedInstanceState);
-    }
-
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    @Override
+    public void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         try {
             if (savedInstanceState.containsKey("json")) {
@@ -126,7 +132,7 @@ public class Followers extends Activity {
             } else {
                 return;
             }
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             return;
         }
@@ -137,8 +143,22 @@ public class Followers extends Activity {
         }
     }
 
+    @Override
     public void onResume() {
         super.onResume();
         mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mTask;
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle savedInstanceState) {
+        if (mJson != null) {
+            savedInstanceState.putString("json", mJson.toString());
+        }
+        super.onSaveInstanceState(savedInstanceState);
     }
 }

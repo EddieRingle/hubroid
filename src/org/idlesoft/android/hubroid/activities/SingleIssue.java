@@ -8,15 +8,13 @@
 
 package org.idlesoft.android.hubroid.activities;
 
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.flurry.android.FlurryAgent;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.adapters.IssueCommentsAdapter;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,65 +36,33 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SingleIssue extends Activity {
-    public ProgressDialog m_progressDialog;
-    public Intent m_intent;
-    private IssueCommentsAdapter m_adapter;
-    private JSONObject m_JSON = new JSONObject();
-    private SharedPreferences m_prefs;
-    private SharedPreferences.Editor m_editor;
-    private String m_repoOwner;
-    private String m_repoName;
-    private String m_username;
-    private String m_token;
-    private View m_header;
-    private View m_commentArea;
-    private View m_issueBox;
-    private View m_clickedBtn;
-    private Thread m_thread;
     private GitHubAPI _gapi;
 
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (menu.hasVisibleItems())
-            menu.clear();
-        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(0, 1, 0, "Clear Preferences");
-        menu.add(0, 2, 0, "Clear Cache");
-        return true;
-    }
+    private IssueCommentsAdapter m_adapter;
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case 0:
-            Intent i1 = new Intent(this, Hubroid.class);
-            startActivity(i1);
-            return true;
-        case 1:
-            m_editor.clear().commit();
-            Intent intent = new Intent(this, Hubroid.class);
-            startActivity(intent);
-            return true;
-        case 2:
-            File root = Environment.getExternalStorageDirectory();
-            if (root.canWrite()) {
-                File hubroid = new File(root, "hubroid");
-                if (!hubroid.exists() && !hubroid.isDirectory()) {
-                    return true;
-                } else {
-                    hubroid.delete();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    private View m_clickedBtn;
 
-    private OnClickListener m_onSubmitClickListener = new OnClickListener() {
-        public void onClick(View v) {
+    private View m_commentArea;
+
+    private SharedPreferences.Editor m_editor;
+
+    private View m_header;
+
+    public Intent m_intent;
+
+    private View m_issueBox;
+
+    private JSONObject m_JSON = new JSONObject();
+
+    private final OnClickListener m_onSubmitClickListener = new OnClickListener() {
+        public void onClick(final View v) {
             m_clickedBtn = v;
-            String comment_body = ((TextView) m_commentArea
+            final String comment_body = ((TextView) m_commentArea
                     .findViewById(R.id.et_issue_comment_area_body)).getText().toString();
             if (!comment_body.equals("")) {
                 ((ProgressBar) m_commentArea.findViewById(R.id.pb_issue_comment_area_progress))
@@ -123,8 +89,8 @@ public class SingleIssue extends Activity {
                                             m_progressDialog.setMessage("Closing issue...");
                                         }
                                     });
-                                    int statusCode = _gapi.issues.close(m_repoOwner, m_repoName,
-                                            m_JSON.getInt("number")).statusCode;
+                                    final int statusCode = _gapi.issues.close(m_repoOwner,
+                                            m_repoName, m_JSON.getInt("number")).statusCode;
                                     if (statusCode == 200) {
                                         runOnUiThread(new Runnable() {
                                             public void run() {
@@ -149,7 +115,7 @@ public class SingleIssue extends Activity {
                                         });
                                     }
                                 }
-                                Response response = _gapi.issues.list_comments(m_repoOwner,
+                                final Response response = _gapi.issues.list_comments(m_repoOwner,
                                         m_repoName, m_JSON.getInt("number"));
                                 m_adapter = new IssueCommentsAdapter(getApplicationContext(),
                                         new JSONObject(response.resp).getJSONArray("comments"));
@@ -167,7 +133,7 @@ public class SingleIssue extends Activity {
                                 Toast.makeText(getApplicationContext(), "Error posting comment.",
                                         Toast.LENGTH_SHORT).show();
                             }
-                        } catch (JSONException e) {
+                        } catch (final JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -177,25 +143,41 @@ public class SingleIssue extends Activity {
         }
     };
 
-    private void loadIssueItemBox() {
-        TextView date = (TextView) m_header.findViewById(R.id.tv_issue_list_item_updated_date);
-        ImageView icon = (ImageView) m_header.findViewById(R.id.iv_issue_list_item_icon);
-        TextView title = (TextView) m_header.findViewById(R.id.tv_issue_list_item_title);
-        TextView number = (TextView) m_header.findViewById(R.id.tv_issue_list_item_number);
+    private SharedPreferences m_prefs;
 
-        TextView topbar = (TextView) findViewById(R.id.tv_top_bar_title);
+    public ProgressDialog m_progressDialog;
+
+    private String m_repoName;
+
+    private String m_repoOwner;
+
+    private Thread m_thread;
+
+    private String m_token;
+
+    private String m_username;
+
+    private void loadIssueItemBox() {
+        final TextView date = (TextView) m_header
+                .findViewById(R.id.tv_issue_list_item_updated_date);
+        final ImageView icon = (ImageView) m_header.findViewById(R.id.iv_issue_list_item_icon);
+        final TextView title = (TextView) m_header.findViewById(R.id.tv_issue_list_item_title);
+        final TextView number = (TextView) m_header.findViewById(R.id.tv_issue_list_item_number);
+
+        final TextView topbar = (TextView) findViewById(R.id.tv_top_bar_title);
 
         try {
             String end;
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            Date item_time = dateFormat.parse(m_JSON.getString("updated_at"));
-            Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-            long ms = current_time.getTime() - item_time.getTime();
-            long sec = ms / 1000;
-            long min = sec / 60;
-            long hour = min / 60;
-            long day = hour / 24;
-            long year = day / 365;
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+            final Date item_time = dateFormat.parse(m_JSON.getString("updated_at"));
+            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final long ms = current_time.getTime() - item_time.getTime();
+            final long sec = ms / 1000;
+            final long min = sec / 60;
+            final long hour = min / 60;
+            final long day = hour / 24;
+            final long year = day / 365;
             if (year > 0) {
                 if (year == 1) {
                     end = " year ago";
@@ -240,13 +222,13 @@ public class SingleIssue extends Activity {
             number.setText("#" + m_JSON.getString("number"));
             title.setText(m_JSON.getString("title"));
             topbar.setText("Issue " + number.getText().toString());
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.single_issue);
 
@@ -268,23 +250,23 @@ public class SingleIssue extends Activity {
                 loadIssueItemBox();
                 ((ListView) findViewById(R.id.lv_single_issue_comments)).addHeaderView(m_header);
                 ((ImageView) m_header.findViewById(R.id.iv_single_issue_gravatar))
-                        .setImageBitmap(GravatarCache.getDipGravatar(
-                                GravatarCache.getGravatarID(m_JSON.getString("user")), 30.0f,
-                                getResources().getDisplayMetrics().density));
+                        .setImageBitmap(GravatarCache.getDipGravatar(GravatarCache
+                                .getGravatarID(m_JSON.getString("user")), 30.0f, getResources()
+                                .getDisplayMetrics().density));
                 ((TextView) m_header.findViewById(R.id.tv_single_issue_body)).setText(m_JSON
                         .getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 
                 String end;
-                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                final SimpleDateFormat dateFormat = new SimpleDateFormat(
                         Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-                Date item_time = dateFormat.parse(m_JSON.getString("created_at"));
-                Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-                long ms = current_time.getTime() - item_time.getTime();
-                long sec = ms / 1000;
-                long min = sec / 60;
-                long hour = min / 60;
-                long day = hour / 24;
-                long year = day / 365;
+                final Date item_time = dateFormat.parse(m_JSON.getString("created_at"));
+                final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+                final long ms = current_time.getTime() - item_time.getTime();
+                final long sec = ms / 1000;
+                final long min = sec / 60;
+                final long hour = min / 60;
+                final long day = hour / 24;
+                final long year = day / 365;
                 if (year > 0) {
                     if (year == 1) {
                         end = " year ago";
@@ -338,8 +320,8 @@ public class SingleIssue extends Activity {
                 m_thread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            Response response = _gapi.issues.list_comments(m_repoOwner, m_repoName,
-                                    m_JSON.getInt("number"));
+                            final Response response = _gapi.issues.list_comments(m_repoOwner,
+                                    m_repoName, m_JSON.getInt("number"));
                             m_adapter = new IssueCommentsAdapter(getApplicationContext(),
                                     new JSONObject(response.resp).getJSONArray("comments"));
                             runOnUiThread(new Runnable() {
@@ -348,43 +330,83 @@ public class SingleIssue extends Activity {
                                             .setAdapter(m_adapter);
                                 }
                             });
-                        } catch (JSONException e) {
+                        } catch (final JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 });
                 m_thread.start();
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 e.printStackTrace();
-            } catch (java.text.ParseException e) {
+            } catch (final java.text.ParseException e) {
                 e.printStackTrace();
             }
         }
     }
 
     @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                final Intent i1 = new Intent(this, Hubroid.class);
+                startActivity(i1);
+                return true;
+            case 1:
+                m_editor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 2:
+                final File root = Environment.getExternalStorageDirectory();
+                if (root.canWrite()) {
+                    final File hubroid = new File(root, "hubroid");
+                    if (!hubroid.exists() && !hubroid.isDirectory()) {
+                        return true;
+                    } else {
+                        hubroid.delete();
+                        return true;
+                    }
+                }
+        }
+        return false;
+    }
+
+    @Override
     public void onPause() {
-        if (m_thread != null && m_thread.isAlive())
+        if ((m_thread != null) && m_thread.isAlive()) {
             m_thread.stop();
-        if (m_progressDialog != null && m_progressDialog.isShowing())
+        }
+        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
             m_progressDialog.dismiss();
+        }
         super.onPause();
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
-        savedInstanceState.putString("commentText", ((EditText) m_commentArea
-                .findViewById(R.id.et_issue_comment_area_body)).getText().toString());
-        super.onSaveInstanceState(savedInstanceState);
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (menu.hasVisibleItems()) {
+            menu.clear();
+        }
+        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 1, 0, "Clear Preferences");
+        menu.add(0, 2, 0, "Clear Cache");
+        return true;
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState) {
+    public void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.containsKey("commentText")) {
             ((EditText) m_commentArea.findViewById(R.id.et_issue_comment_area_body))
                     .setText(savedInstanceState.getString("commentText"));
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle savedInstanceState) {
+        savedInstanceState.putString("commentText", ((EditText) m_commentArea
+                .findViewById(R.id.et_issue_comment_area_body)).getText().toString());
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override

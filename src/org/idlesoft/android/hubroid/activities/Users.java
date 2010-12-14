@@ -8,6 +8,8 @@
 
 package org.idlesoft.android.hubroid.activities;
 
+import com.flurry.android.FlurryAgent;
+
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.tabs.Followers;
 import org.idlesoft.android.hubroid.activities.tabs.Following;
@@ -23,28 +25,34 @@ import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
-
 public class Users extends TabActivity {
-    private SharedPreferences mPrefs;
-    private String mUsername;
-    private String mPassword;
-    private String mTarget;
-    private GitHubAPI mGapi = new GitHubAPI();
-    private TabHost mTabHost;
-
     private static final String TAG = "Users";
+
     private static final String TAG_FOLLOWERS = "followers";
+
     private static final String TAG_FOLLOWING = "following";
 
-    private View buildIndicator(int textRes) {
-        final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator, getTabWidget(), false);
+    private final GitHubAPI mGapi = new GitHubAPI();
+
+    private String mPassword;
+
+    private SharedPreferences mPrefs;
+
+    private TabHost mTabHost;
+
+    private String mTarget;
+
+    private String mUsername;
+
+    private View buildIndicator(final int textRes) {
+        final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
+                getTabWidget(), false);
         indicator.setText(textRes);
         return indicator;
     }
 
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.users);
 
@@ -55,30 +63,29 @@ public class Users extends TabActivity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null)
+        final Bundle extras = getIntent().getExtras();
+        if (extras != null) {
             mTarget = extras.getString("target");
-        if (mTarget == null || mTarget.equals(""))
+        }
+        if ((mTarget == null) || mTarget.equals("")) {
             mTarget = mUsername;
+        }
 
-        ((ImageView) findViewById(R.id.iv_users_gravatar))
-                .setImageBitmap(GravatarCache.getDipGravatar(
-                        GravatarCache.getGravatarID(mTarget), 38.0f,
-                        getResources().getDisplayMetrics().density));
+        ((ImageView) findViewById(R.id.iv_users_gravatar)).setImageBitmap(GravatarCache
+                .getDipGravatar(GravatarCache.getGravatarID(mTarget), 38.0f, getResources()
+                        .getDisplayMetrics().density));
         ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget);
 
         mTabHost = getTabHost();
 
-        Intent intent = new Intent(getApplicationContext(), Followers.class);
+        final Intent intent = new Intent(getApplicationContext(), Followers.class);
         intent.putExtra("target", mTarget);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS)
-                .setIndicator(buildIndicator(R.string.followers))
-                .setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS).setIndicator(
+                buildIndicator(R.string.followers)).setContent(intent));
 
         intent.setClass(getApplicationContext(), Following.class);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING)
-                .setIndicator(buildIndicator(R.string.following))
-                .setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING).setIndicator(
+                buildIndicator(R.string.following)).setContent(intent));
     }
 
     @Override

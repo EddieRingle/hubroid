@@ -8,18 +8,14 @@
 
 package org.idlesoft.android.hubroid.activities;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import com.flurry.android.FlurryAgent;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.adapters.CommitChangeViewerDiffAdapter;
 import org.idlesoft.android.hubroid.adapters.CommitListAdapter;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,80 +36,52 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class CommitChangeViewer extends Activity {
-    public CommitListAdapter m_commitListAdapter;
-    public ArrayAdapter<String> m_branchesAdapter;
-    public ArrayList<String> m_branches;
-    public ProgressDialog m_progressDialog;
-    private SharedPreferences m_prefs;
-    private SharedPreferences.Editor m_editor;
-    public JSONArray m_commitData;
-    public String m_repo_owner;
-    public String m_repo_name;
-    private String m_username;
-    private String m_token;
-    private String m_id;
-    public Intent m_intent;
-    public int m_position;
-    private Thread m_thread;
     private GitHubAPI _gapi;
 
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        if (!menu.hasVisibleItems()) {
-            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-            menu.add(0, 1, 0, "Clear Preferences");
-            menu.add(0, 2, 0, "Clear Cache");
-        }
-        return true;
-    }
+    public ArrayList<String> m_branches;
 
-    /**
-     * Get the Gravatars of all users in the commit log
-     */
-    public Bitmap loadGravatarByLoginName(String login) {
-        if (!login.equals("")) {
-            return GravatarCache.getDipGravatar(GravatarCache.getGravatarID(login), 30.0f,
-                    getResources().getDisplayMetrics().density);
-        } else {
-            return null;
-        }
-    }
+    public ArrayAdapter<String> m_branchesAdapter;
 
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-        case 0:
-            Intent i1 = new Intent(this, Hubroid.class);
-            startActivity(i1);
-            return true;
-        case 1:
-            m_editor.clear().commit();
-            Intent intent = new Intent(this, Hubroid.class);
-            startActivity(intent);
-            return true;
-        case 2:
-            File root = Environment.getExternalStorageDirectory();
-            if (root.canWrite()) {
-                File hubroid = new File(root, "hubroid");
-                if (!hubroid.exists() && !hubroid.isDirectory()) {
-                    return true;
-                } else {
-                    hubroid.delete();
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
+    public JSONArray m_commitData;
 
-    public String getHumanDate(Date current_time, Date commit_time) {
+    public CommitListAdapter m_commitListAdapter;
+
+    private SharedPreferences.Editor m_editor;
+
+    private String m_id;
+
+    public Intent m_intent;
+
+    public int m_position;
+
+    private SharedPreferences m_prefs;
+
+    public ProgressDialog m_progressDialog;
+
+    public String m_repo_name;
+
+    public String m_repo_owner;
+
+    private Thread m_thread;
+
+    private String m_token;
+
+    private String m_username;
+
+    public String getHumanDate(final Date current_time, final Date commit_time) {
         String end;
-        long ms = current_time.getTime() - commit_time.getTime();
-        long sec = ms / 1000;
-        long min = sec / 60;
-        long hour = min / 60;
-        long day = hour / 24;
+        final long ms = current_time.getTime() - commit_time.getTime();
+        final long sec = ms / 1000;
+        final long min = sec / 60;
+        final long hour = min / 60;
+        final long day = hour / 24;
         if (day > 0) {
             if (day == 1) {
                 end = " day ago";
@@ -145,8 +113,20 @@ public class CommitChangeViewer extends Activity {
         }
     }
 
+    /**
+     * Get the Gravatars of all users in the commit log
+     */
+    public Bitmap loadGravatarByLoginName(final String login) {
+        if (!login.equals("")) {
+            return GravatarCache.getDipGravatar(GravatarCache.getGravatarID(login), 30.0f,
+                    getResources().getDisplayMetrics().density);
+        } else {
+            return null;
+        }
+    }
+
     @Override
-    public void onCreate(Bundle icicle) {
+    public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.commit_view);
 
@@ -155,11 +135,11 @@ public class CommitChangeViewer extends Activity {
 
         m_username = m_prefs.getString("login", "");
         m_token = m_prefs.getString("token", "");
-        View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
+        final View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
 
         _gapi = new GitHubAPI();
 
-        TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
+        final TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
         title.setText("Commit Viewer");
 
         final Bundle extras = getIntent().getExtras();
@@ -168,33 +148,37 @@ public class CommitChangeViewer extends Activity {
             m_repo_owner = extras.getString("username");
             m_id = extras.getString("id");
 
-            // Get the commit data for that commit ID so that we can get the tree ID and filename.
+            // Get the commit data for that commit ID so that we can get the
+            // tree ID and filename.
             try {
-                Response commitInfo = _gapi.commits.commit(m_repo_owner, m_repo_name, m_id);
-                JSONObject commitJSON = new JSONObject(commitInfo.resp).getJSONObject("commit");
+                final Response commitInfo = _gapi.commits.commit(m_repo_owner, m_repo_name, m_id);
+                final JSONObject commitJSON = new JSONObject(commitInfo.resp)
+                        .getJSONObject("commit");
 
                 // Display the committer and author
-                JSONObject authorInfo = commitJSON.getJSONObject("author");
-                String authorName = authorInfo.getString("login");
+                final JSONObject authorInfo = commitJSON.getJSONObject("author");
+                final String authorName = authorInfo.getString("login");
 
-                Bitmap authorGravatar = loadGravatarByLoginName(authorName);
+                final Bitmap authorGravatar = loadGravatarByLoginName(authorName);
 
-                JSONObject committerInfo = commitJSON.getJSONObject("committer");
-                String committerName = committerInfo.getString("login");
+                final JSONObject committerInfo = commitJSON.getJSONObject("committer");
+                final String committerName = committerInfo.getString("login");
 
-                // If the committer is the author then just show them as the author, otherwise show
+                // If the committer is the author then just show them as the
+                // author, otherwise show
                 // both people
                 ((TextView) header.findViewById(R.id.commit_view_author_name)).setText(authorName);
 
-                if (authorGravatar != null)
+                if (authorGravatar != null) {
                     ((ImageView) header.findViewById(R.id.commit_view_author_gravatar))
                             .setImageBitmap(authorGravatar);
+                }
 
                 // Set the commit message
                 ((TextView) header.findViewById(R.id.commit_view_message)).setText(commitJSON
                         .getString("message"));
 
-                SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
+                final SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
                 Date commit_time;
                 Date current_time;
                 String authorDate = "";
@@ -208,44 +192,85 @@ public class CommitChangeViewer extends Activity {
                     commit_time = dateFormat.parse(commitJSON.getString("committed_date"));
                     authorDate = getHumanDate(current_time, commit_time);
 
-                } catch (ParseException e) {
+                } catch (final ParseException e) {
                     e.printStackTrace();
                 }
 
                 if (!authorName.equals(committerName)) {
-                    // They are not the same person, make the author visible and fill in the details
+                    // They are not the same person, make the author visible and
+                    // fill in the details
                     ((LinearLayout) header.findViewById(R.id.commit_view_author_layout))
                             .setVisibility(View.VISIBLE);
                     ((TextView) header.findViewById(R.id.commit_view_committer_name))
                             .setText(committerName);
                     ((TextView) header.findViewById(R.id.commit_view_committer_time))
                             .setText(authorDate);
-                    Bitmap committerGravatar = loadGravatarByLoginName(committerName);
-                    if (committerGravatar != null)
+                    final Bitmap committerGravatar = loadGravatarByLoginName(committerName);
+                    if (committerGravatar != null) {
                         ((ImageView) header.findViewById(R.id.commit_view_committer_gravatar))
                                 .setImageBitmap(committerGravatar);
+                    }
                 }
 
                 // Populate the ListView with the files that have changed
-                JSONArray changesJSON = commitJSON.getJSONArray("modified");
-                CommitChangeViewerDiffAdapter diffs = new CommitChangeViewerDiffAdapter(
+                final JSONArray changesJSON = commitJSON.getJSONArray("modified");
+                final CommitChangeViewerDiffAdapter diffs = new CommitChangeViewerDiffAdapter(
                         getApplicationContext(), changesJSON);
-                ListView diffList = (ListView) findViewById(R.id.commit_view_diffs_list);
+                final ListView diffList = (ListView) findViewById(R.id.commit_view_diffs_list);
                 diffList.addHeaderView(header);
                 diffList.setAdapter(diffs);
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
     @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                final Intent i1 = new Intent(this, Hubroid.class);
+                startActivity(i1);
+                return true;
+            case 1:
+                m_editor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 2:
+                final File root = Environment.getExternalStorageDirectory();
+                if (root.canWrite()) {
+                    final File hubroid = new File(root, "hubroid");
+                    if (!hubroid.exists() && !hubroid.isDirectory()) {
+                        return true;
+                    } else {
+                        hubroid.delete();
+                        return true;
+                    }
+                }
+        }
+        return false;
+    }
+
+    @Override
     public void onPause() {
-        if (m_thread != null && m_thread.isAlive())
+        if ((m_thread != null) && m_thread.isAlive()) {
             m_thread.stop();
-        if (m_progressDialog != null && m_progressDialog.isShowing())
+        }
+        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
             m_progressDialog.dismiss();
+        }
         super.onPause();
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (!menu.hasVisibleItems()) {
+            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+            menu.add(0, 1, 0, "Clear Preferences");
+            menu.add(0, 2, 0, "Clear Cache");
+        }
+        return true;
     }
 
     @Override

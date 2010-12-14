@@ -8,11 +8,6 @@
 
 package org.idlesoft.android.hubroid.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
@@ -28,64 +23,55 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 public class CommitListAdapter extends BaseAdapter {
-    private JSONArray m_data = new JSONArray();
-    private Context m_context;
-    private LayoutInflater m_inflater;
-    private HashMap<String, Bitmap> m_gravatars;
-
     public static class ViewHolder {
-        public TextView commit_shortdesc;
-        public ImageView gravatar;
         public TextView commit_date;
+
+        public TextView commit_shortdesc;
+
+        public ImageView gravatar;
     }
 
-    /**
-     * Get the Gravatars of all users in the commit log
-     */
-    public void loadGravatars() {
-        int length = m_data.length();
-        for (int i = 0; i < length; i++) {
-            try {
-                String login = m_data.getJSONObject(i).getJSONObject("author").getString("login");
-                if (!m_gravatars.containsKey(login)) {
-                    m_gravatars.put(login, GravatarCache.getDipGravatar(
-                            GravatarCache.getGravatarID(login), 30.0f,
-                            m_context.getResources().getDisplayMetrics().density));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+    private final Context m_context;
 
-    public CommitListAdapter(final Context context, JSONArray jsonarray) {
+    private JSONArray m_data = new JSONArray();
+
+    private final HashMap<String, Bitmap> m_gravatars;
+
+    private final LayoutInflater m_inflater;
+
+    public CommitListAdapter(final Context context, final JSONArray jsonarray) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
         m_data = jsonarray;
         m_gravatars = new HashMap<String, Bitmap>(m_data.length());
 
-        this.loadGravatars();
+        loadGravatars();
     }
 
     public int getCount() {
         return m_data.length();
     }
 
-    public Object getItem(int i) {
+    public Object getItem(final int i) {
         try {
             return m_data.get(i);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int i) {
+    public long getItemId(final int i) {
         return i;
     }
 
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.commit_list_item, null);
@@ -102,15 +88,15 @@ public class CommitListAdapter extends BaseAdapter {
         }
         try {
             String end;
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
-            Date commit_time = dateFormat.parse(m_data.getJSONObject(index).getString(
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
+            final Date commit_time = dateFormat.parse(m_data.getJSONObject(index).getString(
                     "committed_date"));
-            Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-            long ms = current_time.getTime() - commit_time.getTime();
-            long sec = ms / 1000;
-            long min = sec / 60;
-            long hour = min / 60;
-            long day = hour / 24;
+            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final long ms = current_time.getTime() - commit_time.getTime();
+            final long sec = ms / 1000;
+            final long min = sec / 60;
+            final long hour = min / 60;
+            final long day = hour / 24;
             if (day > 0) {
                 if (day == 1) {
                     end = " day ago";
@@ -142,13 +128,33 @@ public class CommitListAdapter extends BaseAdapter {
             }
             holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index)
                     .getJSONObject("author").getString("login")));
-            holder.commit_shortdesc.setText(m_data.getJSONObject(index).getString("message")
-                    .split("\n")[0]);
-        } catch (JSONException e) {
+            holder.commit_shortdesc.setText(m_data.getJSONObject(index).getString("message").split(
+                    "\n")[0]);
+        } catch (final JSONException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             e.printStackTrace();
         }
         return convertView;
+    }
+
+    /**
+     * Get the Gravatars of all users in the commit log
+     */
+    public void loadGravatars() {
+        final int length = m_data.length();
+        for (int i = 0; i < length; i++) {
+            try {
+                final String login = m_data.getJSONObject(i).getJSONObject("author").getString(
+                        "login");
+                if (!m_gravatars.containsKey(login)) {
+                    m_gravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
+                            .getGravatarID(login), 30.0f, m_context.getResources()
+                            .getDisplayMetrics().density));
+                }
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

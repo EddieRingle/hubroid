@@ -8,11 +8,6 @@
 
 package org.idlesoft.android.hubroid.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
@@ -28,39 +23,27 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class IssueCommentsAdapter extends BaseAdapter {
-    private JSONArray m_data = new JSONArray();
-    private Context m_context;
-    private LayoutInflater m_inflater;
-    private HashMap<String, Bitmap> m_gravatars;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
+public class IssueCommentsAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView body;
+
         public ImageView gravatar;
+
         public TextView meta;
     }
 
-    /**
-     * Get the Gravatars of all users in the commit log
-     * 
-     * This method is different from the gravatar loaders in other adapters, in that we only need to
-     * get the first one if we are displaying a public activity feed for a single user
-     */
-    public void loadGravatars() {
-        try {
-            int length = m_data.length();
-            for (int i = 0; i < length; i++) {
-                String actor = m_data.getJSONObject(i).getString("user");
-                if (!m_gravatars.containsKey(actor)) {
-                    m_gravatars.put(actor, GravatarCache.getDipGravatar(
-                            GravatarCache.getGravatarID(actor), 30.0f,
-                            m_context.getResources().getDisplayMetrics().density));
-                }
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
+    private final Context m_context;
+
+    private JSONArray m_data = new JSONArray();
+
+    private final HashMap<String, Bitmap> m_gravatars;
+
+    private final LayoutInflater m_inflater;
 
     /**
      * Create a new IssueCommentsAdapter
@@ -68,33 +51,33 @@ public class IssueCommentsAdapter extends BaseAdapter {
      * @param context
      * @param jsonarray
      */
-    public IssueCommentsAdapter(final Context context, JSONArray json) {
+    public IssueCommentsAdapter(final Context context, final JSONArray json) {
         m_context = context;
         m_inflater = LayoutInflater.from(m_context);
         m_data = json;
         m_gravatars = new HashMap<String, Bitmap>(m_data.length());
 
-        this.loadGravatars();
+        loadGravatars();
     }
 
     public int getCount() {
         return m_data.length();
     }
 
-    public Object getItem(int i) {
+    public Object getItem(final int i) {
         try {
             return m_data.get(i);
-        } catch (JSONException e) {
+        } catch (final JSONException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public long getItemId(int i) {
+    public long getItemId(final int i) {
         return i;
     }
 
-    public View getView(int index, View convertView, ViewGroup parent) {
+    public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = m_inflater.inflate(R.layout.issue_comment, null);
@@ -108,15 +91,17 @@ public class IssueCommentsAdapter extends BaseAdapter {
         }
         try {
             String end;
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            Date item_time = dateFormat.parse(m_data.getJSONObject(index).getString("created_at"));
-            Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-            long ms = current_time.getTime() - item_time.getTime();
-            long sec = ms / 1000;
-            long min = sec / 60;
-            long hour = min / 60;
-            long day = hour / 24;
-            long year = day / 365;
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+            final Date item_time = dateFormat.parse(m_data.getJSONObject(index).getString(
+                    "created_at"));
+            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final long ms = current_time.getTime() - item_time.getTime();
+            final long sec = ms / 1000;
+            final long min = sec / 60;
+            final long hour = min / 60;
+            final long day = hour / 24;
+            final long year = day / 365;
             if (year > 0) {
                 if (year == 1) {
                     end = " year ago";
@@ -161,13 +146,35 @@ public class IssueCommentsAdapter extends BaseAdapter {
             }
             holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index).getString(
                     "user")));
-            holder.body.setText(m_data.getJSONObject(index).getString("body")
-                    .replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
-        } catch (JSONException e) {
+            holder.body.setText(m_data.getJSONObject(index).getString("body").replaceAll("\r\n",
+                    "\n").replaceAll("\r", "\n"));
+        } catch (final JSONException e) {
             e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             e.printStackTrace();
         }
         return convertView;
+    }
+
+    /**
+     * Get the Gravatars of all users in the commit log This method is different
+     * from the gravatar loaders in other adapters, in that we only need to get
+     * the first one if we are displaying a public activity feed for a single
+     * user
+     */
+    public void loadGravatars() {
+        try {
+            final int length = m_data.length();
+            for (int i = 0; i < length; i++) {
+                final String actor = m_data.getJSONObject(i).getString("user");
+                if (!m_gravatars.containsKey(actor)) {
+                    m_gravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+                            .getGravatarID(actor), 30.0f, m_context.getResources()
+                            .getDisplayMetrics().density));
+                }
+            }
+        } catch (final JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
