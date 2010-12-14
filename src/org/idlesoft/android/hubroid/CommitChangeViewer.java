@@ -8,19 +8,13 @@
 
 package org.idlesoft.android.hubroid;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import com.flurry.android.FlurryAgent;
 
-import org.idlesoft.libraries.ghapi.Commits;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -38,6 +32,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+
 public class CommitChangeViewer extends Activity {
 	public CommitListAdapter m_commitListAdapter;
 	public ArrayAdapter<String> m_branchesAdapter;
@@ -49,11 +49,12 @@ public class CommitChangeViewer extends Activity {
 	public String m_repo_owner;
 	public String m_repo_name;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private String m_id;
 	public Intent m_intent;
 	public int m_position;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
@@ -150,7 +151,8 @@ public class CommitChangeViewer extends Activity {
         m_editor = m_prefs.edit();
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
+        mGapi.authenticate(m_username, m_password);
         View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
 
         TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
@@ -164,7 +166,7 @@ public class CommitChangeViewer extends Activity {
 
         	// Get the commit data for that commit ID so that we can get the tree ID and filename.
         	try {
-        		Response commitInfo = Commits.commit(m_repo_owner, m_repo_name, m_id, m_username, m_token);
+        		Response commitInfo = mGapi.commits.commit(m_repo_owner, m_repo_name, m_id);
         		JSONObject commitJSON = new JSONObject(commitInfo.resp).getJSONObject("commit");
         		
         		// Display the committer and author

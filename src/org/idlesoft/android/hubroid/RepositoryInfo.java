@@ -8,16 +8,15 @@
 
 package org.idlesoft.android.hubroid;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.Repository;
 import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -32,6 +31,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.io.File;
+
 public class RepositoryInfo extends Activity {
 	public ProgressDialog m_progressDialog;
 	public JSONObject m_jsonData;
@@ -39,11 +40,12 @@ public class RepositoryInfo extends Activity {
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private String m_repo_owner;
 	private String m_repo_name;
 	private boolean m_isWatching;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	/* bleh.
 	private Runnable threadProc_userInfo = new Runnable() {
@@ -125,13 +127,13 @@ public class RepositoryInfo extends Activity {
 			try {
 				JSONObject newRepoInfo = null;
 				if (m_isWatching) {
-					Response unwatchResp = Repository.unwatch(m_repo_owner, m_repo_name, m_username, m_token); 
+					Response unwatchResp = mGapi.repo.unwatch(m_repo_owner, m_repo_name); 
 					if (unwatchResp.statusCode == 200) {
 						newRepoInfo = new JSONObject(unwatchResp.resp).getJSONObject("repository");
 						m_isWatching = false;
 					}
 				} else {
-					Response watchResp = Repository.watch(m_repo_owner, m_repo_name, m_username, m_token);
+					Response watchResp = mGapi.repo.watch(m_repo_owner, m_repo_name);
 					if (watchResp.statusCode == 200) {
 						newRepoInfo = new JSONObject(watchResp.resp).getJSONObject("repository");
 						m_isWatching = true;
@@ -185,7 +187,8 @@ public class RepositoryInfo extends Activity {
         m_editor = m_prefs.edit();
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
+        mGapi.authenticate(m_username, m_password);
         m_isWatching = false;
 
         final Bundle extras = getIntent().getExtras();
@@ -194,9 +197,9 @@ public class RepositoryInfo extends Activity {
         	m_repo_owner = extras.getString("username");
 
 			try {
-				m_jsonData = new JSONObject(Repository.info(m_repo_owner, m_repo_name, m_username, m_token).resp).getJSONObject("repository");
+				m_jsonData = new JSONObject(mGapi.repo.info(m_repo_owner, m_repo_name).resp).getJSONObject("repository");
 
-	        	JSONArray watched_list = new JSONObject(User.watching(m_username).resp).getJSONArray("repositories");
+	        	JSONArray watched_list = new JSONObject(mGapi.user.watching(m_username).resp).getJSONArray("repositories");
 	        	int length = watched_list.length() - 1;
 	        	for (int i = 0; i <= length; i++) {
 	        		if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(m_repo_name)) {

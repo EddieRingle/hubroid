@@ -68,38 +68,20 @@
 			android:layout_below="@id/et_splash_login_user"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:id="@+id/tv_splash_login_token_label"
-			android:text="API Token:"
+			android:id="@+id/tv_splash_login_password_label"
+			android:text="Password:"
 			android:textColor="#DDD"
 			android:textSize="12.5dip" />
 		<EditText
-			android:layout_below="@id/tv_splash_login_token_label"
-			android:id="@+id/et_splash_login_token"
+			android:layout_below="@id/tv_splash_login_password_label"
+			android:id="@+id/et_splash_login_password"
 			android:layout_width="128dip"
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:background="@android:drawable/editbox_background" />
-		<TextView
-			android:layout_below="@id/et_splash_login_token"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/tv_splash_link_get_token_label"
-			android:text="Get your token: "
-			android:textColor="#DDD"
-			android:textSize="12.5dip" />
-		<TextView
-			android:layout_below="@id/et_splash_login_token"
-			android:layout_toRightOf="@id/tv_splash_link_get_token_label"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/tv_splash_link_get_token"
-			android:text="github.com/account"
-			android:autoLink="web"
-			android:textSize="12.5dip"
-			android:textColorLink="#71B3F4"/>
 		<Button
 			android:layout_alignParentRight="true"
-			android:layout_alignBaseline="@id/tv_splash_login_token_label"
+			android:layout_alignBaseline="@id/tv_splash_login_password_label"
 			android:layout_width="125dip"
 			android:layout_height="wrap_content"
 			android:id="@+id/btn_splash_login"

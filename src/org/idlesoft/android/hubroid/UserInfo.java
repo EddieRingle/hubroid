@@ -8,15 +8,14 @@
 
 package org.idlesoft.android.hubroid;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -33,17 +32,20 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.File;
+
 public class UserInfo extends Activity {
 	public JSONObject m_jsonData;
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private String m_targetUser;
 	private boolean m_isFollowing;
 	private Thread m_thread;
 	private ProgressDialog m_progressDialog;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	private OnClickListener onButtonClick = new OnClickListener() {
 		public void onClick(View v) {
@@ -101,13 +103,13 @@ public class UserInfo extends Activity {
 			Response postResp;
 
 			if (m_isFollowing) {
-				postResp = User.unfollow(m_targetUser, m_username, m_token);
+				postResp = mGapi.user.unfollow(m_targetUser);
 				if (postResp.statusCode == 200) {
 					Toast.makeText(this, "You are no longer following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
 				m_isFollowing = !m_isFollowing;
 			} else {
-				postResp = User.follow(m_targetUser, m_username, m_token);
+				postResp = mGapi.user.follow(m_targetUser);
 				if (postResp.statusCode == 200) {
 					Toast.makeText(this, "You are now following " + m_targetUser + ".", Toast.LENGTH_SHORT).show();
 				}
@@ -147,8 +149,9 @@ public class UserInfo extends Activity {
         m_editor = m_prefs.edit();
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
         m_isFollowing = false;
+        mGapi.authenticate(m_username, m_password);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -157,9 +160,9 @@ public class UserInfo extends Activity {
 
         		Response userInfoResp;
         		if (m_targetUser.equalsIgnoreCase(m_username)) {
-        			userInfoResp = User.info(m_username, m_token);
+        			userInfoResp = mGapi.user.info(m_username);
         		} else {
-        			userInfoResp = User.info(m_targetUser);
+        			userInfoResp = mGapi.user.info(m_targetUser);
         		}
         		JSONObject json = null;
         		if (userInfoResp.statusCode == 200)
@@ -171,7 +174,7 @@ public class UserInfo extends Activity {
 				} else {
 					m_jsonData = json.getJSONObject("user");
 
-		        	JSONArray following_list = new JSONObject(User.following(m_username).resp).getJSONArray("users");
+		        	JSONArray following_list = new JSONObject(mGapi.user.following(m_username).resp).getJSONArray("users");
 		        	int length = following_list.length() - 1;
 		        	for (int i = 0; i <= length; i++) {
 		        		if (following_list.getString(i).equalsIgnoreCase(m_targetUser)) {

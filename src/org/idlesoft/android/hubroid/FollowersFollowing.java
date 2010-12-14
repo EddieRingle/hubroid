@@ -10,6 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,16 +47,17 @@ public class FollowersFollowing extends Activity {
 	public Intent m_intent;
 	public int m_position;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	public FollowersFollowingListAdapter initializeList(String username) {
 		FollowersFollowingListAdapter adapter = null;
 		JSONObject json = null;
 		try {
 			if (m_type.equals("followers")) {
-				json = new JSONObject(User.followers(username).resp);
+				json = new JSONObject(mGapi.user.followers(username).resp);
 				m_followersData = json;
 			} else if (m_type.equals("following")) {
-				json = new JSONObject(User.following(username).resp);
+				json = new JSONObject(mGapi.user.following(username).resp);
 				m_followingData = json;
 			}
 

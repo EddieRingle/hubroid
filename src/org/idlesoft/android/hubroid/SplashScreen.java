@@ -8,11 +8,12 @@
 
 package org.idlesoft.android.hubroid;
 
-import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
-import org.json.JSONObject;
-
 import com.flurry.android.FlurryAgent;
+
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.User;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -35,13 +36,14 @@ public class SplashScreen extends Activity {
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	private Runnable threadProc_login = new Runnable() {
 		public void run() {
 			EditText loginBox = (EditText) findViewById(R.id.et_splash_login_user);
-			EditText tokenBox = (EditText) findViewById(R.id.et_splash_login_token);
+			EditText passwordBox = (EditText) findViewById(R.id.et_splash_login_password);
 			String login = loginBox.getText().toString();
-			String token = tokenBox.getText().toString();
+			String password = passwordBox.getText().toString();
 
 			runOnUiThread(new Runnable() {
 				public void run() {
@@ -49,7 +51,8 @@ public class SplashScreen extends Activity {
 					m_progressDialog.show();
 				}
 			});
-			Response authResp = User.info(login, token);
+			mGapi.authenticate(login, password);
+			Response authResp = mGapi.user.info(login);
 
 			if (authResp.statusCode == 401) {
 				runOnUiThread(new Runnable() {
@@ -62,7 +65,7 @@ public class SplashScreen extends Activity {
 				});
 			} else if (authResp.statusCode == 200) {
 				m_editor.putString("login", login);
-				m_editor.putString("token", token);
+				m_editor.putString("password", password);
 				m_editor.putBoolean("isLoggedIn", true);
 				m_editor.commit();
 				runOnUiThread(new Runnable() {

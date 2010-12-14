@@ -10,6 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.Repository;
 import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONArray;
@@ -51,7 +52,7 @@ public class Search extends Activity {
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	public String m_type;
 	public JSONArray m_repositoriesData;
 	public JSONArray m_usersData;
@@ -59,12 +60,13 @@ public class Search extends Activity {
 	public int m_position;
 	private Thread m_thread;
 	public InputMethodManager m_imm;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	public void initializeList() {
 		String query = ((EditText) findViewById(R.id.et_search_search_box)).getText().toString();
 		if (m_type.equals(REPO_TYPE)) {
 			try {
-				JSONObject response = new JSONObject(Repository.search(query, m_username, m_token).resp);
+				JSONObject response = new JSONObject(mGapi.repo.search(query).resp);
 				m_repositoriesData = response.getJSONArray(REPO_TYPE);
 				m_repositories_adapter = new RepositoriesListAdapter(getApplicationContext(), m_repositoriesData);
 			} catch (JSONException e) {
@@ -77,7 +79,7 @@ public class Search extends Activity {
 			}
 		} else if (m_type.equals(USER_TYPE)) {
 			try {
-				JSONObject response = new JSONObject(User.search(query).resp);
+				JSONObject response = new JSONObject(mGapi.user.search(query).resp);
 				m_usersData = response.getJSONArray(USER_TYPE);
 				m_users_adapter = new SearchUsersListAdapter(getApplicationContext(), m_usersData);
 			} catch (JSONException e) {
@@ -232,17 +234,15 @@ public class Search extends Activity {
 		m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
 		m_editor = m_prefs.edit();
 		m_type = REPO_TYPE;
-		m_token = m_prefs.getString("token", "");
+		m_username = m_prefs.getString("login", "");
+		m_password = m_prefs.getString("password", "");
+		mGapi.authenticate(m_username, m_password);
 
 		Bundle extras = getIntent().getExtras();
 		if (extras != null) {
 			if (extras.containsKey("username")) {
 				m_username = icicle.getString("username");
-			} else {
-				m_username = m_prefs.getString("login", "");
 			}
-		} else {
-			m_username = m_prefs.getString("login", "");
 		}
 	}
 

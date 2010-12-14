@@ -8,15 +8,14 @@
 
 package org.idlesoft.android.hubroid;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.User;
-import org.idlesoft.libraries.ghapi.APIBase.Response;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -35,6 +34,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
+import java.io.File;
+
 public class ActivityFeeds extends Activity {
 	private ActivityFeedAdapter m_publicActivityAdapter;
 	private ActivityFeedAdapter m_privateActivityAdapter;
@@ -42,12 +43,13 @@ public class ActivityFeeds extends Activity {
 	private String m_targetUser;
 	private SharedPreferences m_prefs;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private boolean m_privateDisabled;
 	private String m_type;
 	private JSONArray m_publicJSON;
 	private JSONArray m_privateJSON;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (!menu.hasVisibleItems()) {
@@ -149,7 +151,8 @@ public class ActivityFeeds extends Activity {
 
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
+        mGapi.authenticate(m_username, m_password);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -174,15 +177,15 @@ public class ActivityFeeds extends Activity {
 				public void run()
 				{
 					try {
-						Response publicActivityFeedResp = User.activity(m_targetUser);
+						Response publicActivityFeedResp = mGapi.user.activity(m_targetUser);
 						if (publicActivityFeedResp.statusCode == 200) {
-							m_publicJSON = new JSONObject(publicActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
+							m_publicJSON = new JSONArray(publicActivityFeedResp.resp);
 							m_publicActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_publicJSON, true);
 						}
 						if (!m_privateDisabled) {
-							Response privateActivityFeedResp = User.activity(m_targetUser, m_token);
+							Response privateActivityFeedResp = mGapi.user.private_activity();
 							if (privateActivityFeedResp.statusCode == 200) {
-								m_privateJSON = new JSONObject(privateActivityFeedResp.resp).getJSONObject("query").getJSONObject("results").getJSONArray("entry");
+								m_privateJSON = new JSONArray(privateActivityFeedResp.resp);
 								m_privateActivityAdapter = new ActivityFeedAdapter(getApplicationContext(), m_privateJSON, false);
 							}
 						}

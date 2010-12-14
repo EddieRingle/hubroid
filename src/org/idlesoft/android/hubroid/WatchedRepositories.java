@@ -10,6 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,16 +39,17 @@ public class WatchedRepositories extends ListActivity {
 	public int m_position;
 	public String m_targetUser;
 	public String m_username;
-	public String m_token;
+	public String m_password;
 	public SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	public Intent m_intent;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	public RepositoriesListAdapter initializeList() {
 		RepositoriesListAdapter adapter = null;
 		try {
-			m_jsonData = new JSONObject(User.watching(m_targetUser, m_username, m_token).resp);
+			m_jsonData = new JSONObject(mGapi.user.watching(m_targetUser).resp);
 			if (m_jsonData == null) {
 				runOnUiThread(new Runnable() {
 					public void run() {
@@ -136,7 +138,8 @@ public class WatchedRepositories extends ListActivity {
         m_editor = m_prefs.edit();
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
+        mGapi.authenticate(m_username, m_password);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

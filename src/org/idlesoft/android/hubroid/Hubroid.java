@@ -22,6 +22,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.User;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,12 +60,13 @@ public class Hubroid extends Activity {
 	private SharedPreferences m_prefs;
 	private SharedPreferences.Editor m_editor;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	public ListView m_menuList;
 	public JSONObject m_userData;
 	public ProgressDialog m_progressDialog;
 	public boolean m_isLoggedIn;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	/**
 	 * Returns a Gravatar ID associated with the provided name
@@ -97,7 +99,7 @@ public class Hubroid extends Activity {
 					in.close();
 				} else {
 					try {
-						id = new JSONObject(User.info(name).resp).getJSONObject("user").getString("gravatar_id");
+						id = new JSONObject(new GitHubAPI().user.info(name).resp).getJSONObject("user").getString("gravatar_id");
 						FileWriter fw = new FileWriter(image);
 						BufferedWriter bw = new BufferedWriter(fw);
 						bw.write(id);
@@ -264,8 +266,9 @@ public class Hubroid extends Activity {
         m_prefs = getSharedPreferences(PREFS_NAME, 0);
     	m_editor = m_prefs.edit();
     	m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
         m_isLoggedIn = m_prefs.getBoolean("isLoggedIn", false);
+        mGapi.authenticate(m_username, m_password);
 
         // Check to see if the user is already logged in
         if (!m_isLoggedIn) {
@@ -284,7 +287,7 @@ public class Hubroid extends Activity {
 	        m_thread = new Thread(new Runnable() {
 				public void run() {
 					try {						
-						JSONObject result = new JSONObject(User.info(m_username, m_token).resp);
+						JSONObject result = new JSONObject(mGapi.user.info(m_username).resp);
 						m_userData = result.getJSONObject("user");
 
 						runOnUiThread(new Runnable() {

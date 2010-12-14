@@ -10,6 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.Repository;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,8 +43,9 @@ public class NetworkList extends Activity {
 	public ForkListAdapter m_forkListAdapter;
 	public JSONArray m_jsonForkData;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	private OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
 		public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -103,7 +105,8 @@ public class NetworkList extends Activity {
         m_editor = m_prefs.edit();
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
+        mGapi.authenticate(m_username, m_password);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -114,7 +117,7 @@ public class NetworkList extends Activity {
 				TextView title = (TextView)findViewById(R.id.tv_top_bar_title);
 				title.setText("Network");
 
-				JSONObject forkjson = new JSONObject(Repository.network(m_repo_owner, m_repo_name, m_username, m_token).resp);
+				JSONObject forkjson = new JSONObject(mGapi.repo.network(m_repo_owner, m_repo_name).resp);
 
 				m_jsonForkData = forkjson.getJSONArray("network");
 

@@ -8,14 +8,13 @@
 
 package org.idlesoft.android.hubroid;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.Issues;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import com.flurry.android.FlurryAgent;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -36,7 +35,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
+
+import java.io.File;
 
 public class IssuesList extends Activity {
 	private IssuesListAdapter m_openIssues_adapter;
@@ -47,27 +47,28 @@ public class IssuesList extends Activity {
 	private String m_targetUser;
 	private String m_targetRepo;
 	private String m_username;
-	private String m_token;
+	private String m_password;
 	private String m_type;
 	private JSONArray m_openIssuesData;
 	private JSONArray m_closedIssuesData;
 	private Intent m_intent;
 	private int m_position;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	public void initializeList() {
 		JSONObject json = null;
 		m_openIssuesData = new JSONArray();
 		m_closedIssuesData = new JSONArray();
 		try {
-			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "open", m_username, m_token).resp);
+			json = new JSONObject(mGapi.issues.list(m_targetUser, m_targetRepo, "open").resp);
 			m_openIssuesData = new JSONArray();
 			for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
 				m_openIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
 			}
 			m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
 
-			json = new JSONObject(Issues.list(m_targetUser, m_targetRepo, "closed", m_username, m_token).resp);		
+			json = new JSONObject(mGapi.issues.list(m_targetUser, m_targetRepo, "closed").resp);		
 			m_closedIssuesData = new JSONArray();
 			for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
 				m_closedIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
@@ -193,7 +194,7 @@ public class IssuesList extends Activity {
 		        startActivity(intent);
 				return true;
 			case 1:
-				if (Issues.close(m_targetUser, m_targetRepo, json.getInt("number"), m_username, m_token).statusCode == 200) {
+				if (mGapi.issues.close(m_targetUser, m_targetRepo, json.getInt("number")).statusCode == 200) {
 					m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Refreshing Issue List...", true);
 					m_thread = new Thread(null, threadProc_initializeList);
 					m_thread.start();
@@ -202,7 +203,7 @@ public class IssuesList extends Activity {
 				}
 				return true;
 			case 2:
-				if (Issues.reopen(m_targetUser, m_targetRepo, json.getInt("number"), m_username, m_token).statusCode == 200) {
+				if (mGapi.issues.reopen(m_targetUser, m_targetRepo, json.getInt("number")).statusCode == 200) {
 					m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...", "Refreshing Issue List...", true);
 					m_thread = new Thread(null, threadProc_initializeList);
 					m_thread.start();
@@ -272,7 +273,8 @@ public class IssuesList extends Activity {
         m_type = "open";
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
+        mGapi.authenticate(m_username, m_password);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {

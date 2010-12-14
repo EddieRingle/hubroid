@@ -10,6 +10,7 @@ package org.idlesoft.android.hubroid;
 
 import java.io.File;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.Repository;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,18 +43,19 @@ public class RepositoriesList extends Activity {
 	private SharedPreferences.Editor m_editor;
 	public String m_targetUser;
 	public String m_username;
-	private String m_token;
+	private String m_password;
 	public String m_type;
 	public JSONArray m_publicRepoData;
 	public JSONArray m_privateRepoData;
 	public Intent m_intent;
 	public int m_position;
 	private Thread m_thread;
+	private GitHubAPI mGapi = new GitHubAPI();
 
 	public void initializeList() {
 		JSONObject json = null;
 		try {
-			json = new JSONObject(Repository.list(m_targetUser, m_username, m_token).resp);
+			json = new JSONObject(mGapi.repo.list(m_targetUser).resp);
 			m_publicRepoData = new JSONArray();
 			m_privateRepoData = new JSONArray();
 			for (int i = 0; !json.getJSONArray("repositories").isNull(i); i++) {
@@ -197,7 +199,8 @@ public class RepositoriesList extends Activity {
         m_type = "public";
 
         m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        m_password = m_prefs.getString("password", "");
+        mGapi.authenticate(m_username, m_password);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
