@@ -47,10 +47,16 @@ public class Profile extends Activity {
 
     private final OnClickListener onButtonClick = new OnClickListener() {
         public void onClick(final View v) {
-            Intent intent;
+            final Intent intent;
             /* Figure out what button was clicked */
             final int id = v.getId();
             switch (id) {
+                case R.id.btn_user_info_public_activity:
+                    /* Go to the user's public activity feed */
+                    intent = new Intent(Profile.this, NewsFeed.class);
+                    intent.putExtra("username", mTarget);
+                    startActivity(intent);
+                    break;
                 case R.id.btn_user_info_repositories:
                     /* Go to the user's list of repositories */
                     intent = new Intent(Profile.this, Repositories.class);

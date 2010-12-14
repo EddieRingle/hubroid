@@ -34,40 +34,45 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.File;
 
 public class NewsFeed extends Activity {
-    private static class LoadPrivateFeedTask extends AsyncTask<Void, Void, Void> {
+    private static class LoadActivityFeedTask extends AsyncTask<Void, Void, Void> {
         public NewsFeed activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            if (activity.mPrivateJSON == null) {
+            if (activity.mJson == null) {
                 try {
-                    final Response resp = activity.mGapi.user.private_activity();
+                    final Response resp;
+                    if (mPrivate) {
+                        resp = activity.mGapi.user.private_activity();
+                    } else {
+                        resp = activity.mGapi.user.activity(mTargetUser);
+                    }
                     if (resp.statusCode != 200) {
                         /* Let the user know something went wrong */
                         return null;
                     }
-                    activity.mPrivateJSON = new JSONArray(resp.resp);
+                    activity.mJson = new JSONArray(resp.resp);
                 } catch (final JSONException e) {
                     e.printStackTrace();
                 }
             }
-            if (activity.mDisplayedPrivateJSON == null) {
-                activity.mDisplayedPrivateJSON = new JSONArray();
+            if (activity.mDisplayedJson == null) {
+                activity.mDisplayedJson = new JSONArray();
             }
-            final int length = activity.mDisplayedPrivateJSON.length();
+            final int length = activity.mDisplayedJson.length();
             for (int i = length; i < length + 10; i++) {
-                if (activity.mPrivateJSON.isNull(i)) {
+                if (activity.mJson.isNull(i)) {
                     break;
                 }
                 try {
-                    activity.mDisplayedPrivateJSON.put(activity.mPrivateJSON.get(i));
+                    activity.mDisplayedJson.put(activity.mJson.get(i));
                 } catch (final JSONException e) {
                     e.printStackTrace();
                     break;
                 }
             }
-            activity.mPrivateActivityAdapter = new ActivityFeedAdapter(activity
-                    .getApplicationContext(), activity.mDisplayedPrivateJSON, false);
+            activity.mActivityAdapter = new ActivityFeedAdapter(activity
+                    .getApplicationContext(), activity.mDisplayedJson, mPrivate == false);
             return null;
         }
 
@@ -89,9 +94,9 @@ public class NewsFeed extends Activity {
 
         protected void setAdapter() {
             ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .setAdapter(activity.mPrivateActivityAdapter);
+                    .setAdapter(activity.mActivityAdapter);
             ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .setOnItemClickListener(activity.onPrivateActivityItemClick);
+                    .setOnItemClickListener(activity.onActivityItemClick);
         }
 
         protected void setLoadingView() {
@@ -101,7 +106,7 @@ public class NewsFeed extends Activity {
         }
     }
 
-    public JSONArray mDisplayedPrivateJSON;
+    public JSONArray mDisplayedJson;
 
     private SharedPreferences.Editor mEditor;
 
@@ -109,30 +114,34 @@ public class NewsFeed extends Activity {
 
     public View mLoadingItem;
 
-    private LoadPrivateFeedTask mLoadPrivateTask;
+    private LoadActivityFeedTask mLoadActivityTask;
 
     private String mPassword;
 
     private SharedPreferences mPrefs;
 
-    private ActivityFeedAdapter mPrivateActivityAdapter;
+    private ActivityFeedAdapter mActivityAdapter;
 
-    public JSONArray mPrivateJSON;
+    public JSONArray mJson;
 
     private String mUsername;
 
-    private final OnItemClickListener onPrivateActivityItemClick = new OnItemClickListener() {
+    private final OnItemClickListener onActivityItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> arg0, final View arg1, final int arg2,
                 final long arg3) {
             try {
                 final Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
-                intent.putExtra("item_json", mDisplayedPrivateJSON.getJSONObject(arg2).toString());
+                intent.putExtra("item_json", mDisplayedJson.getJSONObject(arg2).toString());
                 startActivity(intent);
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
         }
     };
+
+    private static String mTargetUser;
+
+    private static boolean mPrivate;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -146,19 +155,32 @@ public class NewsFeed extends Activity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        ((TextView) findViewById(R.id.tv_page_title)).setText("News Feed");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mTargetUser = bundle.getString("username");
+            mPrivate = false;
+        } else {
+            mTargetUser = mUsername;
+            mPrivate = true;
+        }
 
         mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
         ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
                 .setText("Loading Feed, Please Wait...");
 
-        mLoadPrivateTask = (LoadPrivateFeedTask) getLastNonConfigurationInstance();
-        if (mLoadPrivateTask == null) {
-            mLoadPrivateTask = new LoadPrivateFeedTask();
+        if (mPrivate) {
+            ((TextView) findViewById(R.id.tv_page_title)).setText("News Feed");
+        } else {
+            ((TextView) findViewById(R.id.tv_page_title)).setText(mTargetUser + "'s Activity");
         }
-        mLoadPrivateTask.activity = this;
-        if (mLoadPrivateTask.getStatus() == AsyncTask.Status.PENDING) {
-            mLoadPrivateTask.execute();
+
+        mLoadActivityTask = (LoadActivityFeedTask) getLastNonConfigurationInstance();
+        if (mLoadActivityTask == null) {
+            mLoadActivityTask = new LoadActivityFeedTask();
+        }
+        mLoadActivityTask.activity = this;
+        if (mLoadActivityTask.getStatus() == AsyncTask.Status.PENDING) {
+            mLoadActivityTask.execute();
         }
     }
 
@@ -203,22 +225,22 @@ public class NewsFeed extends Activity {
         boolean keepGoing = true;
         try {
             if (savedInstanceState.containsKey("json")) {
-                mPrivateJSON = new JSONArray(savedInstanceState.getString("json"));
+                mJson = new JSONArray(savedInstanceState.getString("json"));
             } else {
                 keepGoing = false;
             }
             if (savedInstanceState.containsKey("displayed_json")) {
-                mDisplayedPrivateJSON = new JSONArray(savedInstanceState
+                mDisplayedJson = new JSONArray(savedInstanceState
                         .getString("displayed_json"));
             } else {
-                mDisplayedPrivateJSON = new JSONArray();
-                final int length = mDisplayedPrivateJSON.length();
+                mDisplayedJson = new JSONArray();
+                final int length = mDisplayedJson.length();
                 for (int i = length; i < length + 10; i++) {
-                    if (mPrivateJSON.isNull(i)) {
+                    if (mJson.isNull(i)) {
                         break;
                     }
                     try {
-                        mDisplayedPrivateJSON.put(mPrivateJSON.get(i));
+                        mDisplayedJson.put(mJson.get(i));
                     } catch (final JSONException e) {
                         e.printStackTrace();
                         break;
@@ -229,31 +251,31 @@ public class NewsFeed extends Activity {
             keepGoing = false;
         }
         if (keepGoing == true) {
-            mPrivateActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mDisplayedPrivateJSON,
+            mActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mDisplayedJson,
                     false);
         } else {
-            mPrivateActivityAdapter = null;
+            mActivityAdapter = null;
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        ((ListView) findViewById(R.id.lv_news_feed)).setAdapter(mPrivateActivityAdapter);
+        ((ListView) findViewById(R.id.lv_news_feed)).setAdapter(mActivityAdapter);
     }
 
     @Override
     public Object onRetainNonConfigurationInstance() {
-        return mLoadPrivateTask;
+        return mLoadActivityTask;
     }
 
     @Override
     public void onSaveInstanceState(final Bundle savedInstanceState) {
-        if (mDisplayedPrivateJSON != null) {
-            savedInstanceState.putString("displayed_json", mDisplayedPrivateJSON.toString());
+        if (mDisplayedJson != null) {
+            savedInstanceState.putString("displayed_json", mDisplayedJson.toString());
         }
-        if (mPrivateJSON != null) {
-            savedInstanceState.putString("json", mPrivateJSON.toString());
+        if (mJson != null) {
+            savedInstanceState.putString("json", mJson.toString());
         }
         super.onSaveInstanceState(savedInstanceState);
     }
