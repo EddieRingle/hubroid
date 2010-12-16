@@ -27,7 +27,6 @@
 		<activity android:name=".activities.CreateIssue" />
 		<activity android:name=".activities.SingleIssue" />
 		<activity android:name=".activities.NetworkList" />
-		<activity android:name=".activities.WatchedRepositories" />
 		<activity android:name=".activities.SingleActivityItem" />
 		<activity android:name=".activities.CommitChangeViewer" />
 	</application>
