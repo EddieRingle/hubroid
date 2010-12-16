@@ -49,7 +49,7 @@ public class NetworkList extends Activity {
                 final long id) {
             m_position = position;
             try {
-                m_intent = new Intent(NetworkList.this, RepositoryInfo.class);
+                m_intent = new Intent(NetworkList.this, Repository.class);
                 m_intent.putExtra("repo_name", m_jsonForkData.getJSONObject(m_position).getString(
                         "name"));
                 m_intent.putExtra("username", m_jsonForkData.getJSONObject(m_position).getString(

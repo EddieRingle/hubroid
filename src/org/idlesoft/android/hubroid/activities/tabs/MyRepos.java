@@ -3,6 +3,7 @@ package org.idlesoft.android.hubroid.activities.tabs;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.activities.Hubroid;
+import org.idlesoft.android.hubroid.activities.Repository;
 import org.idlesoft.android.hubroid.adapters.RepositoriesListAdapter;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -11,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -78,16 +80,31 @@ public class MyRepos extends Activity {
     private final OnItemClickListener onListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
+            Intent i = new Intent(getApplicationContext(), Repository.class);
+            i.putExtra("repo_owner", mTarget);
+            try {
+                i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(i);
             return;
         }
     };
+
+    private String mUsername;
+
+    private String mPassword;
 
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
 
         final SharedPreferences prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mGapi.authenticate(prefs.getString("username", ""), prefs.getString("password", ""));
+        mUsername = prefs.getString("username", "");
+        mPassword = prefs.getString("password", "");
+
+        mGapi.authenticate(mUsername, mPassword);
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
         setContentView(mListView);
@@ -101,7 +118,7 @@ public class MyRepos extends Activity {
             mTarget = extras.getString("target");
         }
         if ((mTarget == null) || mTarget.equals("")) {
-            mTarget = prefs.getString("username", "");
+            mTarget = mUsername;
         }
 
         mTask = (MyReposTask) getLastNonConfigurationInstance();

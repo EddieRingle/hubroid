@@ -127,7 +127,7 @@ public class Search extends Activity {
             m_position = position;
             try {
                 if (m_type.equals(REPO_TYPE)) {
-                    m_intent = new Intent(Search.this, RepositoryInfo.class);
+                    m_intent = new Intent(Search.this, Repository.class);
                     m_intent.putExtra("repo_name", m_repositoriesData.getJSONObject(m_position)
                             .getString("name"));
                     m_intent.putExtra("username", m_repositoriesData.getJSONObject(m_position)

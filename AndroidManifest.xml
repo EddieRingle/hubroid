@@ -20,8 +20,8 @@
 		<activity android:name=".activities.tabs.Followers" />
 		<activity android:name=".activities.tabs.Following" />
 		<activity android:name=".activities.Profile" />
+		<activity android:name=".activities.Repository" />
 
-		<activity android:name=".activities.RepositoryInfo" />
 		<activity android:name=".activities.CommitsList" />
 		<activity android:name=".activities.IssuesList" />
 		<activity android:name=".activities.CreateIssue" />
