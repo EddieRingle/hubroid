@@ -41,7 +41,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SingleIssue extends Activity {
-    private GitHubAPI _gapi;
+    private GitHubAPI mGapi = new GitHubAPI();
 
     private IssueCommentsAdapter m_adapter;
 
@@ -70,7 +70,7 @@ public class SingleIssue extends Activity {
                 m_thread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            if (_gapi.issues.add_comment(m_repoOwner, m_repoName, m_JSON
+                            if (mGapi.issues.add_comment(m_repoOwner, m_repoName, m_JSON
                                     .getInt("number"), ((TextView) m_commentArea
                                     .findViewById(R.id.et_issue_comment_area_body)).getText()
                                     .toString()).statusCode == 200) {
@@ -89,7 +89,7 @@ public class SingleIssue extends Activity {
                                             m_progressDialog.setMessage("Closing issue...");
                                         }
                                     });
-                                    final int statusCode = _gapi.issues.close(m_repoOwner,
+                                    final int statusCode = mGapi.issues.close(m_repoOwner,
                                             m_repoName, m_JSON.getInt("number")).statusCode;
                                     if (statusCode == 200) {
                                         runOnUiThread(new Runnable() {
@@ -97,7 +97,7 @@ public class SingleIssue extends Activity {
                                                 m_progressDialog.setMessage("Refreshing Issue...");
                                             }
                                         });
-                                        m_JSON = new JSONObject(_gapi.issues.issue(m_repoOwner,
+                                        m_JSON = new JSONObject(mGapi.issues.issue(m_repoOwner,
                                                 m_repoName, m_JSON.getInt("number")).resp)
                                                 .getJSONObject("issue");
                                         runOnUiThread(new Runnable() {
@@ -115,7 +115,7 @@ public class SingleIssue extends Activity {
                                         });
                                     }
                                 }
-                                final Response response = _gapi.issues.list_comments(m_repoOwner,
+                                final Response response = mGapi.issues.list_comments(m_repoOwner,
                                         m_repoName, m_JSON.getInt("number"));
                                 m_adapter = new IssueCommentsAdapter(getApplicationContext(),
                                         new JSONObject(response.resp).getJSONArray("comments"));
@@ -153,9 +153,9 @@ public class SingleIssue extends Activity {
 
     private Thread m_thread;
 
-    private String m_token;
+    private String mPassword;
 
-    private String m_username;
+    private String mUsername;
 
     private void loadIssueItemBox() {
         final TextView date = (TextView) m_header
@@ -164,7 +164,7 @@ public class SingleIssue extends Activity {
         final TextView title = (TextView) m_header.findViewById(R.id.tv_issue_list_item_title);
         final TextView number = (TextView) m_header.findViewById(R.id.tv_issue_list_item_number);
 
-        final TextView topbar = (TextView) findViewById(R.id.tv_top_bar_title);
+        final TextView topbar = (TextView) findViewById(R.id.tv_page_title);
 
         try {
             String end;
@@ -235,8 +235,10 @@ public class SingleIssue extends Activity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        mUsername = m_prefs.getString("login", "");
+        mPassword = m_prefs.getString("password", "");
+
+        mGapi.authenticate(mUsername, mPassword);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -320,7 +322,7 @@ public class SingleIssue extends Activity {
                 m_thread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            final Response response = _gapi.issues.list_comments(m_repoOwner,
+                            final Response response = mGapi.issues.list_comments(m_repoOwner,
                                     m_repoName, m_JSON.getInt("number"));
                             m_adapter = new IssueCommentsAdapter(getApplicationContext(),
                                     new JSONObject(response.resp).getJSONArray("comments"));

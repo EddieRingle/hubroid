@@ -40,67 +40,67 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.File;
 
 public class IssuesList extends Activity {
-    private GitHubAPI _gapi;
+    private GitHubAPI mGapi = new GitHubAPI();
 
-    private IssuesListAdapter m_closedIssues_adapter;
+    private IssuesListAdapter mClosedIssuesAdapter;
 
-    private JSONArray m_closedIssuesData;
+    private JSONArray mClosedIssuesData;
 
-    private SharedPreferences.Editor m_editor;
+    private SharedPreferences.Editor mEditor;
 
-    private Intent m_intent;
+    private Intent mIntent;
 
-    private final OnItemClickListener m_MessageClickedHandler = new OnItemClickListener() {
+    private final OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
             JSONObject json = null;
             try {
                 if (parent.getId() == R.id.lv_issues_list_open_list) {
-                    json = m_openIssuesData.getJSONObject(position);
+                    json = mOpenIssuesData.getJSONObject(position);
                 } else {
-                    json = m_closedIssuesData.getJSONObject(position);
+                    json = mClosedIssuesData.getJSONObject(position);
                 }
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
             final Intent intent = new Intent(getApplicationContext(), SingleIssue.class);
-            intent.putExtra("repoOwner", m_targetUser);
-            intent.putExtra("repoName", m_targetRepo);
+            intent.putExtra("repoOwner", mTargetUser);
+            intent.putExtra("repoName", mTargetRepo);
             intent.putExtra("item_json", json.toString());
             startActivity(intent);
         }
     };
 
-    private IssuesListAdapter m_openIssues_adapter;
+    private IssuesListAdapter mOpenIssuesAdapter;
 
-    private JSONArray m_openIssuesData;
+    private JSONArray mOpenIssuesData;
 
-    private int m_position;
+    private int mPosition;
 
-    private SharedPreferences m_prefs;
+    private SharedPreferences mPrefs;
 
-    private ProgressDialog m_progressDialog;
+    private ProgressDialog mProgressDialog;
 
-    private String m_targetRepo;
+    private String mTargetRepo;
 
-    private String m_targetUser;
+    private String mTargetUser;
 
-    private Thread m_thread;
+    private Thread mThread;
 
-    private String m_token;
+    private String mPassword;
 
-    private String m_type;
+    private String mType;
 
-    private String m_username;
+    private String mUsername;
 
     private final OnClickListener onButtonToggleClickListener = new OnClickListener() {
         public void onClick(final View v) {
             if (v.getId() == R.id.btn_issues_list_open) {
                 toggleList("open");
-                m_type = "open";
+                mType = "open";
             } else if (v.getId() == R.id.btn_issues_list_closed) {
                 toggleList("closed");
-                m_type = "closed";
+                mType = "closed";
             }
         }
     };
@@ -111,19 +111,19 @@ public class IssuesList extends Activity {
 
             runOnUiThread(new Runnable() {
                 public void run() {
-                    if ((m_openIssues_adapter != null) && (m_closedIssues_adapter != null)) {
+                    if ((mOpenIssuesAdapter != null) && (mClosedIssuesAdapter != null)) {
                         final ListView openIssues = (ListView) findViewById(R.id.lv_issues_list_open_list);
                         final ListView closedIssues = (ListView) findViewById(R.id.lv_issues_list_closed_list);
-                        openIssues.setAdapter(m_openIssues_adapter);
-                        closedIssues.setAdapter(m_closedIssues_adapter);
-                        if (m_type.equals("open")) {
+                        openIssues.setAdapter(mOpenIssuesAdapter);
+                        closedIssues.setAdapter(mClosedIssuesAdapter);
+                        if (mType.equals("open")) {
                             toggleList("open");
                         }
-                        if (m_type.equals("closed")) {
+                        if (mType.equals("closed")) {
                             toggleList("closed");
                         }
                     }
-                    m_progressDialog.dismiss();
+                    mProgressDialog.dismiss();
                 }
             });
         }
@@ -131,22 +131,22 @@ public class IssuesList extends Activity {
 
     public void initializeList() {
         JSONObject json = null;
-        m_openIssuesData = new JSONArray();
-        m_closedIssuesData = new JSONArray();
+        mOpenIssuesData = new JSONArray();
+        mClosedIssuesData = new JSONArray();
         try {
-            json = new JSONObject(_gapi.issues.list(m_targetUser, m_targetRepo, "open").resp);
-            m_openIssuesData = new JSONArray();
+            json = new JSONObject(mGapi.issues.list(mTargetUser, mTargetRepo, "open").resp);
+            mOpenIssuesData = new JSONArray();
             for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
-                m_openIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
+                mOpenIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
             }
-            m_openIssues_adapter = new IssuesListAdapter(IssuesList.this, m_openIssuesData);
+            mOpenIssuesAdapter = new IssuesListAdapter(IssuesList.this, mOpenIssuesData);
 
-            json = new JSONObject(_gapi.issues.list(m_targetUser, m_targetRepo, "closed").resp);
-            m_closedIssuesData = new JSONArray();
+            json = new JSONObject(mGapi.issues.list(mTargetUser, mTargetRepo, "closed").resp);
+            mClosedIssuesData = new JSONArray();
             for (int i = 0; !json.getJSONArray("issues").isNull(i); i++) {
-                m_closedIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
+                mClosedIssuesData.put(json.getJSONArray("issues").getJSONObject(i));
             }
-            m_closedIssues_adapter = new IssuesListAdapter(IssuesList.this, m_closedIssuesData);
+            mClosedIssuesAdapter = new IssuesListAdapter(IssuesList.this, mClosedIssuesData);
         } catch (final JSONException e) {
             runOnUiThread(new Runnable() {
                 public void run() {
@@ -164,36 +164,36 @@ public class IssuesList extends Activity {
         final AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
         JSONObject json = null;
         try {
-            if (m_type.equals("open")) {
-                json = m_openIssuesData.getJSONObject(info.position);
+            if (mType.equals("open")) {
+                json = mOpenIssuesData.getJSONObject(info.position);
             } else {
-                json = m_closedIssuesData.getJSONObject(info.position);
+                json = mClosedIssuesData.getJSONObject(info.position);
             }
             switch (item.getItemId()) {
                 case 0:
                     final Intent intent = new Intent(getApplicationContext(), SingleIssue.class);
-                    intent.putExtra("repoOwner", m_targetUser);
-                    intent.putExtra("repoName", m_targetRepo);
+                    intent.putExtra("repoOwner", mTargetUser);
+                    intent.putExtra("repoName", mTargetRepo);
                     intent.putExtra("item_json", json.toString());
                     startActivity(intent);
                     return true;
                 case 1:
-                    if (_gapi.issues.close(m_targetUser, m_targetRepo, json.getInt("number")).statusCode == 200) {
-                        m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...",
+                    if (mGapi.issues.close(mTargetUser, mTargetRepo, json.getInt("number")).statusCode == 200) {
+                        mProgressDialog = ProgressDialog.show(IssuesList.this, "Please wait...",
                                 "Refreshing Issue List...", true);
-                        m_thread = new Thread(null, threadProc_initializeList);
-                        m_thread.start();
+                        mThread = new Thread(null, threadProc_initializeList);
+                        mThread.start();
                     } else {
                         Toast.makeText(getApplicationContext(), "Error closing issue.",
                                 Toast.LENGTH_SHORT).show();
                     }
                     return true;
                 case 2:
-                    if (_gapi.issues.reopen(m_targetUser, m_targetRepo, json.getInt("number")).statusCode == 200) {
-                        m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...",
+                    if (mGapi.issues.reopen(mTargetUser, mTargetRepo, json.getInt("number")).statusCode == 200) {
+                        mProgressDialog = ProgressDialog.show(IssuesList.this, "Please wait...",
                                 "Refreshing Issue List...", true);
-                        m_thread = new Thread(null, threadProc_initializeList);
-                        m_thread.start();
+                        mThread = new Thread(null, threadProc_initializeList);
+                        mThread.start();
                     } else {
                         Toast.makeText(getApplicationContext(), "Error reopening issue.",
                                 Toast.LENGTH_SHORT).show();
@@ -213,31 +213,33 @@ public class IssuesList extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.issues_list);
 
-        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        m_editor = m_prefs.edit();
-        m_type = "open";
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
+        mType = "open";
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        mUsername = mPrefs.getString("login", "");
+        mPassword = mPrefs.getString("password", "");
+
+        mGapi.authenticate(mUsername, mPassword);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("owner")) {
-                m_targetUser = extras.getString("owner");
+                mTargetUser = extras.getString("owner");
             } else {
-                m_targetUser = m_username;
+                mTargetUser = mUsername;
             }
             if (extras.containsKey("repository")) {
-                m_targetRepo = extras.getString("repository");
+                mTargetRepo = extras.getString("repository");
             }
         } else {
-            m_targetUser = m_username;
+            mTargetUser = mUsername;
         }
 
-        m_progressDialog = ProgressDialog.show(IssuesList.this, "Please wait...",
+        mProgressDialog = ProgressDialog.show(IssuesList.this, "Please wait...",
                 "Loading Issues...", true);
-        m_thread = new Thread(null, threadProc_initializeList);
-        m_thread.start();
+        mThread = new Thread(null, threadProc_initializeList);
+        mThread.start();
     }
 
     @Override
@@ -247,12 +249,12 @@ public class IssuesList extends Activity {
         final int id = v.getId();
         if (id == R.id.lv_issues_list_open_list) {
             menu.add(0, 0, 0, "View");
-            if (m_username.equals(m_targetUser)) {
+            if (mUsername.equals(mTargetUser)) {
                 menu.add(0, 1, 0, "Close");
             }
         } else if (id == R.id.lv_issues_list_closed_list) {
             menu.add(0, 0, 0, "View");
-            if (m_username.equals(m_targetUser)) {
+            if (mUsername.equals(mTargetUser)) {
                 menu.add(0, 2, 0, "Reopen");
             }
         }
@@ -264,8 +266,8 @@ public class IssuesList extends Activity {
         switch (item.getItemId()) {
             case -1:
                 intent = new Intent(this, CreateIssue.class);
-                intent.putExtra("owner", m_targetUser);
-                intent.putExtra("repository", m_targetRepo);
+                intent.putExtra("owner", mTargetUser);
+                intent.putExtra("repository", mTargetRepo);
                 startActivity(intent);
                 return true;
             case 0:
@@ -273,7 +275,7 @@ public class IssuesList extends Activity {
                 startActivity(intent);
                 return true;
             case 1:
-                m_editor.clear().commit();
+                mEditor.clear().commit();
                 intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
@@ -294,11 +296,11 @@ public class IssuesList extends Activity {
 
     @Override
     public void onPause() {
-        if ((m_thread != null) && m_thread.isAlive()) {
-            m_thread.stop();
+        if ((mThread != null) && mThread.isAlive()) {
+            mThread.stop();
         }
-        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
-            m_progressDialog.dismiss();
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
         super.onPause();
     }
@@ -318,15 +320,15 @@ public class IssuesList extends Activity {
     public void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         boolean keepGoing = true;
-        m_type = savedInstanceState.getString("type");
+        mType = savedInstanceState.getString("type");
         try {
             if (savedInstanceState.containsKey("openIssues_json")) {
-                m_openIssuesData = new JSONArray(savedInstanceState.getString("openIssues_json"));
+                mOpenIssuesData = new JSONArray(savedInstanceState.getString("openIssues_json"));
             } else {
                 keepGoing = false;
             }
             if (savedInstanceState.containsKey("closedIssues_json")) {
-                m_closedIssuesData = new JSONArray(savedInstanceState
+                mClosedIssuesData = new JSONArray(savedInstanceState
                         .getString("closedIssues_json"));
             } else {
                 keepGoing = false;
@@ -335,12 +337,12 @@ public class IssuesList extends Activity {
             keepGoing = false;
         }
         if (keepGoing == true) {
-            m_openIssues_adapter = new IssuesListAdapter(getApplicationContext(), m_openIssuesData);
-            m_closedIssues_adapter = new IssuesListAdapter(getApplicationContext(),
-                    m_closedIssuesData);
+            mOpenIssuesAdapter = new IssuesListAdapter(getApplicationContext(), mOpenIssuesData);
+            mClosedIssuesAdapter = new IssuesListAdapter(getApplicationContext(),
+                    mClosedIssuesData);
         } else {
-            m_openIssues_adapter = null;
-            m_closedIssues_adapter = null;
+            mOpenIssuesAdapter = null;
+            mClosedIssuesAdapter = null;
         }
     }
 
@@ -350,19 +352,19 @@ public class IssuesList extends Activity {
         final ListView openList = (ListView) findViewById(R.id.lv_issues_list_open_list);
         final ListView closedList = (ListView) findViewById(R.id.lv_issues_list_closed_list);
 
-        openList.setAdapter(m_openIssues_adapter);
-        closedList.setAdapter(m_closedIssues_adapter);
-        toggleList(m_type);
+        openList.setAdapter(mOpenIssuesAdapter);
+        closedList.setAdapter(mClosedIssuesAdapter);
+        toggleList(mType);
     }
 
     @Override
     public void onSaveInstanceState(final Bundle savedInstanceState) {
-        savedInstanceState.putString("type", m_type);
-        if (m_openIssuesData != null) {
-            savedInstanceState.putString("openIssues_json", m_openIssuesData.toString());
+        savedInstanceState.putString("type", mType);
+        if (mOpenIssuesData != null) {
+            savedInstanceState.putString("openIssues_json", mOpenIssuesData.toString());
         }
-        if (m_closedIssuesData != null) {
-            savedInstanceState.putString("closedIssues_json", m_closedIssuesData.toString());
+        if (mClosedIssuesData != null) {
+            savedInstanceState.putString("closedIssues_json", mClosedIssuesData.toString());
         }
         super.onSaveInstanceState(savedInstanceState);
     }
@@ -379,9 +381,9 @@ public class IssuesList extends Activity {
                 .setOnClickListener(onButtonToggleClickListener);
 
         ((ListView) findViewById(R.id.lv_issues_list_open_list))
-                .setOnItemClickListener(m_MessageClickedHandler);
+                .setOnItemClickListener(mMessageClickedHandler);
         ((ListView) findViewById(R.id.lv_issues_list_closed_list))
-                .setOnItemClickListener(m_MessageClickedHandler);
+                .setOnItemClickListener(mMessageClickedHandler);
         registerForContextMenu(findViewById(R.id.lv_issues_list_open_list));
         registerForContextMenu(findViewById(R.id.lv_issues_list_closed_list));
     }
@@ -395,18 +397,18 @@ public class IssuesList extends Activity {
     public void toggleList(String type) {
         final ListView openList = (ListView) findViewById(R.id.lv_issues_list_open_list);
         final ListView closedList = (ListView) findViewById(R.id.lv_issues_list_closed_list);
-        final TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
+        final TextView title = (TextView) findViewById(R.id.tv_page_title);
 
         if (type.equals("") || (type == null)) {
-            type = (m_type.equals("open")) ? "closed" : "public";
+            type = (mType.equals("open")) ? "closed" : "public";
         }
-        m_type = type;
+        mType = type;
 
-        if (m_type.equals("open")) {
+        if (mType.equals("open")) {
             openList.setVisibility(View.VISIBLE);
             closedList.setVisibility(View.GONE);
             title.setText("Open Issues");
-        } else if (m_type.equals("closed")) {
+        } else if (mType.equals("closed")) {
             closedList.setVisibility(View.VISIBLE);
             openList.setVisibility(View.GONE);
             title.setText("Closed Issues");
