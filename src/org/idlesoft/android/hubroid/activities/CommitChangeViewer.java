@@ -43,37 +43,37 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class CommitChangeViewer extends Activity {
-    private GitHubAPI _gapi;
+    private GitHubAPI mGapi = new GitHubAPI();
 
-    public ArrayList<String> m_branches;
+    public ArrayList<String> mBranches;
 
-    public ArrayAdapter<String> m_branchesAdapter;
+    public ArrayAdapter<String> mBranchesAdapter;
 
-    public JSONArray m_commitData;
+    public JSONArray mCommitData;
 
-    public CommitListAdapter m_commitListAdapter;
+    public CommitListAdapter mCommitListAdapter;
 
-    private SharedPreferences.Editor m_editor;
+    private SharedPreferences.Editor mEditor;
 
-    private String m_id;
+    private String mId;
 
-    public Intent m_intent;
+    public Intent mIntent;
 
-    public int m_position;
+    public int mPosition;
 
-    private SharedPreferences m_prefs;
+    private SharedPreferences mPrefs;
 
-    public ProgressDialog m_progressDialog;
+    public ProgressDialog mProgressDialog;
 
-    public String m_repo_name;
+    public String mRepoName;
 
-    public String m_repo_owner;
+    public String mRepoOwner;
 
-    private Thread m_thread;
+    private Thread mThread;
 
-    private String m_token;
+    private String mPassword;
 
-    private String m_username;
+    private String mUsername;
 
     public String getHumanDate(final Date current_time, final Date commit_time) {
         String end;
@@ -130,28 +130,28 @@ public class CommitChangeViewer extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.commit_view);
 
-        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        m_editor = m_prefs.edit();
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        mUsername = mPrefs.getString("login", "");
+        mPassword = mPrefs.getString("password", "");
         final View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
 
-        _gapi = new GitHubAPI();
+        mGapi.authenticate(mUsername, mPassword);
 
-        final TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
+        final TextView title = (TextView) findViewById(R.id.tv_page_title);
         title.setText("Commit Viewer");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            m_repo_name = extras.getString("repo_name");
-            m_repo_owner = extras.getString("username");
-            m_id = extras.getString("id");
+            mRepoName = extras.getString("repo_name");
+            mRepoOwner = extras.getString("username");
+            mId = extras.getString("id");
 
             // Get the commit data for that commit ID so that we can get the
             // tree ID and filename.
             try {
-                final Response commitInfo = _gapi.commits.commit(m_repo_owner, m_repo_name, m_id);
+                final Response commitInfo = mGapi.commits.commit(mRepoOwner, mRepoName, mId);
                 final JSONObject commitJSON = new JSONObject(commitInfo.resp)
                         .getJSONObject("commit");
 
@@ -233,7 +233,7 @@ public class CommitChangeViewer extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                m_editor.clear().commit();
+                mEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
@@ -254,11 +254,11 @@ public class CommitChangeViewer extends Activity {
 
     @Override
     public void onPause() {
-        if ((m_thread != null) && m_thread.isAlive()) {
-            m_thread.stop();
+        if ((mThread != null) && mThread.isAlive()) {
+            mThread.stop();
         }
-        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
-            m_progressDialog.dismiss();
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
         super.onPause();
     }
