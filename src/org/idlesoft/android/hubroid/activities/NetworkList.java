@@ -34,7 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import java.io.File;
 
 public class NetworkList extends Activity {
-    private GitHubAPI _gapi;
+    private GitHubAPI mGapi = new GitHubAPI();
 
     private SharedPreferences.Editor m_editor;
 
@@ -73,9 +73,9 @@ public class NetworkList extends Activity {
 
     private Thread m_thread;
 
-    private String m_token;
+    private String mPassword;
 
-    private String m_username;
+    private String mUsername;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -85,8 +85,10 @@ public class NetworkList extends Activity {
         m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         m_editor = m_prefs.edit();
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        mUsername = m_prefs.getString("login", "");
+        mPassword = m_prefs.getString("password", "");
+
+        mGapi.authenticate(mUsername, mPassword);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -94,10 +96,10 @@ public class NetworkList extends Activity {
             m_repo_owner = extras.getString("username");
 
             try {
-                final TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
+                final TextView title = (TextView) findViewById(R.id.tv_page_title);
                 title.setText("Network");
 
-                final JSONObject forkjson = new JSONObject(_gapi.repo.network(m_repo_owner,
+                final JSONObject forkjson = new JSONObject(mGapi.repo.network(m_repo_owner,
                         m_repo_name).resp);
 
                 m_jsonForkData = forkjson.getJSONArray("network");

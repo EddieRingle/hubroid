@@ -5,21 +5,8 @@
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:background="#FFF">
-	<TextView
-		android:id="@+id/tv_top_bar_title"
-		android:layout_width="fill_parent"
-		android:layout_height="56dip"
-		android:gravity="center"
-		android:background="@drawable/top_bar"
-		android:textColor="@color/textColor"
-		android:textSize="20dip"
-		android:textStyle="bold" />
-	<LinearLayout
-		android:id="@+id/ll_network_shadow"
-		android:layout_width="fill_parent"
-		android:layout_height="10dip"
-		android:orientation="vertical"
-		android:background="@drawable/shadow" />
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<include android:id="@+id/include_page_title" layout="@layout/page_title" />
 	<ListView
 		android:id="@+id/lv_network_list"
 		android:cacheColorHint="#FFF"
