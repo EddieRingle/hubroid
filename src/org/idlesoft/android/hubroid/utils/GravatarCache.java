@@ -10,7 +10,6 @@ import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -19,8 +18,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
 
 public class GravatarCache {
@@ -29,19 +28,13 @@ public class GravatarCache {
 
     private static Bitmap downloadGravatar(final String id) throws IOException {
         final URL aURL = new URL(
-                "http://www.gravatar.com/avatar.php?gravatar_id=" + URLEncoder.encode(id)
-                        + "&size=100&d="
-                        // Get the default 100x100 gravatar from GitHub if ID
-                        // doesn't
-                        // exist
-                        + URLEncoder
-                                .encode("http://github.com/eddieringle/hubroid/raw/master/res/drawable/default_gravatar.png"));
-        final URLConnection conn = aURL.openConnection();
+                "http://www.gravatar.com/avatar/" + URLEncoder.encode(id)
+                        + "?size=100&d=mm");
+        final HttpURLConnection conn = (HttpURLConnection) aURL.openConnection();
+        conn.setDoInput(true);
         conn.connect();
         final InputStream is = conn.getInputStream();
-        final BufferedInputStream bis = new BufferedInputStream(is);
-        final Bitmap bm = BitmapFactory.decodeStream(bis);
-        bis.close();
+        final Bitmap bm = BitmapFactory.decodeStream(is);
         is.close();
         return bm;
     }
