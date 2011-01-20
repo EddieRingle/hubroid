@@ -13,7 +13,6 @@ import com.flurry.android.FlurryAgent;
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.adapters.CommitListAdapter;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,9 +21,9 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,122 +40,154 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 public class CommitsList extends Activity {
-    private GitHubAPI _gapi;
+    private GitHubAPI mGapi = new GitHubAPI();;
 
-    public ArrayList<String> m_branches;
+    public ArrayList<String> mBranches;
 
-    public ArrayAdapter<String> m_branchesAdapter;
+    public ArrayAdapter<String> mBranchesAdapter;
 
-    public CommitListAdapter m_commitListAdapter;
+    public CommitListAdapter mCommitListAdapter;
 
-    public JSONArray m_commitsJSON;
+    public JSONArray mCommitsJSON;
 
-    private SharedPreferences.Editor m_editor;
+    private SharedPreferences.Editor mEditor;
 
-    public Intent m_intent;
+    public Intent mIntent;
 
-    private final OnItemSelectedListener m_onBranchSelect = new OnItemSelectedListener() {
+    public ListView mCommitListView;
+
+    private static class GatherCommitsTask extends AsyncTask<Void, Void, Void> {
+        public CommitsList mActivity;
+
+        protected void onPreExecute() {
+            mActivity.mProgressDialog = ProgressDialog.show(mActivity, "Please wait...", "Loading repository's commits...", true);
+        }
+
+        protected Void doInBackground(Void... params) {
+            try {
+                mActivity.mCommitsJSON = new JSONObject(mActivity.mGapi.commits.list(mActivity.mRepoOwner, mActivity.mRepoName,
+                        mActivity.mBranches.get(mActivity.mBranchPosition)).resp).getJSONArray("commits");
+                mActivity.mCommitListAdapter = new CommitListAdapter(mActivity, mActivity.mCommitsJSON);
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            mActivity.mCommitListView.setAdapter(mActivity.mCommitListAdapter);
+            mActivity.mProgressDialog.dismiss();
+
+            super.onPostExecute(result);
+        }
+    };
+
+    private static class DiscoverBranchesTask extends AsyncTask<Void, Void, Void> {
+        public CommitsList mActivity;
+
+        protected void onPreExecute() {
+            mActivity.mProgressDialog = ProgressDialog.show(mActivity, "Please wait...", "Loading repository's branches...", true);
+        }
+
+        protected Void doInBackground(Void... params) {
+            try {
+                final JSONObject branchesJson = new JSONObject(mActivity.mGapi.repo.branches(mActivity.mRepoOwner, mActivity.mRepoName).resp).getJSONObject("branches");
+                mActivity.mBranches = new ArrayList<String>(branchesJson.length());
+                final Iterator<?> keys = branchesJson.keys();
+                while (keys.hasNext()) {
+                    final String next_branch = (String) keys.next();
+                    mActivity.mBranches.add(next_branch);
+                }
+
+                mActivity.mBranchesAdapter = new ArrayAdapter<String>(mActivity,
+                        android.R.layout.simple_spinner_item, mActivity.mBranches);
+                mActivity.mBranchesAdapter
+                        .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            mActivity.mBranchesSpinner.setAdapter(mActivity.mBranchesAdapter);
+            /* Find the position of the master branch */
+            final int masterPos = mActivity.mBranches.indexOf("master");
+            /* Set the spinner to the master branch, if it exists, by
+             * default */
+            mActivity.mBranchesSpinner.setSelection(masterPos);
+            mActivity.mProgressDialog.dismiss();
+
+            super.onPostExecute(result);
+        }
+    };
+
+    private final OnItemSelectedListener mOnBranchSelect = new OnItemSelectedListener() {
         public void onItemSelected(final AdapterView<?> parent, final View view,
                 final int position, final long id) {
-            m_position = position;
-            m_progressDialog = ProgressDialog.show(CommitsList.this, "Please wait...",
-                    "Loading Repository's Commits...", true);
-            m_thread = new Thread(null, threadProc_gatherCommits);
-            m_thread.start();
+            if (position != mBranchPosition) {
+                mBranchPosition = position;
+                if (mGatherCommitsTask.getStatus() == AsyncTask.Status.FINISHED) {
+                    mGatherCommitsTask = new GatherCommitsTask();
+                    mGatherCommitsTask.mActivity = CommitsList.this;
+                }
+                if (mGatherCommitsTask.getStatus() == AsyncTask.Status.PENDING) {
+                    mGatherCommitsTask.execute();
+                }
+            }
         }
 
         public void onNothingSelected(final AdapterView<?> arg0) {
         }
     };
 
-    public int m_position;
+    public int mBranchPosition;
 
-    private SharedPreferences m_prefs;
+    public int mPosition;
 
-    public ProgressDialog m_progressDialog;
+    private SharedPreferences mPrefs;
 
-    public String m_repo_name;
+    public ProgressDialog mProgressDialog;
 
-    public String m_repo_owner;
+    public String mRepoName;
 
-    private Thread m_thread;
+    public String mRepoOwner;
 
-    private String m_token;
+    private String mPassword;
 
-    private String m_username;
+    private String mUsername;
 
-    private final Runnable threadProc_gatherCommits = new Runnable() {
-        public void run() {
-            try {
-                m_commitsJSON = new JSONObject(_gapi.commits.list(m_repo_owner, m_repo_name,
-                        m_branches.get(m_position)).resp).getJSONArray("commits");
-                Log.d("debug1", m_commitsJSON.toString());
-                m_commitListAdapter = new CommitListAdapter(CommitsList.this, m_commitsJSON);
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+    private GatherCommitsTask mGatherCommitsTask;
 
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    final ListView commitList = (ListView) findViewById(R.id.lv_commits_list_list);
-                    commitList.setAdapter(m_commitListAdapter);
-                    m_progressDialog.dismiss();
-                }
-            });
-        }
-    };
+    private DiscoverBranchesTask mDiscoverBranchesTask;
+
+    public Spinner mBranchesSpinner;
 
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.commits_list);
 
-        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        m_editor = m_prefs.edit();
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        mUsername = mPrefs.getString("login", "");
+        mPassword = mPrefs.getString("password", "");
 
-        _gapi = new GitHubAPI();
+        mGapi.authenticate(mUsername, mPassword);
 
         final TextView title = (TextView) findViewById(R.id.tv_top_bar_title);
         title.setText("Recent Commits");
 
+        mBranchesSpinner = (Spinner) findViewById(R.id.spn_commits_list_branch_select);
+        mBranchesSpinner.setOnItemSelectedListener(mOnBranchSelect);
+
+        mCommitListView = (ListView) findViewById(R.id.lv_commits_list_list);
+
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            m_repo_name = extras.getString("repo_name");
-            m_repo_owner = extras.getString("username");
-
-            try {
-                final Response branchesResponse = _gapi.repo.branches(m_repo_owner, m_repo_name);
-                final JSONObject branchesJson = new JSONObject(branchesResponse.resp)
-                        .getJSONObject("branches");
-                m_branches = new ArrayList<String>(branchesJson.length());
-                final Iterator<?> keys = branchesJson.keys();
-                while (keys.hasNext()) {
-                    final String next_branch = (String) keys.next();
-                    m_branches.add(next_branch);
-                }
-
-                // Find the position of the master branch
-                final int masterPos = m_branches.indexOf("master");
-
-                m_branchesAdapter = new ArrayAdapter<String>(CommitsList.this,
-                        android.R.layout.simple_spinner_item, m_branches);
-                m_branchesAdapter
-                        .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                final Spinner branchesSpinner = (Spinner) findViewById(R.id.spn_commits_list_branch_select);
-                branchesSpinner.setAdapter(m_branchesAdapter);
-                branchesSpinner.setOnItemSelectedListener(m_onBranchSelect);
-                // Set the spinner to the master branch, if it exists, by
-                // default
-                if (masterPos > -1) {
-                    branchesSpinner.setSelection(masterPos);
-                }
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            mRepoName = extras.getString("repo_name");
+            mRepoOwner = extras.getString("repo_owner");
         }
     }
 
@@ -168,7 +199,7 @@ public class CommitsList extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                m_editor.clear().commit();
+                mEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
@@ -188,13 +219,36 @@ public class CommitsList extends Activity {
     }
 
     @Override
+    protected void onResume() {
+        if (mBranchesAdapter != null) {
+            mBranchesSpinner.setAdapter(mBranchesAdapter);
+            mBranchesSpinner.setSelection(mBranchPosition);
+        }
+        if (mCommitListAdapter != null) {
+            mCommitListView.setAdapter(mCommitListAdapter);
+        }
+        final Object tasks = getLastNonConfigurationInstance();
+        if (tasks == null) {
+            mDiscoverBranchesTask = new DiscoverBranchesTask();
+            mGatherCommitsTask = new GatherCommitsTask();
+        } else {
+            mDiscoverBranchesTask = (DiscoverBranchesTask) ((AsyncTask[])tasks)[0];
+            mGatherCommitsTask = (GatherCommitsTask) ((AsyncTask[])tasks)[1];
+        }
+        mDiscoverBranchesTask.mActivity = this;
+        mGatherCommitsTask.mActivity = this;
+        if (mDiscoverBranchesTask.getStatus() == AsyncTask.Status.PENDING && mBranchesAdapter == null) {
+            mDiscoverBranchesTask.execute();
+        }
+        super.onResume();
+    }
+
+    @Override
     public void onPause() {
-        if ((m_thread != null) && m_thread.isAlive()) {
-            m_thread.stop();
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
-        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
-            m_progressDialog.dismiss();
-        }
+        mBranchPosition = mBranchesSpinner.getSelectedItemPosition();
         super.onPause();
     }
 
@@ -219,12 +273,12 @@ public class CommitsList extends Activity {
                     public void onItemClick(final AdapterView<?> parent, final View v,
                             final int position, final long id) {
                         try {
-                            m_position = position;
+                            mPosition = position;
                             final Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
-                            i.putExtra("id", m_commitsJSON.getJSONObject(m_position)
+                            i.putExtra("id", mCommitsJSON.getJSONObject(mPosition)
                                     .getString("id"));
-                            i.putExtra("repo_name", m_repo_name);
-                            i.putExtra("username", m_repo_owner);
+                            i.putExtra("repo_name", mRepoName);
+                            i.putExtra("username", mRepoOwner);
                             CommitsList.this.startActivity(i);
                         } catch (final JSONException e) {
                             e.printStackTrace();
@@ -237,5 +291,48 @@ public class CommitsList extends Activity {
     public void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(this);
+    }
+
+    public Object onRetainNonConfigurationInstance() {
+        final AsyncTask[] tasks = new AsyncTask[]{ mDiscoverBranchesTask, mGatherCommitsTask };
+        return tasks;
+    }
+
+    @Override
+    public void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        try {
+            if (savedInstanceState.containsKey("branches")) {
+                mBranches = savedInstanceState.getStringArrayList("branches");
+            }
+            if (savedInstanceState.containsKey("commitsJson")) {
+                mCommitsJSON = new JSONArray(savedInstanceState.getString("commitsJson"));
+            }
+            mBranchPosition = savedInstanceState.getInt("position");
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        if (mBranches != null) {
+            mBranchesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, mBranches);
+            mBranchesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        }
+        if (mCommitsJSON != null) {
+            mCommitListAdapter = new CommitListAdapter(this, mCommitsJSON);
+        } else {
+            mCommitListAdapter = null;
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle savedInstanceState) {
+        if (mBranches != null) {
+            savedInstanceState.putStringArrayList("branches", mBranches);
+        }
+        if (mCommitsJSON != null) {
+            savedInstanceState.putString("commitsJson", mCommitsJSON.toString());
+        }
+        savedInstanceState.putInt("position", mBranchesSpinner.getSelectedItemPosition());
+        super.onSaveInstanceState(savedInstanceState);
     }
 }

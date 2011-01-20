@@ -21,7 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -63,13 +62,9 @@ public class CommitChangeViewer extends Activity {
 
     private SharedPreferences mPrefs;
 
-    public ProgressDialog mProgressDialog;
-
     public String mRepoName;
 
     public String mRepoOwner;
-
-    private Thread mThread;
 
     private String mPassword;
 
@@ -254,12 +249,6 @@ public class CommitChangeViewer extends Activity {
 
     @Override
     public void onPause() {
-        if ((mThread != null) && mThread.isAlive()) {
-            mThread.stop();
-        }
-        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
         super.onPause();
     }
 

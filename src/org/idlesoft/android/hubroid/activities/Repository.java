@@ -142,7 +142,7 @@ public class Repository extends Activity {
                         public void onClick(final View v) {
                             final Intent intent = new Intent(Repository.this, CommitsList.class);
                             intent.putExtra("repo_name", mRepositoryName);
-                            intent.putExtra("username", mRepositoryOwner);
+                            intent.putExtra("repo_owner", mRepositoryOwner);
                             startActivity(intent);
                         }
                     });
