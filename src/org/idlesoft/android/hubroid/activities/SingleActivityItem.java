@@ -12,6 +12,7 @@ import com.flurry.android.FlurryAgent;
 
 import org.idlesoft.android.hubroid.R;
 import org.idlesoft.android.hubroid.utils.GravatarCache;
+import org.idlesoft.android.hubroid.utils.NewsFeedHelpers;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -23,6 +24,7 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,21 +34,39 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SingleActivityItem extends Activity {
-    public static final String CSS = "<style type=\"text/css\">" + "div, ul, li, blockquote {"
-            + "font-size: 14px;" + "}" + "blockquote {" + "color: #999;" + "margin: 0;" + "}"
-            + "</style>";
+    public static final String CSS =
+        "<style type=\"text/css\">"
+        + "* {"
+        + "font-size: 13px;"
+        + "margin: 0px;"
+        + "}"
+        + "div {"
+        + "margin: 10px;"
+        + "}"
+        + "ul, li {"
+        + "margin: 0;"
+        + "padding: 0;"
+        + "margin-top: 10px;"
+        + "margin-bottom: 10px;"
+        + "margin-left: 10px;"
+        + "}"
+        + "span {"
+        + "color: #999;"
+        + "margin: 0;"
+        + "}"
+        + "</style>";
 
-    private SharedPreferences.Editor _editor;
+    private SharedPreferences.Editor mEditor;
 
-    public Intent _intent;
+    public Intent mIntent;
 
-    private JSONObject _JSON = new JSONObject();
+    private JSONObject mJson = new JSONObject();
 
-    private String _password;
+    private String mPassword;
 
-    private SharedPreferences _prefs;
+    private SharedPreferences mPrefs;
 
-    private String _username;
+    private String mUsername;
 
     private void loadActivityItemBox() {
         final TextView date = (TextView) findViewById(R.id.tv_activity_item_date);
@@ -55,7 +75,7 @@ public class SingleActivityItem extends Activity {
         final TextView title_tv = (TextView) findViewById(R.id.tv_activity_item_title);
 
         try {
-            final JSONObject entry = _JSON;
+            final JSONObject entry = mJson;
             final JSONObject payload = entry.getJSONObject("payload");
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -139,7 +159,7 @@ public class SingleActivityItem extends Activity {
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("FollowEvent")) {
                 icon.setImageResource(R.drawable.follow);
-                title = actor + " started following " + payload.getString("target");
+                title = actor + " started following " + payload.getJSONObject("target").getString("login");
             } else if (eventType.contains("CreateEvent")) {
                 icon.setImageResource(R.drawable.create);
                 if (payload.getString("object").contains("repository")) {
@@ -191,14 +211,15 @@ public class SingleActivityItem extends Activity {
                 title = actor + " open sourced "
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("PullRequestEvent")) {
+                int number = (payload.get("pull_request") instanceof JSONObject) ? payload.getJSONObject("pull_request").getInt("number") : payload.getInt("number");
                 if (payload.getString("action").equalsIgnoreCase("opened")) {
                     icon.setImageResource(R.drawable.issues_open);
-                    title = actor + " opened pull request " + payload.getInt("number") + " on "
+                    title = actor + " opened pull request " + number + " on "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
                 } else if (payload.getString("action").equalsIgnoreCase("closed")) {
                     icon.setImageResource(R.drawable.issues_closed);
-                    title = actor + " closed pull request " + payload.getInt("number") + " on "
+                    title = actor + " closed pull request " + number + " on "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
                 }
@@ -222,22 +243,37 @@ public class SingleActivityItem extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.single_activity_item);
 
-        _prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        _editor = _prefs.edit();
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
 
-        _username = _prefs.getString("username", "");
-        _password = _prefs.getString("password", "");
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             try {
-                _JSON = new JSONObject(extras.getString("item_json"));
+                mJson = new JSONObject(extras.getString("item_json"));
                 loadActivityItemBox();
                 final WebView content = (WebView) findViewById(R.id.wv_single_activity_item_content);
-                String html = _JSON.getJSONObject("content").getString("content");
-                html = html.replace('\n', ' ');
+                content.setWebViewClient(new WebViewClient() {
+                   public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                       if (url.startsWith("hubroid://")) {
+                           String parts[] = url.substring(10).split("/");
+                           if (parts[0].equals("showCommit")) {
+                               Intent intent = new Intent(SingleActivityItem.this, CommitChangeViewer.class);
+                               intent.putExtra("username", parts[1]);
+                               intent.putExtra("repo_name", parts[2]);
+                               intent.putExtra("id", parts[3]);
+                               startActivity(intent);
+                           }
+                           return true;
+                       }
+                       return false;
+                   } 
+                });
+                String html = NewsFeedHelpers.linkifyPushItem(mJson);
                 final String out = CSS + html;
-                content.loadData(out, "text/" + _JSON.getJSONObject("content").getString("type"),
+                content.loadData(out, "text/html",
                         "UTF-8");
             } catch (final JSONException e) {
                 e.printStackTrace();
@@ -252,7 +288,7 @@ public class SingleActivityItem extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                _editor.clear().commit();
+                mEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

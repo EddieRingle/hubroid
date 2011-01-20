@@ -17,6 +17,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -180,7 +181,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("FollowEvent")) {
                 holder.icon.setImageResource(R.drawable.follow);
-                title = actor + " started following " + payload.getString("target");
+                title = actor + " started following " + payload.getJSONObject("target").getString("login");
             } else if (eventType.contains("CreateEvent")) {
                 holder.icon.setImageResource(R.drawable.create);
                 if (payload.getString("object").contains("repository")) {
@@ -232,14 +233,15 @@ public class ActivityFeedAdapter extends BaseAdapter {
                 title = actor + " open sourced "
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("PullRequestEvent")) {
+                int number = (payload.get("pull_request") instanceof JSONObject) ? payload.getJSONObject("pull_request").getInt("number") : payload.getInt("number");
                 if (payload.getString("action").equalsIgnoreCase("opened")) {
                     holder.icon.setImageResource(R.drawable.issues_open);
-                    title = actor + " opened pull request " + payload.getInt("number") + " on "
+                    title = actor + " opened pull request " + number + " on "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
                 } else if (payload.getString("action").equalsIgnoreCase("closed")) {
                     holder.icon.setImageResource(R.drawable.issues_closed);
-                    title = actor + " closed pull request " + payload.getInt("number") + " on "
+                    title = actor + " closed pull request " + number + " on "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
                 }
@@ -252,6 +254,11 @@ public class ActivityFeedAdapter extends BaseAdapter {
             holder.title.setText(title);
         } catch (final JSONException e) {
             e.printStackTrace();
+            try {
+                Log.d("hubroid", m_data.getJSONObject(index).getJSONObject("payload").toString());
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
         } catch (final ParseException e) {
             e.printStackTrace();
         }
