@@ -128,7 +128,7 @@ public class CommitChangeViewer extends Activity {
         mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         mEditor = mPrefs.edit();
 
-        mUsername = mPrefs.getString("login", "");
+        mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
         final View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
 
