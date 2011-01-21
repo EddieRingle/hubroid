@@ -12,10 +12,10 @@
 		android:layout_height="wrap_content">
 		<ImageView
 			android:id="@+id/commit_view_author_gravatar"
-			android:layout_width="36px"
+			android:layout_width="34dip"
 			android:layout_marginLeft="10dip"
 			android:layout_marginRight="10dip"
-			android:layout_height="36px"
+			android:layout_height="34dip"
 			android:scaleType="center"
 			android:background="@drawable/gravatar_border"
 			android:layout_gravity="center"/>
@@ -69,10 +69,10 @@
 		android:visibility="gone">
 		<ImageView
 			android:id="@+id/commit_view_committer_gravatar"
-			android:layout_width="36px"
+			android:layout_width="34dip"
 			android:layout_marginLeft="10dip"
 			android:layout_marginRight="10dip"
-			android:layout_height="36px"
+			android:layout_height="34dip"
 			android:scaleType="center"
 			android:background="@drawable/gravatar_border"
 			android:layout_gravity="center"/>
