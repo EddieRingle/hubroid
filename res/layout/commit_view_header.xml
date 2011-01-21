@@ -121,7 +121,6 @@
 		android:id="@+id/commit_view_message"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:ellipsize="end"
 		android:textSize="16dip"
 		android:textColor="@color/darkText"
 		android:text="commit message here"
