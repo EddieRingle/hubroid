@@ -40,5 +40,8 @@ public class NewsFeedHelpers {
     public static String linkifyCreateBranchItem(JSONObject pNewsItem) throws JSONException {
         String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
         String repoName = pNewsItem.getJSONObject("repository").getString("name");
+        JSONObject payload = pNewsItem.getJSONObject("payload");
+
+        return new String();
     }
 }

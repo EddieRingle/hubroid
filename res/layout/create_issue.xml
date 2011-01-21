@@ -6,12 +6,13 @@
 	android:layout_height="fill_parent"
 	android:isScrollContainer="true">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<include android:id="@+id/include_page_title" layout="@layout/page_title" android:layout_below="@id/include_page_title" />
 	<LinearLayout
 		android:id="@+id/ll_create_issue_shadow"
 		android:layout_width="fill_parent"
 		android:layout_height="10dip"
 		android:orientation="vertical"
-		android:layout_below="@id/include_top_bar"
+		android:layout_below="@id/include_page_title"
 		android:background="@drawable/shadow" />
 	<ScrollView
 		android:layout_width="fill_parent"

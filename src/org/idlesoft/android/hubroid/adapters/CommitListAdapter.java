@@ -126,6 +126,7 @@ public class CommitListAdapter extends BaseAdapter {
                 }
                 holder.commit_date.setText(sec + end);
             }
+            holder.gravatar.setBackgroundDrawable(m_context.getResources().getDrawable(R.drawable.gravatar_border));
             holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index)
                     .getJSONObject("author").getString("login")));
             holder.commit_shortdesc.setText(m_data.getJSONObject(index).getString("message").split(

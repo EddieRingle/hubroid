@@ -45,8 +45,6 @@ public class Repository extends Activity {
 
     private String mRepositoryOwner;
 
-    private Thread mThread;
-
     private String mUsername;
 
     @Override
@@ -137,10 +135,10 @@ public class Repository extends Activity {
                 e.printStackTrace();
             }
 
-            ((Button) findViewById(R.id.btn_repository_info_commits))
+            ((Button) findViewById(R.id.btn_repository_info_branches))
                     .setOnClickListener(new OnClickListener() {
                         public void onClick(final View v) {
-                            final Intent intent = new Intent(Repository.this, CommitsList.class);
+                            final Intent intent = new Intent(Repository.this, BranchesList.class);
                             intent.putExtra("repo_name", mRepositoryName);
                             intent.putExtra("repo_owner", mRepositoryOwner);
                             startActivity(intent);
@@ -231,17 +229,6 @@ public class Repository extends Activity {
                 }
         }
         return false;
-    }
-
-    @Override
-    public void onPause() {
-        if ((mThread != null) && mThread.isAlive()) {
-            mThread.stop();
-        }
-        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
-        }
-        super.onPause();
     }
 
     @Override

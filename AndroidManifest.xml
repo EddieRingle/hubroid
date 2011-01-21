@@ -21,6 +21,9 @@
 		<activity android:name=".activities.tabs.Following" />
 		<activity android:name=".activities.Profile" />
 		<activity android:name=".activities.Repository" />
+		<activity android:name=".activities.BranchesList" />
+		<activity android:name=".activities.Branch" />
+		<activity android:name=".activities.BranchTree" />
 
 		<activity android:name=".activities.CommitsList" />
 		<activity android:name=".activities.IssuesList" />

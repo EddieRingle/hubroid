@@ -69,7 +69,7 @@ public class CreateIssue extends Activity {
             m_targetUser = m_username;
         }
 
-        ((TextView) findViewById(R.id.tv_top_bar_title)).setText("New Issue");
+        ((TextView) findViewById(R.id.tv_page_title)).setText("New Issue");
 
         ((Button) findViewById(R.id.btn_create_issue_submit))
                 .setOnClickListener(new OnClickListener() {

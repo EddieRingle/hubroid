@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/rl_branch_root"
+	android:background="#FFF"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent">
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<RelativeLayout
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/include_top_bar">
+		<RelativeLayout
+			android:id="@+id/rl_branch_infobox"
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:background="#F4F4F4"
+			android:padding="10dip">
+			<TextView
+				android:id="@+id/tv_branch_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textColor="#333"
+				android:textStyle="bold"
+				android:textSize="24dip" />
+			<TextView
+				android:id="@+id/tv_branch_sha"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_below="@id/tv_branch_name"
+				android:layout_alignLeft="@id/tv_branch_name"
+				android:textSize="16dip" />
+		</RelativeLayout>
+		<LinearLayout
+			android:id="@+id/ll_branch_strip"
+			android:layout_width="fill_parent"
+			android:layout_height="2.5dip"
+			android:layout_below="@id/rl_branch_infobox"
+			android:background="@drawable/gray_strip" />
+		<LinearLayout
+			android:id="@+id/ll_branch_shadow"
+			android:layout_width="fill_parent"
+			android:layout_height="10dip"
+			android:layout_below="@id/ll_branch_strip"
+			android:background="@drawable/shadow" />
+		<ListView
+			android:id="@+id/lv_branch_infoList"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:layout_below="@id/ll_branch_shadow">
+		</ListView>
+	</RelativeLayout>
+</RelativeLayout>

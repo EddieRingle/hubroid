@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent"
+	android:paddingTop="15dip"
+	android:paddingBottom="15dip">
+	<ImageView
+		android:id="@+id/iv_branchListItem_icon"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="10dip"
+		android:layout_centerVertical="true"
+		android:src="@drawable/branch" />
+	<TextView
+		android:id="@+id/tv_branchListItem_branchName"
+		android:layout_toRightOf="@id/iv_branchListItem_icon"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="12.5dip"
+		android:textColor="@color/darkText"
+		android:textSize="20dip"
+		android:ellipsize="end"
+		android:maxLines="1" />
+</RelativeLayout>

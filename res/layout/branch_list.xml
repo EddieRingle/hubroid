@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/ll_commits_list_root"
+	android:id="@+id/ll_branchList_root"
 	android:orientation="vertical"
-	android:background="#FFF"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	android:layout_height="fill_parent"
+	android:background="#FFF">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<include android:id="@+id/include_page_title" layout="@layout/page_title" />
 	<ListView
-		android:id="@+id/lv_commits_list_list"
+		android:id="@+id/lv_branchList_list"
+		android:cacheColorHint="#FFF"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:cacheColorHint="#FFF">
-	</ListView>
+		android:layout_height="fill_parent" />
 </LinearLayout>

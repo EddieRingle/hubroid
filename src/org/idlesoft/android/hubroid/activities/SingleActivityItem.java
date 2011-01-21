@@ -261,9 +261,9 @@ public class SingleActivityItem extends Activity {
                            String parts[] = url.substring(10).split("/");
                            if (parts[0].equals("showCommit")) {
                                Intent intent = new Intent(SingleActivityItem.this, CommitChangeViewer.class);
-                               intent.putExtra("username", parts[1]);
+                               intent.putExtra("repo_owner", parts[1]);
                                intent.putExtra("repo_name", parts[2]);
-                               intent.putExtra("id", parts[3]);
+                               intent.putExtra("commit_sha", parts[3]);
                                startActivity(intent);
                            }
                            return true;
