@@ -13,7 +13,7 @@ public class NewsFeedHelpers {
         String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
         String html =
                 "<div>"
-                + "HEAD is at <a href=\"hubroid://showCommit/"
+                + "HEAD is at <a href=\""
                         + commitUriPrefix
                         + payload.getString("head")
                         + "\">"

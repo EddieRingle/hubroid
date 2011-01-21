@@ -275,10 +275,10 @@ public class CommitsList extends Activity {
                         try {
                             mPosition = position;
                             final Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
-                            i.putExtra("id", mCommitsJSON.getJSONObject(mPosition)
+                            i.putExtra("commit_sha", mCommitsJSON.getJSONObject(mPosition)
                                     .getString("id"));
                             i.putExtra("repo_name", mRepoName);
-                            i.putExtra("username", mRepoOwner);
+                            i.putExtra("repo_owner", mRepoOwner);
                             CommitsList.this.startActivity(i);
                         } catch (final JSONException e) {
                             e.printStackTrace();

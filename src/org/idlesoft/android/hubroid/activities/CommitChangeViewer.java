@@ -54,7 +54,7 @@ public class CommitChangeViewer extends Activity {
 
     private SharedPreferences.Editor mEditor;
 
-    private String mId;
+    private String mCommitSha;
 
     public Intent mIntent;
 
@@ -140,13 +140,13 @@ public class CommitChangeViewer extends Activity {
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mRepoName = extras.getString("repo_name");
-            mRepoOwner = extras.getString("username");
-            mId = extras.getString("id");
+            mRepoOwner = extras.getString("repo_owner");
+            mCommitSha = extras.getString("commit_sha");
 
             // Get the commit data for that commit ID so that we can get the
             // tree ID and filename.
             try {
-                final Response commitInfo = mGapi.commits.commit(mRepoOwner, mRepoName, mId);
+                final Response commitInfo = mGapi.commits.commit(mRepoOwner, mRepoName, mCommitSha);
                 final JSONObject commitJSON = new JSONObject(commitInfo.resp)
                         .getJSONObject("commit");
 
