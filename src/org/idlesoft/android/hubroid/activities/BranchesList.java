@@ -137,7 +137,9 @@ public class BranchesList extends Activity {
 
             mGetBranchesTask.activity = this;
 
-            mGetBranchesTask.execute();
+            if (mGetBranchesTask.getStatus() == AsyncTask.Status.PENDING && mBranchListAdapter == null) {
+                mGetBranchesTask.execute();
+            }
         }
     }
 
