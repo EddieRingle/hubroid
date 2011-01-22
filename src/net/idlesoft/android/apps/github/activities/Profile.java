@@ -138,7 +138,7 @@ public class Profile extends Activity {
                 if (mJson.has("name") && !mJson.getString("name").equals("null")) {
                     full_name = mJson.getString("name");
                 } else {
-                    full_name = "N/A";
+                    full_name = mTarget;
                 }
                 if (mJson.has("email") && !mJson.getString("email").equals("null")
                         && !mJson.getString("email").equals("")) {
