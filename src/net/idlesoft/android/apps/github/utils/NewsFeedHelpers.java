@@ -40,8 +40,32 @@ public class NewsFeedHelpers {
     public static String linkifyCreateBranchItem(JSONObject pNewsItem) throws JSONException {
         String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
         String repoName = pNewsItem.getJSONObject("repository").getString("name");
+        String actor = pNewsItem.getString("actor");
         JSONObject payload = pNewsItem.getJSONObject("payload");
 
-        return new String();
+        String userUriPrefix = "hubroid://showUser/";
+        String repoUri = "hubroid://showRepo/" + repoOwner + "/" + repoName;
+        String html =
+                "<div>"
+                + "<a href=\"" + userUriPrefix + actor + "\">" + actor + "</a> created branch " + payload.getString("object_name") + " at <a href=\"" + repoUri + "\">" + repoOwner + "/" + repoName + "</a>."
+                + "</div>";
+
+        return html;
+    }
+
+    public static String linkifyCommitCommentItem(JSONObject pNewsItem) throws JSONException {
+        String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
+        String repoName = pNewsItem.getJSONObject("repository").getString("name");
+        String actor = pNewsItem.getString("actor");
+        JSONObject payload = pNewsItem.getJSONObject("payload");
+        String commit = payload.getString("commit");
+
+        String userUriPrefix = "hubroid://showUser/";
+        String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
+        String html =
+                "<div>"
+                + "<a href=\"" + userUriPrefix + actor + "\">" + actor + "</a> commented on <a href=\"" + commitUriPrefix + commit + "\">" + commit.substring(0, 8) + "</a>."
+                + "</div>";
+        return html;
     }
 }

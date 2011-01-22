@@ -266,13 +266,30 @@ public class SingleActivityItem extends Activity {
                                intent.putExtra("repo_name", parts[2]);
                                intent.putExtra("commit_sha", parts[3]);
                                startActivity(intent);
+                           } else if (parts[0].equals("showRepo")) {
+                               Intent intent = new Intent(SingleActivityItem.this, Repository.class);
+                               intent.putExtra("repo_owner", parts[1]);
+                               intent.putExtra("repo_name", parts[2]);
+                               startActivity(intent);
+                           } else if (parts[0].equals("showUser")) {
+                               Intent intent = new Intent(SingleActivityItem.this, Profile.class);
+                               intent.putExtra("username", parts[1]);
+                               startActivity(intent);
                            }
                            return true;
                        }
                        return false;
                    } 
                 });
-                String html = NewsFeedHelpers.linkifyPushItem(mJson);
+                String html = "";
+                String eventType = mJson.getString("type");
+                if (eventType.equals("PushEvent")) {
+                    html = NewsFeedHelpers.linkifyPushItem(mJson);
+                } else if (eventType.equals("CreateEvent") && mJson.getJSONObject("payload").getString("object").equals("branch")) {
+                    html = NewsFeedHelpers.linkifyCreateBranchItem(mJson);
+                } else if (eventType.equals("CommitCommentEvent")) {
+                    html = NewsFeedHelpers.linkifyCommitCommentItem(mJson);
+                }
                 final String out = CSS + html;
                 content.loadData(out, "text/html",
                         "UTF-8");
