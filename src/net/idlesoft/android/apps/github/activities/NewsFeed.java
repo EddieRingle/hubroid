@@ -57,23 +57,9 @@ public class NewsFeed extends Activity {
                     e.printStackTrace();
                 }
             }
-            if (activity.mDisplayedJson == null) {
-                activity.mDisplayedJson = new JSONArray();
+            if (activity.mJson != null) {
+                activity.mActivityAdapter = new ActivityFeedAdapter(activity, activity.mJson, mPrivate == false);
             }
-            final int length = activity.mDisplayedJson.length();
-            for (int i = length; i < length + 10; i++) {
-                if (activity.mJson.isNull(i)) {
-                    break;
-                }
-                try {
-                    activity.mDisplayedJson.put(activity.mJson.get(i));
-                } catch (final JSONException e) {
-                    e.printStackTrace();
-                    break;
-                }
-            }
-            activity.mActivityAdapter = new ActivityFeedAdapter(activity
-                    .getApplicationContext(), activity.mDisplayedJson, mPrivate == false);
             return null;
         }
 
@@ -89,25 +75,20 @@ public class NewsFeed extends Activity {
         }
 
         protected void removeLoadingView() {
-            ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .removeHeaderView(activity.mLoadingItem);
+            activity.mListView.removeHeaderView(activity.mLoadingItem);
         }
 
         protected void setAdapter() {
-            ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .setAdapter(activity.mActivityAdapter);
-            ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .setOnItemClickListener(activity.onActivityItemClick);
+            activity.mListView.setAdapter(activity.mActivityAdapter);
         }
 
         protected void setLoadingView() {
-            ((ListView) activity.findViewById(R.id.lv_news_feed))
-                    .addHeaderView(activity.mLoadingItem);
-            ((ListView) activity.findViewById(R.id.lv_news_feed)).setAdapter(null);
+            if (activity.mJson == null) {
+                activity.mListView.addHeaderView(activity.mLoadingItem);
+                activity.mListView.setAdapter(null);
+            }
         }
     }
-
-    public JSONArray mDisplayedJson;
 
     private SharedPreferences.Editor mEditor;
 
@@ -132,13 +113,15 @@ public class NewsFeed extends Activity {
                 final long arg3) {
             try {
                 final Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
-                intent.putExtra("item_json", mDisplayedJson.getJSONObject(arg2).toString());
+                intent.putExtra("item_json", mJson.getJSONObject(arg2).toString());
                 startActivity(intent);
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
         }
     };
+
+    private ListView mListView;
 
     private static String mTargetUser;
 
@@ -164,6 +147,9 @@ public class NewsFeed extends Activity {
             mTargetUser = mUsername;
             mPrivate = true;
         }
+
+        mListView = (ListView) findViewById(R.id.lv_news_feed);
+        mListView.setOnItemClickListener(onActivityItemClick);
 
         mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
         ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
@@ -230,29 +216,11 @@ public class NewsFeed extends Activity {
             } else {
                 keepGoing = false;
             }
-            if (savedInstanceState.containsKey("displayed_json")) {
-                mDisplayedJson = new JSONArray(savedInstanceState
-                        .getString("displayed_json"));
-            } else {
-                mDisplayedJson = new JSONArray();
-                final int length = mDisplayedJson.length();
-                for (int i = length; i < length + 10; i++) {
-                    if (mJson.isNull(i)) {
-                        break;
-                    }
-                    try {
-                        mDisplayedJson.put(mJson.get(i));
-                    } catch (final JSONException e) {
-                        e.printStackTrace();
-                        break;
-                    }
-                }
-            }
         } catch (final JSONException e) {
             keepGoing = false;
         }
         if (keepGoing == true) {
-            mActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mDisplayedJson,
+            mActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mJson,
                     false);
         } else {
             mActivityAdapter = null;
@@ -272,9 +240,6 @@ public class NewsFeed extends Activity {
 
     @Override
     public void onSaveInstanceState(final Bundle savedInstanceState) {
-        if (mDisplayedJson != null) {
-            savedInstanceState.putString("displayed_json", mDisplayedJson.toString());
-        }
         if (mJson != null) {
             savedInstanceState.putString("json", mJson.toString());
         }
