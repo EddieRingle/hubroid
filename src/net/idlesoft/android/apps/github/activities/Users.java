@@ -1,7 +1,7 @@
 /**
  * Hubroid - A GitHub app for Android
  * 
- * Copyright (c) 2010 Eddie Ringle.
+ * Copyright (c) 2011 Idlesoft LLC.
  * 
  * Licensed under the New BSD License.
  */

@@ -1,3 +1,10 @@
+/**
+ * Hubroid - A GitHub app for Android
+ * 
+ * Copyright (c) 2011 Idlesoft LLC.
+ * 
+ * Licensed under the New BSD License.
+ */
 
 package net.idlesoft.android.apps.github.activities;
 
