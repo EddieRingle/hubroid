@@ -10,61 +10,27 @@ package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.view.LayoutInflater;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-public class BranchTreeListAdapter extends BaseAdapter {
+public class BranchTreeListAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public ImageView icon;
 
         public TextView name;
     }
 
-    private final Context mContext;
-
-    private JSONArray mJson = new JSONArray();
-
-    private final LayoutInflater mInflater;
-
-    /**
-     * Create a new ActivityFeedAdapter
-     * 
-     * @param context
-     * @param jsonarray
-     * @param single - whether this is a public activity feed or not
-     */
-    public BranchTreeListAdapter(final Context context, final JSONArray json) {
-        mContext = context;
-        mInflater = LayoutInflater.from(mContext);
-        mJson = json;
+    public BranchTreeListAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public int getCount() {
-        return mJson.length();
-    }
-
-    public Object getItem(final int i) {
-        try {
-            return mJson.get(i);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public long getItemId(final int i) {
-        return i;
-    }
-
-    public View getView(final int index, View convertView, final ViewGroup parent) {
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.branch_tree_list_item, null);

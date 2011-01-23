@@ -13,6 +13,7 @@ import net.idlesoft.android.apps.github.adapters.BranchTreeListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,8 +23,11 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.flurry.android.FlurryAgent;
 
@@ -32,7 +36,7 @@ public class BranchTree extends Activity {
 
     public Intent mIntent;
 
-    public JSONObject mJson;
+    public JSONArray mJson;
 
     private String mPassword;
 
@@ -48,9 +52,7 @@ public class BranchTree extends Activity {
 
     private String mBranchSha;
 
-    private BranchTreeListAdapter mBranchTreeListAdapter;
-
-    private View mLoadingView;
+    private BranchTreeListAdapter mAdapter;
 
     private ListView mListView;
 
@@ -60,16 +62,15 @@ public class BranchTree extends Activity {
         public BranchTree activity;
 
         protected void onPreExecute() {
-            activity.mListView.addHeaderView(activity.mLoadingView);
-            activity.mListView.setAdapter(null);
+            activity.mAdapter.setIsLoadingData(true);
         }
 
         protected Void doInBackground(Void... params) {
             Response r = activity.mGapi.object.tree(activity.mRepositoryOwner, activity.mRepositoryName, activity.mBranchSha);
             if (r.statusCode == 200) {
                 try {
-                    activity.mJson = new JSONObject(r.resp);
-                    activity.mBranchTreeListAdapter = new BranchTreeListAdapter(activity, activity.mJson.getJSONArray("tree"));
+                    activity.mJson = (new JSONObject(r.resp)).getJSONArray("tree");
+                    activity.mAdapter.loadData(activity.mJson);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -78,10 +79,30 @@ public class BranchTree extends Activity {
         }
 
         protected void onPostExecute(Void result) {
-            activity.mListView.removeHeaderView(activity.mLoadingView);
-            activity.mListView.setAdapter(activity.mBranchTreeListAdapter);
+            activity.mAdapter.pushData();
+            activity.mAdapter.setIsLoadingData(false);
         }
     }
+
+    private OnItemClickListener mOnListItemClick = new OnItemClickListener() {
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            try {
+                JSONObject treeItem = mJson.getJSONObject(position);
+                if (treeItem.getString("type").equals("tree")) {
+                    Intent i = new Intent(BranchTree.this, BranchTree.class);
+                    i.putExtra("repo_owner", mRepositoryOwner);
+                    i.putExtra("repo_name", mRepositoryName);
+                    i.putExtra("branch_name", mBranchName);
+                    i.putExtra("branch_sha", treeItem.getString("sha"));
+                    startActivity(i);
+                } else if (treeItem.getString("type").equals("blob")) {
+                    Toast.makeText(BranchTree.this, "File viewing is not yet implemented.", Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -98,8 +119,10 @@ public class BranchTree extends Activity {
         final TextView pageTitle = (TextView) findViewById(R.id.tv_page_title);
         pageTitle.setText("Tree Browser");
 
-        mLoadingView = getLayoutInflater().inflate(R.layout.loading_listitem, null);
         mListView = (ListView) findViewById(R.id.lv_branchTreeList_list);
+        mListView.setOnItemClickListener(mOnListItemClick);
+
+        mAdapter = new BranchTreeListAdapter(BranchTree.this, mListView);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -111,15 +134,14 @@ public class BranchTree extends Activity {
     }
 
     protected void onResume() {
-        if (mBranchTreeListAdapter != null) {
-            mListView.setAdapter(mBranchTreeListAdapter);
-        }
+        mListView.setAdapter(mAdapter);
+
         mLoadTreeTask = (LoadTreeTask) getLastNonConfigurationInstance();
         if (mLoadTreeTask == null) {
             mLoadTreeTask = new LoadTreeTask();
         }
         mLoadTreeTask.activity = BranchTree.this;
-        if (mLoadTreeTask.getStatus() == AsyncTask.Status.PENDING && mBranchTreeListAdapter == null) {
+        if (mLoadTreeTask.getStatus() == AsyncTask.Status.PENDING && !mAdapter.hasItems()) {
             mLoadTreeTask.execute();
         }
         super.onResume();
