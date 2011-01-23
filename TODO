@@ -1,3 +1,5 @@
+* Convert the rest of the classes to use the new code style (see CONTRIBUTING)
+* Convert the remaining Adapters to use JsonListAdapter
 * Commit Overhaul:
 	1) Create Commit activity that shows information for a specific commit:
 		- Full commit message
