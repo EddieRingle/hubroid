@@ -105,6 +105,10 @@ public class CommitChangeViewerDiffAdapter extends BaseAdapter {
                     str.setSpan(new BackgroundColorSpan(res.getColor(R.color.removedText)), diff
                             .indexOf(diffLine), diff.indexOf(diffLine) + diffLine.length(),
                             Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                } else if (diffLine.startsWith("@@")) {
+                    str.setSpan(new BackgroundColorSpan(res.getColor(R.color.diffAtAtText)), diff
+                            .indexOf(diffLine), diff.indexOf(diffLine) + diffLine.length(),
+                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 }
             }
 
