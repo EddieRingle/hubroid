@@ -11,40 +11,40 @@ package net.idlesoft.android.apps.github.adapters;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
-import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import android.content.Context;
+import android.app.Activity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 public class SearchUsersListAdapter extends UsersListAdapter {
 
-    public SearchUsersListAdapter(final Context context, final JSONArray jsonarray) {
-        super(context, jsonarray);
-        loadGravatars();
+    public SearchUsersListAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public View getView(final int index, View convertView, final ViewGroup parent) {
-        m_currentIndex = index;
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
+        ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.user_list_item, null);
-            m_currentViewHolder = new ViewHolder();
-            m_currentViewHolder.text = (TextView) convertView
+            convertView = mInflater.inflate(R.layout.user_list_item, null);
+            holder = new ViewHolder();
+            holder.text = (TextView) convertView
                     .findViewById(R.id.tv_user_list_item_name);
-            m_currentViewHolder.gravatar = (ImageView) convertView
+            holder.gravatar = (ImageView) convertView
                     .findViewById(R.id.iv_user_list_gravatar);
-            convertView.setTag(m_currentViewHolder);
+            convertView.setTag(holder);
         } else {
-            m_currentViewHolder = (ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
-        m_currentViewHolder.text.setTextColor(R.color.textColor);
+        holder.text.setTextColor(R.color.textColor);
         try {
-            m_currentViewHolder.text.setText(m_data.getJSONObject(m_currentIndex).getString(
-                    "username"));
-            m_currentViewHolder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(
-                    m_currentIndex).getString("username")));
+            String username = ((JSONObject)getData().get(index)).getString("username");
+            holder.text.setText(username);
+            holder.gravatar.setImageBitmap(mGravatars.get(username));
         } catch (final JSONException e) {
             e.printStackTrace();
         }
@@ -53,12 +53,13 @@ public class SearchUsersListAdapter extends UsersListAdapter {
 
     @Override
     public void loadGravatars() {
-        final int length = m_data.length();
+        final int length = mJson.length();
         for (int i = 0; i < length; i++) {
             try {
-                final String username = m_data.getJSONObject(i).getString("username");
-                m_gravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(username), 30.0f, m_context.getResources()
+                final String username = ((JSONObject)mJson.get(i)).getString("username");
+                Log.d("hubroid", "Username found: " + username);
+                mGravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
+                        .getGravatarID(username), 30.0f, mActivity.getResources()
                         .getDisplayMetrics().density));
             } catch (final JSONException e) {
                 e.printStackTrace();

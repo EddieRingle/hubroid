@@ -15,6 +15,10 @@
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>
 
+	<!-- Search Activity -->
+	<string name="search_repos">Repositories</string>
+	<string name="search_users">Users</string>
+
 	<string name="repositories_tab_label">Repositories</string>
 	<string name="users_tab_label">Users</string>
 	<string name="search_repositories_btn">Search Repos</string>

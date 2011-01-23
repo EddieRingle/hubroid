@@ -28,46 +28,38 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class Following extends Activity {
     private static class FollowingTask extends AsyncTask<Void, Void, Void> {
-        public Following mActivity;
-
-        public FollowingTask(final Following activity) {
-            mActivity = activity;
-        }
+        public Following activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            if (mActivity.mJson == null) {
+            if (activity.mJson == null) {
                 try {
-                    final Response resp = mActivity.mGapi.user.following(mActivity.mTarget);
+                    final Response resp = activity.mGapi.user.following(activity.mTarget);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
                     }
-                    mActivity.mJson = (new JSONObject(resp.resp)).getJSONArray("users");
+                    activity.mJson = (new JSONObject(resp.resp)).getJSONArray("users");
                 } catch (final JSONException e) {
                     e.printStackTrace();
                 }
+                activity.mAdapter.loadData(activity.mJson);
             }
-            mActivity.mAdapter = new FollowersFollowingListAdapter(mActivity
-                    .getApplicationContext(), mActivity.mJson);
             return null;
         }
 
         @Override
         protected void onPostExecute(final Void result) {
-            mActivity.mListView.setAdapter(mActivity.mAdapter);
-            mActivity.mListView.setOnItemClickListener(mActivity.onListItemClick);
-            mActivity.mListView.removeHeaderView(mActivity.mLoadingItem);
+            activity.mAdapter.pushData();
+            activity.mAdapter.setIsLoadingData(false);
         }
 
         @Override
         protected void onPreExecute() {
-            mActivity.mListView.addHeaderView(mActivity.mLoadingItem);
-            mActivity.mListView.setAdapter(null);
+            activity.mAdapter.setIsLoadingData(true);
         }
     }
 
@@ -79,13 +71,11 @@ public class Following extends Activity {
 
     private ListView mListView;
 
-    public View mLoadingItem;
-
     private String mTarget;
 
     private FollowingTask mTask;
 
-    private final OnItemClickListener onListItemClick = new OnItemClickListener() {
+    private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
             final Intent i = new Intent(getApplicationContext(), Profile.class);
@@ -107,11 +97,11 @@ public class Following extends Activity {
         mGapi.authenticate(prefs.getString("username", ""), prefs.getString("password", ""));
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
+        mListView.setOnItemClickListener(mOnListItemClick);
+
         setContentView(mListView);
 
-        mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
-        ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
-                .setText("Loading...");
+        mAdapter = new FollowersFollowingListAdapter(Following.this, mListView);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -123,9 +113,9 @@ public class Following extends Activity {
 
         mTask = (FollowingTask) getLastNonConfigurationInstance();
         if ((mTask == null) || (mTask.getStatus() == AsyncTask.Status.FINISHED)) {
-            mTask = new FollowingTask(Following.this);
+            mTask = new FollowingTask();
         }
-        mTask.mActivity = this;
+        mTask.activity = this;
         if (mTask.getStatus() == AsyncTask.Status.PENDING) {
             mTask.execute();
         }
@@ -145,7 +135,8 @@ public class Following extends Activity {
             return;
         }
         if (mJson != null) {
-            mAdapter = new FollowersFollowingListAdapter(getApplicationContext(), mJson);
+            mAdapter.loadData(mJson);
+            mAdapter.pushData();
         } else {
             mAdapter = null;
         }

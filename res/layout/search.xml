@@ -1,53 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/rl_search_root"
 	android:background="#FFF"
 	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
-	<LinearLayout
-		android:id="@+id/ll_search_search_area"
+	<TabHost
+		android:id="@android:id/tabhost"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<EditText
-			android:id="@+id/et_search_search_box"
-			android:layout_width="wrap_content"
-			android:layout_weight="75"
-			android:layout_height="wrap_content"
-			android:inputType="text"
-			android:imeOptions="actionSearch" />
-		<ImageButton
-			android:id="@+id/btn_search_go"
-			android:layout_width="wrap_content"
-			android:layout_height="44dip"
-			android:layout_gravity="center_vertical"
-			android:scaleType="fitCenter"
-			android:background="@android:drawable/btn_default_small"
-			android:src="@android:drawable/ic_menu_search" />
-	</LinearLayout>
-	<LinearLayout
-		android:id="@+id/rl_search_button_holder"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content">
-		<Button
-			android:id="@+id/btn_search_repositories"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="35"
-			android:text="Repositories"
-			android:background="@android:drawable/btn_default_small" />
-		<Button
-			android:id="@+id/btn_search_users"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="50"
-			android:background="@android:drawable/btn_default_small"
-			android:text="Users" />
-	</LinearLayout>
-	<ListView
-		android:id="@+id/lv_search"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:cacheColorHint="#FFF" />
-</LinearLayout>
+		android:layout_height="fill_parent">
+		<RelativeLayout
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+			<TabWidget
+					android:id="@android:id/tabs"
+					android:layout_width="fill_parent"
+					android:layout_height="wrap_content"
+					android:background="@null"
+					android:layout_below="@id/include_top_bar"
+					android:layout_marginTop="5dip"
+					android:layout_marginLeft="-2dip"
+					android:layout_marginRight="-2dip" />
+			<FrameLayout
+				android:id="@android:id/tabcontent"
+				android:layout_below="@android:id/tabs"
+				android:layout_marginTop="5dip"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent">
+			</FrameLayout>
+		</RelativeLayout>
+	</TabHost>
+</RelativeLayout>

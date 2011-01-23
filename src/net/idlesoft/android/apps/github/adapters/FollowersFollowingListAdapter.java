@@ -10,56 +10,49 @@ package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
-import android.content.Context;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 public class FollowersFollowingListAdapter extends UsersListAdapter {
 
-    public FollowersFollowingListAdapter(final Context context, final JSONArray jsonarray) {
-        super(context, jsonarray);
-        loadGravatars();
+    public FollowersFollowingListAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public View getView(final int index, View convertView, final ViewGroup parent) {
-        m_currentIndex = index;
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
+        ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.user_list_item, null);
-            m_currentViewHolder = new ViewHolder();
-            m_currentViewHolder.text = (TextView) convertView
+            convertView = mInflater.inflate(R.layout.user_list_item, null);
+            holder = new ViewHolder();
+            holder.text = (TextView) convertView
                     .findViewById(R.id.tv_user_list_item_name);
-            m_currentViewHolder.gravatar = (ImageView) convertView
+            holder.gravatar = (ImageView) convertView
                     .findViewById(R.id.iv_user_list_gravatar);
-            convertView.setTag(m_currentViewHolder);
+            convertView.setTag(holder);
         } else {
-            m_currentViewHolder = (ViewHolder) convertView.getTag();
+            holder = (ViewHolder) convertView.getTag();
         }
-        m_currentViewHolder.text.setTextColor(R.color.textColor);
-        try {
-            m_currentViewHolder.text.setText(m_data.getString(m_currentIndex));
-            m_currentViewHolder.gravatar.setImageBitmap(m_gravatars.get(m_data
-                    .getString(m_currentIndex)));
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        }
+        holder.text.setTextColor(R.color.textColor);
+        String username = (String) getData().get(index);
+        holder.text.setText(username);
+        holder.gravatar.setImageBitmap(mGravatars.get(username));
         return convertView;
     }
 
     @Override
     public void loadGravatars() {
-        final int length = m_data.length();
+        final int length = mJson.length();
         for (int i = 0; i < length; i++) {
             try {
-                final String username = m_data.getString(i);
-                m_gravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(username), 30.0f, m_context.getResources()
+                final String username = (String) mJson.get(i);
+                mGravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
+                        .getGravatarID(username), 30.0f, mActivity.getResources()
                         .getDisplayMetrics().density));
-            } catch (final JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

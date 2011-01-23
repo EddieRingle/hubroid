@@ -58,43 +58,26 @@ public class NewsFeed extends Activity {
                 }
             }
             if (activity.mJson != null) {
-                activity.mActivityAdapter = new ActivityFeedAdapter(activity, activity.mJson, mPrivate == false);
+                activity.mActivityAdapter.loadData(activity.mJson);
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(final Void result) {
-            setAdapter();
-            removeLoadingView();
+            activity.mActivityAdapter.pushData();
+            activity.mActivityAdapter.setIsLoadingData(false);
         }
 
         @Override
         protected void onPreExecute() {
-            setLoadingView();
-        }
-
-        protected void removeLoadingView() {
-            activity.mListView.removeHeaderView(activity.mLoadingItem);
-        }
-
-        protected void setAdapter() {
-            activity.mListView.setAdapter(activity.mActivityAdapter);
-        }
-
-        protected void setLoadingView() {
-            if (activity.mJson == null) {
-                activity.mListView.addHeaderView(activity.mLoadingItem);
-                activity.mListView.setAdapter(null);
-            }
+            activity.mActivityAdapter.setIsLoadingData(true);
         }
     }
 
     private SharedPreferences.Editor mEditor;
 
     public GitHubAPI mGapi = new GitHubAPI();
-
-    public View mLoadingItem;
 
     private LoadActivityFeedTask mLoadActivityTask;
 
@@ -151,10 +134,7 @@ public class NewsFeed extends Activity {
         mListView = (ListView) findViewById(R.id.lv_news_feed);
         mListView.setOnItemClickListener(onActivityItemClick);
 
-        mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
-        ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
-                .setText("Loading Feed, Please Wait...");
-
+        mActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mListView, mPrivate == false);
         if (mPrivate) {
             ((TextView) findViewById(R.id.tv_page_title)).setText("News Feed");
         } else {
@@ -220,8 +200,8 @@ public class NewsFeed extends Activity {
             keepGoing = false;
         }
         if (keepGoing == true) {
-            mActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mJson,
-                    false);
+            mActivityAdapter.loadData(mJson);
+            mActivityAdapter.pushData();
         } else {
             mActivityAdapter = null;
         }

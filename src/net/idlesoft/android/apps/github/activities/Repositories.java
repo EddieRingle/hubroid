@@ -27,8 +27,6 @@ import android.widget.TextView;
 import com.flurry.android.FlurryAgent;
 
 public class Repositories extends TabActivity {
-    private static final String TAG = "Repositories";
-
     private static final String TAG_MY_REPOS = "my_repos";
 
     private static final String TAG_WATCHED_REPOS = "watched_repos";

@@ -11,7 +11,7 @@ package net.idlesoft.android.apps.github.activities.tabs;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.activities.Repository;
-import net.idlesoft.android.apps.github.adapters.RepositoriesListAdapter;
+import net.idlesoft.android.apps.github.adapters.SearchUsersListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
@@ -24,28 +24,33 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
-public class MyRepos extends Activity {
-    private static class MyReposTask extends AsyncTask<Void, Void, Void> {
-        public MyRepos activity;
+public class SearchUsers extends Activity {
+    private static class SearchUsersTask extends AsyncTask<Void, Void, Void> {
+        public SearchUsers activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            if (activity.mJson == null) {
-                try {
-                    final Response resp = activity.mGapi.repo.list(activity.mTarget);
-                    if (resp.statusCode != 200) {
-                        /* Oh noez, something went wrong */
-                        return null;
-                    }
-                    activity.mJson = (new JSONObject(resp.resp)).getJSONArray("repositories");
-                } catch (final JSONException e) {
-                    e.printStackTrace();
+            try {
+                final Response resp = activity.mGapi.user.search(activity.mSearchTerm);
+                if (resp.statusCode != 200) {
+                    /* Oh noez, something went wrong */
+                    return null;
                 }
+                activity.mJson = (new JSONObject(resp.resp)).getJSONArray("users");
+            } catch (final JSONException e) {
+                e.printStackTrace();
             }
             activity.mAdapter.loadData(activity.mJson);
             return null;
@@ -63,7 +68,7 @@ public class MyRepos extends Activity {
         }
     }
 
-    private RepositoriesListAdapter mAdapter;
+    private SearchUsersListAdapter mAdapter;
 
     private final GitHubAPI mGapi = new GitHubAPI();
 
@@ -71,22 +76,60 @@ public class MyRepos extends Activity {
 
     private ListView mListView;
 
-    private String mTarget;
+    private EditText mSearchBox;
 
-    private MyReposTask mTask;
+    private ImageButton mSearchButton;
+
+    public View mLoadingItem;
+
+    private String mSearchTerm;
+
+    private SearchUsersTask mTask;
 
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
             Intent i = new Intent(getApplicationContext(), Repository.class);
-            i.putExtra("repo_owner", mTarget);
             try {
-                i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
+                i.putExtra("username", mJson.getJSONObject(position).getString("login"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             startActivity(i);
             return;
+        }
+    };
+
+    private final OnClickListener mOnSearchButtonClick = new OnClickListener() {
+        public void onClick(View v) {
+            mSearchBox.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            mSearchTerm = mSearchBox.getText().toString();
+            if (mTask.getStatus() == AsyncTask.Status.FINISHED) {
+                mTask = new SearchUsersTask();
+                mTask.activity = SearchUsers.this;
+            }
+            if (mTask.getStatus() == AsyncTask.Status.PENDING) {
+                mTask.execute();
+            }
+        }
+    };
+
+    private final OnEditorActionListener mOnEditorAction = new OnEditorActionListener() {
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            mSearchBox.clearFocus();
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            mSearchTerm = mSearchBox.getText().toString();
+            if (mTask.getStatus() == AsyncTask.Status.FINISHED) {
+                mTask = new SearchUsersTask();
+                mTask.activity = SearchUsers.this;
+            }
+            if (mTask.getStatus() == AsyncTask.Status.PENDING) {
+                mTask.execute();
+            }
+            return false;
         }
     };
 
@@ -104,29 +147,24 @@ public class MyRepos extends Activity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
+        setContentView(R.layout.search_tab);
+
+        mListView = (ListView) findViewById(R.id.lv_searchTab_list);
         mListView.setOnItemClickListener(mOnListItemClick);
 
-        setContentView(mListView);
+        mSearchBox = (EditText) findViewById(R.id.et_searchTab_search_box);
+        mSearchBox.setOnEditorActionListener(mOnEditorAction);
 
-        mAdapter = new RepositoriesListAdapter(MyRepos.this, mListView);
+        mSearchButton = (ImageButton) findViewById(R.id.btn_searchTab_go);
+        mSearchButton.setOnClickListener(mOnSearchButtonClick);
 
-        final Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            mTarget = extras.getString("target");
-        }
-        if ((mTarget == null) || mTarget.equals("")) {
-            mTarget = mUsername;
-        }
+        mAdapter = new SearchUsersListAdapter(SearchUsers.this, mListView);
 
-        mTask = (MyReposTask) getLastNonConfigurationInstance();
+        mTask = (SearchUsersTask) getLastNonConfigurationInstance();
         if ((mTask == null) || (mTask.getStatus() == AsyncTask.Status.FINISHED)) {
-            mTask = new MyReposTask();
+            mTask = new SearchUsersTask();
         }
         mTask.activity = this;
-        if (mTask.getStatus() == AsyncTask.Status.PENDING) {
-            mTask.execute();
-        }
     }
 
     @Override

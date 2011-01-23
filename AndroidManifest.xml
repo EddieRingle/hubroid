@@ -13,6 +13,8 @@
 		<activity android:name=".activities.Dashboard" />
 		<activity android:name=".activities.NewsFeed" />
 		<activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" />
+		<activity android:name=".activities.tabs.SearchRepos" />
+		<activity android:name=".activities.tabs.SearchUsers" />
 		<activity android:name=".activities.Repositories" />
 		<activity android:name=".activities.tabs.MyRepos" />
 		<activity android:name=".activities.tabs.WatchedRepos" />

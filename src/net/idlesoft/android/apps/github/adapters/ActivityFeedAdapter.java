@@ -21,16 +21,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
+import android.app.Activity;
 import android.graphics.Bitmap;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-public class ActivityFeedAdapter extends BaseAdapter {
+public class ActivityFeedAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public TextView date;
 
@@ -41,54 +39,20 @@ public class ActivityFeedAdapter extends BaseAdapter {
         public TextView title;
     }
 
-    private final Context m_context;
+    private HashMap<String, Bitmap> mGravatars;
 
-    private JSONArray m_data = new JSONArray();
+    private final boolean mIsSingleUser;
 
-    private final HashMap<String, Bitmap> m_gravatars;
+    public ActivityFeedAdapter(final Activity pActivity, final AbsListView pListView, final boolean single) {
+        super(pActivity, pListView);
 
-    private final LayoutInflater m_inflater;
-
-    private final boolean m_single;
-
-    /**
-     * Create a new ActivityFeedAdapter
-     * 
-     * @param context
-     * @param jsonarray
-     * @param single - whether this is a public activity feed or not
-     */
-    public ActivityFeedAdapter(final Context context, final JSONArray json, final boolean single) {
-        m_context = context;
-        m_inflater = LayoutInflater.from(m_context);
-        m_data = json;
-        m_single = single;
-        m_gravatars = new HashMap<String, Bitmap>(m_data.length());
-
-        loadGravatars();
+        mIsSingleUser = single;
     }
 
-    public int getCount() {
-        return m_data.length();
-    }
-
-    public Object getItem(final int i) {
-        try {
-            return m_data.get(i);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public long getItemId(final int i) {
-        return i;
-    }
-
-    public View getView(final int index, View convertView, final ViewGroup parent) {
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.activity_item, null);
+            convertView = mInflater.inflate(R.layout.activity_item, null);
             holder = new ViewHolder();
             holder.date = (TextView) convertView.findViewById(R.id.tv_activity_item_date);
             holder.title = (TextView) convertView.findViewById(R.id.tv_activity_item_title);
@@ -99,7 +63,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         try {
-            final JSONObject entry = m_data.getJSONObject(index);
+            final JSONObject entry = (JSONObject) getData().get(index);
             final JSONObject payload = entry.getJSONObject("payload");
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -144,7 +108,7 @@ public class ActivityFeedAdapter extends BaseAdapter {
             final String actor = entry.getString("actor");
             final String eventType = entry.getString("type");
             String title = actor + " did something...";
-            holder.gravatar.setImageBitmap(m_gravatars.get(actor));
+            holder.gravatar.setImageBitmap(mGravatars.get(actor));
 
             if (eventType.contains("PushEvent")) {
                 holder.icon.setImageResource(R.drawable.push);
@@ -254,15 +218,22 @@ public class ActivityFeedAdapter extends BaseAdapter {
             holder.title.setText(title);
         } catch (final JSONException e) {
             e.printStackTrace();
-            try {
-                Log.d("hubroid", m_data.getJSONObject(index).getJSONObject("payload").toString());
-            } catch (JSONException e1) {
-                e1.printStackTrace();
-            }
         } catch (final ParseException e) {
             e.printStackTrace();
         }
         return convertView;
+    }
+
+    @Override
+    public void loadData(JSONArray pJsonArray) {
+        super.loadData(pJsonArray);
+        mGravatars = new HashMap<String, Bitmap>(mListData.size());
+        loadGravatars();
+    }
+
+    @Override
+    public void pushData() {
+        super.pushData();
     }
 
     /**
@@ -273,20 +244,20 @@ public class ActivityFeedAdapter extends BaseAdapter {
      */
     public void loadGravatars() {
         try {
-            if (m_single) {
+            if (mIsSingleUser) {
                 // Load only the first gravatar
-                final String actor = m_data.getJSONObject(0).getString("actor");
-                m_gravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+                final String actor = mJson.getJSONObject(0).getString("actor");
+                mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
                         .getGravatarID(actor), 30.0f,
-                        m_context.getResources().getDisplayMetrics().density));
+                        mActivity.getResources().getDisplayMetrics().density));
             } else {
                 // Load all of 'em
-                final int length = m_data.length();
+                final int length = mJson.length();
                 for (int i = 0; i < length; i++) {
-                    final String actor = m_data.getJSONObject(i).getString("actor");
-                    if (!m_gravatars.containsKey(actor)) {
-                        m_gravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-                                .getGravatarID(actor), 30.0f, m_context.getResources()
+                    final String actor = mJson.getJSONObject(i).getString("actor");
+                    if (!mGravatars.containsKey(actor)) {
+                        mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+                                .getGravatarID(actor), 30.0f, mActivity.getResources()
                                 .getDisplayMetrics().density));
                     }
                 }

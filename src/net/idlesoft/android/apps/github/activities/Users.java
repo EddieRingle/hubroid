@@ -27,7 +27,6 @@ import android.widget.TextView;
 import com.flurry.android.FlurryAgent;
 
 public class Users extends TabActivity {
-    private static final String TAG = "Users";
 
     private static final String TAG_FOLLOWERS = "followers";
 

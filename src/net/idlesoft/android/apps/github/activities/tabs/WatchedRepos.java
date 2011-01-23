@@ -28,46 +28,38 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class WatchedRepos extends Activity {
     private static class WatchedReposTask extends AsyncTask<Void, Void, Void> {
-        public WatchedRepos mActivity;
-
-        public WatchedReposTask(final WatchedRepos activity) {
-            mActivity = activity;
-        }
+        public WatchedRepos activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            if (mActivity.mJson == null) {
+            if (activity.mJson == null) {
                 try {
-                    final Response resp = mActivity.mGapi.user.watching(mActivity.mTarget);
+                    final Response resp = activity.mGapi.user.watching(activity.mTarget);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
                     }
-                    mActivity.mJson = (new JSONObject(resp.resp)).getJSONArray("repositories");
+                    activity.mJson = (new JSONObject(resp.resp)).getJSONArray("repositories");
                 } catch (final JSONException e) {
                     e.printStackTrace();
                 }
             }
-            mActivity.mAdapter = new RepositoriesListAdapter(mActivity.getApplicationContext(),
-                    mActivity.mJson);
+            activity.mAdapter.loadData(activity.mJson);
             return null;
         }
 
         @Override
         protected void onPostExecute(final Void result) {
-            mActivity.mListView.setAdapter(mActivity.mAdapter);
-            mActivity.mListView.setOnItemClickListener(mActivity.onListItemClick);
-            mActivity.mListView.removeHeaderView(mActivity.mLoadingItem);
+            activity.mAdapter.pushData();
+            activity.mAdapter.setIsLoadingData(false);
         }
 
         @Override
         protected void onPreExecute() {
-            mActivity.mListView.addHeaderView(mActivity.mLoadingItem);
-            mActivity.mListView.setAdapter(null);
+            activity.mAdapter.setIsLoadingData(true);
         }
     }
 
@@ -79,23 +71,16 @@ public class WatchedRepos extends Activity {
 
     private ListView mListView;
 
-    public View mLoadingItem;
-
     private String mTarget;
 
     private WatchedReposTask mTask;
 
-    private String mUsername;
-
-    private String mPassword;
-
-    private final OnItemClickListener onListItemClick = new OnItemClickListener() {
-
+    private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
             Intent i = new Intent(getApplicationContext(), Repository.class);
+            i.putExtra("repo_owner", mTarget);
             try {
-                i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
                 i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -104,6 +89,10 @@ public class WatchedRepos extends Activity {
             return;
         }
     };
+
+    private String mUsername;
+
+    private String mPassword;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -116,11 +105,11 @@ public class WatchedRepos extends Activity {
         mGapi.authenticate(mUsername, mPassword);
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
+        mListView.setOnItemClickListener(mOnListItemClick);
+
         setContentView(mListView);
 
-        mLoadingItem = getLayoutInflater().inflate(R.layout.loading_listitem, null);
-        ((TextView) mLoadingItem.findViewById(R.id.tv_loadingListItem_loadingText))
-                .setText("Loading...");
+        mAdapter = new RepositoriesListAdapter(WatchedRepos.this, mListView);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -132,9 +121,9 @@ public class WatchedRepos extends Activity {
 
         mTask = (WatchedReposTask) getLastNonConfigurationInstance();
         if ((mTask == null) || (mTask.getStatus() == AsyncTask.Status.FINISHED)) {
-            mTask = new WatchedReposTask(WatchedRepos.this);
+            mTask = new WatchedReposTask();
         }
-        mTask.mActivity = this;
+        mTask.activity = this;
         if (mTask.getStatus() == AsyncTask.Status.PENDING) {
             mTask.execute();
         }
@@ -154,7 +143,8 @@ public class WatchedRepos extends Activity {
             return;
         }
         if (mJson != null) {
-            mAdapter = new RepositoriesListAdapter(getApplicationContext(), mJson);
+            mAdapter.loadData(mJson);
+            mAdapter.pushData();
         } else {
             mAdapter = null;
         }

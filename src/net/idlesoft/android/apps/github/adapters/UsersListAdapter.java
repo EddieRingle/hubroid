@@ -11,61 +11,36 @@ package net.idlesoft.android.apps.github.adapters;
 import java.util.HashMap;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.app.Activity;
 import android.graphics.Bitmap;
-import android.view.LayoutInflater;
-import android.widget.BaseAdapter;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public abstract class UsersListAdapter extends BaseAdapter {
+public abstract class UsersListAdapter extends JsonListAdapter {
     public class ViewHolder {
         public ImageView gravatar;
 
         public TextView text;
     }
 
-    protected Context m_context;
+    protected HashMap<String, Bitmap> mGravatars;
 
-    public int m_currentIndex;
-
-    protected ViewHolder m_currentViewHolder;
-
-    protected JSONArray m_data = new JSONArray();
-
-    protected SharedPreferences.Editor m_editor;
-
-    protected HashMap<String, Bitmap> m_gravatars;
-
-    protected LayoutInflater m_inflater;
-
-    protected SharedPreferences m_prefs;
-
-    public UsersListAdapter(final Context context, final JSONArray jsonarray) {
-        m_context = context;
-        m_inflater = LayoutInflater.from(m_context);
-        m_data = jsonarray;
-        m_gravatars = new HashMap<String, Bitmap>(m_data.length());
+    public UsersListAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public int getCount() {
-        return m_data.length();
+    @Override
+    public void loadData(JSONArray pJsonArray) {
+        super.loadData(pJsonArray);
+        mGravatars = new HashMap<String, Bitmap>(mListData.size());
+        loadGravatars();
     }
 
-    public Object getItem(final int i) {
-        try {
-            return m_data.get(i);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public long getItemId(final int i) {
-        return i;
+    @Override
+    public void pushData() {
+        super.pushData();
     }
 
     public abstract void loadGravatars();
