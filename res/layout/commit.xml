@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/rl_commit_root"
+	android:background="#FFF"
+	android:layout_height="fill_parent"
+	android:layout_width="fill_parent">
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<ScrollView
+		android:id="@+id/sv_commit_scrollView"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:layout_below="@id/include_top_bar">
+		<include android:id="@+id/include_commit_header" layout="@layout/commit_view_header" />
+		<LinearLayout
+			android:id="@+id/ll_commit_strip"
+			android:layout_width="fill_parent"
+			android:layout_height="2.5dip"
+			android:background="@drawable/gray_strip" />
+		<LinearLayout
+			android:id="@+id/ll_commit_shadow"
+			android:layout_width="fill_parent"
+			android:layout_height="10dip"
+			android:background="@drawable/shadow" />
+		<ListView
+			android:id="@+id/lv_commit_diffList"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+		</ListView>
+	</ScrollView>
+</RelativeLayout>

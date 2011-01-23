@@ -69,56 +69,6 @@ public class CommitChangeViewer extends Activity {
 
     private String mUsername;
 
-    public String getHumanDate(final Date current_time, final Date commit_time) {
-        String end;
-        final long ms = current_time.getTime() - commit_time.getTime();
-        final long sec = ms / 1000;
-        final long min = sec / 60;
-        final long hour = min / 60;
-        final long day = hour / 24;
-        if (day > 0) {
-            if (day == 1) {
-                end = " day ago";
-            } else {
-                end = " days ago";
-            }
-            return day + end;
-        } else if (hour > 0) {
-            if (hour == 1) {
-                end = " hour ago";
-            } else {
-                end = " hours ago";
-            }
-            return hour + end;
-        } else if (min > 0) {
-            if (min == 1) {
-                end = " minute ago";
-            } else {
-                end = " minutes ago";
-            }
-            return min + end;
-        } else {
-            if (sec == 1) {
-                end = " second ago";
-            } else {
-                end = " seconds ago";
-            }
-            return sec + end;
-        }
-    }
-
-    /**
-     * Get the Gravatars of all users in the commit log
-     */
-    public Bitmap loadGravatarByLoginName(final String login) {
-        if (!login.equals("")) {
-            return GravatarCache.getDipGravatar(GravatarCache.getGravatarID(login), 30.0f,
-                    getResources().getDisplayMetrics().density);
-        } else {
-            return null;
-        }
-    }
-
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
@@ -129,7 +79,6 @@ public class CommitChangeViewer extends Activity {
 
         mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
-        final View header = getLayoutInflater().inflate(R.layout.commit_view_header, null);
 
         mGapi.authenticate(mUsername, mPassword);
 
@@ -153,7 +102,7 @@ public class CommitChangeViewer extends Activity {
                 final JSONObject authorInfo = commitJSON.getJSONObject("author");
                 final String authorName = authorInfo.getString("login");
 
-                final Bitmap authorGravatar = loadGravatarByLoginName(authorName);
+                final Bitmap authorGravatar = Commit.loadGravatarByLoginName(CommitChangeViewer.this, authorName);
 
                 final JSONObject committerInfo = commitJSON.getJSONObject("committer");
                 final String committerName = committerInfo.getString("login");
@@ -161,15 +110,15 @@ public class CommitChangeViewer extends Activity {
                 // If the committer is the author then just show them as the
                 // author, otherwise show
                 // both people
-                ((TextView) header.findViewById(R.id.commit_view_author_name)).setText(authorName);
+                ((TextView) findViewById(R.id.commit_view_author_name)).setText(authorName);
 
                 if (authorGravatar != null) {
-                    ((ImageView) header.findViewById(R.id.commit_view_author_gravatar))
+                    ((ImageView) findViewById(R.id.commit_view_author_gravatar))
                             .setImageBitmap(authorGravatar);
                 }
 
                 // Set the commit message
-                ((TextView) header.findViewById(R.id.commit_view_message)).setText(commitJSON
+                ((TextView) findViewById(R.id.commit_view_message)).setText(commitJSON
                         .getString("message"));
 
                 final SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
@@ -180,11 +129,11 @@ public class CommitChangeViewer extends Activity {
                 try {
                     commit_time = dateFormat.parse(commitJSON.getString("authored_date"));
                     current_time = dateFormat.parse(dateFormat.format(new Date()));
-                    ((TextView) header.findViewById(R.id.commit_view_author_time))
-                            .setText(getHumanDate(current_time, commit_time));
+                    ((TextView) findViewById(R.id.commit_view_author_time))
+                            .setText(Commit.getHumanDate(current_time, commit_time));
 
                     commit_time = dateFormat.parse(commitJSON.getString("committed_date"));
-                    authorDate = getHumanDate(current_time, commit_time);
+                    authorDate = Commit.getHumanDate(current_time, commit_time);
 
                 } catch (final ParseException e) {
                     e.printStackTrace();
@@ -193,15 +142,15 @@ public class CommitChangeViewer extends Activity {
                 if (!authorName.equals(committerName)) {
                     // They are not the same person, make the author visible and
                     // fill in the details
-                    ((LinearLayout) header.findViewById(R.id.commit_view_author_layout))
+                    ((LinearLayout) findViewById(R.id.commit_view_author_layout))
                             .setVisibility(View.VISIBLE);
-                    ((TextView) header.findViewById(R.id.commit_view_committer_name))
+                    ((TextView) findViewById(R.id.commit_view_committer_name))
                             .setText(committerName);
-                    ((TextView) header.findViewById(R.id.commit_view_committer_time))
+                    ((TextView) findViewById(R.id.commit_view_committer_time))
                             .setText(authorDate);
-                    final Bitmap committerGravatar = loadGravatarByLoginName(committerName);
+                    final Bitmap committerGravatar = Commit.loadGravatarByLoginName(CommitChangeViewer.this, committerName);
                     if (committerGravatar != null) {
-                        ((ImageView) header.findViewById(R.id.commit_view_committer_gravatar))
+                        ((ImageView) findViewById(R.id.commit_view_committer_gravatar))
                                 .setImageBitmap(committerGravatar);
                     }
                 }
@@ -211,7 +160,6 @@ public class CommitChangeViewer extends Activity {
                 final CommitChangeViewerDiffAdapter diffs = new CommitChangeViewerDiffAdapter(
                         getApplicationContext(), changesJSON);
                 final ListView diffList = (ListView) findViewById(R.id.commit_view_diffs_list);
-                diffList.addHeaderView(header);
                 diffList.setAdapter(diffs);
             } catch (final JSONException e) {
                 e.printStackTrace();

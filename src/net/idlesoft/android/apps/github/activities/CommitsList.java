@@ -140,7 +140,11 @@ public class CommitsList extends Activity {
                     public void onItemClick(final AdapterView<?> parent, final View v,
                             final int position, final long id) {
                         try {
-                            final Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
+                            final Intent i = new Intent(CommitsList.this, Commit.class);
+                            i.putExtra("committer", mCommitsJSON.getJSONObject(position)
+                                    .getJSONObject("committer").getString("login"));
+                            i.putExtra("author", mCommitsJSON.getJSONObject(position)
+                                    .getJSONObject("author").getString("login"));
                             i.putExtra("commit_sha", mCommitsJSON.getJSONObject(position)
                                     .getString("id"));
                             i.putExtra("repo_name", mRepoName);
