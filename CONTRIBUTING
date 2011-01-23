@@ -1,0 +1,8 @@
+Hubroid's GitHub: http://github.com/eddieringle/hubroid
+
+If you'd like to help out with Hubroid, here's a couple guidelines you should follow:
+
+* Follow all Android Coding Style Guidelines, especially:
+    - Spaces, not tabs; Use 4 of them
+    - Member names should follow the form of "mVariable", not "m_variable" or "_variable".
+* Develop on your fork, then send me a pull request when you're ready for a review
