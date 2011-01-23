@@ -64,8 +64,6 @@ public class CommitsList extends Activity {
         }
     };
 
-    public int mPosition;
-
     private SharedPreferences mPrefs;
 
     public ProgressDialog mProgressDialog;
@@ -89,7 +87,7 @@ public class CommitsList extends Activity {
 
         mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
 
-        mUsername = mPrefs.getString("login", "");
+        mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
@@ -142,9 +140,8 @@ public class CommitsList extends Activity {
                     public void onItemClick(final AdapterView<?> parent, final View v,
                             final int position, final long id) {
                         try {
-                            mPosition = position;
                             final Intent i = new Intent(CommitsList.this, CommitChangeViewer.class);
-                            i.putExtra("commit_sha", mCommitsJSON.getJSONObject(mPosition)
+                            i.putExtra("commit_sha", mCommitsJSON.getJSONObject(position)
                                     .getString("id"));
                             i.putExtra("repo_name", mRepoName);
                             i.putExtra("repo_owner", mRepoOwner);

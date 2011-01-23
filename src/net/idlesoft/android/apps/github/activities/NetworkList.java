@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.File;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ForkListAdapter;
 
@@ -23,9 +21,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Environment;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -37,42 +32,37 @@ import com.flurry.android.FlurryAgent;
 public class NetworkList extends Activity {
     private GitHubAPI mGapi = new GitHubAPI();
 
-    private SharedPreferences.Editor m_editor;
+    public ForkListAdapter mAdapter;
 
-    public ForkListAdapter m_forkListAdapter;
+    public Intent mIntent;
 
-    public Intent m_intent;
+    public JSONArray mJson;
 
-    public JSONArray m_jsonForkData;
-
-    private final OnItemClickListener m_onForkListItemClick = new OnItemClickListener() {
+    private final OnItemClickListener mOnForkListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
-            m_position = position;
             try {
-                m_intent = new Intent(NetworkList.this, Repository.class);
-                m_intent.putExtra("repo_name", m_jsonForkData.getJSONObject(m_position).getString(
+                mIntent = new Intent(NetworkList.this, Repository.class);
+                mIntent.putExtra("repo_name", mJson.getJSONObject(position).getString(
                         "name"));
-                m_intent.putExtra("username", m_jsonForkData.getJSONObject(m_position).getString(
+                mIntent.putExtra("username", mJson.getJSONObject(position).getString(
                         "owner"));
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
-            NetworkList.this.startActivity(m_intent);
+            NetworkList.this.startActivity(mIntent);
         }
     };
 
-    public int m_position;
+    private SharedPreferences mPrefs;
 
-    private SharedPreferences m_prefs;
+    public ProgressDialog mProgressDialog;
 
-    public ProgressDialog m_progressDialog;
+    public String mRepositoryName;
 
-    public String m_repo_name;
+    public String mRepositoryOwner;
 
-    public String m_repo_owner;
-
-    private Thread m_thread;
+    private Thread mThread;
 
     private String mPassword;
 
@@ -83,33 +73,32 @@ public class NetworkList extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.network);
 
-        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        m_editor = m_prefs.edit();
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
 
-        mUsername = m_prefs.getString("login", "");
-        mPassword = m_prefs.getString("password", "");
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            m_repo_name = extras.getString("repo_name");
-            m_repo_owner = extras.getString("username");
+            mRepositoryName = extras.getString("repo_name");
+            mRepositoryOwner = extras.getString("username");
 
             try {
                 final TextView title = (TextView) findViewById(R.id.tv_page_title);
                 title.setText("Network");
 
-                final JSONObject forkjson = new JSONObject(mGapi.repo.network(m_repo_owner,
-                        m_repo_name).resp);
+                final JSONObject forkjson = new JSONObject(mGapi.repo.network(mRepositoryOwner,
+                        mRepositoryName).resp);
 
-                m_jsonForkData = forkjson.getJSONArray("network");
+                mJson = forkjson.getJSONArray("network");
 
-                m_forkListAdapter = new ForkListAdapter(NetworkList.this, m_jsonForkData);
+                mAdapter = new ForkListAdapter(NetworkList.this, mJson);
 
                 final ListView repo_list = (ListView) findViewById(R.id.lv_network_list);
-                repo_list.setAdapter(m_forkListAdapter);
-                repo_list.setOnItemClickListener(m_onForkListItemClick);
+                repo_list.setAdapter(mAdapter);
+                repo_list.setOnItemClickListener(mOnForkListItemClick);
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
@@ -117,51 +106,14 @@ public class NetworkList extends Activity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case 0:
-                final Intent i1 = new Intent(this, Hubroid.class);
-                startActivity(i1);
-                return true;
-            case 1:
-                m_editor.clear().commit();
-                final Intent intent = new Intent(this, Hubroid.class);
-                startActivity(intent);
-                return true;
-            case 2:
-                final File root = Environment.getExternalStorageDirectory();
-                if (root.canWrite()) {
-                    final File hubroid = new File(root, "hubroid");
-                    if (!hubroid.exists() && !hubroid.isDirectory()) {
-                        return true;
-                    } else {
-                        hubroid.delete();
-                        return true;
-                    }
-                }
-        }
-        return false;
-    }
-
-    @Override
     public void onPause() {
-        if ((m_thread != null) && m_thread.isAlive()) {
-            m_thread.stop();
+        if ((mThread != null) && mThread.isAlive()) {
+            mThread.stop();
         }
-        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
-            m_progressDialog.dismiss();
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
         super.onPause();
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (!menu.hasVisibleItems()) {
-            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-            menu.add(0, 1, 0, "Clear Preferences");
-            menu.add(0, 2, 0, "Clear Cache");
-        }
-        return true;
     }
 
     @Override

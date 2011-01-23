@@ -63,11 +63,7 @@ public class SingleActivityItem extends Activity {
 
     private JSONObject mJson = new JSONObject();
 
-    private String mPassword;
-
     private SharedPreferences mPrefs;
-
-    private String mUsername;
 
     private void loadActivityItemBox() {
         final TextView date = (TextView) findViewById(R.id.tv_activity_item_date);
@@ -246,9 +242,6 @@ public class SingleActivityItem extends Activity {
 
         mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

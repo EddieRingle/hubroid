@@ -30,51 +30,48 @@ import android.widget.Toast;
 import com.flurry.android.FlurryAgent;
 
 public class CreateIssue extends Activity {
-    private GitHubAPI _gapi;
+    private GitHubAPI mGapi = new GitHubAPI();
 
-    private Intent m_intent;
+    private Intent mIntent;
 
-    private SharedPreferences m_prefs;
+    private SharedPreferences mPrefs;
 
-    private SharedPreferences.Editor m_prefsEditor;
+    private ProgressDialog mProgressDialog;
 
-    private ProgressDialog m_progressDialog;
+    private String mRepositoryName;
 
-    private String m_targetRepo;
+    private String mRepositoryOwner;
 
-    private String m_targetUser;
+    private Thread mThread;
 
-    private Thread m_thread;
+    private String mPassword;
 
-    private String m_token;
-
-    private String m_username;
+    private String mUsername;
 
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.create_issue);
 
-        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        m_prefsEditor = m_prefs.edit();
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
 
-        m_username = m_prefs.getString("login", "");
-        m_token = m_prefs.getString("token", "");
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
 
-        _gapi = new GitHubAPI();
+        mGapi.authenticate(mUsername, mPassword);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.containsKey("owner")) {
-                m_targetUser = extras.getString("owner");
+                mRepositoryOwner = extras.getString("owner");
             } else {
-                m_targetUser = m_username;
+                mRepositoryOwner = mUsername;
             }
             if (extras.containsKey("repository")) {
-                m_targetRepo = extras.getString("repository");
+                mRepositoryName = extras.getString("repository");
             }
         } else {
-            m_targetUser = m_username;
+            mRepositoryOwner = mUsername;
         }
 
         ((TextView) findViewById(R.id.tv_page_title)).setText("New Issue");
@@ -82,33 +79,33 @@ public class CreateIssue extends Activity {
         ((Button) findViewById(R.id.btn_create_issue_submit))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(final View v) {
-                        m_thread = new Thread(new Runnable() {
+                        mThread = new Thread(new Runnable() {
                             public void run() {
                                 final String title = ((TextView) findViewById(R.id.et_create_issue_title))
                                         .getText().toString();
                                 final String body = ((TextView) findViewById(R.id.et_create_issue_body))
                                         .getText().toString();
                                 if (!title.equals("") && !body.equals("")) {
-                                    final Response createResp = _gapi.issues.open(m_targetUser,
-                                            m_targetRepo, title, body);
+                                    final Response createResp = mGapi.issues.open(mRepositoryOwner,
+                                            mRepositoryName, title, body);
                                     if (createResp.statusCode == 200) {
                                         try {
                                             final JSONObject response = new JSONObject(
                                                     createResp.resp).getJSONObject("issue");
                                             final int number = response.getInt("number");
                                             final JSONObject issueJSON = new JSONObject(
-                                                    _gapi.issues.issue(m_targetUser, m_targetRepo,
+                                                    mGapi.issues.issue(mRepositoryOwner, mRepositoryName,
                                                             number).resp).getJSONObject("issue");
-                                            m_intent = new Intent(CreateIssue.this,
+                                            mIntent = new Intent(CreateIssue.this,
                                                     SingleIssue.class);
-                                            m_intent.putExtra("repoOwner", m_targetUser);
-                                            m_intent.putExtra("repoName", m_targetRepo);
-                                            m_intent.putExtra("item_json", issueJSON.toString());
+                                            mIntent.putExtra("repoOwner", mRepositoryOwner);
+                                            mIntent.putExtra("repoName", mRepositoryName);
+                                            mIntent.putExtra("item_json", issueJSON.toString());
 
                                             runOnUiThread(new Runnable() {
                                                 public void run() {
-                                                    m_progressDialog.dismiss();
-                                                    startActivity(m_intent);
+                                                    mProgressDialog.dismiss();
+                                                    startActivity(mIntent);
                                                     finish();
                                                 }
                                             });
@@ -122,20 +119,20 @@ public class CreateIssue extends Activity {
                                 }
                             }
                         });
-                        m_progressDialog = ProgressDialog.show(CreateIssue.this, "Please Wait...",
+                        mProgressDialog = ProgressDialog.show(CreateIssue.this, "Please Wait...",
                                 "Creating issue...");
-                        m_thread.start();
+                        mThread.start();
                     }
                 });
     }
 
     @Override
     public void onPause() {
-        if ((m_thread != null) && m_thread.isAlive()) {
-            m_thread.stop();
+        if ((mThread != null) && mThread.isAlive()) {
+            mThread.stop();
         }
-        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
-            m_progressDialog.dismiss();
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
         super.onPause();
     }

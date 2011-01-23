@@ -32,25 +32,25 @@ public class CommitChangeViewerDiffAdapter extends BaseAdapter {
         public TextView fileName;
     }
 
-    private final Context m_context;
+    private final Context mContext;
 
-    private JSONArray m_data = new JSONArray();
+    private JSONArray mJson = new JSONArray();
 
-    private final LayoutInflater m_inflater;
+    private final LayoutInflater mInflater;
 
     public CommitChangeViewerDiffAdapter(final Context context, final JSONArray jsonarray) {
-        m_context = context;
-        m_inflater = LayoutInflater.from(m_context);
-        m_data = jsonarray;
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
+        mJson = jsonarray;
     }
 
     public int getCount() {
-        return m_data.length();
+        return mJson.length();
     }
 
     public Object getItem(final int i) {
         try {
-            return m_data.get(i);
+            return mJson.get(i);
         } catch (final JSONException e) {
             e.printStackTrace();
             return null;
@@ -64,7 +64,7 @@ public class CommitChangeViewerDiffAdapter extends BaseAdapter {
     public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.commit_view_item, null);
+            convertView = mInflater.inflate(R.layout.commit_view_item, null);
             holder = new ViewHolder();
             holder.diffContents = (TextView) convertView
                     .findViewById(R.id.commit_view_item_diff_text);
@@ -79,13 +79,13 @@ public class CommitChangeViewerDiffAdapter extends BaseAdapter {
             // TODO: Make this work properly for mime types
 
             // Replace tabs with two spaces so more file fits on the screen
-            final String diff = m_data.getJSONObject(index).getString("diff")
+            final String diff = mJson.getJSONObject(index).getString("diff")
                     .replaceAll("\t", "  ");
 
             holder.diffContents.setText(diff, TextView.BufferType.SPANNABLE);
 
             // Apply some styles
-            final Resources res = m_context.getResources();
+            final Resources res = mContext.getResources();
 
             final Spannable str = (Spannable) holder.diffContents.getText();
 
@@ -113,7 +113,7 @@ public class CommitChangeViewerDiffAdapter extends BaseAdapter {
             }
 
             // Set the filename
-            holder.fileName.setText(m_data.getJSONObject(index).getString("filename"));
+            holder.fileName.setText(mJson.getJSONObject(index).getString("filename"));
 
             // TODO: images + binary files, non text/plain commits
 

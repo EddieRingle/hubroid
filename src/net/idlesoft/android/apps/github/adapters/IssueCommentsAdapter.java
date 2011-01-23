@@ -37,13 +37,13 @@ public class IssueCommentsAdapter extends BaseAdapter {
         public TextView meta;
     }
 
-    private final Context m_context;
+    private final Context mContext;
 
-    private JSONArray m_data = new JSONArray();
+    private JSONArray mJson = new JSONArray();
 
-    private final HashMap<String, Bitmap> m_gravatars;
+    private final HashMap<String, Bitmap> mGravatars;
 
-    private final LayoutInflater m_inflater;
+    private final LayoutInflater mInflater;
 
     /**
      * Create a new IssueCommentsAdapter
@@ -52,21 +52,21 @@ public class IssueCommentsAdapter extends BaseAdapter {
      * @param jsonarray
      */
     public IssueCommentsAdapter(final Context context, final JSONArray json) {
-        m_context = context;
-        m_inflater = LayoutInflater.from(m_context);
-        m_data = json;
-        m_gravatars = new HashMap<String, Bitmap>(m_data.length());
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
+        mJson = json;
+        mGravatars = new HashMap<String, Bitmap>(mJson.length());
 
         loadGravatars();
     }
 
     public int getCount() {
-        return m_data.length();
+        return mJson.length();
     }
 
     public Object getItem(final int i) {
         try {
-            return m_data.get(i);
+            return mJson.get(i);
         } catch (final JSONException e) {
             e.printStackTrace();
             return null;
@@ -80,7 +80,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
     public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.issue_comment, null);
+            convertView = mInflater.inflate(R.layout.issue_comment, null);
             holder = new ViewHolder();
             holder.meta = (TextView) convertView.findViewById(R.id.tv_issue_comment_meta);
             holder.body = (TextView) convertView.findViewById(R.id.tv_issue_comment_body);
@@ -93,7 +93,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            final Date item_time = dateFormat.parse(m_data.getJSONObject(index).getString(
+            final Date item_time = dateFormat.parse(mJson.getJSONObject(index).getString(
                     "created_at"));
             final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
             final long ms = current_time.getTime() - item_time.getTime();
@@ -109,7 +109,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
                     end = " years ago";
                 }
                 holder.meta.setText("Posted " + year + end + " by "
-                        + m_data.getJSONObject(index).getString("user"));
+                        + mJson.getJSONObject(index).getString("user"));
             }
             if (day > 0) {
                 if (day == 1) {
@@ -118,7 +118,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
                     end = " days ago";
                 }
                 holder.meta.setText("Posted " + day + end + " by "
-                        + m_data.getJSONObject(index).getString("user"));
+                        + mJson.getJSONObject(index).getString("user"));
             } else if (hour > 0) {
                 if (hour == 1) {
                     end = " hour ago";
@@ -126,7 +126,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
                     end = " hours ago";
                 }
                 holder.meta.setText("Posted " + hour + end + " by "
-                        + m_data.getJSONObject(index).getString("user"));
+                        + mJson.getJSONObject(index).getString("user"));
             } else if (min > 0) {
                 if (min == 1) {
                     end = " minute ago";
@@ -134,7 +134,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
                     end = " minutes ago";
                 }
                 holder.meta.setText("Posted " + min + end + " by "
-                        + m_data.getJSONObject(index).getString("user"));
+                        + mJson.getJSONObject(index).getString("user"));
             } else {
                 if (sec == 1) {
                     end = " second ago";
@@ -142,11 +142,11 @@ public class IssueCommentsAdapter extends BaseAdapter {
                     end = " seconds ago";
                 }
                 holder.meta.setText("Posted " + sec + end + " by "
-                        + m_data.getJSONObject(index).getString("user"));
+                        + mJson.getJSONObject(index).getString("user"));
             }
-            holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index).getString(
+            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index).getString(
                     "user")));
-            holder.body.setText(m_data.getJSONObject(index).getString("body").replaceAll("\r\n",
+            holder.body.setText(mJson.getJSONObject(index).getString("body").replaceAll("\r\n",
                     "\n").replaceAll("\r", "\n"));
         } catch (final JSONException e) {
             e.printStackTrace();
@@ -164,12 +164,12 @@ public class IssueCommentsAdapter extends BaseAdapter {
      */
     public void loadGravatars() {
         try {
-            final int length = m_data.length();
+            final int length = mJson.length();
             for (int i = 0; i < length; i++) {
-                final String actor = m_data.getJSONObject(i).getString("user");
-                if (!m_gravatars.containsKey(actor)) {
-                    m_gravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-                            .getGravatarID(actor), 30.0f, m_context.getResources()
+                final String actor = mJson.getJSONObject(i).getString("user");
+                if (!mGravatars.containsKey(actor)) {
+                    mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+                            .getGravatarID(actor), 30.0f, mContext.getResources()
                             .getDisplayMetrics().density));
                 }
             }

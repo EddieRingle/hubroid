@@ -49,8 +49,6 @@ public class IssuesList extends Activity {
 
     private SharedPreferences.Editor mEditor;
 
-    private Intent mIntent;
-
     private final OnItemClickListener mMessageClickedHandler = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
@@ -75,8 +73,6 @@ public class IssuesList extends Activity {
     private IssuesListAdapter mOpenIssuesAdapter;
 
     private JSONArray mOpenIssuesData;
-
-    private int mPosition;
 
     private SharedPreferences mPrefs;
 
@@ -218,7 +214,7 @@ public class IssuesList extends Activity {
         mEditor = mPrefs.edit();
         mType = "open";
 
-        mUsername = mPrefs.getString("login", "");
+        mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);

@@ -59,8 +59,6 @@ public class CommitChangeViewer extends Activity {
 
     public Intent mIntent;
 
-    public int mPosition;
-
     private SharedPreferences mPrefs;
 
     public String mRepoName;

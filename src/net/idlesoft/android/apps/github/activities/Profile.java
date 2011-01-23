@@ -32,10 +32,6 @@ import com.flurry.android.FlurryAgent;
 public class Profile extends Activity {
     private GitHubAPI mGapi;
 
-    private boolean mIsFollowing;
-
-    private boolean mIsLoggedIn;
-
     public JSONObject mJson;
 
     private String mPassword;
@@ -86,7 +82,6 @@ public class Profile extends Activity {
 
         mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
-        mIsFollowing = false;
 
         mGapi = new GitHubAPI();
         mGapi.authenticate(mUsername, mPassword);
@@ -116,7 +111,6 @@ public class Profile extends Activity {
                 final int length = following_list.length() - 1;
                 for (int i = 0; i <= length; i++) {
                     if (following_list.getString(i).equalsIgnoreCase(mTarget)) {
-                        mIsFollowing = true;
                     }
                 }
 

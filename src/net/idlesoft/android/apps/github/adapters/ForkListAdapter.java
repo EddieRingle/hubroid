@@ -25,25 +25,25 @@ public class ForkListAdapter extends BaseAdapter {
         public TextView text;
     }
 
-    private final Context m_context;
+    private final Context mContext;
 
-    private JSONArray m_data = new JSONArray();
+    private JSONArray mJson = new JSONArray();
 
-    private final LayoutInflater m_inflater;
+    private final LayoutInflater mInflater;
 
     public ForkListAdapter(final Context context, final JSONArray jsonarray) {
-        m_context = context;
-        m_inflater = LayoutInflater.from(m_context);
-        m_data = jsonarray;
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
+        mJson = jsonarray;
     }
 
     public int getCount() {
-        return m_data.length();
+        return mJson.length();
     }
 
     public Object getItem(final int i) {
         try {
-            return m_data.get(i);
+            return mJson.get(i);
         } catch (final JSONException e) {
             e.printStackTrace();
             return null;
@@ -57,7 +57,7 @@ public class ForkListAdapter extends BaseAdapter {
     public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.network_list_item, null);
+            convertView = mInflater.inflate(R.layout.network_list_item, null);
             holder = new ViewHolder();
             holder.text = (TextView) convertView.findViewById(R.id.tv_network_username);
             convertView.setTag(holder);
@@ -65,7 +65,7 @@ public class ForkListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         try {
-            holder.text.setText(m_data.getJSONObject(index).getString("owner"));
+            holder.text.setText(mJson.getJSONObject(index).getString("owner"));
             holder.text.setEllipsize(TruncateAt.END);
             holder.text.setTextColor(R.color.textColor);
             holder.text.setMaxLines(1);

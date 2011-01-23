@@ -37,30 +37,30 @@ public class CommitListAdapter extends BaseAdapter {
         public ImageView gravatar;
     }
 
-    private final Context m_context;
+    private final Context mContext;
 
-    private JSONArray m_data = new JSONArray();
+    private JSONArray mJson = new JSONArray();
 
-    private final HashMap<String, Bitmap> m_gravatars;
+    private final HashMap<String, Bitmap> mGravatars;
 
-    private final LayoutInflater m_inflater;
+    private final LayoutInflater mInflater;
 
     public CommitListAdapter(final Context context, final JSONArray jsonarray) {
-        m_context = context;
-        m_inflater = LayoutInflater.from(m_context);
-        m_data = jsonarray;
-        m_gravatars = new HashMap<String, Bitmap>(m_data.length());
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
+        mJson = jsonarray;
+        mGravatars = new HashMap<String, Bitmap>(mJson.length());
 
         loadGravatars();
     }
 
     public int getCount() {
-        return m_data.length();
+        return mJson.length();
     }
 
     public Object getItem(final int i) {
         try {
-            return m_data.get(i);
+            return mJson.get(i);
         } catch (final JSONException e) {
             e.printStackTrace();
             return null;
@@ -74,7 +74,7 @@ public class CommitListAdapter extends BaseAdapter {
     public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.commit_list_item, null);
+            convertView = mInflater.inflate(R.layout.commit_list_item, null);
             holder = new ViewHolder();
             holder.commit_date = (TextView) convertView
                     .findViewById(R.id.tv_commit_list_item_commit_date);
@@ -89,7 +89,7 @@ public class CommitListAdapter extends BaseAdapter {
         try {
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
-            final Date commit_time = dateFormat.parse(m_data.getJSONObject(index).getString(
+            final Date commit_time = dateFormat.parse(mJson.getJSONObject(index).getString(
                     "committed_date"));
             final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
             final long ms = current_time.getTime() - commit_time.getTime();
@@ -126,10 +126,10 @@ public class CommitListAdapter extends BaseAdapter {
                 }
                 holder.commit_date.setText(sec + end);
             }
-            holder.gravatar.setBackgroundDrawable(m_context.getResources().getDrawable(R.drawable.gravatar_border));
-            holder.gravatar.setImageBitmap(m_gravatars.get(m_data.getJSONObject(index)
+            holder.gravatar.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.gravatar_border));
+            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index)
                     .getJSONObject("author").getString("login")));
-            holder.commit_shortdesc.setText(m_data.getJSONObject(index).getString("message").split(
+            holder.commit_shortdesc.setText(mJson.getJSONObject(index).getString("message").split(
                     "\n")[0]);
         } catch (final JSONException e) {
             e.printStackTrace();
@@ -143,14 +143,14 @@ public class CommitListAdapter extends BaseAdapter {
      * Get the Gravatars of all users in the commit log
      */
     public void loadGravatars() {
-        final int length = m_data.length();
+        final int length = mJson.length();
         for (int i = 0; i < length; i++) {
             try {
-                final String login = m_data.getJSONObject(i).getJSONObject("author").getString(
+                final String login = mJson.getJSONObject(i).getJSONObject("author").getString(
                         "login");
-                if (!m_gravatars.containsKey(login)) {
-                    m_gravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
-                            .getGravatarID(login), 30.0f, m_context.getResources()
+                if (!mGravatars.containsKey(login)) {
+                    mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
+                            .getGravatarID(login), 30.0f, mContext.getResources()
                             .getDisplayMetrics().density));
                 }
             } catch (final JSONException e) {

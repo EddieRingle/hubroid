@@ -27,17 +27,13 @@ import android.widget.Toast;
 
 public class Login extends Activity {
     static private class LoginTask extends AsyncTask<Void, Void, Integer> {
-        public Login mActivity;
-
-        public LoginTask(final Login activity) {
-            mActivity = activity;
-        }
+        public Login activity;
 
         @Override
         protected Integer doInBackground(final Void... params) {
-            final String user = ((EditText) mActivity.findViewById(R.id.et_login_username))
+            final String user = ((EditText) activity.findViewById(R.id.et_login_username))
                     .getText().toString();
-            final String pass = ((EditText) mActivity.findViewById(R.id.et_login_password))
+            final String pass = ((EditText) activity.findViewById(R.id.et_login_password))
                     .getText().toString();
             if (user.equals("") || pass.equals("")) {
                 return 100;
@@ -46,7 +42,7 @@ public class Login extends Activity {
             ghapi.authenticate(user, pass);
             final int returnCode = ghapi.user.private_activity().statusCode;
             if (returnCode == 200) {
-                final SharedPreferences prefs = mActivity.getSharedPreferences(Hubroid.PREFS_NAME,
+                final SharedPreferences prefs = activity.getSharedPreferences(Hubroid.PREFS_NAME,
                         0);
                 final Editor edit = prefs.edit();
                 edit.putString("username", user);
@@ -58,26 +54,26 @@ public class Login extends Activity {
 
         @Override
         protected void onPostExecute(final Integer result) {
-            mActivity.mProgressDialog.dismiss();
+            activity.mProgressDialog.dismiss();
             if (result == 401) {
-                Toast.makeText(mActivity, "Login details incorrect, try again", Toast.LENGTH_SHORT)
+                Toast.makeText(activity, "Login details incorrect, try again", Toast.LENGTH_SHORT)
                         .show();
             } else if (result == 100) {
-                Toast.makeText(mActivity, "Login details cannot be empty", Toast.LENGTH_SHORT)
+                Toast.makeText(activity, "Login details cannot be empty", Toast.LENGTH_SHORT)
                         .show();
             } else if (result == 200) {
-                Toast.makeText(mActivity, "Login successful", Toast.LENGTH_SHORT).show();
-                mActivity.startActivity(new Intent(mActivity, Dashboard.class));
-                mActivity.finish();
+                Toast.makeText(activity, "Login successful", Toast.LENGTH_SHORT).show();
+                activity.startActivity(new Intent(activity, Dashboard.class));
+                activity.finish();
             } else {
-                Toast.makeText(mActivity, "Unknown login error: " + result, Toast.LENGTH_SHORT)
+                Toast.makeText(activity, "Unknown login error: " + result, Toast.LENGTH_SHORT)
                         .show();
             }
         }
 
         @Override
         protected void onPreExecute() {
-            mActivity.mProgressDialog = ProgressDialog.show(mActivity, null, "Logging in...");
+            activity.mProgressDialog = ProgressDialog.show(activity, null, "Logging in...");
         }
     }
 
@@ -94,7 +90,7 @@ public class Login extends Activity {
 
         mLoginTask = (LoginTask) getLastNonConfigurationInstance();
         if (mLoginTask != null) {
-            mLoginTask.mActivity = this;
+            mLoginTask.activity = this;
             if ((mLoginTask.getStatus() == AsyncTask.Status.RUNNING)
                     && !mProgressDialog.isShowing()) {
                 mProgressDialog = ProgressDialog.show(this, null, "Logging in...");
@@ -102,11 +98,10 @@ public class Login extends Activity {
         }
         ((Button) findViewById(R.id.btn_login_login)).setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
-                if (mLoginTask == null) {
-                    mLoginTask = new LoginTask(Login.this);
-                } else if (mLoginTask.getStatus() == AsyncTask.Status.FINISHED) {
-                    mLoginTask = new LoginTask(Login.this);
+                if (mLoginTask == null || mLoginTask.getStatus() == AsyncTask.Status.FINISHED) {
+                    mLoginTask = new LoginTask();
                 }
+                mLoginTask.activity = Login.this;
                 mLoginTask.execute();
             }
         });

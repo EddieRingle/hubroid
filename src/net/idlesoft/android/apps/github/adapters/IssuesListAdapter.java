@@ -36,25 +36,25 @@ public class IssuesListAdapter extends BaseAdapter {
         public TextView issueTitle;
     }
 
-    private final Context m_context;
+    private final Context mContext;
 
-    private JSONArray m_data = new JSONArray();
+    private JSONArray mJson = new JSONArray();
 
-    private final LayoutInflater m_inflater;
+    private final LayoutInflater mInflater;
 
     public IssuesListAdapter(final Context context, final JSONArray jsonarray) {
-        m_context = context;
-        m_inflater = LayoutInflater.from(m_context);
-        m_data = jsonarray;
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
+        mJson = jsonarray;
     }
 
     public int getCount() {
-        return m_data.length();
+        return mJson.length();
     }
 
     public Object getItem(final int i) {
         try {
-            return m_data.get(i);
+            return mJson.get(i);
         } catch (final JSONException e) {
             e.printStackTrace();
             return null;
@@ -68,7 +68,7 @@ public class IssuesListAdapter extends BaseAdapter {
     public View getView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = m_inflater.inflate(R.layout.issue_list_item, null);
+            convertView = mInflater.inflate(R.layout.issue_list_item, null);
             holder = new ViewHolder();
             holder.issueIcon = (ImageView) convertView.findViewById(R.id.iv_issue_list_item_icon);
             holder.issueNumber = (TextView) convertView
@@ -84,7 +84,7 @@ public class IssuesListAdapter extends BaseAdapter {
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            final Date commit_time = dateFormat.parse(m_data.getJSONObject(index).getString(
+            final Date commit_time = dateFormat.parse(mJson.getJSONObject(index).getString(
                     "updated_at"));
             final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
             final long ms = current_time.getTime() - commit_time.getTime();
@@ -130,13 +130,13 @@ public class IssuesListAdapter extends BaseAdapter {
                 }
                 holder.issueLastUpdatedDate.setText("Updated " + sec + end);
             }
-            if (m_data.getJSONObject(index).getString("state").equalsIgnoreCase("open")) {
+            if (mJson.getJSONObject(index).getString("state").equalsIgnoreCase("open")) {
                 holder.issueIcon.setImageResource(R.drawable.issues_open);
             } else {
                 holder.issueIcon.setImageResource(R.drawable.issues_closed);
             }
-            holder.issueNumber.setText("#" + m_data.getJSONObject(index).getString("number"));
-            holder.issueTitle.setText(m_data.getJSONObject(index).getString("title"));
+            holder.issueNumber.setText("#" + mJson.getJSONObject(index).getString("number"));
+            holder.issueTitle.setText(mJson.getJSONObject(index).getString("title"));
         } catch (final JSONException e) {
             e.printStackTrace();
         } catch (final ParseException e) {

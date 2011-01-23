@@ -44,62 +44,60 @@ import com.flurry.android.FlurryAgent;
 public class SingleIssue extends Activity {
     private GitHubAPI mGapi = new GitHubAPI();
 
-    private IssueCommentsAdapter m_adapter;
+    private IssueCommentsAdapter mAdapter;
 
-    private View m_clickedBtn;
+    private View mClickedBtn;
 
-    private View m_commentArea;
+    private View mCommentArea;
 
-    private SharedPreferences.Editor m_editor;
+    private SharedPreferences.Editor mEditor;
 
-    private View m_header;
+    private View mHeader;
 
-    public Intent m_intent;
+    public Intent mIntent;
 
-    private View m_issueBox;
+    private JSONObject mJson = new JSONObject();
 
-    private JSONObject m_JSON = new JSONObject();
-
-    private final OnClickListener m_onSubmitClickListener = new OnClickListener() {
+    private final OnClickListener mOnSubmitClickListener = new OnClickListener() {
         public void onClick(final View v) {
-            m_clickedBtn = v;
-            final String comment_body = ((TextView) m_commentArea
+            mClickedBtn = v;
+            final String comment_body = ((TextView) mCommentArea
                     .findViewById(R.id.et_issue_comment_area_body)).getText().toString();
             if (!comment_body.equals("")) {
-                ((ProgressBar) m_commentArea.findViewById(R.id.pb_issue_comment_area_progress))
+                ((ProgressBar) mCommentArea.findViewById(R.id.pb_issue_comment_area_progress))
                         .setVisibility(View.VISIBLE);
-                m_thread = new Thread(new Runnable() {
+                mThread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            if (mGapi.issues.add_comment(m_repoOwner, m_repoName, m_JSON
-                                    .getInt("number"), ((TextView) m_commentArea
+                            if (mGapi.issues.add_comment(mRepositoryOwner, mRepositoryName, mJson
+                                    .getInt("number"), ((TextView) mCommentArea
                                     .findViewById(R.id.et_issue_comment_area_body)).getText()
                                     .toString()).statusCode == 200) {
                                 runOnUiThread(new Runnable() {
                                     public void run() {
-                                        ((ProgressBar) m_commentArea
+                                        ((ProgressBar) mCommentArea
                                                 .findViewById(R.id.pb_issue_comment_area_progress))
                                                 .setVisibility(View.GONE);
-                                        m_progressDialog = ProgressDialog.show(SingleIssue.this,
+                                        mProgressDialog = ProgressDialog.show(SingleIssue.this,
                                                 "Please wait...", "Refreshing Comments...", true);
                                     }
                                 });
-                                if (m_clickedBtn.getId() == R.id.btn_issue_comment_area_submit_and_close) {
+                                if (mClickedBtn.getId() == R.id.btn_issue_comment_area_submit_and_close) {
                                     runOnUiThread(new Runnable() {
                                         public void run() {
-                                            m_progressDialog.setMessage("Closing issue...");
+                                            mProgressDialog.setMessage("Closing issue...");
                                         }
                                     });
-                                    final int statusCode = mGapi.issues.close(m_repoOwner,
-                                            m_repoName, m_JSON.getInt("number")).statusCode;
+                                    final int statusCode = mGapi.issues.close(mRepositoryOwner,
+                                            mRepositoryName, mJson.getInt("number")).statusCode;
                                     if (statusCode == 200) {
                                         runOnUiThread(new Runnable() {
                                             public void run() {
-                                                m_progressDialog.setMessage("Refreshing Issue...");
+                                                mProgressDialog.setMessage("Refreshing Issue...");
                                             }
                                         });
-                                        m_JSON = new JSONObject(mGapi.issues.issue(m_repoOwner,
-                                                m_repoName, m_JSON.getInt("number")).resp)
+                                        mJson = new JSONObject(mGapi.issues.issue(mRepositoryOwner,
+                                                mRepositoryName, mJson.getInt("number")).resp)
                                                 .getJSONObject("issue");
                                         runOnUiThread(new Runnable() {
                                             public void run() {
@@ -116,18 +114,18 @@ public class SingleIssue extends Activity {
                                         });
                                     }
                                 }
-                                final Response response = mGapi.issues.list_comments(m_repoOwner,
-                                        m_repoName, m_JSON.getInt("number"));
-                                m_adapter = new IssueCommentsAdapter(getApplicationContext(),
+                                final Response response = mGapi.issues.list_comments(mRepositoryOwner,
+                                        mRepositoryName, mJson.getInt("number"));
+                                mAdapter = new IssueCommentsAdapter(getApplicationContext(),
                                         new JSONObject(response.resp).getJSONArray("comments"));
                                 runOnUiThread(new Runnable() {
                                     public void run() {
-                                        ((TextView) m_commentArea
+                                        ((TextView) mCommentArea
                                                 .findViewById(R.id.et_issue_comment_area_body))
                                                 .setText("");
                                         ((ListView) findViewById(R.id.lv_single_issue_comments))
-                                                .setAdapter(m_adapter);
-                                        m_progressDialog.dismiss();
+                                                .setAdapter(mAdapter);
+                                        mProgressDialog.dismiss();
                                     }
                                 });
                             } else {
@@ -139,31 +137,31 @@ public class SingleIssue extends Activity {
                         }
                     }
                 });
-                m_thread.start();
+                mThread.start();
             }
         }
     };
 
-    private SharedPreferences m_prefs;
+    private SharedPreferences mPrefs;
 
-    public ProgressDialog m_progressDialog;
+    public ProgressDialog mProgressDialog;
 
-    private String m_repoName;
+    private String mRepositoryName;
 
-    private String m_repoOwner;
+    private String mRepositoryOwner;
 
-    private Thread m_thread;
+    private Thread mThread;
 
     private String mPassword;
 
     private String mUsername;
 
     private void loadIssueItemBox() {
-        final TextView date = (TextView) m_header
+        final TextView date = (TextView) mHeader
                 .findViewById(R.id.tv_issue_list_item_updated_date);
-        final ImageView icon = (ImageView) m_header.findViewById(R.id.iv_issue_list_item_icon);
-        final TextView title = (TextView) m_header.findViewById(R.id.tv_issue_list_item_title);
-        final TextView number = (TextView) m_header.findViewById(R.id.tv_issue_list_item_number);
+        final ImageView icon = (ImageView) mHeader.findViewById(R.id.iv_issue_list_item_icon);
+        final TextView title = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_title);
+        final TextView number = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_number);
 
         final TextView topbar = (TextView) findViewById(R.id.tv_page_title);
 
@@ -171,7 +169,7 @@ public class SingleIssue extends Activity {
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            final Date item_time = dateFormat.parse(m_JSON.getString("updated_at"));
+            final Date item_time = dateFormat.parse(mJson.getString("updated_at"));
             final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
             final long ms = current_time.getTime() - item_time.getTime();
             final long sec = ms / 1000;
@@ -215,13 +213,13 @@ public class SingleIssue extends Activity {
                 }
                 date.setText("Updated " + sec + end);
             }
-            if (m_JSON.getString("state").equalsIgnoreCase("open")) {
+            if (mJson.getString("state").equalsIgnoreCase("open")) {
                 icon.setImageResource(R.drawable.issues_open);
             } else {
                 icon.setImageResource(R.drawable.issues_closed);
             }
-            number.setText("#" + m_JSON.getString("number"));
-            title.setText(m_JSON.getString("title"));
+            number.setText("#" + mJson.getString("number"));
+            title.setText(mJson.getString("title"));
             topbar.setText("Issue " + number.getText().toString());
         } catch (final Exception e) {
             e.printStackTrace();
@@ -233,36 +231,35 @@ public class SingleIssue extends Activity {
         super.onCreate(icicle);
         setContentView(R.layout.single_issue);
 
-        m_prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        m_editor = m_prefs.edit();
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
 
-        mUsername = m_prefs.getString("login", "");
-        mPassword = m_prefs.getString("password", "");
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             try {
-                m_repoOwner = extras.getString("repoOwner");
-                m_repoName = extras.getString("repoName");
-                m_JSON = new JSONObject(extras.getString("item_json"));
-                m_issueBox = getLayoutInflater().inflate(R.layout.issue_list_item, null);
+                mRepositoryOwner = extras.getString("repoOwner");
+                mRepositoryName = extras.getString("repoName");
+                mJson = new JSONObject(extras.getString("item_json"));
 
-                m_header = getLayoutInflater().inflate(R.layout.issue_header, null);
+                mHeader = getLayoutInflater().inflate(R.layout.issue_header, null);
                 loadIssueItemBox();
-                ((ListView) findViewById(R.id.lv_single_issue_comments)).addHeaderView(m_header);
-                ((ImageView) m_header.findViewById(R.id.iv_single_issue_gravatar))
+                ((ListView) findViewById(R.id.lv_single_issue_comments)).addHeaderView(mHeader);
+                ((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
                         .setImageBitmap(GravatarCache.getDipGravatar(GravatarCache
-                                .getGravatarID(m_JSON.getString("user")), 30.0f, getResources()
+                                .getGravatarID(mJson.getString("user")), 30.0f, getResources()
                                 .getDisplayMetrics().density));
-                ((TextView) m_header.findViewById(R.id.tv_single_issue_body)).setText(m_JSON
+                ((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mJson
                         .getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 
                 String end;
                 final SimpleDateFormat dateFormat = new SimpleDateFormat(
                         Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-                final Date item_time = dateFormat.parse(m_JSON.getString("created_at"));
+                final Date item_time = dateFormat.parse(mJson.getString("created_at"));
                 final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
                 final long ms = current_time.getTime() - item_time.getTime();
                 final long sec = ms / 1000;
@@ -276,61 +273,61 @@ public class SingleIssue extends Activity {
                     } else {
                         end = " years ago";
                     }
-                    ((TextView) m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
-                            + year + end + " by " + m_JSON.getString("user"));
+                    ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
+                            + year + end + " by " + mJson.getString("user"));
                 } else if (day > 0) {
                     if (day == 1) {
                         end = " day ago";
                     } else {
                         end = " days ago";
                     }
-                    ((TextView) m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
-                            + day + end + " by " + m_JSON.getString("user"));
+                    ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
+                            + day + end + " by " + mJson.getString("user"));
                 } else if (hour > 0) {
                     if (hour == 1) {
                         end = " hour ago";
                     } else {
                         end = " hours ago";
                     }
-                    ((TextView) m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
-                            + hour + end + " by " + m_JSON.getString("user"));
+                    ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
+                            + hour + end + " by " + mJson.getString("user"));
                 } else if (min > 0) {
                     if (min == 1) {
                         end = " minute ago";
                     } else {
                         end = " minutes ago";
                     }
-                    ((TextView) m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
-                            + min + end + " by " + m_JSON.getString("user"));
+                    ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
+                            + min + end + " by " + mJson.getString("user"));
                 } else {
                     if (sec == 1) {
                         end = " second ago";
                     } else {
                         end = " seconds ago";
                     }
-                    ((TextView) m_header.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
-                            + sec + end + " by " + m_JSON.getString("user"));
+                    ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
+                            + sec + end + " by " + mJson.getString("user"));
                 }
 
-                m_commentArea = getLayoutInflater().inflate(R.layout.issue_comment_area, null);
+                mCommentArea = getLayoutInflater().inflate(R.layout.issue_comment_area, null);
                 ((ListView) findViewById(R.id.lv_single_issue_comments))
-                        .addFooterView(m_commentArea);
-                ((Button) m_commentArea.findViewById(R.id.btn_issue_comment_area_submit))
-                        .setOnClickListener(m_onSubmitClickListener);
-                ((Button) m_commentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
-                        .setOnClickListener(m_onSubmitClickListener);
+                        .addFooterView(mCommentArea);
+                ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit))
+                        .setOnClickListener(mOnSubmitClickListener);
+                ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
+                        .setOnClickListener(mOnSubmitClickListener);
 
-                m_thread = new Thread(new Runnable() {
+                mThread = new Thread(new Runnable() {
                     public void run() {
                         try {
-                            final Response response = mGapi.issues.list_comments(m_repoOwner,
-                                    m_repoName, m_JSON.getInt("number"));
-                            m_adapter = new IssueCommentsAdapter(getApplicationContext(),
+                            final Response response = mGapi.issues.list_comments(mRepositoryOwner,
+                                    mRepositoryName, mJson.getInt("number"));
+                            mAdapter = new IssueCommentsAdapter(getApplicationContext(),
                                     new JSONObject(response.resp).getJSONArray("comments"));
                             runOnUiThread(new Runnable() {
                                 public void run() {
                                     ((ListView) findViewById(R.id.lv_single_issue_comments))
-                                            .setAdapter(m_adapter);
+                                            .setAdapter(mAdapter);
                                 }
                             });
                         } catch (final JSONException e) {
@@ -338,7 +335,7 @@ public class SingleIssue extends Activity {
                         }
                     }
                 });
-                m_thread.start();
+                mThread.start();
             } catch (final JSONException e) {
                 e.printStackTrace();
             } catch (final java.text.ParseException e) {
@@ -355,7 +352,7 @@ public class SingleIssue extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                m_editor.clear().commit();
+                mEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
@@ -376,11 +373,11 @@ public class SingleIssue extends Activity {
 
     @Override
     public void onPause() {
-        if ((m_thread != null) && m_thread.isAlive()) {
-            m_thread.stop();
+        if ((mThread != null) && mThread.isAlive()) {
+            mThread.stop();
         }
-        if ((m_progressDialog != null) && m_progressDialog.isShowing()) {
-            m_progressDialog.dismiss();
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
         }
         super.onPause();
     }
@@ -400,14 +397,14 @@ public class SingleIssue extends Activity {
     public void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.containsKey("commentText")) {
-            ((EditText) m_commentArea.findViewById(R.id.et_issue_comment_area_body))
+            ((EditText) mCommentArea.findViewById(R.id.et_issue_comment_area_body))
                     .setText(savedInstanceState.getString("commentText"));
         }
     }
 
     @Override
     public void onSaveInstanceState(final Bundle savedInstanceState) {
-        savedInstanceState.putString("commentText", ((EditText) m_commentArea
+        savedInstanceState.putString("commentText", ((EditText) mCommentArea
                 .findViewById(R.id.et_issue_comment_area_body)).getText().toString());
         super.onSaveInstanceState(savedInstanceState);
     }

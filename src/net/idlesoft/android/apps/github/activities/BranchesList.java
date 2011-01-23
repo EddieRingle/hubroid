@@ -47,7 +47,6 @@ public class BranchesList extends Activity {
     private final OnItemClickListener mOnBranchListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
-            mPosition = position;
             try {
                 mIntent = new Intent(BranchesList.this, Branch.class);
                 mIntent.putExtra("repo_name", mRepoName);
@@ -60,8 +59,6 @@ public class BranchesList extends Activity {
             BranchesList.this.startActivity(mIntent);
         }
     };
-
-    public int mPosition;
 
     private SharedPreferences mPrefs;
 
