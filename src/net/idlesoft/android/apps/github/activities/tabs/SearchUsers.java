@@ -10,7 +10,7 @@ package net.idlesoft.android.apps.github.activities.tabs;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
-import net.idlesoft.android.apps.github.activities.Repository;
+import net.idlesoft.android.apps.github.activities.Profile;
 import net.idlesoft.android.apps.github.adapters.SearchUsersListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -89,7 +89,7 @@ public class SearchUsers extends Activity {
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
-            Intent i = new Intent(getApplicationContext(), Repository.class);
+            Intent i = new Intent(getApplicationContext(), Profile.class);
             try {
                 i.putExtra("username", mJson.getJSONObject(position).getString("login"));
             } catch (JSONException e) {
