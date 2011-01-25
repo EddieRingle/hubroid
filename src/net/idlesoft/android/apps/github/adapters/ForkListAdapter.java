@@ -10,51 +10,24 @@ package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.content.Context;
+import android.app.Activity;
 import android.text.TextUtils.TruncateAt;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AbsListView;
 import android.widget.TextView;
-public class ForkListAdapter extends BaseAdapter {
+public class ForkListAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public TextView text;
     }
 
-    private final Context mContext;
-
-    private JSONArray mJson = new JSONArray();
-
-    private final LayoutInflater mInflater;
-
-    public ForkListAdapter(final Context context, final JSONArray jsonarray) {
-        mContext = context;
-        mInflater = LayoutInflater.from(mContext);
-        mJson = jsonarray;
+    public ForkListAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public int getCount() {
-        return mJson.length();
-    }
-
-    public Object getItem(final int i) {
-        try {
-            return mJson.get(i);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public long getItemId(final int i) {
-        return i;
-    }
-
-    public View getView(final int index, View convertView, final ViewGroup parent) {
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.network_list_item, null);

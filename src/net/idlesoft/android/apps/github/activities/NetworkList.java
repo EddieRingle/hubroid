@@ -8,6 +8,8 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import com.flurry.android.FlurryAgent;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ForkListAdapter;
 
@@ -17,58 +19,77 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.flurry.android.FlurryAgent;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class NetworkList extends Activity {
     private GitHubAPI mGapi = new GitHubAPI();
 
     public ForkListAdapter mAdapter;
 
-    public Intent mIntent;
-
     public JSONArray mJson;
+
+    private static class GetForksTask extends AsyncTask<Void, Void, Void> {
+        public NetworkList activity;
+
+        protected void onPreExecute() {
+            activity.mAdapter.setIsLoadingData(true);
+        }
+
+        protected Void doInBackground(Void... params) {
+            try {
+                activity.mJson = new JSONObject(activity.mGapi.repo.network(activity.mRepositoryOwner,
+                        activity.mRepositoryName).resp).getJSONArray("network");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            activity.mAdapter.loadData(activity.mJson);
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            activity.mAdapter.pushData();
+            activity.mAdapter.setIsLoadingData(false);
+        }
+    }
 
     private final OnItemClickListener mOnForkListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
             try {
-                mIntent = new Intent(NetworkList.this, Repository.class);
-                mIntent.putExtra("repo_name", mJson.getJSONObject(position).getString(
+                Intent i = new Intent(NetworkList.this, Repository.class);
+                i.putExtra("repo_name", mJson.getJSONObject(position).getString(
                         "name"));
-                mIntent.putExtra("username", mJson.getJSONObject(position).getString(
+                i.putExtra("repo_owner", mJson.getJSONObject(position).getString(
                         "owner"));
+                startActivity(i);
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
-            NetworkList.this.startActivity(mIntent);
         }
     };
 
     private SharedPreferences mPrefs;
 
-    public ProgressDialog mProgressDialog;
-
     public String mRepositoryName;
 
     public String mRepositoryOwner;
-
-    private Thread mThread;
 
     private String mPassword;
 
     private String mUsername;
 
-    @Override
+    private ListView mListView;
+
+    private GetForksTask mGetForksTask;
+
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.network);
@@ -80,49 +101,43 @@ public class NetworkList extends Activity {
 
         mGapi.authenticate(mUsername, mPassword);
 
+        mListView = (ListView) findViewById(R.id.lv_network_list);
+        mListView.setOnItemClickListener(mOnForkListItemClick);
+
+        mAdapter = new ForkListAdapter(NetworkList.this, mListView);
+
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mRepositoryName = extras.getString("repo_name");
             mRepositoryOwner = extras.getString("username");
 
-            try {
-                final TextView title = (TextView) findViewById(R.id.tv_page_title);
-                title.setText("Network");
-
-                final JSONObject forkjson = new JSONObject(mGapi.repo.network(mRepositoryOwner,
-                        mRepositoryName).resp);
-
-                mJson = forkjson.getJSONArray("network");
-
-                mAdapter = new ForkListAdapter(NetworkList.this, mJson);
-
-                final ListView repo_list = (ListView) findViewById(R.id.lv_network_list);
-                repo_list.setAdapter(mAdapter);
-                repo_list.setOnItemClickListener(mOnForkListItemClick);
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            final TextView title = (TextView) findViewById(R.id.tv_page_title);
+            title.setText("Network");
         }
     }
 
-    @Override
-    public void onPause() {
-        if ((mThread != null) && mThread.isAlive()) {
-            mThread.stop();
+    protected void onResume() {
+        mGetForksTask = (GetForksTask) getLastNonConfigurationInstance();
+        if (mGetForksTask == null) {
+            mGetForksTask = new GetForksTask();
         }
-        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
+        mGetForksTask.activity = NetworkList.this;
+        if (mGetForksTask.getStatus() == AsyncTask.Status.PENDING) {
+            mGetForksTask.execute();
         }
-        super.onPause();
+        mListView.setAdapter(mAdapter);
+        super.onResume();
     }
 
-    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mGetForksTask;
+    }
+
     public void onStart() {
         super.onStart();
         FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
     }
 
-    @Override
     public void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(this);
