@@ -78,14 +78,15 @@ public class WatchedRepos extends Activity {
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
-            Intent i = new Intent(getApplicationContext(), Repository.class);
-            i.putExtra("repo_owner", mTarget);
             try {
+                Intent i = new Intent(getApplicationContext(), Repository.class);
+                i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
                 i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
+                startActivity(i);
             } catch (JSONException e) {
                 e.printStackTrace();
+                // TODO: If there's an error, notify the user rather than doing nothing.
             }
-            startActivity(i);
             return;
         }
     };
