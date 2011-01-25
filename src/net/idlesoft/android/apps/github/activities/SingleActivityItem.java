@@ -8,10 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -27,12 +24,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SingleActivityItem extends Activity {
     public static final String CSS =
@@ -228,6 +230,15 @@ public class SingleActivityItem extends Activity {
             }
 
             title_tv.setText(title);
+
+            gravatar.setOnClickListener(new OnClickListener() {
+                public void onClick(View v) {
+                    Intent i = new Intent(SingleActivityItem.this, Profile.class);
+                    i.putExtra("username", actor);
+                    startActivity(i);
+                }
+            });
+
         } catch (final JSONException e) {
             e.printStackTrace();
         } catch (final ParseException e) {
