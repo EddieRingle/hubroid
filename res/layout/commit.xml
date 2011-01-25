@@ -6,17 +6,17 @@
 	android:orientation="vertical">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<ScrollView
+		android:id="@+id/sv_commit_content"
 		android:layout_width="fill_parent"
 		android:layout_height="match_parent">
 		<LinearLayout
 			android:layout_width="fill_parent"
-			android:layout_height="match_parent"
+			android:layout_height="fill_parent"
 			android:orientation="vertical">
 			<LinearLayout
-				android:id="@+id/rl_commit_commitInfoLayout"
+				android:id="@+id/ll_commit_commitInfoLayout"
 				android:layout_width="fill_parent"
 				android:layout_height="fill_parent"
-				android:visibility="gone"
 				android:orientation="vertical">
 				<LinearLayout
 					android:id="@+id/ll_commit_view_header"
@@ -185,17 +185,17 @@
 					android:drawableLeft="@drawable/file_modified"
 					android:text="X files changed" />
 			</LinearLayout>
-			<RelativeLayout
-				android:id="@+id/rl_commit_progressLayout"
-				android:layout_width="fill_parent"
-				android:layout_height="fill_parent"
-				android:visibility="gone">
-				<ProgressBar
-					android:layout_height="wrap_content"
-					android:layout_width="wrap_content"
-					android:layout_centerInParent="true"
-					android:indeterminateOnly="true" />
-			</RelativeLayout>
 		</LinearLayout>
 	</ScrollView>
+	<RelativeLayout
+		android:id="@+id/rl_commit_progressLayout"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent"
+		android:visibility="gone">
+		<ProgressBar
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:layout_centerInParent="true"
+			android:indeterminateOnly="true" />
+	</RelativeLayout>
 </LinearLayout>
