@@ -31,6 +31,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -66,7 +67,7 @@ public class Commit extends Activity {
 
     private GetCommitTask mGetCommitTask;
 
-    private LinearLayout mCommitLayout;
+    private ScrollView mCommitLayout;
 
     private RelativeLayout mProgressLayout;
 
@@ -108,16 +109,17 @@ public class Commit extends Activity {
         // Get the commit data for that commit ID so that we can get the
         // tree ID and filename.
         try {
+            final ImageView authorImage = (ImageView) findViewById(R.id.commit_view_author_gravatar);
+            final ImageView committerImage = (ImageView) findViewById(R.id.commit_view_committer_gravatar);
+
             // If the committer is the author then just show them as the
             // author, otherwise show
             // both people
             ((TextView) findViewById(R.id.commit_view_author_name)).setText(mAuthor);
             if (mAuthorGravatar != null) {
-                ((ImageView) findViewById(R.id.commit_view_author_gravatar))
-                        .setImageBitmap(mAuthorGravatar);
+                authorImage.setImageBitmap(mAuthorGravatar);
             } else {
-                ((ImageView) findViewById(R.id.commit_view_author_gravatar))
-                        .setImageBitmap(Commit.loadGravatarByLoginName(Commit.this, mAuthor));
+                authorImage.setImageBitmap(Commit.loadGravatarByLoginName(Commit.this, mAuthor));
             }
 
             // Set the commit message
@@ -152,13 +154,28 @@ public class Commit extends Activity {
                 ((TextView) findViewById(R.id.commit_view_committer_time))
                         .setText(authorDate);
                 if (mCommitterGravatar != null) {
-                    ((ImageView) findViewById(R.id.commit_view_committer_gravatar))
-                            .setImageBitmap(mCommitterGravatar);
+                    committerImage.setImageBitmap(mCommitterGravatar);
                 } else {
-                    ((ImageView) findViewById(R.id.commit_view_committer_gravatar))
-                            .setImageBitmap(Commit.loadGravatarByLoginName(Commit.this, mCommitter));
+                    committerImage.setImageBitmap(Commit.loadGravatarByLoginName(Commit.this, mCommitter));
                 }
             }
+
+            OnClickListener onGravatarClick = new OnClickListener() {
+                public void onClick(View v) {
+                    Intent i = new Intent(Commit.this, Profile.class);
+                    if (v.getId() == authorImage.getId()) {
+                        i.putExtra("username", mAuthor);
+                    } else if (v.getId() == committerImage.getId()) {
+                        i.putExtra("username", mCommitter);
+                    } else {
+                        return;
+                    }
+                    startActivity(i);
+                }
+            };
+
+            authorImage.setOnClickListener(onGravatarClick);
+            committerImage.setOnClickListener(onGravatarClick);
 
             int filesAdded, filesRemoved, filesChanged;
 
@@ -295,7 +312,7 @@ public class Commit extends Activity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        mCommitLayout = (LinearLayout) findViewById(R.id.rl_commit_commitInfoLayout);
+        mCommitLayout = (ScrollView) findViewById(R.id.sv_commit_content);
         mProgressLayout = (RelativeLayout) findViewById(R.id.rl_commit_progressLayout);
 
         final Bundle extras = getIntent().getExtras();
