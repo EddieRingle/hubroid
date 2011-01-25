@@ -1,43 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/rl_issues_list_root"
 	android:background="#FFF"
 	android:layout_width="fill_parent"
-	android:layout_height="fill_parent">
+	android:layout_height="fill_parent"
+	android:orientation="vertical">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<include android:id="@+id/include_page_title" layout="@layout/page_title" />
-	<LinearLayout
-		android:id="@+id/ll_issues_list_shadow"
-		android:layout_width="fill_parent"
-		android:layout_height="10dip"
-		android:orientation="vertical"
-		android:layout_below="@id/include_top_bar"
-		android:background="@drawable/shadow" />
-	<LinearLayout
-		android:id="@+id/rl_issues_list_button_holder"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:layout_alignParentBottom="true">
-		<Button
-			android:id="@+id/btn_issues_list_open"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="50"
-			android:background="@android:drawable/btn_default_small"
-			android:text="Open" />
-		<Button
-			android:id="@+id/btn_issues_list_closed"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_weight="50"
-			android:background="@android:drawable/btn_default_small"
-			android:text="Closed" />
-	</LinearLayout>
 	<RelativeLayout
 		android:id="@+id/rl_issues_list_main_frame"
-		android:layout_above="@id/rl_issues_list_button_holder"
-		android:layout_below="@id/ll_issues_list_shadow"
 		android:layout_width="fill_parent"
+		android:layout_weight="1"
 		android:layout_height="wrap_content">
 		<ListView
 			android:id="@+id/lv_issues_list_open_list"
@@ -50,4 +23,24 @@
 			android:layout_height="wrap_content"
 			android:cacheColorHint="#FFF" />
 	</RelativeLayout>
-</RelativeLayout>
+   <LinearLayout
+       android:id="@+id/rl_issues_list_button_holder"
+       android:layout_width="fill_parent"
+       android:layout_height="wrap_content"
+       android:layout_alignParentBottom="true">
+       <Button
+           android:id="@+id/btn_issues_list_open"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_weight="50"
+           android:background="@android:drawable/btn_default_small"
+           android:text="Open" />
+       <Button
+           android:id="@+id/btn_issues_list_closed"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:layout_weight="50"
+           android:background="@android:drawable/btn_default_small"
+           android:text="Closed" />
+   </LinearLayout>
+</LinearLayout>
