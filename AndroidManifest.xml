@@ -26,8 +26,10 @@
 		<activity android:name=".activities.BranchesList" />
 		<activity android:name=".activities.Branch" />
 		<activity android:name=".activities.BranchTree" />
-
 		<activity android:name=".activities.CommitsList" />
+		<activity android:name=".activities.Commit" />
+		<activity android:name=".activities.DiffFilesList" />
+		
 		<activity android:name=".activities.IssuesList" />
 		<activity android:name=".activities.CreateIssue" />
 		<activity android:name=".activities.SingleIssue" />

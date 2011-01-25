@@ -12,7 +12,6 @@ public class HubroidApplication extends Application {
                     .detectAll()
                     .permitDiskReads()
                     .penaltyLog()
-                    .penaltyDialog()
                     .build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectAll()

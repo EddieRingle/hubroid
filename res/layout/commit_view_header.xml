@@ -125,4 +125,14 @@
 		android:textColor="@color/darkText"
 		android:text="commit message here"
 		android:padding="10dip"/>
+	<LinearLayout
+		android:id="@+id/ll_commit_strip"
+		android:layout_width="fill_parent"
+		android:layout_height="2.5dip"
+		android:background="@drawable/gray_strip" />
+	<LinearLayout
+		android:id="@+id/ll_commit_shadow"
+		android:layout_width="fill_parent"
+		android:layout_height="10dip"
+		android:background="@drawable/shadow" />
 </LinearLayout>

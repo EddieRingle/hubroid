@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="fill_parent"
 	android:background="#FFF"
 	android:orientation="vertical"
+	android:layout_width="fill_parent"
 	android:layout_height="fill_parent">
-	<include android:id="@+id/include_top_bar"
-		layout="@layout/top_bar" />
-	<include android:id="@+id/include_page_title"
-		layout="@layout/page_title" />
-	<WebView
-		android:id="@+id/wv_commitView_diff"
+	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<include android:id="@+id/include_page_title" layout="@layout/page_title" />
+	<ListView
+		android:id="@+id/lv_diffFileList_list"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:cacheColorHint="#FFF"/>
+		android:cacheColorHint="#FFF" />
 </LinearLayout>

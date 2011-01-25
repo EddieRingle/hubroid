@@ -1,13 +1,1 @@
 * Convert the remaining Adapters to use JsonListAdapter
-* Commit Overhaul:
-	1) Create Commit activity that shows information for a specific commit:
-		- Full commit message
-		- Author
-		- Committer
-		- Author/Commit date(s)
-		- # of files changed
-		- # of files added
-		- # of files removed
-	2) "# of files X" in above Commit activity links off to list of the files that were changed/added/removed
-	3) Clicking a file in one of the above lists would open a refactored diff viewer, this time only showing one file's diff
-* Switch to using a WebView to displaying commit diffs (easier to color lines that way)

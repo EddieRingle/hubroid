@@ -1,30 +1,201 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/rl_commit_root"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:background="#FFF"
 	android:layout_height="fill_parent"
-	android:layout_width="fill_parent">
+	android:layout_width="fill_parent"
+	android:orientation="vertical">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<ScrollView
-		android:id="@+id/sv_commit_scrollView"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_below="@id/include_top_bar">
-		<include android:id="@+id/include_commit_header" layout="@layout/commit_view_header" />
+		android:layout_height="match_parent">
 		<LinearLayout
-			android:id="@+id/ll_commit_strip"
 			android:layout_width="fill_parent"
-			android:layout_height="2.5dip"
-			android:background="@drawable/gray_strip" />
-		<LinearLayout
-			android:id="@+id/ll_commit_shadow"
-			android:layout_width="fill_parent"
-			android:layout_height="10dip"
-			android:background="@drawable/shadow" />
-		<ListView
-			android:id="@+id/lv_commit_diffList"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent">
-		</ListView>
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+			<LinearLayout
+				android:id="@+id/rl_commit_commitInfoLayout"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:visibility="gone"
+				android:orientation="vertical">
+				<LinearLayout
+					android:id="@+id/ll_commit_view_header"
+					android:orientation="vertical"
+					android:background="#FFF"
+					android:layout_width="fill_parent"
+					android:layout_height="fill_parent">
+					<LinearLayout
+						android:orientation="horizontal"
+						android:padding="7dip"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content">
+						<ImageView
+							android:id="@+id/commit_view_author_gravatar"
+							android:layout_width="34dip"
+							android:layout_marginLeft="10dip"
+							android:layout_marginRight="10dip"
+							android:layout_height="34dip"
+							android:scaleType="center"
+							android:background="@drawable/gravatar_border"
+							android:layout_gravity="center"/>
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical">
+							<LinearLayout
+								android:layout_width="fill_parent"
+								android:layout_height="wrap_content"
+								android:orientation="horizontal">
+								<TextView
+									android:id="@+id/commit_view_author_name"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:layout_centerVertical="true"
+									android:textSize="16dip"
+									android:ellipsize="end"
+									android:maxLines="1"
+									android:text="eddieringle"
+									android:textColor="@color/gitHubBlue"/>
+								<TextView
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:layout_centerVertical="true"
+									android:textColor="@color/textColor"
+									android:textSize="16dip"
+									android:ellipsize="end"
+									android:text="(author)"
+									android:maxLines="1"
+									android:paddingLeft="3dip"/>
+							</LinearLayout>
+							<TextView
+								android:id="@+id/commit_view_author_time"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_centerVertical="true"
+								android:textColor="@color/textColor"
+								android:textSize="16dip"
+								android:ellipsize="end"
+								android:maxLines="1"
+								android:text="February 10, 2010"/>
+						</LinearLayout>
+					</LinearLayout>
+					<LinearLayout
+						android:id="@+id/commit_view_author_layout"
+						android:orientation="horizontal"
+						android:padding="7dip"
+						android:layout_width="fill_parent"
+						android:layout_height="wrap_content"
+						android:visibility="gone">
+						<ImageView
+							android:id="@+id/commit_view_committer_gravatar"
+							android:layout_width="34dip"
+							android:layout_marginLeft="10dip"
+							android:layout_marginRight="10dip"
+							android:layout_height="34dip"
+							android:scaleType="center"
+							android:background="@drawable/gravatar_border"
+							android:layout_gravity="center"/>
+						<LinearLayout
+							android:layout_width="fill_parent"
+							android:layout_height="wrap_content"
+							android:orientation="vertical">
+							<LinearLayout
+								android:layout_width="fill_parent"
+								android:layout_height="wrap_content"
+								android:orientation="horizontal">
+								<TextView
+									android:id="@+id/commit_view_committer_name"
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:layout_centerVertical="true"
+									android:textSize="16dip"
+									android:ellipsize="end"
+									android:maxLines="1"
+									android:textColor="@color/gitHubBlue"
+									android:text="mfoo"/>
+								<TextView
+									android:layout_width="wrap_content"
+									android:layout_height="wrap_content"
+									android:layout_centerVertical="true"
+									android:textColor="@color/textColor"
+									android:textSize="16dip"
+									android:ellipsize="end"
+									android:maxLines="1"
+									android:paddingLeft="3dip"
+									android:text="(committer)"/>
+							</LinearLayout>
+							<TextView
+								android:id="@+id/commit_view_committer_time"
+								android:layout_width="wrap_content"
+								android:layout_height="wrap_content"
+								android:layout_centerVertical="true"
+								android:textColor="@color/textColor"
+								android:textSize="16dip"
+								android:ellipsize="end"
+								android:maxLines="1"
+								android:text="February 10, 2010"/>
+						</LinearLayout>
+					</LinearLayout>
+					<TextView
+						android:id="@+id/commit_view_message"
+						android:layout_width="wrap_content"
+						android:layout_height="wrap_content"
+						android:textSize="16dip"
+						android:textColor="@color/darkText"
+						android:text="commit message here"
+						android:padding="10dip"/>
+					<LinearLayout
+						android:id="@+id/ll_commit_strip"
+						android:layout_width="fill_parent"
+						android:layout_height="2.5dip"
+						android:background="@drawable/gray_strip" />
+					<LinearLayout
+						android:id="@+id/ll_commit_shadow"
+						android:layout_width="fill_parent"
+						android:layout_height="10dip"
+						android:background="@drawable/shadow" />
+				</LinearLayout>
+				<TextView
+					android:id="@+id/tv_commit_commitChangedLabel"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_margin="15dip"
+					android:textColor="@color/darkText"
+					android:textSize="20dip"
+					android:text="File Differences:" />
+				<Button
+					android:id="@+id/btn_commit_addedFiles"
+					android:layout_width="175dip"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_horizontal"
+					android:drawableLeft="@drawable/file_added"
+					android:text="X files added" />
+				<Button
+					android:id="@+id/btn_commit_removedFiles"
+					android:layout_width="175dip"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_horizontal"
+					android:drawableLeft="@drawable/file_removed"
+					android:text="X files removed" />
+				<Button
+					android:id="@+id/btn_commit_changedFiles"
+					android:layout_width="175dip"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_horizontal"
+					android:drawableLeft="@drawable/file_modified"
+					android:text="X files changed" />
+			</LinearLayout>
+			<RelativeLayout
+				android:id="@+id/rl_commit_progressLayout"
+				android:layout_width="fill_parent"
+				android:layout_height="fill_parent"
+				android:visibility="gone">
+				<ProgressBar
+					android:layout_height="wrap_content"
+					android:layout_width="wrap_content"
+					android:layout_centerInParent="true"
+					android:indeterminateOnly="true" />
+			</RelativeLayout>
+		</LinearLayout>
 	</ScrollView>
-</RelativeLayout>
+</LinearLayout>
