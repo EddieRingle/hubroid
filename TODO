@@ -1,1 +1,4 @@
 * Convert the remaining Adapters to use JsonListAdapter
+* Make sure any sort of network activity is done in it's own thread (AsyncTask)
+* Refactor Issues
+* Add WebView content for most of the activity types that don't have it yet
