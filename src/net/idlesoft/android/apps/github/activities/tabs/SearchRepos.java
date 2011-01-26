@@ -182,8 +182,6 @@ public class SearchRepos extends Activity {
         if (mJson != null) {
             mAdapter.loadData(mJson);
             mAdapter.pushData();
-        } else {
-            mAdapter = null;
         }
     }
 

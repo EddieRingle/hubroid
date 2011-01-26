@@ -145,8 +145,6 @@ public class MyRepos extends Activity {
         if (mJson != null) {
             mAdapter.loadData(mJson);
             mAdapter.pushData();
-        } else {
-            mAdapter = null;
         }
     }
 

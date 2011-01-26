@@ -180,8 +180,6 @@ public class CommitsList extends Activity {
         }
         if (mCommitsJSON != null) {
             mCommitListAdapter = new CommitListAdapter(this, mCommitsJSON);
-        } else {
-            mCommitListAdapter = null;
         }
     }
 
