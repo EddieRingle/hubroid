@@ -36,12 +36,13 @@ public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
 
         mActivity = pActivity;
         mInflater = LayoutInflater.from(pActivity);
+        mListData = new LinkedList<Object>();
     }
 
     public void loadData(final JSONArray pJsonArray) {
         mJson = pJsonArray;
 
-        mListData = new LinkedList<Object>();
+        mListData.clear();
         int length = pJsonArray.length();
         for (int i = 0; i < length; i++) {
             try {
