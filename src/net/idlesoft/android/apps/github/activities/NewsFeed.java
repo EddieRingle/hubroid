@@ -199,11 +199,10 @@ public class NewsFeed extends Activity {
         } catch (final JSONException e) {
             keepGoing = false;
         }
+
         if (keepGoing == true) {
             mActivityAdapter.loadData(mJson);
             mActivityAdapter.pushData();
-        } else {
-            mActivityAdapter = null;
         }
     }
 
