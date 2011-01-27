@@ -149,8 +149,6 @@ public class CommitsList extends Activity {
                                     .getString("id"));
                             i.putExtra("repo_name", mRepoName);
                             i.putExtra("repo_owner", mRepoOwner);
-                            i.putExtra("diff", mCommitsJSON.getJSONObject(position)
-                                    .getJSONObject("modified").getString("diff"));
                             CommitsList.this.startActivity(i);
                         } catch (final JSONException e) {
                             e.printStackTrace();

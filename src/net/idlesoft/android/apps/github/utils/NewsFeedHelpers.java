@@ -17,8 +17,12 @@ public class NewsFeedHelpers {
     public static String linkifyPushItem(JSONObject pNewsItem) throws JSONException {
         String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
         String repoName = pNewsItem.getJSONObject("repository").getString("name");
+        String committer = pNewsItem.getString("actor");
+
         JSONObject payload = pNewsItem.getJSONObject("payload");
-        String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
+        String author = payload.getString("actor");
+
+        String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/" + author + "/" + committer + "/";
         String html =
                 "<div>"
                 + "HEAD is at <a href=\""
@@ -28,9 +32,9 @@ public class NewsFeedHelpers {
                         + payload.getString("head").substring(0, 32)
                         + "</a><br/>"
                 + "<ul>";
-        int shaCount = pNewsItem.getJSONObject("payload").getJSONArray("shas").length();
+        int shaCount = payload.getJSONArray("shas").length();
         for (int i = 0; i < shaCount; i++) {
-            JSONArray commitInfo = pNewsItem.getJSONObject("payload").getJSONArray("shas").getJSONArray(i);
+            JSONArray commitInfo = payload.getJSONArray("shas").getJSONArray(i);
             html += "<li>" + pNewsItem.getString("actor") + " committed <a href=\""
                             + commitUriPrefix
                             + commitInfo.getString(0)
