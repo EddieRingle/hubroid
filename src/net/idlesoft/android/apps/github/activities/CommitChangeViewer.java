@@ -79,6 +79,7 @@ public class CommitChangeViewer extends Activity {
                 String content =
                     "<style type=\"text/css\">"
                     + "div {"
+                    + "margin-right: 100%25;"
                     + "font-family: monospace;"
                     + "white-space: nowrap;"
                     + "display: inline-block;"
@@ -101,6 +102,12 @@ public class CommitChangeViewer extends Activity {
                 for(int j = 0; j < fileDiffList.length(); j ++){
                     String[] splitDiff = fileDiffList.getJSONObject(j).getString("diff").split("\n");
                     for (int i = 0; i < splitDiff.length; i++) {
+                        // Replace all tabs with four non-breaking spaces (most browsers truncate "\t+" to " ").
+                        splitDiff[i] = splitDiff[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+
+                        // Replace any sequence of two or more spaces with &nbsps (most browsers truncate " +" to " ").
+                        splitDiff[i] = splitDiff[i].replaceAll("(?<= ) ","&nbsp;");
+
                         if (splitDiff[i].startsWith("@@")) {
                             splitDiff[i] = "<div class=\"lines\">".concat(splitDiff[i].concat("</div>"));
                         } else if (splitDiff[i].startsWith("+")) {
@@ -108,7 +115,8 @@ public class CommitChangeViewer extends Activity {
                         } else if (splitDiff[i].startsWith("-")) {
                             splitDiff[i] = "<div class=\"removed\">".concat(splitDiff[i].concat("</div>"));
                         } else {
-                            splitDiff[i] = "<div>".concat(splitDiff[i].concat("</div>"));
+                            // Add an extra space before lines not beginning with "+" or "-" to make them line up properly
+                            splitDiff[i] = "<div>&nbsp;".concat(splitDiff[i].substring(1).concat("</div>"));
                         }
                         content += splitDiff[i];
                     }
