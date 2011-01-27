@@ -90,6 +90,19 @@ public class Commit extends Activity {
                     return null;
                 }
                 activity.mJson = (new JSONObject(commitResponse.resp)).getJSONObject("commit");
+
+                // This Activity has two entry points:
+                // * From CommitsList which provides an author and committer in the bundle.
+                // * From SingleActivityItem which does not.
+                // If the author or committer are null, populate them from the JSON data.
+                if(activity.mAuthor == null) {
+                    activity.mAuthor = activity.mJson.getJSONObject("author").getString("name");
+                }
+
+                if(activity.mCommitter == null) {
+                    activity.mCommitter = activity.mJson.getJSONObject("committer").getString("name");
+                }
+
                 activity.mAuthorGravatar = Commit.loadGravatarByLoginName(activity, activity.mAuthor);
                 activity.mCommitterGravatar = Commit.loadGravatarByLoginName(activity, activity.mCommitter);
             } catch (JSONException e) {

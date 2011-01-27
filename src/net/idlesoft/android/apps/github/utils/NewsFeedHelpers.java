@@ -17,12 +17,8 @@ public class NewsFeedHelpers {
     public static String linkifyPushItem(JSONObject pNewsItem) throws JSONException {
         String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
         String repoName = pNewsItem.getJSONObject("repository").getString("name");
-        String committer = pNewsItem.getString("actor");
-
         JSONObject payload = pNewsItem.getJSONObject("payload");
-        String author = payload.getString("actor");
-
-        String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/" + author + "/" + committer + "/";
+        String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
         String html =
                 "<div>"
                 + "HEAD is at <a href=\""

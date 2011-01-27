@@ -268,9 +268,7 @@ public class SingleActivityItem extends Activity {
                                Intent intent = new Intent(SingleActivityItem.this, Commit.class);
                                intent.putExtra("repo_owner", parts[1]);
                                intent.putExtra("repo_name", parts[2]);
-                               intent.putExtra("author", parts[3]);
-                               intent.putExtra("committer", parts[4]);
-                               intent.putExtra("commit_sha", parts[5]);
+                               intent.putExtra("commit_sha", parts[3]);
                                startActivity(intent);
                            } else if (parts[0].equals("showRepo")) {
                                Intent intent = new Intent(SingleActivityItem.this, Repository.class);
