@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.WebView;
@@ -93,6 +94,9 @@ public class CommitChangeViewer extends Activity {
                 String[] splitDiff = mJson.getString("diff").split("\n");
 
                 for (int i = 0; i < splitDiff.length; i++) {
+                    // HTML encode any elements, else any diff containing "<div>" or any HTML element will be interpreted as one by the browser
+                    splitDiff[i] = TextUtils.htmlEncode(splitDiff[i]);
+
                     // Replace all tabs with four non-breaking spaces (most browsers truncate "\t+" to " ").
                     splitDiff[i] = splitDiff[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 
@@ -111,7 +115,6 @@ public class CommitChangeViewer extends Activity {
                     }
                     content += splitDiff[i];
                 }
-
                 webView.loadData(content, "text/html", "UTF-8");
             } catch (final JSONException e) {
                 e.printStackTrace();
