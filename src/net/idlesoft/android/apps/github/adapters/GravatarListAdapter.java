@@ -34,6 +34,7 @@ public abstract class GravatarListAdapter extends JsonListAdapter {
     @Override
     public void loadData(JSONArray pJsonArray) {
         super.loadData(pJsonArray);
+        /* Load gravatars after Json has loaded but before the LinkedList is populated */
         mGravatars = new HashMap<String, Bitmap>(mListData.size());
         loadGravatars();
     }
@@ -43,5 +44,8 @@ public abstract class GravatarListAdapter extends JsonListAdapter {
         super.pushData();
     }
 
+    /**
+     * Gravatar loading method
+     */
     public abstract void loadGravatars();
 }

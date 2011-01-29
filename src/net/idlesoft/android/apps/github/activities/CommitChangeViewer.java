@@ -70,8 +70,18 @@ public class CommitChangeViewer extends Activity {
             try {
                 mJson = new JSONObject(extras.getString("json"));
 
+                /*
+                 * This new method of displaying file diffs was inspired by iOctocat's approach.
+                 * Thanks to Dennis Bloete (dbloete on GitHub) for creating iOctocat and
+                 * making me realize Android needed some GitHub love too. ;-)
+                 */
                 final WebView webView = (WebView) findViewById(R.id.wv_commitView_diff);
 
+                /*
+                 * Prepare CSS for diff:
+                 * Added lines are green, removed lines are red, and the special lines that specify
+                 * how many lines were affected in the chunk are a light blue.
+                 */
                 String content =
                         "<style type=\"text/css\">"
                         + "div {"

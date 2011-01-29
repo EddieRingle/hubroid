@@ -12,6 +12,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * NewsFeedHelpers
+ *
+ * Contains methods used to populate the WebView in SingleActivityItem
+ */
 public class NewsFeedHelpers {
 
     public static String linkifyPushItem(JSONObject pNewsItem) throws JSONException {

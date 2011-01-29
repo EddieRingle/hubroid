@@ -39,6 +39,10 @@ public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
         mListData = new LinkedList<Object>();
     }
 
+    /**
+     * Load data from Json into a LinkedList
+     * @param pJsonArray
+     */
     public void loadData(final JSONArray pJsonArray) {
         mJson = pJsonArray;
 
@@ -53,6 +57,9 @@ public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
         }
     }
 
+    /**
+     * Called in the UI thread after loadData() has been called; populates the adapter
+     */
     public void pushData() {
         if (!hasItems()) {
             mActivity.runOnUiThread(new Runnable() {

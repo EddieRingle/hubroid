@@ -31,6 +31,7 @@ import android.util.Log;
 
 public class GravatarCache {
 
+    /* Root directory for gravatar storage on the SD card */
     private final static String ROOT_DIR = "hubroid/gravatars";
 
     private static Bitmap downloadGravatar(final String id) throws IOException {
@@ -95,12 +96,14 @@ public class GravatarCache {
         Bitmap bm = null;
         try {
             final File gravatars = ensure_directory(ROOT_DIR);
+            /* Prevents the gravatars from showing up in the Gallery app */
             hideMediaFromGallery(gravatars);
 
             final File image = new File(gravatars, id + ".png");
             bm = BitmapFactory.decodeFile(image.getPath());
             if (bm == null) {
                 bm = downloadGravatar(id);
+                /* Compress to a 100x100px PNG */
                 bm.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(image));
             }
             bm = Bitmap.createScaledBitmap(bm, size, size, true);

@@ -39,6 +39,10 @@ public class DiffFilesList extends Activity {
     private final OnItemClickListener mOnFileListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
+            /*
+             * Since added/removed files don't have a diff, only clicks on modified files
+             * should link off to CommitChangeViewer
+             */
             if (!mType.equals("modified")) {
                 return;
             } else {
@@ -100,6 +104,7 @@ public class DiffFilesList extends Activity {
                     title.setText("Files");
                 }
 
+                /* Split JSONArray into a String array so we can populate the list of files */
                 String[] filenames = new String[mJson.getJSONArray(mType).length()];
                 for (int i = 0; i < filenames.length; i++) {
                     if (mType.equals("modified")) {
