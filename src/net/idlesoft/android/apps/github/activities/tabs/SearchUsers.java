@@ -64,6 +64,7 @@ public class SearchUsers extends Activity {
 
         @Override
         protected void onPreExecute() {
+            activity.mAdapter.clear();
             activity.mAdapter.setIsLoadingData(true);
         }
     }
@@ -103,7 +104,6 @@ public class SearchUsers extends Activity {
     private final OnClickListener mOnSearchButtonClick = new OnClickListener() {
         public void onClick(View v) {
             mSearchBox.clearFocus();
-            mAdapter.clear();
             InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             mSearchTerm = mSearchBox.getText().toString();

@@ -54,10 +54,12 @@ public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
     }
 
     public void pushData() {
-        mActivity.runOnUiThread(new Runnable() {
-            public void run() {
-                addAll(mListData);
-            }
-        });
+        if (!hasItems()) {
+            mActivity.runOnUiThread(new Runnable() {
+                public void run() {
+                    addAll(mListData);
+                }
+            });
+        }
     }
 }
