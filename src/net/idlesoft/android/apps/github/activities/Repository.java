@@ -156,9 +156,9 @@ public class Repository extends Activity {
             ((Button) findViewById(R.id.btn_repository_info_issues))
                     .setOnClickListener(new OnClickListener() {
                         public void onClick(final View v) {
-                            final Intent intent = new Intent(Repository.this, IssuesList.class);
-                            intent.putExtra("repository", mRepositoryName);
-                            intent.putExtra("owner", mRepositoryOwner);
+                            final Intent intent = new Intent(Repository.this, Issues.class);
+                            intent.putExtra("repo_name", mRepositoryName);
+                            intent.putExtra("repo_owner", mRepositoryOwner);
                             startActivity(intent);
                         }
                     });

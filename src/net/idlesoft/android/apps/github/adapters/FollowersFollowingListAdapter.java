@@ -17,7 +17,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FollowersFollowingListAdapter extends UsersListAdapter {
+public class FollowersFollowingListAdapter extends GravatarListAdapter {
 
     public FollowersFollowingListAdapter(final Activity pActivity, final AbsListView pListView) {
         super(pActivity, pListView);

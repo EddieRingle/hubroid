@@ -18,7 +18,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public abstract class UsersListAdapter extends JsonListAdapter {
+public abstract class GravatarListAdapter extends JsonListAdapter {
     public class ViewHolder {
         public ImageView gravatar;
 
@@ -27,7 +27,7 @@ public abstract class UsersListAdapter extends JsonListAdapter {
 
     protected HashMap<String, Bitmap> mGravatars;
 
-    public UsersListAdapter(final Activity pActivity, final AbsListView pListView) {
+    public GravatarListAdapter(final Activity pActivity, final AbsListView pListView) {
         super(pActivity, pListView);
     }
 

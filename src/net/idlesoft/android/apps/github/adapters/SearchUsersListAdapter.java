@@ -21,7 +21,7 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-public class SearchUsersListAdapter extends UsersListAdapter {
+public class SearchUsersListAdapter extends GravatarListAdapter {
 
     public SearchUsersListAdapter(final Activity pActivity, final AbsListView pListView) {
         super(pActivity, pListView);

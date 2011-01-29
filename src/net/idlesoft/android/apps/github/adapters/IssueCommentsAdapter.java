@@ -8,27 +8,24 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.view.LayoutInflater;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-public class IssueCommentsAdapter extends BaseAdapter {
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class IssueCommentsAdapter extends GravatarListAdapter {
     public static class ViewHolder {
         public TextView body;
 
@@ -37,47 +34,11 @@ public class IssueCommentsAdapter extends BaseAdapter {
         public TextView meta;
     }
 
-    private final Context mContext;
-
-    private JSONArray mJson = new JSONArray();
-
-    private final HashMap<String, Bitmap> mGravatars;
-
-    private final LayoutInflater mInflater;
-
-    /**
-     * Create a new IssueCommentsAdapter
-     * 
-     * @param context
-     * @param jsonarray
-     */
-    public IssueCommentsAdapter(final Context context, final JSONArray json) {
-        mContext = context;
-        mInflater = LayoutInflater.from(mContext);
-        mJson = json;
-        mGravatars = new HashMap<String, Bitmap>(mJson.length());
-
-        loadGravatars();
+    public IssueCommentsAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public int getCount() {
-        return mJson.length();
-    }
-
-    public Object getItem(final int i) {
-        try {
-            return mJson.get(i);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public long getItemId(final int i) {
-        return i;
-    }
-
-    public View getView(final int index, View convertView, final ViewGroup parent) {
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.issue_comment, null);
@@ -169,7 +130,7 @@ public class IssueCommentsAdapter extends BaseAdapter {
                 final String actor = mJson.getJSONObject(i).getString("user");
                 if (!mGravatars.containsKey(actor)) {
                     mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-                            .getGravatarID(actor), 30.0f, mContext.getResources()
+                            .getGravatarID(actor), 30.0f, mActivity.getResources()
                             .getDisplayMetrics().density));
                 }
             }

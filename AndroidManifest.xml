@@ -29,8 +29,9 @@
 		<activity android:name=".activities.CommitsList" />
 		<activity android:name=".activities.Commit" />
 		<activity android:name=".activities.DiffFilesList" />
-		
-		<activity android:name=".activities.IssuesList" />
+		<activity android:name=".activities.Issues" />
+		<activity android:name=".activities.tabs.OpenIssues" />
+		<activity android:name=".activities.tabs.ClosedIssues" />
 		<activity android:name=".activities.CreateIssue" />
 		<activity android:name=".activities.SingleIssue" />
 		<activity android:name=".activities.NetworkList" />

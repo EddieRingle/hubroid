@@ -8,24 +8,22 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.content.Context;
-import android.view.LayoutInflater;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-public class IssuesListAdapter extends BaseAdapter {
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+public class IssuesListAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public ImageView issueIcon;
 
@@ -36,36 +34,11 @@ public class IssuesListAdapter extends BaseAdapter {
         public TextView issueTitle;
     }
 
-    private final Context mContext;
-
-    private JSONArray mJson = new JSONArray();
-
-    private final LayoutInflater mInflater;
-
-    public IssuesListAdapter(final Context context, final JSONArray jsonarray) {
-        mContext = context;
-        mInflater = LayoutInflater.from(mContext);
-        mJson = jsonarray;
+    public IssuesListAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public int getCount() {
-        return mJson.length();
-    }
-
-    public Object getItem(final int i) {
-        try {
-            return mJson.get(i);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public long getItemId(final int i) {
-        return i;
-    }
-
-    public View getView(final int index, View convertView, final ViewGroup parent) {
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.issue_list_item, null);
