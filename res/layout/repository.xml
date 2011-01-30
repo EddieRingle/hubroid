@@ -6,6 +6,7 @@
 	android:layout_width="fill_parent">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
 	<ScrollView
+		android:id="@+id/sv_repository_scrollView"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
 		android:layout_below="@id/include_top_bar">

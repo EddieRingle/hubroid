@@ -8,12 +8,12 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +22,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
@@ -31,7 +32,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
 
 public class Repository extends Activity {
     private GitHubAPI mGapi = new GitHubAPI();
@@ -56,6 +57,133 @@ public class Repository extends Activity {
 
     private String mUsername;
 
+    private LoadRepositoryTask mLoadRepositoryTask;
+
+    private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
+        public Repository activity;
+
+        protected void onPreExecute() {
+            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.GONE);
+        }
+
+        protected Void doInBackground(Void... params) {
+            try {
+                Response resp = activity.mGapi.repo.info(activity.mRepositoryOwner, activity.mRepositoryName);
+                if (resp.statusCode == 200) {
+                    activity.mJson = new JSONObject(resp.resp).getJSONObject("repository");
+    
+                    final JSONArray watched_list = new JSONObject(activity.mGapi.user.watching(activity.mUsername).resp)
+                            .getJSONArray("repositories");
+                    final int length = watched_list.length() - 1;
+                    for (int i = 0; i <= length; i++) {
+                        if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(
+                                activity.mRepositoryName)) {
+                            activity.mIsWatching = true;
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Void result) {
+            activity.loadRepoInfo();
+            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    public void loadRepoInfo() {
+        try {
+            // TextView title =
+            // (TextView)findViewById(R.id.tv_top_bar_title);
+            // title.setText(m_jsonData.getString("name"));
+            final TextView repo_name = (TextView) findViewById(R.id.tv_repository_info_name);
+            repo_name.setText(mJson.getString("name"));
+            final TextView repo_desc = (TextView) findViewById(R.id.tv_repository_info_description);
+            repo_desc.setText(mJson.getString("description"));
+            final TextView repo_owner = (TextView) findViewById(R.id.tv_repository_info_owner);
+            repo_owner.setText(mJson.getString("owner"));
+            final TextView repo_watcher_count = (TextView) findViewById(R.id.tv_repository_info_watchers);
+            if (mJson.getInt("watchers") == 1) {
+                repo_watcher_count.setText(mJson.getInt("watchers") + " watcher");
+            } else {
+                repo_watcher_count.setText(mJson.getInt("watchers") + " watchers");
+            }
+            final TextView repo_fork_count = (TextView) findViewById(R.id.tv_repository_info_forks);
+            if (mJson.getInt("forks") == 1) {
+                repo_fork_count.setText(mJson.getInt("forks") + " fork");
+            } else {
+                repo_fork_count.setText(mJson.getInt("forks") + " forks");
+            }
+            final TextView repo_website = (TextView) findViewById(R.id.tv_repository_info_website);
+            if (mJson.getString("homepage") != "") {
+                repo_website.setText(mJson.getString("homepage"));
+            } else {
+                repo_website.setText("N/A");
+            }
+
+            /*
+             * Let's hold off on putting this in the new version for now...
+             * if (m_jsonData.getBoolean("fork") == true) { // Find out what
+             * this is a fork of... String forked_user =
+             * m_jsonForkData.getJSONObject(0).getString("owner"); String
+             * forked_repo =
+             * m_jsonForkData.getJSONObject(0).getString("name"); // Show
+             * "Fork of:" label, it's value, and the button TextView
+             * repo_fork_of_label =
+             * (TextView)findViewById(R.id.repository_fork_of_label);
+             * repo_fork_of_label.setVisibility(0); TextView repo_fork_of =
+             * (TextView)findViewById(R.id.repository_fork_of);
+             * repo_fork_of.setText(forked_user + "/" + forked_repo);
+             * repo_fork_of.setVisibility(0); Button
+             * goto_forked_repository_btn =
+             * (Button)findViewById(R.id.goto_forked_repository_btn);
+             * goto_forked_repository_btn.setVisibility(0); // Set the
+             * onClick listener for the button
+             * goto_forked_repository_btn.setOnClickListener
+             * (forkedRepo_onClickListener); }
+             */
+        } catch (final JSONException e) {
+            e.printStackTrace();
+        }
+
+        ((Button) findViewById(R.id.btn_repository_info_branches))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(final View v) {
+                        final Intent intent = new Intent(Repository.this, BranchesList.class);
+                        intent.putExtra("repo_name", mRepositoryName);
+                        intent.putExtra("repo_owner", mRepositoryOwner);
+                        startActivity(intent);
+                    }
+                });
+        ((Button) findViewById(R.id.btn_repository_info_issues))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(final View v) {
+                        final Intent intent = new Intent(Repository.this, Issues.class);
+                        intent.putExtra("repo_name", mRepositoryName);
+                        intent.putExtra("repo_owner", mRepositoryOwner);
+                        startActivity(intent);
+                    }
+                });
+        ((Button) findViewById(R.id.btn_repository_info_network))
+                .setOnClickListener(new OnClickListener() {
+                    public void onClick(final View v) {
+                        final Intent intent = new Intent(Repository.this, NetworkList.class);
+                        intent.putExtra("repo_name", mRepositoryName);
+                        intent.putExtra("username", mRepositoryOwner);
+                        startActivity(intent);
+                    }
+                });
+        /*
+         * Hold off on this as well... Button user_info_btn =
+         * (Button)findViewById(R.id.goto_repo_owner_info_btn);
+         * user_info_btn.setOnClickListener(username_onClickListener);
+         */
+    }
+
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
@@ -75,108 +203,36 @@ public class Repository extends Activity {
             mRepositoryName = extras.getString("repo_name");
             mRepositoryOwner = extras.getString("repo_owner");
 
-            try {
-                Response resp = mGapi.repo.info(mRepositoryOwner, mRepositoryName);
-                if (resp.statusCode == 200) {
-                    mJson = new JSONObject(resp.resp).getJSONObject("repository");
-    
-                    final JSONArray watched_list = new JSONObject(mGapi.user.watching(mUsername).resp)
-                            .getJSONArray("repositories");
-                    final int length = watched_list.length() - 1;
-                    for (int i = 0; i <= length; i++) {
-                        if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(
-                                mRepositoryName)) {
-                            mIsWatching = true;
-                        }
-                    }
-    
-                    // TextView title =
-                    // (TextView)findViewById(R.id.tv_top_bar_title);
-                    // title.setText(m_jsonData.getString("name"));
-                    final TextView repo_name = (TextView) findViewById(R.id.tv_repository_info_name);
-                    repo_name.setText(mJson.getString("name"));
-                    final TextView repo_desc = (TextView) findViewById(R.id.tv_repository_info_description);
-                    repo_desc.setText(mJson.getString("description"));
-                    final TextView repo_owner = (TextView) findViewById(R.id.tv_repository_info_owner);
-                    repo_owner.setText(mJson.getString("owner"));
-                    final TextView repo_watcher_count = (TextView) findViewById(R.id.tv_repository_info_watchers);
-                    if (mJson.getInt("watchers") == 1) {
-                        repo_watcher_count.setText(mJson.getInt("watchers") + " watcher");
-                    } else {
-                        repo_watcher_count.setText(mJson.getInt("watchers") + " watchers");
-                    }
-                    final TextView repo_fork_count = (TextView) findViewById(R.id.tv_repository_info_forks);
-                    if (mJson.getInt("forks") == 1) {
-                        repo_fork_count.setText(mJson.getInt("forks") + " fork");
-                    } else {
-                        repo_fork_count.setText(mJson.getInt("forks") + " forks");
-                    }
-                    final TextView repo_website = (TextView) findViewById(R.id.tv_repository_info_website);
-                    if (mJson.getString("homepage") != "") {
-                        repo_website.setText(mJson.getString("homepage"));
-                    } else {
-                        repo_website.setText("N/A");
-                    }
-    
-                    /*
-                     * Let's hold off on putting this in the new version for now...
-                     * if (m_jsonData.getBoolean("fork") == true) { // Find out what
-                     * this is a fork of... String forked_user =
-                     * m_jsonForkData.getJSONObject(0).getString("owner"); String
-                     * forked_repo =
-                     * m_jsonForkData.getJSONObject(0).getString("name"); // Show
-                     * "Fork of:" label, it's value, and the button TextView
-                     * repo_fork_of_label =
-                     * (TextView)findViewById(R.id.repository_fork_of_label);
-                     * repo_fork_of_label.setVisibility(0); TextView repo_fork_of =
-                     * (TextView)findViewById(R.id.repository_fork_of);
-                     * repo_fork_of.setText(forked_user + "/" + forked_repo);
-                     * repo_fork_of.setVisibility(0); Button
-                     * goto_forked_repository_btn =
-                     * (Button)findViewById(R.id.goto_forked_repository_btn);
-                     * goto_forked_repository_btn.setVisibility(0); // Set the
-                     * onClick listener for the button
-                     * goto_forked_repository_btn.setOnClickListener
-                     * (forkedRepo_onClickListener); }
-                     */
-                }
-            } catch (final JSONException e) {
-                e.printStackTrace();
+            mLoadRepositoryTask = (LoadRepositoryTask) getLastNonConfigurationInstance();
+            if (mLoadRepositoryTask == null) {
+                mLoadRepositoryTask = new LoadRepositoryTask();
             }
-
-            ((Button) findViewById(R.id.btn_repository_info_branches))
-                    .setOnClickListener(new OnClickListener() {
-                        public void onClick(final View v) {
-                            final Intent intent = new Intent(Repository.this, BranchesList.class);
-                            intent.putExtra("repo_name", mRepositoryName);
-                            intent.putExtra("repo_owner", mRepositoryOwner);
-                            startActivity(intent);
-                        }
-                    });
-            ((Button) findViewById(R.id.btn_repository_info_issues))
-                    .setOnClickListener(new OnClickListener() {
-                        public void onClick(final View v) {
-                            final Intent intent = new Intent(Repository.this, Issues.class);
-                            intent.putExtra("repo_name", mRepositoryName);
-                            intent.putExtra("repo_owner", mRepositoryOwner);
-                            startActivity(intent);
-                        }
-                    });
-            ((Button) findViewById(R.id.btn_repository_info_network))
-                    .setOnClickListener(new OnClickListener() {
-                        public void onClick(final View v) {
-                            final Intent intent = new Intent(Repository.this, NetworkList.class);
-                            intent.putExtra("repo_name", mRepositoryName);
-                            intent.putExtra("username", mRepositoryOwner);
-                            startActivity(intent);
-                        }
-                    });
-            /*
-             * Hold off on this as well... Button user_info_btn =
-             * (Button)findViewById(R.id.goto_repo_owner_info_btn);
-             * user_info_btn.setOnClickListener(username_onClickListener);
-             */
+            mLoadRepositoryTask.activity = Repository.this;
+            if (mLoadRepositoryTask.getStatus() == AsyncTask.Status.PENDING) {
+                mLoadRepositoryTask.execute();
+            }
         }
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        try {
+            if (savedInstanceState.containsKey("json")) {
+                mJson = new JSONObject(savedInstanceState.getString("json"));
+            }
+            if (mJson != null) {
+                loadRepoInfo();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString("json", mJson.toString());
+        super.onSaveInstanceState(outState);
     }
 
     @Override
