@@ -65,6 +65,10 @@ public class Commit extends Activity {
 
     private String mCommitter;
 
+    private String mAuthorName;
+
+    private String mCommitterName;
+
     private GetCommitTask mGetCommitTask;
 
     private ScrollView mCommitLayout;
@@ -96,12 +100,15 @@ public class Commit extends Activity {
                 // * From SingleActivityItem which does not.
                 // If the author or committer are null, populate them from the JSON data.
                 if(activity.mAuthor == null) {
-                    activity.mAuthor = activity.mJson.getJSONObject("author").getString("name");
+                    activity.mAuthor = activity.mJson.getJSONObject("author").getString("login");
                 }
 
                 if(activity.mCommitter == null) {
-                    activity.mCommitter = activity.mJson.getJSONObject("committer").getString("name");
+                    activity.mCommitter = activity.mJson.getJSONObject("committer").getString("login");
                 }
+
+                activity.mAuthorName = activity.mJson.getJSONObject("author").getString("name");
+                activity.mCommitterName = activity.mJson.getJSONObject("committer").getString("name");
 
                 activity.mAuthorGravatar = Commit.loadGravatarByLoginName(activity, activity.mAuthor);
                 activity.mCommitterGravatar = Commit.loadGravatarByLoginName(activity, activity.mCommitter);
@@ -128,7 +135,7 @@ public class Commit extends Activity {
             // If the committer is the author then just show them as the
             // author, otherwise show
             // both people
-            ((TextView) findViewById(R.id.commit_view_author_name)).setText(mAuthor);
+            ((TextView) findViewById(R.id.commit_view_author_name)).setText(mAuthorName);
             if (mAuthorGravatar != null) {
                 authorImage.setImageBitmap(mAuthorGravatar);
             } else {
@@ -163,7 +170,7 @@ public class Commit extends Activity {
                 ((LinearLayout) findViewById(R.id.commit_view_author_layout))
                         .setVisibility(View.VISIBLE);
                 ((TextView) findViewById(R.id.commit_view_committer_name))
-                        .setText(mCommitter);
+                        .setText(mCommitterName);
                 ((TextView) findViewById(R.id.commit_view_committer_time))
                         .setText(authorDate);
                 if (mCommitterGravatar != null) {
@@ -187,8 +194,12 @@ public class Commit extends Activity {
                 }
             };
 
-            authorImage.setOnClickListener(onGravatarClick);
-            committerImage.setOnClickListener(onGravatarClick);
+            if (mAuthor != null && !mAuthor.equals("")) {
+                authorImage.setOnClickListener(onGravatarClick);
+            }
+            if (mCommitter != null && !mCommitter.equals("")) {
+                committerImage.setOnClickListener(onGravatarClick);
+            }
 
             int filesAdded, filesRemoved, filesChanged;
 
