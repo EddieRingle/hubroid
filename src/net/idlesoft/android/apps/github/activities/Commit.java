@@ -28,6 +28,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -335,6 +336,12 @@ public class Commit extends Activity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Commit.this, Search.class));
+            }
+        });
 
         mCommitLayout = (ScrollView) findViewById(R.id.sv_commit_content);
         mProgressLayout = (RelativeLayout) findViewById(R.id.rl_commit_progressLayout);

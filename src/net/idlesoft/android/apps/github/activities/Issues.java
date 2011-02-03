@@ -23,6 +23,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -63,6 +65,12 @@ public class Issues extends TabActivity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Issues.this, Search.class));
+            }
+        });
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

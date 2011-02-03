@@ -23,8 +23,10 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -91,6 +93,12 @@ public class CommitsList extends Activity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(CommitsList.this, Search.class));
+            }
+        });
 
         final TextView title = (TextView) findViewById(R.id.tv_page_title);
         title.setText("Recent Commits");

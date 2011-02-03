@@ -8,18 +8,20 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import com.flurry.android.FlurryAgent;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.SearchRepos;
 import net.idlesoft.android.apps.github.activities.tabs.SearchUsers;
+
 import android.app.TabActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.flurry.android.FlurryAgent;
 
 public class Search extends TabActivity {
     private static final String TAG_SEARCH_REPOS = "search_repos";
@@ -47,6 +49,9 @@ public class Search extends TabActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.search);
+
+        /* Hide the Search button in the top bar */
+        ((ImageButton) findViewById(R.id.btn_search)).setVisibility(View.GONE);
 
         mTabHost = getTabHost();
 

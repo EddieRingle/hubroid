@@ -24,6 +24,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -85,6 +86,12 @@ public class Profile extends Activity {
 
         mGapi = new GitHubAPI();
         mGapi.authenticate(mUsername, mPassword);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Profile.this, Search.class));
+            }
+        });
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

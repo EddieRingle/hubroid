@@ -20,6 +20,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -61,6 +63,12 @@ public class Repositories extends TabActivity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Repositories.this, Search.class));
+            }
+        });
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

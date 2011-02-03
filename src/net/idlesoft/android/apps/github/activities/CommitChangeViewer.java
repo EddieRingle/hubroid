@@ -23,7 +23,10 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.webkit.WebView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.io.File;
@@ -59,6 +62,12 @@ public class CommitChangeViewer extends Activity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(CommitChangeViewer.this, Search.class));
+            }
+        });
 
         final TextView title = (TextView) findViewById(R.id.tv_page_title);
         title.setText("Commit Diff");

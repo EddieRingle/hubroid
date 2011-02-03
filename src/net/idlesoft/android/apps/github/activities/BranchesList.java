@@ -26,8 +26,10 @@ import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -118,6 +120,12 @@ public class BranchesList extends Activity {
         mLoadView = getLayoutInflater().inflate(R.layout.loading_listitem, null);
         mBranchList = (ListView) findViewById(R.id.lv_branchList_list);
         mBranchList.setOnItemClickListener(mOnBranchListItemClick);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(BranchesList.this, Search.class));
+            }
+        });
 
         final TextView title = (TextView) findViewById(R.id.tv_page_title);
         title.setText("Branches");
