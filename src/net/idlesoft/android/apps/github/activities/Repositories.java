@@ -78,10 +78,20 @@ public class Repositories extends TabActivity {
             mTarget = mUsername;
         }
 
-        ((ImageView) findViewById(R.id.iv_repositories_gravatar)).setImageBitmap(GravatarCache
+        ImageView gravatar = (ImageView) findViewById(R.id.iv_repositories_gravatar);
+
+        gravatar.setImageBitmap(GravatarCache
                 .getDipGravatar(GravatarCache.getGravatarID(mTarget), 38.0f, getResources()
                         .getDisplayMetrics().density));
         ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget);
+
+        gravatar.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(Repositories.this, Profile.class);
+                i.putExtra("username", mTarget);
+                startActivity(i);
+            }
+        });
 
         mTabHost = getTabHost();
 
