@@ -177,8 +177,6 @@ public class SingleIssue extends Activity {
 
     private String mRepositoryOwner;
 
-    private Thread mThread;
-
     private String mPassword;
 
     private String mUsername;
@@ -269,6 +267,11 @@ public class SingleIssue extends Activity {
                     mGetCommentsTask = new GetCommentsTask();
                 }
                 mGetCommentsTask.activity = SingleIssue.this;
+
+                if (mGetCommentsTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    mProgressDialog = ProgressDialog.show(SingleIssue.this, "Please Wait...", "Gathering comments...", true);
+                }
+
                 if (mGetCommentsTask.getStatus() == AsyncTask.Status.PENDING && mCommentsJson == null) {
                     mGetCommentsTask.execute();
                 }
@@ -285,9 +288,6 @@ public class SingleIssue extends Activity {
 
     @Override
     public void onPause() {
-        if ((mThread != null) && mThread.isAlive()) {
-            mThread.stop();
-        }
         if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
