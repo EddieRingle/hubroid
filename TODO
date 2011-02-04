@@ -1,5 +1,5 @@
 * Convert the remaining Adapters to use JsonListAdapter
 * Make sure any sort of network activity is done in it's own thread (AsyncTask)
-* Refactor CreateIssue activity
 * Re-add support for reopening/closing issues via context menu
 * Add WebView content for most of the activity types that don't have it yet
+* Add file viewing support in the Tree Browser
