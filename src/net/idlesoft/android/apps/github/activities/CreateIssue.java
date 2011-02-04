@@ -8,10 +8,12 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import com.flurry.android.FlurryAgent;
+
 import net.idlesoft.android.apps.github.R;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -19,6 +21,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -27,12 +30,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.flurry.android.FlurryAgent;
-
 public class CreateIssue extends Activity {
     private GitHubAPI mGapi = new GitHubAPI();
-
-    private Intent mIntent;
 
     private SharedPreferences mPrefs;
 
@@ -42,11 +41,60 @@ public class CreateIssue extends Activity {
 
     private String mRepositoryOwner;
 
-    private Thread mThread;
-
     private String mPassword;
 
     private String mUsername;
+
+    private CreateIssueTask mCreateIssueTask;
+
+    private JSONObject mIssueJson;
+
+    private static class CreateIssueTask extends AsyncTask<Void, Void, Integer> {
+        public CreateIssue activity;
+
+        protected void onPreExecute() {
+            activity.mProgressDialog = ProgressDialog.show(activity, "Please Wait...",
+                    "Creating issue...");
+        }
+
+        protected Integer doInBackground(Void... params) {
+            final String title = ((TextView) activity.findViewById(R.id.et_create_issue_title))
+                    .getText().toString();
+            final String body = ((TextView) activity.findViewById(R.id.et_create_issue_body))
+                    .getText().toString();
+            if (!title.equals("") && !body.equals("")) {
+                final Response createResp = activity.mGapi.issues.open(activity.mRepositoryOwner,
+                        activity.mRepositoryName, title, body);
+                if (createResp.statusCode == 201) {
+                    try {
+                        activity.mIssueJson = new JSONObject(
+                                createResp.resp).getJSONObject("issue");
+                    } catch (final JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return createResp.statusCode;
+            }
+            return null;
+        }
+
+        protected void onPostExecute(Integer result) {
+            if (result.intValue() == 201) {
+                final Intent i = new Intent(activity,
+                        SingleIssue.class);
+                i.putExtra("repo_owner", activity.mRepositoryOwner);
+                i.putExtra("repo_name", activity.mRepositoryName);
+                i.putExtra("json", activity.mIssueJson.toString());
+
+                activity.mProgressDialog.dismiss();
+                activity.startActivity(i);
+                activity.finish();
+            } else {
+                Toast.makeText(activity, "Error creating issue.",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -62,16 +110,26 @@ public class CreateIssue extends Activity {
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            if (extras.containsKey("owner")) {
-                mRepositoryOwner = extras.getString("owner");
+            if (extras.containsKey("repo_owner")) {
+                mRepositoryOwner = extras.getString("repo_owner");
             } else {
                 mRepositoryOwner = mUsername;
             }
-            if (extras.containsKey("repository")) {
-                mRepositoryName = extras.getString("repository");
+            if (extras.containsKey("repo_name")) {
+                mRepositoryName = extras.getString("repo_name");
             }
         } else {
             mRepositoryOwner = mUsername;
+        }
+
+        mCreateIssueTask = (CreateIssueTask) getLastNonConfigurationInstance();
+        if (mCreateIssueTask == null) {
+            mCreateIssueTask = new CreateIssueTask();
+        }
+        mCreateIssueTask.activity = this;
+
+        if (mCreateIssueTask.getStatus() == AsyncTask.Status.RUNNING) {
+            mProgressDialog = ProgressDialog.show(CreateIssue.this, "Please Wait...", "Creating issue...", true);
         }
 
         ((TextView) findViewById(R.id.tv_page_title)).setText("New Issue");
@@ -79,58 +137,19 @@ public class CreateIssue extends Activity {
         ((Button) findViewById(R.id.btn_create_issue_submit))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(final View v) {
-                        mThread = new Thread(new Runnable() {
-                            public void run() {
-                                final String title = ((TextView) findViewById(R.id.et_create_issue_title))
-                                        .getText().toString();
-                                final String body = ((TextView) findViewById(R.id.et_create_issue_body))
-                                        .getText().toString();
-                                if (!title.equals("") && !body.equals("")) {
-                                    final Response createResp = mGapi.issues.open(mRepositoryOwner,
-                                            mRepositoryName, title, body);
-                                    if (createResp.statusCode == 200) {
-                                        try {
-                                            final JSONObject response = new JSONObject(
-                                                    createResp.resp).getJSONObject("issue");
-                                            final int number = response.getInt("number");
-                                            final JSONObject issueJSON = new JSONObject(
-                                                    mGapi.issues.issue(mRepositoryOwner, mRepositoryName,
-                                                            number).resp).getJSONObject("issue");
-                                            mIntent = new Intent(CreateIssue.this,
-                                                    SingleIssue.class);
-                                            mIntent.putExtra("repoOwner", mRepositoryOwner);
-                                            mIntent.putExtra("repoName", mRepositoryName);
-                                            mIntent.putExtra("item_json", issueJSON.toString());
-
-                                            runOnUiThread(new Runnable() {
-                                                public void run() {
-                                                    mProgressDialog.dismiss();
-                                                    startActivity(mIntent);
-                                                    finish();
-                                                }
-                                            });
-                                        } catch (final JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    } else {
-                                        Toast.makeText(CreateIssue.this, "Error creating issue.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }
-                        });
-                        mProgressDialog = ProgressDialog.show(CreateIssue.this, "Please Wait...",
-                                "Creating issue...");
-                        mThread.start();
+                        if (mCreateIssueTask.getStatus() == AsyncTask.Status.FINISHED) {
+                            mCreateIssueTask = new CreateIssueTask();
+                            mCreateIssueTask.activity = CreateIssue.this;
+                        }
+                        if (mCreateIssueTask.getStatus() == AsyncTask.Status.PENDING) {
+                            mCreateIssueTask.execute();
+                        }
                     }
                 });
     }
 
     @Override
     public void onPause() {
-        if ((mThread != null) && mThread.isAlive()) {
-            mThread.stop();
-        }
         if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
@@ -157,6 +176,10 @@ public class CreateIssue extends Activity {
         savedInstanceState.putString("bodyText",
                 ((EditText) findViewById(R.id.et_create_issue_body)).getText().toString());
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    public Object onRetainNonConfigurationInstance() {
+        return mCreateIssueTask;
     }
 
     @Override
