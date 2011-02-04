@@ -146,6 +146,7 @@ public class SingleIssue extends Activity {
         protected void onPostExecute(Integer result) {
             activity.mProgressDialog.dismiss();
             if (result.intValue() == 200) {
+                activity.setResult(1);
                 activity.finish();
             } else {
                 Toast.makeText(activity,

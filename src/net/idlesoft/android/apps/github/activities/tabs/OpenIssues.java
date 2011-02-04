@@ -84,7 +84,7 @@ public class OpenIssues extends Activity {
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
-            startActivity(i);
+            startActivityForResult(i, 1);
             return;
         }
     };
@@ -96,6 +96,18 @@ public class OpenIssues extends Activity {
     private String mRepositoryOwner;
 
     private String mRepositoryName;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 1) {
+            mAdapter.clear();
+            mJson = null;
+            mTask = new OpenIssuesTask();
+            mTask.activity = OpenIssues.this;
+            mTask.execute();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 
     @Override
     public void onCreate(final Bundle icicle) {
