@@ -81,4 +81,16 @@ public class NewsFeedHelpers {
                 + "</div>";
         return html;
     }
+
+    public static String linkifyWatchItem(JSONObject pNewsItem) throws JSONException {
+        String repoPath = pNewsItem.getJSONObject("payload").getString("repo");
+        String repoDesc = pNewsItem.getJSONObject("repository").getString("description");
+
+        String html =
+                "<div>"
+                + "<a href=\"hubroid://showRepo/" + repoPath + "/\">" + repoPath.split("/")[1] + "</a>'s description: <br/><br/>"
+                + "<span class=\"repo-desc\">" + repoDesc + "</span>"
+                + "</div>";
+        return html;
+    }
 }

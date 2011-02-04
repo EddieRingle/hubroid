@@ -300,6 +300,8 @@ public class SingleActivityItem extends Activity {
                     html = NewsFeedHelpers.linkifyCreateBranchItem(mJson);
                 } else if (eventType.equals("CommitCommentEvent")) {
                     html = NewsFeedHelpers.linkifyCommitCommentItem(mJson);
+                } else if (eventType.equals("WatchEvent")) {
+                    html = NewsFeedHelpers.linkifyWatchItem(mJson);
                 }
                 final String out = CSS + html;
                 content.loadData(out, "text/html",
