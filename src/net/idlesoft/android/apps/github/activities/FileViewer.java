@@ -218,6 +218,10 @@ public class FileViewer extends Activity {
                     "UTF-8");
         }
 
+        if (mLoadBlobTask != null) {
+            mLoadBlobTask.activity = this;
+        }
+
         super.onRestoreInstanceState(savedInstanceState);
     }
 
