@@ -93,4 +93,29 @@ public class NewsFeedHelpers {
                 + "</div>";
         return html;
     }
+
+    public static String linkifyFollowItem(JSONObject pNewsItem) throws JSONException {
+        final JSONObject target = pNewsItem.getJSONObject("payload").getJSONObject("target");
+        String targetLogin = target.getString("login");
+        int targetRepoCount = target.getInt("repos");
+        int targetFollowersCount = target.getInt("followers");
+
+        String targetReposString, targetFollowersString;
+        if (targetRepoCount == 1) {
+            targetReposString = "1 public repo";
+        } else {
+            targetReposString = targetRepoCount + " public repos";
+        }
+        if (targetFollowersCount == 1) {
+            targetFollowersString = "1 follower";
+        } else {
+            targetFollowersString = targetFollowersCount + " followers";
+        }
+
+        String html =
+                "<div>"
+                + "<a href=\"hubroid://showUser/" + targetLogin + "/\">" + targetLogin + "</a> has " + targetReposString + " and " + targetFollowersString + "."
+                + "</div>";
+        return html;
+    }
 }
