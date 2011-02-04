@@ -2,7 +2,7 @@
 <resources>
 	<!-- Application -->
     <string name="app_name">Hubroid</string>
-    <string name="app_version">2.0</string>
+    <string name="app_version">2.0-beta1</string>
 
 	<!-- Splash/Login Activity -->
 	<string name="copyright">Copyright © 2011 Idlesoft</string>
