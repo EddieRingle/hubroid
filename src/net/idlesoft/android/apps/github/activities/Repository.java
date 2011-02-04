@@ -25,6 +25,9 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
+import android.text.Spannable;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -127,27 +130,21 @@ public class Repository extends Activity {
                 repo_website.setText("N/A");
             }
 
-            /*
-             * Let's hold off on putting this in the new version for now...
-             * if (m_jsonData.getBoolean("fork") == true) { // Find out what
-             * this is a fork of... String forked_user =
-             * m_jsonForkData.getJSONObject(0).getString("owner"); String
-             * forked_repo =
-             * m_jsonForkData.getJSONObject(0).getString("name"); // Show
-             * "Fork of:" label, it's value, and the button TextView
-             * repo_fork_of_label =
-             * (TextView)findViewById(R.id.repository_fork_of_label);
-             * repo_fork_of_label.setVisibility(0); TextView repo_fork_of =
-             * (TextView)findViewById(R.id.repository_fork_of);
-             * repo_fork_of.setText(forked_user + "/" + forked_repo);
-             * repo_fork_of.setVisibility(0); Button
-             * goto_forked_repository_btn =
-             * (Button)findViewById(R.id.goto_forked_repository_btn);
-             * goto_forked_repository_btn.setVisibility(0); // Set the
-             * onClick listener for the button
-             * goto_forked_repository_btn.setOnClickListener
-             * (forkedRepo_onClickListener); }
-             */
+            /* Make the repository owner text link to his/her profile */
+            repo_owner.setMovementMethod(LinkMovementMethod.getInstance());
+            Spannable spans = (Spannable) repo_owner.getText();
+            ClickableSpan clickSpan = new ClickableSpan() {
+                public void onClick(View widget) {
+                    Intent i = new Intent(Repository.this, Profile.class);
+                    try {
+                        i.putExtra("username", mJson.getString("owner"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    startActivity(i);
+                }
+            };
+            spans.setSpan(clickSpan, 0, spans.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         } catch (final JSONException e) {
             e.printStackTrace();
         }
@@ -179,11 +176,6 @@ public class Repository extends Activity {
                         startActivity(intent);
                     }
                 });
-        /*
-         * Hold off on this as well... Button user_info_btn =
-         * (Button)findViewById(R.id.goto_repo_owner_info_btn);
-         * user_info_btn.setOnClickListener(username_onClickListener);
-         */
     }
 
     @Override
