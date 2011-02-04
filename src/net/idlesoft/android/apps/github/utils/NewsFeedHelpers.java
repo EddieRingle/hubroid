@@ -118,4 +118,29 @@ public class NewsFeedHelpers {
                 + "</div>";
         return html;
     }
+
+    public static String linkifyCreateRepoItem(JSONObject pNewsItem) throws JSONException {
+        final JSONObject repoJson = pNewsItem.getJSONObject("repository");
+        String repoName = repoJson.getString("name");
+        String repoPath = repoJson.getString("owner") + "/" + repoName;
+        String repoDesc = repoJson.getString("description");
+
+        String html =
+                "<div>"
+                + "<a href=\"hubroid://showRepo/" + repoPath + "/\">" + repoName + "</a>'s description: <br/><br/>"
+                + "<span class=\"repo-desc\">" + repoDesc + "</span>"
+                + "</div>";
+        return html;
+    }
+
+    public static String linkifyIssueItem(JSONObject pNewsItem) throws JSONException {
+        final JSONObject payload = pNewsItem.getJSONObject("payload");
+        String repoPath = payload.getString("repo");
+
+        String html =
+                "<div>"
+                + "To view <a href=\"hubroid://showRepo/" + repoPath + "/\">" + repoPath.split("/")[1] + "</a>'s issue list, <a href=\"hubroid://showIssues/" + repoPath + "/\">click here</a>."
+                + "</div>";
+        return html;
+    }
 }

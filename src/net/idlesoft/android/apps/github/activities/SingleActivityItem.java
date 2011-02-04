@@ -286,6 +286,11 @@ public class SingleActivityItem extends Activity {
                                Intent intent = new Intent(SingleActivityItem.this, Profile.class);
                                intent.putExtra("username", parts[1]);
                                startActivity(intent);
+                           } else if (parts[0].equals("showIssues")) {
+                               Intent intent = new Intent(SingleActivityItem.this, Issues.class);
+                               intent.putExtra("repo_owner", parts[1]);
+                               intent.putExtra("repo_name", parts[2]);
+                               startActivity(intent);
                            }
                            return true;
                        }
@@ -296,12 +301,19 @@ public class SingleActivityItem extends Activity {
                 String eventType = mJson.getString("type");
                 if (eventType.equals("PushEvent")) {
                     html = NewsFeedHelpers.linkifyPushItem(mJson);
-                } else if (eventType.equals("CreateEvent") && mJson.getJSONObject("payload").getString("object").equals("branch")) {
-                    html = NewsFeedHelpers.linkifyCreateBranchItem(mJson);
+                } else if (eventType.equals("CreateEvent")) {
+                    String object = mJson.getJSONObject("payload").getString("object");
+                    if (object.equals("branch")) {
+                        html = NewsFeedHelpers.linkifyCreateBranchItem(mJson);
+                    } else if (object.equals("repository")) {
+                        html = NewsFeedHelpers.linkifyCreateRepoItem(mJson);
+                    }
                 } else if (eventType.equals("CommitCommentEvent")) {
                     html = NewsFeedHelpers.linkifyCommitCommentItem(mJson);
                 } else if (eventType.equals("FollowEvent")) {
                     html = NewsFeedHelpers.linkifyFollowItem(mJson);
+                } else if (eventType.equals("IssuesEvent")) {
+                    html = NewsFeedHelpers.linkifyIssueItem(mJson);
                 } else if (eventType.equals("WatchEvent")) {
                     html = NewsFeedHelpers.linkifyWatchItem(mJson);
                 }
