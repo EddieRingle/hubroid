@@ -143,4 +143,17 @@ public class NewsFeedHelpers {
                 + "</div>";
         return html;
     }
+
+    public static String linkifyForkItem(JSONObject pNewsItem) throws JSONException {
+        final JSONObject payload = pNewsItem.getJSONObject("payload");
+        final JSONObject repository = pNewsItem.getJSONObject("repository");
+        String parentRepoPath = payload.getString("repo");
+        String forkedRepoPath = payload.getString("actor") + "/" + repository.getString("name");
+
+        String html =
+                "<div>"
+                + "Forked repo is at <a href=\"hubroid://showRepo/" + forkedRepoPath + "/\">" + forkedRepoPath + "</a>, parent repo is at <a href=\"hubroid://showRepo/" + parentRepoPath + "/\">" + parentRepoPath + "</a>."
+                + "</div>";
+        return html;
+    }
 }

@@ -312,6 +312,8 @@ public class SingleActivityItem extends Activity {
                     html = NewsFeedHelpers.linkifyCommitCommentItem(mJson);
                 } else if (eventType.equals("FollowEvent")) {
                     html = NewsFeedHelpers.linkifyFollowItem(mJson);
+                } else if (eventType.equals("ForkEvent")) {
+                    html = NewsFeedHelpers.linkifyForkItem(mJson);
                 } else if (eventType.equals("IssuesEvent")) {
                     html = NewsFeedHelpers.linkifyIssueItem(mJson);
                 } else if (eventType.equals("WatchEvent")) {
