@@ -103,6 +103,7 @@ public class Repository extends Activity {
             // title.setText(m_jsonData.getString("name"));
             final TextView repo_name = (TextView) findViewById(R.id.tv_repository_info_name);
             repo_name.setText(mJson.getString("name"));
+            repo_name.requestFocus();
             final TextView repo_desc = (TextView) findViewById(R.id.tv_repository_info_description);
             repo_desc.setText(mJson.getString("description"));
             final TextView repo_owner = (TextView) findViewById(R.id.tv_repository_info_owner);
