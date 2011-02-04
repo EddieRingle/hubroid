@@ -37,6 +37,7 @@
 		<activity android:name=".activities.NetworkList" />
 		<activity android:name=".activities.SingleActivityItem" />
 		<activity android:name=".activities.CommitChangeViewer" />
+		<activity android:name=".activities.FileViewer" />
 	</application>
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="9"/>
 	<uses-permission android:name="android.permission.INTERNET" />

@@ -98,7 +98,12 @@ public class BranchTree extends Activity {
                     i.putExtra("branch_sha", treeItem.getString("sha"));
                     startActivity(i);
                 } else if (treeItem.getString("type").equals("blob")) {
-                    Toast.makeText(BranchTree.this, "File viewing is not yet implemented.", Toast.LENGTH_LONG).show();
+                    Intent i = new Intent(BranchTree.this, FileViewer.class);
+                    i.putExtra("repo_owner", mRepositoryOwner);
+                    i.putExtra("repo_name", mRepositoryName);
+                    i.putExtra("tree_sha", mBranchSha);
+                    i.putExtra("blob_path", treeItem.getString("name"));
+                    startActivity(i);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
