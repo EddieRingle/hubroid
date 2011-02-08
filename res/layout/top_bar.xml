@@ -1,15 +1,28 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/rl_top_bar_root"
-	android:background="@drawable/top_bar"
 	android:layout_width="fill_parent"
-	android:layout_height="56dip">
+	android:layout_height="42dip"
+	android:background="#CCC">
 	<TextView
-		android:id="@+id/tv_top_bar_title"
+		android:textSize="22dip"
+		android:textStyle="bold"
+		android:textColor="#555"
+		android:text="Hubroid"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
-		android:layout_centerInParent="true"
-		android:textColor="@color/textColor"
-		android:textSize="24dip"
-		android:textStyle="bold" />
+		android:layout_marginLeft="10dip"
+		android:layout_alignParentLeft="true"
+		android:layout_centerVertical="true" />
+	<ImageButton android:id="@+id/btn_search"
+		android:src="@android:drawable/ic_search_category_default"
+		android:scaleType="fitXY"
+		android:background="@drawable/top_bar_button"
+		android:layout_width="42dip"
+		android:layout_height="fill_parent"
+		android:layout_alignParentRight="true" />
+	<LinearLayout android:id="@+id/divider_btn_search"
+		android:background="@drawable/top_bar_btn_divider"
+		android:layout_width="1dip"
+		android:layout_height="fill_parent"
+		android:layout_toLeftOf="@id/btn_search" />
 </RelativeLayout>

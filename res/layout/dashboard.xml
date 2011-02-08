@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<include android:id="@+id/top_bar" layout="@layout/top_bar" />
+	<LinearLayout
+		android:id="@+id/ll_dashboard_buttons"
+		android:orientation="vertical"
+		android:layout_width="wrap_content"
+		android:layout_height="fill_parent"
+		android:layout_gravity="center"
+		android:gravity="center">
+		<LinearLayout
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_dashboard_newsfeed"
+				android:layout_width="120dip"
+				android:layout_height="100dip"
+				android:background="#00ffffff"
+				android:text="News Feed"
+				android:textColor="#555"
+				android:drawableTop="@drawable/dash_feeds_button" />
+			<Button android:id="@+id/btn_dashboard_myprofile"
+				android:layout_width="120dip"
+				android:layout_height="100dip"
+				android:background="#00ffffff"
+				android:drawableTop="@drawable/dash_profile_button"
+				android:textColor="#555"
+				android:text="Profile" />
+		</LinearLayout>
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_dashboard_repositories"
+				android:layout_width="120dip"
+				android:layout_height="100dip"
+				android:background="#00ffffff"
+				android:drawableTop="@drawable/dash_repos_button"
+				android:textColor="#555"
+				android:text="Repositories" />
+			<Button android:id="@+id/btn_dashboard_users"
+				android:layout_width="120dip"
+				android:layout_height="100dip"
+				android:background="#00ffffff"
+				android:drawableTop="@drawable/dash_users_button"
+				android:textColor="#555"
+				android:text="Users" />
+		</LinearLayout>
+	</LinearLayout>
+	<LinearLayout
+		android:orientation="vertical"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center"
+		android:layout_gravity="bottom"
+		android:background="#CCC"
+		android:padding="10dip">
+		<TextView
+			android:id="@+id/tv_dashboard_latestPost_label"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:textColor="@color/darkText"
+			android:textSize="10dip"
+			android:text="Latest Blog Post" />
+		<TextView
+			android:id="@+id/tv_dashboard_latestPost_title"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:ellipsize="end"
+			android:singleLine="true"
+			android:textColor="@color/darkText"
+			android:textSize="16dip" />
+		<TextView
+			android:id="@+id/tv_dashboard_latestPost_link"
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:textSize="12dip"
+			android:autoLink="web"
+			android:singleLine="true"
+			android:ellipsize="end" />
+		<ProgressBar
+			android:id="@+id/pb_dashboard_latestPost_progress"
+			android:layout_height="28dip"
+			android:layout_width="28dip"
+			android:indeterminateOnly="true"
+			android:layout_margin="5dip"
+			android:visibility="gone" />
+    </LinearLayout>
+</FrameLayout>

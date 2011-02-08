@@ -1,6 +1,8 @@
-This application allows you to access various information about GitHub repositories and users through the GitHub API.
-
-Hubroid is available in free and donate versions on the Android Market and on SlideME.
+This application allows you to access various information about GitHub repositories and users
+through the GitHub API.
 
 Please suggest new features and report bugs via GitHub:
-http://code.idlesoft.net/projects/hubroid/issues
+http://github.com/eddieringle/hubroid
+
+If you'd like to contribute code, see the CONTRIBUTING file for some guidelines and the TODO file
+or the Issues list on GitHub to see what needs doing.

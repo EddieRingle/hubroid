@@ -1,22 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/rl_create_issue_root"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:background="#FFF"
+	android:orientation="vertical"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
 	android:isScrollContainer="true">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
-	<LinearLayout
-		android:id="@+id/ll_create_issue_shadow"
-		android:layout_width="fill_parent"
-		android:layout_height="10dip"
-		android:orientation="vertical"
-		android:layout_below="@id/include_top_bar"
-		android:background="@drawable/shadow" />
+	<include android:id="@+id/include_page_title" layout="@layout/page_title" />
 	<ScrollView
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_below="@id/ll_create_issue_shadow">
+		android:layout_height="match_parent">
 		<LinearLayout
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
@@ -55,4 +48,4 @@
 				android:text="Submit" />
 		</LinearLayout>
 	</ScrollView>
-</RelativeLayout>
+</LinearLayout>

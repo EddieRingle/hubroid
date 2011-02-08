@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
+	android:layout_height="wrap_content"
+	android:gravity="center"
+	android:background="@color/background"
+	android:padding="15dip">
+	<ProgressBar
+		android:id="@+id/pb_loadingListItem_progress"
+		android:layout_height="24px"
+		android:layout_width="24px"
+		android:layout_marginRight="5dip"
+		android:indeterminateBehavior="repeat"
+		android:indeterminate="true"
+		android:indeterminateOnly="true" />
+	<TextView
+		android:id="@+id/tv_loadingListItem_loadingText"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginLeft="5dip"
+		android:text="Loading, Please Wait..."
+		android:textColor="@color/textColor" />
+</LinearLayout>

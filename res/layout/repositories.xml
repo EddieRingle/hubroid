@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/rl_repositories_list_root"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+	<TabHost android:id="@android:id/tabhost"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content">
+		<LinearLayout
+			android:orientation="vertical"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent">
+			<include android:id="@+id/top_bar" layout="@layout/top_bar" />
+			<LinearLayout
+				android:orientation="horizontal"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:paddingTop="5dip"
+				android:paddingBottom="5dip"
+				android:paddingRight="15dip"
+				android:paddingLeft="15dip">
+				<ImageView
+					android:id="@+id/iv_repositories_gravatar"
+					android:layout_height="42dip"
+					android:scaleType="center"
+					android:background="@drawable/gravatar_border"
+					android:layout_width="42dip"
+					android:layout_gravity="center_vertical"/>
+				<include android:id="@+id/page_title" layout="@layout/page_title" />
+			</LinearLayout>
+			<TabWidget
+				android:id="@android:id/tabs"
+				android:layout_width="fill_parent"
+				android:layout_height="wrap_content"
+				android:background="@null"
+				android:layout_marginLeft="-2dip"
+				android:layout_marginRight="-2dip" />
+			<FrameLayout
+				android:id="@android:id/tabcontent"
+				android:layout_width="fill_parent"
+				android:layout_height="0dip"
+				android:layout_weight="1">
+			</FrameLayout>
+		</LinearLayout>
+	</TabHost>
+</RelativeLayout>
