@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -30,30 +30,29 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class DiffFilesList extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
-
     public ArrayAdapter<String> mAdapter;
 
-    public JSONObject mJson;
+    private final GitHubAPI mGapi = new GitHubAPI();
 
-    public String mType;
+    public JSONObject mJson;
 
     private final OnItemClickListener mOnFileListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
             /*
-             * Since added/removed files don't have a diff, only clicks on modified files
-             * should link off to CommitChangeViewer
+             * Since added/removed files don't have a diff, only clicks on
+             * modified files should link off to CommitChangeViewer
              */
             if (!mType.equals("modified")) {
                 return;
             } else {
-                Intent i = new Intent(DiffFilesList.this, CommitChangeViewer.class);
+                final Intent i = new Intent(DiffFilesList.this, CommitChangeViewer.class);
                 i.putExtra("repo_owner", mRepositoryOwner);
                 i.putExtra("repo_name", mRepositoryName);
                 try {
-                    i.putExtra("json", mJson.getJSONArray("modified").getJSONObject(position).toString());
-                } catch (JSONException e) {
+                    i.putExtra("json", mJson.getJSONArray("modified").getJSONObject(position)
+                            .toString());
+                } catch (final JSONException e) {
                     e.printStackTrace();
                 }
                 startActivity(i);
@@ -61,13 +60,15 @@ public class DiffFilesList extends Activity {
         }
     };
 
+    private String mPassword;
+
     private SharedPreferences mPrefs;
 
     public String mRepositoryName;
 
     public String mRepositoryOwner;
 
-    private String mPassword;
+    public String mType;
 
     private String mUsername;
 
@@ -96,7 +97,7 @@ public class DiffFilesList extends Activity {
             mType = extras.getString("type");
             try {
                 mJson = new JSONObject(extras.getString("json"));
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
 
@@ -112,19 +113,25 @@ public class DiffFilesList extends Activity {
                     title.setText("Files");
                 }
 
-                /* Split JSONArray into a String array so we can populate the list of files */
-                String[] filenames = new String[mJson.getJSONArray(mType).length()];
+                /*
+                 * Split JSONArray into a String array so we can populate the
+                 * list of files
+                 */
+                final String[] filenames = new String[mJson.getJSONArray(mType).length()];
                 for (int i = 0; i < filenames.length; i++) {
                     if (mType.equals("modified")) {
-                        filenames[i] = mJson.getJSONArray("modified").getJSONObject(i).getString("filename");
+                        filenames[i] = mJson.getJSONArray("modified").getJSONObject(i).getString(
+                                "filename");
                     } else {
                         filenames[i] = mJson.getJSONArray(mType).getString(i);
                     }
-                    if (filenames[i].lastIndexOf("/") > -1)
+                    if (filenames[i].lastIndexOf("/") > -1) {
                         filenames[i] = filenames[i].substring(filenames[i].lastIndexOf("/") + 1);
+                    }
                 }
 
-                mAdapter = new ArrayAdapter<String>(DiffFilesList.this, android.R.layout.simple_list_item_1, android.R.id.text1, filenames);
+                mAdapter = new ArrayAdapter<String>(DiffFilesList.this,
+                        android.R.layout.simple_list_item_1, android.R.id.text1, filenames);
 
                 final ListView file_list = (ListView) findViewById(R.id.lv_diffFileList_list);
                 file_list.setAdapter(mAdapter);

@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
+
 public class ForkListAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public TextView text;
@@ -27,6 +28,7 @@ public class ForkListAdapter extends JsonListAdapter {
         super(pActivity, pListView);
     }
 
+    @Override
     public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {

@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -13,8 +13,8 @@ import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.activities.Profile;
 import net.idlesoft.android.apps.github.adapters.FollowersFollowingListAdapter;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,8 +26,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Following extends Activity {
     private static class FollowingTask extends AsyncTask<Void, Void, Void> {
@@ -71,10 +71,6 @@ public class Following extends Activity {
 
     private ListView mListView;
 
-    private String mTarget;
-
-    private FollowingTask mTask;
-
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
@@ -88,6 +84,10 @@ public class Following extends Activity {
             return;
         }
     };
+
+    private String mTarget;
+
+    private FollowingTask mTask;
 
     @Override
     public void onCreate(final Bundle icicle) {

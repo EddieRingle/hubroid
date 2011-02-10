@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -23,6 +23,7 @@ import android.widget.TextView;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 public class IssuesListAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public ImageView issueIcon;
@@ -38,6 +39,7 @@ public class IssuesListAdapter extends JsonListAdapter {
         super(pActivity, pListView);
     }
 
+    @Override
     public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {

@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -26,6 +26,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Spannable;
+import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.Menu;
@@ -39,15 +40,57 @@ import android.widget.TextView;
 import java.io.File;
 
 public class Repository extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
+    private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
+        public Repository activity;
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            try {
+                final Response resp = activity.mGapi.repo.info(activity.mRepositoryOwner,
+                        activity.mRepositoryName);
+                if (resp.statusCode == 200) {
+                    activity.mJson = new JSONObject(resp.resp).getJSONObject("repository");
+
+                    final JSONArray watched_list = new JSONObject(activity.mGapi.user
+                            .watching(activity.mUsername).resp).getJSONArray("repositories");
+                    final int length = watched_list.length() - 1;
+                    for (int i = 0; i <= length; i++) {
+                        if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(
+                                activity.mRepositoryName)) {
+                            activity.mIsWatching = true;
+                        }
+                    }
+                }
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void result) {
+            activity.loadRepoInfo();
+            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.GONE);
+        }
+
+    }
 
     private SharedPreferences.Editor mEditor;
+
+    private final GitHubAPI mGapi = new GitHubAPI();
 
     public Intent mIntent;
 
     private boolean mIsWatching;
 
     public JSONObject mJson;
+
+    private LoadRepositoryTask mLoadRepositoryTask;
 
     private String mPassword;
 
@@ -60,44 +103,6 @@ public class Repository extends Activity {
     private String mRepositoryOwner;
 
     private String mUsername;
-
-    private LoadRepositoryTask mLoadRepositoryTask;
-
-    private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
-        public Repository activity;
-
-        protected void onPreExecute() {
-            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.GONE);
-        }
-
-        protected Void doInBackground(Void... params) {
-            try {
-                Response resp = activity.mGapi.repo.info(activity.mRepositoryOwner, activity.mRepositoryName);
-                if (resp.statusCode == 200) {
-                    activity.mJson = new JSONObject(resp.resp).getJSONObject("repository");
-    
-                    final JSONArray watched_list = new JSONObject(activity.mGapi.user.watching(activity.mUsername).resp)
-                            .getJSONArray("repositories");
-                    final int length = watched_list.length() - 1;
-                    for (int i = 0; i <= length; i++) {
-                        if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(
-                                activity.mRepositoryName)) {
-                            activity.mIsWatching = true;
-                        }
-                    }
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            activity.loadRepoInfo();
-            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
-        }
-
-    }
 
     public void loadRepoInfo() {
         try {
@@ -132,19 +137,20 @@ public class Repository extends Activity {
 
             /* Make the repository owner text link to his/her profile */
             repo_owner.setMovementMethod(LinkMovementMethod.getInstance());
-            Spannable spans = (Spannable) repo_owner.getText();
-            ClickableSpan clickSpan = new ClickableSpan() {
-                public void onClick(View widget) {
-                    Intent i = new Intent(Repository.this, Profile.class);
+            final Spannable spans = (Spannable) repo_owner.getText();
+            final ClickableSpan clickSpan = new ClickableSpan() {
+                @Override
+                public void onClick(final View widget) {
+                    final Intent i = new Intent(Repository.this, Profile.class);
                     try {
                         i.putExtra("username", mJson.getString("owner"));
-                    } catch (JSONException e) {
+                    } catch (final JSONException e) {
                         e.printStackTrace();
                     }
                     startActivity(i);
                 }
             };
-            spans.setSpan(clickSpan, 0, spans.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            spans.setSpan(clickSpan, 0, spans.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         } catch (final JSONException e) {
             e.printStackTrace();
         }
@@ -215,43 +221,22 @@ public class Repository extends Activity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        try {
-            if (savedInstanceState.containsKey("json")) {
-                mJson = new JSONObject(savedInstanceState.getString("json"));
-            }
-            if (mJson != null) {
-                loadRepoInfo();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        if (mJson != null) {
-            outState.putString("json", mJson.toString());
-        }
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case 3:
                 try {
                     JSONObject newRepoInfo = null;
                     if (mIsWatching) {
-                        final Response unwatchResp = mGapi.repo.unwatch(mRepositoryOwner, mRepositoryName);
+                        final Response unwatchResp = mGapi.repo.unwatch(mRepositoryOwner,
+                                mRepositoryName);
                         if (unwatchResp.statusCode == 200) {
                             newRepoInfo = new JSONObject(unwatchResp.resp)
                                     .getJSONObject("repository");
                             mIsWatching = false;
                         }
                     } else {
-                        final Response watchResp = mGapi.repo.watch(mRepositoryOwner, mRepositoryName);
+                        final Response watchResp = mGapi.repo.watch(mRepositoryOwner,
+                                mRepositoryName);
                         if (watchResp.statusCode == 200) {
                             newRepoInfo = new JSONObject(watchResp.resp)
                                     .getJSONObject("repository");
@@ -312,6 +297,29 @@ public class Repository extends Activity {
         menu.add(0, 1, 0, "Clear Preferences");
         menu.add(0, 2, 0, "Clear Cache");
         return true;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        try {
+            if (savedInstanceState.containsKey("json")) {
+                mJson = new JSONObject(savedInstanceState.getString("json"));
+            }
+            if (mJson != null) {
+                loadRepoInfo();
+            }
+        } catch (final JSONException e) {
+            e.printStackTrace();
+        }
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        if (mJson != null) {
+            outState.putString("json", mJson.toString());
+        }
+        super.onSaveInstanceState(outState);
     }
 
     @Override

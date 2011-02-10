@@ -1,14 +1,12 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.adapters;
-
-import java.util.HashMap;
 
 import org.json.JSONArray;
 
@@ -17,6 +15,8 @@ import android.graphics.Bitmap;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.HashMap;
 
 public abstract class GravatarListAdapter extends JsonListAdapter {
     public class ViewHolder {
@@ -32,20 +32,23 @@ public abstract class GravatarListAdapter extends JsonListAdapter {
     }
 
     @Override
-    public void loadData(JSONArray pJsonArray) {
+    public void loadData(final JSONArray pJsonArray) {
         super.loadData(pJsonArray);
-        /* Load gravatars after Json has loaded but before the LinkedList is populated */
+        /*
+         * Load gravatars after Json has loaded but before the LinkedList is
+         * populated
+         */
         mGravatars = new HashMap<String, Bitmap>(mListData.size());
         loadGravatars();
-    }
-
-    @Override
-    public void pushData() {
-        super.pushData();
     }
 
     /**
      * Gravatar loading method
      */
     public abstract void loadGravatars();
+
+    @Override
+    public void pushData() {
+        super.pushData();
+    }
 }

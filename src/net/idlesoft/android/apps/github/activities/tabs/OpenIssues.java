@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -37,7 +37,8 @@ public class OpenIssues extends Activity {
         protected Void doInBackground(final Void... params) {
             if (activity.mJson == null) {
                 try {
-                    final Response resp = activity.mGapi.issues.list(activity.mRepositoryOwner, activity.mRepositoryName, "open");
+                    final Response resp = activity.mGapi.issues.list(activity.mRepositoryOwner,
+                            activity.mRepositoryName, "open");
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
@@ -71,12 +72,10 @@ public class OpenIssues extends Activity {
 
     private ListView mListView;
 
-    private OpenIssuesTask mTask;
-
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
-            Intent i = new Intent(getApplicationContext(), SingleIssue.class);
+            final Intent i = new Intent(getApplicationContext(), SingleIssue.class);
             i.putExtra("repo_owner", mRepositoryOwner);
             i.putExtra("repo_name", mRepositoryName);
             try {
@@ -89,16 +88,18 @@ public class OpenIssues extends Activity {
         }
     };
 
-    private String mUsername;
-
     private String mPassword;
-
-    private String mRepositoryOwner;
 
     private String mRepositoryName;
 
+    private String mRepositoryOwner;
+
+    private OpenIssuesTask mTask;
+
+    private String mUsername;
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if (resultCode == 1) {
             mAdapter.clear();
             mJson = null;

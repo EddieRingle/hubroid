@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -13,8 +13,8 @@ import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.activities.Repository;
 import net.idlesoft.android.apps.github.adapters.RepositoriesListAdapter;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,8 +26,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class MyRepos extends Activity {
     private static class MyReposTask extends AsyncTask<Void, Void, Void> {
@@ -71,18 +71,14 @@ public class MyRepos extends Activity {
 
     private ListView mListView;
 
-    private String mTarget;
-
-    private MyReposTask mTask;
-
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
-            Intent i = new Intent(getApplicationContext(), Repository.class);
+            final Intent i = new Intent(getApplicationContext(), Repository.class);
             i.putExtra("repo_owner", mTarget);
             try {
                 i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
             startActivity(i);
@@ -90,9 +86,13 @@ public class MyRepos extends Activity {
         }
     };
 
-    private String mUsername;
-
     private String mPassword;
+
+    private String mTarget;
+
+    private MyReposTask mTask;
+
+    private String mUsername;
 
     @Override
     public void onCreate(final Bundle icicle) {

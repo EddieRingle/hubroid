@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -10,6 +10,7 @@ package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
+
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +24,20 @@ public class FollowersFollowingListAdapter extends GravatarListAdapter {
         super(pActivity, pListView);
     }
 
+    @Override
     public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.user_list_item, null);
             holder = new ViewHolder();
-            holder.text = (TextView) convertView
-                    .findViewById(R.id.tv_user_list_item_name);
-            holder.gravatar = (ImageView) convertView
-                    .findViewById(R.id.iv_user_list_gravatar);
+            holder.text = (TextView) convertView.findViewById(R.id.tv_user_list_item_name);
+            holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_user_list_gravatar);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.text.setTextColor(R.color.textColor);
-        String username = (String) getData().get(index);
+        final String username = (String) getData().get(index);
         holder.text.setText(username);
         holder.gravatar.setImageBitmap(mGravatars.get(username));
         return convertView;
@@ -52,7 +52,7 @@ public class FollowersFollowingListAdapter extends GravatarListAdapter {
                 mGravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
                         .getGravatarID(username), 30.0f, mActivity.getResources()
                         .getDisplayMetrics().density));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         }

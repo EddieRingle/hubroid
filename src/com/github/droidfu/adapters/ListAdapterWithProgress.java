@@ -15,9 +15,6 @@
 
 package com.github.droidfu.adapters;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.app.ListActivity;
@@ -26,38 +23,58 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class ListAdapterWithProgress<T> extends BaseAdapter {
+
+    private final ArrayList<T> data = new ArrayList<T>();
 
     private boolean isLoadingData;
 
-    private View progressView;
-
-    private ArrayList<T> data = new ArrayList<T>();
-
     private AbsListView listView;
 
-    public ListAdapterWithProgress(ListActivity activity, int progressDrawableResourceId) {
-        this(activity, activity.getListView(), progressDrawableResourceId);
+    private View progressView;
+
+    public ListAdapterWithProgress(final Activity activity, final AbsListView listView,
+            final int progressDrawableResourceId) {
+        this.listView = listView;
+        this.progressView = activity.getLayoutInflater().inflate(progressDrawableResourceId,
+                listView, false);
     }
 
-    public ListAdapterWithProgress(ExpandableListActivity activity, int progressDrawableResourceId) {
+    public ListAdapterWithProgress(final ExpandableListActivity activity,
+            final int progressDrawableResourceId) {
         this(activity, activity.getExpandableListView(), progressDrawableResourceId);
     }
 
-    public ListAdapterWithProgress(Activity activity, AbsListView listView,
-            int progressDrawableResourceId) {
-        this.listView = listView;
-        this.progressView = activity.getLayoutInflater().inflate(progressDrawableResourceId,
-            listView, false);
+    public ListAdapterWithProgress(final ListActivity activity, final int progressDrawableResourceId) {
+        this(activity, activity.getListView(), progressDrawableResourceId);
     }
 
-    public AbsListView getListView() {
-        return listView;
+    public void addAll(final List<T> items) {
+        data.addAll(items);
+        notifyDataSetChanged();
     }
 
-    public View getProgressView() {
-        return progressView;
+    public void addAll(final List<T> items, final boolean redrawList) {
+        data.addAll(items);
+        if (redrawList) {
+            notifyDataSetChanged();
+        }
     }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    public void clear() {
+        data.clear();
+        notifyDataSetChanged();
+    }
+
+    protected abstract View doGetView(int position, View convertView, ViewGroup parent);
 
     /**
      * {@inheritDoc}
@@ -77,16 +94,15 @@ public abstract class ListAdapterWithProgress<T> extends BaseAdapter {
         return size;
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Don't use this to check for the presence of actual data items; use
-     * {@link #hasItems()} instead.
-     * </p>
-     */
-    @Override
-    public boolean isEmpty() {
-        return getCount() == 0 && !isLoadingData;
+    public ArrayList<T> getData() {
+        return data;
+    }
+
+    public T getItem(final int position) {
+        if (data == null) {
+            return null;
+        }
+        return data.get(position);
     }
 
     /**
@@ -100,53 +116,27 @@ public abstract class ListAdapterWithProgress<T> extends BaseAdapter {
         return 0;
     }
 
-    /**
-     * @return true if there are actual data items, ignoring the progress item.
-     */
-    public boolean hasItems() {
-        return data != null && !data.isEmpty();
-    }
-
-    public T getItem(int position) {
-        if (data == null) {
-            return null;
-        }
-        return data.get(position);
-    }
-
-    public long getItemId(int position) {
+    public long getItemId(final int position) {
         return position;
     }
 
     @Override
-    public boolean isEnabled(int position) {
+    public int getItemViewType(final int position) {
         if (isPositionOfProgressElement(position)) {
-            return false;
+            return IGNORE_ITEM_VIEW_TYPE;
         }
-        return true;
+        return 0;
     }
 
-    @Override
-    public boolean areAllItemsEnabled() {
-        return false;
+    public AbsListView getListView() {
+        return listView;
     }
 
-    public void setIsLoadingData(boolean isLoadingData) {
-        setIsLoadingData(isLoadingData, true);
+    public View getProgressView() {
+        return progressView;
     }
 
-    public void setIsLoadingData(boolean isLoadingData, boolean redrawList) {
-        this.isLoadingData = isLoadingData;
-        if (redrawList) {
-            notifyDataSetChanged();
-        }
-    }
-
-    public boolean isLoadingData() {
-        return isLoadingData;
-    }
-
-    public final View getView(int position, View convertView, ViewGroup parent) {
+    public final View getView(final int position, final View convertView, final ViewGroup parent) {
         if (isPositionOfProgressElement(position)) {
             return progressView;
         }
@@ -154,48 +144,59 @@ public abstract class ListAdapterWithProgress<T> extends BaseAdapter {
         return doGetView(position, convertView, parent);
     }
 
-    protected abstract View doGetView(int position, View convertView, ViewGroup parent);
-
-    private boolean isPositionOfProgressElement(int position) {
-        return isLoadingData && position == data.size();
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isPositionOfProgressElement(position)) {
-            return IGNORE_ITEM_VIEW_TYPE;
-        }
-        return 0;
-    }
-
     @Override
     public int getViewTypeCount() {
         return 2;
     }
 
-    public ArrayList<T> getData() {
-        return data;
+    /**
+     * @return true if there are actual data items, ignoring the progress item.
+     */
+    public boolean hasItems() {
+        return (data != null) && !data.isEmpty();
     }
 
-    public void addAll(List<T> items) {
-        data.addAll(items);
+    /**
+     * {@inheritDoc}
+     * <p>
+     * Don't use this to check for the presence of actual data items; use
+     * {@link #hasItems()} instead.
+     * </p>
+     */
+    @Override
+    public boolean isEmpty() {
+        return (getCount() == 0) && !isLoadingData;
+    }
+
+    @Override
+    public boolean isEnabled(final int position) {
+        if (isPositionOfProgressElement(position)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isLoadingData() {
+        return isLoadingData;
+    }
+
+    private boolean isPositionOfProgressElement(final int position) {
+        return isLoadingData && (position == data.size());
+    }
+
+    public void remove(final int position) {
+        data.remove(position);
         notifyDataSetChanged();
     }
 
-    public void addAll(List<T> items, boolean redrawList) {
-        data.addAll(items);
+    public void setIsLoadingData(final boolean isLoadingData) {
+        setIsLoadingData(isLoadingData, true);
+    }
+
+    public void setIsLoadingData(final boolean isLoadingData, final boolean redrawList) {
+        this.isLoadingData = isLoadingData;
         if (redrawList) {
             notifyDataSetChanged();
         }
-    }
-
-    public void clear() {
-        data.clear();
-        notifyDataSetChanged();
-    }
-
-    public void remove(int position) {
-        data.remove(position);
-        notifyDataSetChanged();
     }
 }

@@ -1,12 +1,14 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.activities;
+
+import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
@@ -25,8 +27,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
-
-import com.flurry.android.FlurryAgent;
 
 public class Repositories extends TabActivity {
     private static final String TAG_MY_REPOS = "my_repos";
@@ -78,16 +78,15 @@ public class Repositories extends TabActivity {
             mTarget = mUsername;
         }
 
-        ImageView gravatar = (ImageView) findViewById(R.id.iv_repositories_gravatar);
+        final ImageView gravatar = (ImageView) findViewById(R.id.iv_repositories_gravatar);
 
-        gravatar.setImageBitmap(GravatarCache
-                .getDipGravatar(GravatarCache.getGravatarID(mTarget), 38.0f, getResources()
-                        .getDisplayMetrics().density));
+        gravatar.setImageBitmap(GravatarCache.getDipGravatar(GravatarCache.getGravatarID(mTarget),
+                38.0f, getResources().getDisplayMetrics().density));
         ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget);
 
         gravatar.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Intent i = new Intent(Repositories.this, Profile.class);
+            public void onClick(final View v) {
+                final Intent i = new Intent(Repositories.this, Profile.class);
                 i.putExtra("username", mTarget);
                 startActivity(i);
             }

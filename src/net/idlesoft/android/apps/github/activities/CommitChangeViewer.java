@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -33,21 +33,21 @@ import android.widget.TextView;
 import java.io.File;
 
 public class CommitChangeViewer extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
+    private SharedPreferences.Editor mEditor;
+
+    private final GitHubAPI mGapi = new GitHubAPI();
+
+    public Intent mIntent;
 
     public JSONObject mJson;
 
-    private SharedPreferences.Editor mEditor;
-
-    public Intent mIntent;
+    private String mPassword;
 
     private SharedPreferences mPrefs;
 
     public String mRepositoryName;
 
     public String mRepositoryOwner;
-
-    private String mPassword;
 
     private String mUsername;
 
@@ -81,57 +81,55 @@ public class CommitChangeViewer extends Activity {
                 mJson = new JSONObject(extras.getString("json"));
 
                 /*
-                 * This new method of displaying file diffs was inspired by iOctocat's approach.
-                 * Thanks to Dennis Bloete (dbloete on GitHub) for creating iOctocat and
-                 * making me realize Android needed some GitHub love too. ;-)
+                 * This new method of displaying file diffs was inspired by
+                 * iOctocat's approach. Thanks to Dennis Bloete (dbloete on
+                 * GitHub) for creating iOctocat and making me realize Android
+                 * needed some GitHub love too. ;-)
                  */
                 final WebView webView = (WebView) findViewById(R.id.wv_commitView_diff);
 
                 /*
-                 * Prepare CSS for diff:
-                 * Added lines are green, removed lines are red, and the special lines that specify
-                 * how many lines were affected in the chunk are a light blue.
+                 * Prepare CSS for diff: Added lines are green, removed lines
+                 * are red, and the special lines that specify how many lines
+                 * were affected in the chunk are a light blue.
                  */
-                String content =
-                        "<style type=\"text/css\">"
-                        + "div {"
-                        + "margin-right: 100%25;"
-                        + "font-family: monospace;"
-                        + "white-space: nowrap;"
-                        + "display: inline-block;"
-                        + "}"
-                        + ".lines {"
-                        + "background-color: #EAF2F5;"
-                        + "}"
-                        + ".added {"
-                        + "background-color: #DDFFDD;"
-                        + "}"
-                        + ".removed {"
-                        + "background-color: #FFDDDD;"
-                        + "}"
-                        + "</style>";
+                String content = "<style type=\"text/css\">" + "div {" + "margin-right: 100%25;"
+                        + "font-family: monospace;" + "white-space: nowrap;"
+                        + "display: inline-block;" + "}" + ".lines {"
+                        + "background-color: #EAF2F5;" + "}" + ".added {"
+                        + "background-color: #DDFFDD;" + "}" + ".removed {"
+                        + "background-color: #FFDDDD;" + "}" + "</style>";
 
-                String[] splitDiff = mJson.getString("diff").split("\n");
+                final String[] splitDiff = mJson.getString("diff").split("\n");
                 for (int i = 0; i < splitDiff.length; i++) {
-                    // HTML encode any elements, else any diff containing "<div>" or any HTML element will be interpreted as one by the browser
+                    // HTML encode any elements, else any diff containing
+                    // "<div>" or any HTML element will be interpreted as one by
+                    // the browser
                     splitDiff[i] = TextUtils.htmlEncode(splitDiff[i]);
 
-                    // Replace all tabs with four non-breaking spaces (most browsers truncate "\t+" to " ").
+                    // Replace all tabs with four non-breaking spaces (most
+                    // browsers truncate "\t+" to " ").
                     splitDiff[i] = splitDiff[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 
-                    // Replace any sequence of two or more spaces with &nbsps (most browsers truncate " +" to " ").
-                    splitDiff[i] = splitDiff[i].replaceAll("(?<= ) ","&nbsp;");
+                    // Replace any sequence of two or more spaces with &nbsps
+                    // (most browsers truncate " +" to " ").
+                    splitDiff[i] = splitDiff[i].replaceAll("(?<= ) ", "&nbsp;");
 
                     if (splitDiff[i].startsWith("@@")) {
-                        splitDiff[i] = "<div class=\"lines\">".concat(splitDiff[i].concat("</div>"));
+                        splitDiff[i] = "<div class=\"lines\">"
+                                .concat(splitDiff[i].concat("</div>"));
                     } else if (splitDiff[i].startsWith("+")) {
-                        splitDiff[i] = "<div class=\"added\">".concat(splitDiff[i].concat("</div>"));
+                        splitDiff[i] = "<div class=\"added\">"
+                                .concat(splitDiff[i].concat("</div>"));
                     } else if (splitDiff[i].startsWith("-")) {
-                        splitDiff[i] = "<div class=\"removed\">".concat(splitDiff[i].concat("</div>"));
+                        splitDiff[i] = "<div class=\"removed\">".concat(splitDiff[i]
+                                .concat("</div>"));
                     } else {
-                        // Add an extra space before lines not beginning with "+" or "-" to make them line up properly
+                        // Add an extra space before lines not beginning with
+                        // "+" or "-" to make them line up properly
                         if (splitDiff[i].length() > 0) {
-                            splitDiff[i] = "<div>&nbsp;".concat(splitDiff[i].substring(1).concat("</div>"));
+                            splitDiff[i] = "<div>&nbsp;".concat(splitDiff[i].substring(1).concat(
+                                    "</div>"));
                         }
                     }
                     content += splitDiff[i];

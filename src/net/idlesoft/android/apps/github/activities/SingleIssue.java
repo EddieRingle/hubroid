@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -42,40 +42,75 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SingleIssue extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
+    private static class AddCommentTask extends AsyncTask<Void, Void, Integer> {
+        public SingleIssue activity;
 
-    private IssueCommentsAdapter mAdapter;
+        @Override
+        protected Integer doInBackground(final Void... params) {
+            return activity.mGapi.issues
+                    .add_comment(activity.mRepositoryOwner, activity.mRepositoryName,
+                            activity.mIssueNumber, ((EditText) activity.mCommentArea
+                                    .findViewById(R.id.et_issue_comment_area_body)).getText()
+                                    .toString()).statusCode;
+        }
 
-    private View mClickedBtn;
+        @Override
+        protected void onPostExecute(final Integer result) {
+            ((ProgressBar) activity.mCommentArea.findViewById(R.id.pb_issue_comment_area_progress))
+                    .setVisibility(View.GONE);
+            ((EditText) activity.mCommentArea.findViewById(R.id.et_issue_comment_area_body))
+                    .setText("");
+            activity.mCommentsJson = null;
+            activity.mGetCommentsTask = new GetCommentsTask();
+            activity.mGetCommentsTask.activity = activity;
+            activity.mGetCommentsTask.execute();
+        }
 
-    private View mCommentArea;
+        @Override
+        protected void onPreExecute() {
+            ((ProgressBar) activity.mCommentArea.findViewById(R.id.pb_issue_comment_area_progress))
+                    .setVisibility(View.VISIBLE);
+        }
+    }
 
-    private View mHeader;
+    private static class CloseCommentTask extends AsyncTask<Void, Void, Integer> {
+        public SingleIssue activity;
 
-    public Intent mIntent;
+        @Override
+        protected Integer doInBackground(final Void... params) {
+            final int statusCode = activity.mGapi.issues.close(activity.mRepositoryOwner,
+                    activity.mRepositoryName, activity.mIssueNumber).statusCode;
+            return statusCode;
+        }
 
-    private JSONObject mJson;
+        @Override
+        protected void onPostExecute(final Integer result) {
+            activity.mProgressDialog.dismiss();
+            if (result.intValue() == 200) {
+                activity.setResult(1);
+                activity.finish();
+            } else {
+                Toast.makeText(activity, "Error closing issue.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
-    private JSONArray mCommentsJson;
-
-    private ProgressDialog mProgressDialog;
-
-    private GetCommentsTask mGetCommentsTask;
-
-    private int mIssueNumber;
+        @Override
+        protected void onPreExecute() {
+            activity.mProgressDialog = ProgressDialog.show(activity, "Please Wait...",
+                    "Closing issue...", true);
+        }
+    }
 
     private static class GetCommentsTask extends AsyncTask<Void, Void, Void> {
         public SingleIssue activity;
 
-        protected void onPreExecute() {
-            activity.mAdapter.clear();
-            activity.mProgressDialog = ProgressDialog.show(activity, "Please Wait...", "Gathering comments...", true);
-        }
-
-        protected Void doInBackground(Void... params) {
+        @Override
+        protected Void doInBackground(final Void... params) {
             if (activity.mCommentsJson == null) {
                 try {
-                    final Response resp = activity.mGapi.issues.list_comments(activity.mRepositoryOwner, activity.mRepositoryName, activity.mIssueNumber);
+                    final Response resp = activity.mGapi.issues.list_comments(
+                            activity.mRepositoryOwner, activity.mRepositoryName,
+                            activity.mIssueNumber);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
@@ -89,72 +124,101 @@ public class SingleIssue extends Activity {
             return null;
         }
 
-        protected void onPostExecute(Void result) {
+        @Override
+        protected void onPostExecute(final Void result) {
             activity.mAdapter.pushData();
             activity.mProgressDialog.dismiss();
-            if (activity.mClickedBtn != null && activity.mClickedBtn.getId() == R.id.btn_issue_comment_area_submit_and_close) {
+            if ((activity.mClickedBtn != null)
+                    && (activity.mClickedBtn.getId() == R.id.btn_issue_comment_area_submit_and_close)) {
                 activity.mCloseCommentTask = new CloseCommentTask();
                 activity.mCloseCommentTask.activity = activity;
                 activity.mCloseCommentTask.execute();
                 activity.mClickedBtn = null;
             }
         }
+
+        @Override
+        protected void onPreExecute() {
+            activity.mAdapter.clear();
+            activity.mProgressDialog = ProgressDialog.show(activity, "Please Wait...",
+                    "Gathering comments...", true);
+        }
     }
+
+    public static String getTimeSince(final String pTime) {
+        try {
+            final SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
+            final Date item_time = dateFormat.parse(pTime);
+            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final long ms = current_time.getTime() - item_time.getTime();
+            final long sec = ms / 1000;
+            final long min = sec / 60;
+            final long hour = min / 60;
+            final long day = hour / 24;
+            final long year = day / 365;
+            if (year > 0) {
+                if (year == 1) {
+                    return "Updated " + year + " year ago";
+                } else {
+                    return "Updated " + year + " years ago";
+                }
+            } else if (day > 0) {
+                if (day == 1) {
+                    return "Updated " + day + " day ago";
+                } else {
+                    return "Updated " + day + " days ago";
+                }
+            } else if (hour > 0) {
+                if (hour == 1) {
+                    return "Updated " + hour + " hour ago";
+                } else {
+                    return "Updated " + hour + " hours ago";
+                }
+            } else if (min > 0) {
+                if (min == 1) {
+                    return "Updated " + min + " minute ago";
+                } else {
+                    return "Updated " + min + " minutes ago";
+                }
+            } else {
+                if (sec == 1) {
+                    return "Updated " + sec + " second ago";
+                } else {
+                    return "Updated " + sec + " seconds ago";
+                }
+            }
+        } catch (final ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private IssueCommentsAdapter mAdapter;
 
     private AddCommentTask mAddCommentTask;
 
-    private static class AddCommentTask extends AsyncTask<Void, Void, Integer> {
-        public SingleIssue activity;
-
-        protected void onPreExecute() {
-            ((ProgressBar) activity.mCommentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.VISIBLE);
-        }
-
-        protected Integer doInBackground(Void... params) {
-            return activity.mGapi.issues.add_comment(activity.mRepositoryOwner, activity.mRepositoryName,
-                    activity.mIssueNumber,
-                    ((EditText) activity.mCommentArea
-                            .findViewById(R.id.et_issue_comment_area_body)).getText()
-                            .toString()).statusCode;
-        }
-
-        protected void onPostExecute(Integer result) {
-            ((ProgressBar) activity.mCommentArea.findViewById(R.id.pb_issue_comment_area_progress)).setVisibility(View.GONE);
-            ((EditText) activity.mCommentArea.findViewById(R.id.et_issue_comment_area_body)).setText("");
-            activity.mCommentsJson = null;
-            activity.mGetCommentsTask = new GetCommentsTask();
-            activity.mGetCommentsTask.activity = activity;
-            activity.mGetCommentsTask.execute();
-        }
-    }
+    private View mClickedBtn;
 
     private CloseCommentTask mCloseCommentTask;
 
-    private static class CloseCommentTask extends AsyncTask<Void, Void, Integer> {
-        public SingleIssue activity;
+    private View mCommentArea;
 
-        protected void onPreExecute() {
-            activity.mProgressDialog = ProgressDialog.show(activity, "Please Wait...", "Closing issue...", true);
-        }
+    private JSONArray mCommentsJson;
 
-        protected Integer doInBackground(Void... params) {
-            final int statusCode = activity.mGapi.issues.close(activity.mRepositoryOwner,
-                    activity.mRepositoryName, activity.mIssueNumber).statusCode;
-            return statusCode;
-        }
+    private final GitHubAPI mGapi = new GitHubAPI();
 
-        protected void onPostExecute(Integer result) {
-            activity.mProgressDialog.dismiss();
-            if (result.intValue() == 200) {
-                activity.setResult(1);
-                activity.finish();
-            } else {
-                Toast.makeText(activity,
-                        "Error closing issue.", Toast.LENGTH_SHORT)
-                        .show();
-            }
-        }
-    }
+    private GetCommentsTask mGetCommentsTask;
+
+    private View mHeader;
+
+    public Intent mIntent;
+
+    private int mIssueNumber;
+
+    private JSONObject mJson;
+
+    private ListView mListView;
 
     private final OnClickListener mOnSubmitClickListener = new OnClickListener() {
         public void onClick(final View v) {
@@ -162,7 +226,8 @@ public class SingleIssue extends Activity {
                     .findViewById(R.id.et_issue_comment_area_body)).getText().toString();
             if (!comment_body.equals("")) {
                 mClickedBtn = v;
-                if (mAddCommentTask == null || mAddCommentTask.getStatus() == AsyncTask.Status.FINISHED) {
+                if ((mAddCommentTask == null)
+                        || (mAddCommentTask.getStatus() == AsyncTask.Status.FINISHED)) {
                     mAddCommentTask = new AddCommentTask();
                 }
                 mAddCommentTask.activity = SingleIssue.this;
@@ -171,21 +236,20 @@ public class SingleIssue extends Activity {
         }
     };
 
+    private String mPassword;
+
     private SharedPreferences mPrefs;
+
+    private ProgressDialog mProgressDialog;
 
     private String mRepositoryName;
 
     private String mRepositoryOwner;
 
-    private String mPassword;
-
     private String mUsername;
 
-    private ListView mListView;
-
     private void loadIssueItemBox() {
-        final TextView date = (TextView) mHeader
-                .findViewById(R.id.tv_issue_list_item_updated_date);
+        final TextView date = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_updated_date);
         final ImageView icon = (ImageView) mHeader.findViewById(R.id.iv_issue_list_item_icon);
         final TextView title = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_title);
         final TextView number = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_number);
@@ -248,7 +312,9 @@ public class SingleIssue extends Activity {
                 ((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mJson
                         .getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 
-                ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted " + getTimeSince(mJson.getString("created_at") + " by " + mJson.getString("user")));
+                ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
+                        + getTimeSince(mJson.getString("created_at") + " by "
+                                + mJson.getString("user")));
 
                 mCommentArea = getLayoutInflater().inflate(R.layout.issue_comment_area, null);
                 ((ListView) findViewById(R.id.lv_single_issue_comments))
@@ -259,7 +325,9 @@ public class SingleIssue extends Activity {
                         .setOnClickListener(mOnSubmitClickListener);
 
                 if (mJson.getString("state").equals("closed")) {
-                    ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close)).setVisibility(View.GONE);
+                    ((Button) mCommentArea
+                            .findViewById(R.id.btn_issue_comment_area_submit_and_close))
+                            .setVisibility(View.GONE);
                 }
 
                 mGetCommentsTask = (GetCommentsTask) getLastNonConfigurationInstance();
@@ -269,21 +337,18 @@ public class SingleIssue extends Activity {
                 mGetCommentsTask.activity = SingleIssue.this;
 
                 if (mGetCommentsTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    mProgressDialog = ProgressDialog.show(SingleIssue.this, "Please Wait...", "Gathering comments...", true);
+                    mProgressDialog = ProgressDialog.show(SingleIssue.this, "Please Wait...",
+                            "Gathering comments...", true);
                 }
 
-                if (mGetCommentsTask.getStatus() == AsyncTask.Status.PENDING && mCommentsJson == null) {
+                if ((mGetCommentsTask.getStatus() == AsyncTask.Status.PENDING)
+                        && (mCommentsJson == null)) {
                     mGetCommentsTask.execute();
                 }
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    protected void onResume() {
-        mListView.setAdapter(mAdapter);
-        super.onResume();
     }
 
     @Override
@@ -295,21 +360,6 @@ public class SingleIssue extends Activity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
-    }
-
-    public Object onRetainNonConfigurationInstance() {
-        return mGetCommentsTask;
-    }
-
     public void onRestoreInstanceState(final Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState.containsKey("commentText")) {
@@ -332,6 +382,18 @@ public class SingleIssue extends Activity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        mListView.setAdapter(mAdapter);
+        super.onResume();
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mGetCommentsTask;
+    }
+
+    @Override
     public void onSaveInstanceState(final Bundle savedInstanceState) {
         savedInstanceState.putString("commentText", ((EditText) mCommentArea
                 .findViewById(R.id.et_issue_comment_area_body)).getText().toString());
@@ -341,52 +403,15 @@ public class SingleIssue extends Activity {
         super.onSaveInstanceState(savedInstanceState);
     }
 
-    public static String getTimeSince(final String pTime) {
-        try {
-            final SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            final Date item_time = dateFormat.parse(pTime);
-            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
-            final long ms = current_time.getTime() - item_time.getTime();
-            final long sec = ms / 1000;
-            final long min = sec / 60;
-            final long hour = min / 60;
-            final long day = hour / 24;
-            final long year = day / 365;
-            if (year > 0) {
-                if (year == 1) {
-                    return "Updated " + year + " year ago";
-                } else {
-                    return "Updated " + year + " years ago";
-                }
-            } else if (day > 0) {
-                if (day == 1) {
-                    return "Updated " + day + " day ago";
-                } else {
-                    return "Updated " + day + " days ago";
-                }
-            } else if (hour > 0) {
-                if (hour == 1) {
-                    return "Updated " + hour + " hour ago";
-                } else {
-                    return "Updated " + hour + " hours ago";
-                }
-            } else if (min > 0) {
-                if (min == 1) {
-                    return "Updated " + min + " minute ago";
-                } else {
-                    return "Updated " + min + " minutes ago";
-                }
-            } else {
-                if (sec == 1) {
-                    return "Updated " + sec + " second ago";
-                } else {
-                    return "Updated " + sec + " seconds ago";
-                }
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+    @Override
+    public void onStart() {
+        super.onStart();
+        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(this);
     }
 }

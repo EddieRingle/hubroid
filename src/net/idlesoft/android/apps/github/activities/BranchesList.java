@@ -1,14 +1,14 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchListAdapter;
@@ -28,23 +28,59 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
 
 public class BranchesList extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
+    private static class GetBranchesTask extends AsyncTask<Void, Void, Void> {
+        BranchesList activity;
+
+        @Override
+        protected Void doInBackground(final Void... params) {
+            try {
+                activity.mJson = new JSONObject(activity.mGapi.repo.branches(activity.mRepoOwner,
+                        activity.mRepoName).resp).getJSONObject("branches");
+                activity.mBranchListAdapter = new BranchListAdapter(activity, activity.mJson);
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void result) {
+            activity.mBranchList.removeHeaderView(activity.mLoadView);
+            activity.mBranchList.setAdapter(activity.mBranchListAdapter);
+            super.onPostExecute(result);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            activity.mBranchList.addHeaderView(activity.mLoadView);
+            activity.mBranchList.setAdapter(null);
+            super.onPreExecute();
+        }
+    }
+
+    public ListView mBranchList;
+
+    public BranchListAdapter mBranchListAdapter;
 
     private SharedPreferences.Editor mEditor;
 
-    public BranchListAdapter mBranchListAdapter;
+    private final GitHubAPI mGapi = new GitHubAPI();
+
+    public GetBranchesTask mGetBranchesTask;
 
     public Intent mIntent;
 
     public JSONObject mJson;
+
+    public View mLoadView;
 
     private final OnItemClickListener mOnBranchListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
@@ -62,47 +98,15 @@ public class BranchesList extends Activity {
         }
     };
 
+    private String mPassword;
+
     private SharedPreferences mPrefs;
 
     public String mRepoName;
 
     public String mRepoOwner;
 
-    private String mPassword;
-
     private String mUsername;
-
-    public View mLoadView;
-
-    public ListView mBranchList;
-
-    public GetBranchesTask mGetBranchesTask;
-
-    private static class GetBranchesTask extends AsyncTask<Void, Void, Void> {
-        BranchesList activity;
-        @Override
-        protected void onPreExecute() {
-            activity.mBranchList.addHeaderView(activity.mLoadView);
-            activity.mBranchList.setAdapter(null);
-            super.onPreExecute();
-        }
-        @Override
-        protected Void doInBackground(Void... params) {
-            try {
-                activity.mJson = new JSONObject(activity.mGapi.repo.branches(activity.mRepoOwner, activity.mRepoName).resp).getJSONObject("branches");
-                activity.mBranchListAdapter = new BranchListAdapter(activity, activity.mJson);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void result) {
-            activity.mBranchList.removeHeaderView(activity.mLoadView);
-            activity.mBranchList.setAdapter(activity.mBranchListAdapter);
-            super.onPostExecute(result);
-        }
-    }
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -143,7 +147,8 @@ public class BranchesList extends Activity {
 
             mGetBranchesTask.activity = this;
 
-            if (mGetBranchesTask.getStatus() == AsyncTask.Status.PENDING && mBranchListAdapter == null) {
+            if ((mGetBranchesTask.getStatus() == AsyncTask.Status.PENDING)
+                    && (mBranchListAdapter == null)) {
                 mGetBranchesTask.execute();
             }
         }
@@ -177,11 +182,6 @@ public class BranchesList extends Activity {
     }
 
     @Override
-    public Object onRetainNonConfigurationInstance() {
-        return mGetBranchesTask;
-    }
-
-    @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
         if (!menu.hasVisibleItems()) {
             menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
@@ -189,6 +189,11 @@ public class BranchesList extends Activity {
             menu.add(0, 2, 0, "Clear Cache");
         }
         return true;
+    }
+
+    @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mGetBranchesTask;
     }
 
     @Override

@@ -1,17 +1,12 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.adapters;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
@@ -28,6 +23,12 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 public class CommitListAdapter extends BaseAdapter {
     public static class ViewHolder {
         public TextView commit_date;
@@ -39,11 +40,11 @@ public class CommitListAdapter extends BaseAdapter {
 
     private final Context mContext;
 
-    private JSONArray mJson = new JSONArray();
-
     private final HashMap<String, Bitmap> mGravatars;
 
     private final LayoutInflater mInflater;
+
+    private JSONArray mJson = new JSONArray();
 
     public CommitListAdapter(final Context context, final JSONArray jsonarray) {
         mContext = context;
@@ -126,9 +127,10 @@ public class CommitListAdapter extends BaseAdapter {
                 }
                 holder.commit_date.setText(sec + end);
             }
-            holder.gravatar.setBackgroundDrawable(mContext.getResources().getDrawable(R.drawable.gravatar_border));
-            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index)
-                    .getJSONObject("author").getString("login")));
+            holder.gravatar.setBackgroundDrawable(mContext.getResources().getDrawable(
+                    R.drawable.gravatar_border));
+            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index).getJSONObject(
+                    "author").getString("login")));
             holder.commit_shortdesc.setText(mJson.getJSONObject(index).getString("message").split(
                     "\n")[0]);
         } catch (final JSONException e) {

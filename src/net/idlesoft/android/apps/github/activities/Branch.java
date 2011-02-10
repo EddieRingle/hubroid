@@ -1,12 +1,14 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.activities;
+
+import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 
@@ -20,16 +22,18 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.flurry.android.FlurryAgent;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class Branch extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
+    private String mBranchName;
+
+    private String mBranchSha;
+
+    private final GitHubAPI mGapi = new GitHubAPI();
 
     public Intent mIntent;
 
@@ -44,10 +48,6 @@ public class Branch extends Activity {
     private String mRepositoryOwner;
 
     private String mUsername;
-
-    private String mBranchName;
-
-    private String mBranchSha;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -81,10 +81,14 @@ public class Branch extends Activity {
             branchName.setText(mBranchName);
             branchSha.setText(mBranchSha);
 
-            infoList.setAdapter(new ArrayAdapter<String>(Branch.this, R.layout.branch_info_item, R.id.tv_branchInfoItem_text1, new String[]{"Commit Log", "View Branch's Tree"}));
+            infoList.setAdapter(new ArrayAdapter<String>(Branch.this, R.layout.branch_info_item,
+                    R.id.tv_branchInfoItem_text1, new String[] {
+                            "Commit Log", "View Branch's Tree"
+                    }));
             infoList.setOnItemClickListener(new OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                public void onItemClick(final AdapterView<?> parent, final View v,
+                        final int position, final long id) {
                     if (position == 0) {
                         mIntent = new Intent(Branch.this, CommitsList.class);
                         mIntent.putExtra("repo_owner", mRepositoryOwner);

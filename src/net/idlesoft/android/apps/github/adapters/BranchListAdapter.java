@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -27,9 +27,9 @@ public class BranchListAdapter extends BaseAdapter {
 
     private final Context mContext;
 
-    private JSONObject mJson;
-
     private final LayoutInflater mInflater;
+
+    private final JSONObject mJson;
 
     public BranchListAdapter(final Context context, final JSONObject jsonobject) {
         mContext = context;

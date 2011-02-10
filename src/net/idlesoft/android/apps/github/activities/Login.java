@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -42,8 +42,8 @@ public class Login extends Activity {
             ghapi.authenticate(user, pass);
             final int returnCode = ghapi.user.private_activity().statusCode;
             if (returnCode == 200) {
-                final SharedPreferences prefs = activity.getSharedPreferences(Hubroid.PREFS_NAME,
-                        0);
+                final SharedPreferences prefs = activity
+                        .getSharedPreferences(Hubroid.PREFS_NAME, 0);
                 final Editor edit = prefs.edit();
                 edit.putString("username", user);
                 edit.putString("password", pass);
@@ -98,7 +98,7 @@ public class Login extends Activity {
         }
         ((Button) findViewById(R.id.btn_login_login)).setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
-                if (mLoginTask == null || mLoginTask.getStatus() == AsyncTask.Status.FINISHED) {
+                if ((mLoginTask == null) || (mLoginTask.getStatus() == AsyncTask.Status.FINISHED)) {
                     mLoginTask = new LoginTask();
                 }
                 mLoginTask.activity = Login.this;

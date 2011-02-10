@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -38,27 +38,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class SingleActivityItem extends Activity {
-    public static final String CSS =
-        "<style type=\"text/css\">"
-        + "* {"
-        + "font-size: 13px;"
-        + "margin: 0px;"
-        + "}"
-        + "div {"
-        + "margin: 10px;"
-        + "}"
-        + "ul, li {"
-        + "margin: 0;"
-        + "padding: 0;"
-        + "margin-top: 10px;"
-        + "margin-bottom: 10px;"
-        + "margin-left: 10px;"
-        + "}"
-        + "span {"
-        + "color: #999;"
-        + "margin: 0;"
-        + "}"
-        + "</style>";
+    public static final String CSS = "<style type=\"text/css\">" + "* {" + "font-size: 13px;"
+            + "margin: 0px;" + "}" + "div {" + "margin: 10px;" + "}" + "ul, li {" + "margin: 0;"
+            + "padding: 0;" + "margin-top: 10px;" + "margin-bottom: 10px;" + "margin-left: 10px;"
+            + "}" + "span {" + "color: #999;" + "margin: 0;" + "}" + "</style>";
 
     private SharedPreferences.Editor mEditor;
 
@@ -159,7 +142,8 @@ public class SingleActivityItem extends Activity {
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("FollowEvent")) {
                 icon.setImageResource(R.drawable.follow);
-                title = actor + " started following " + payload.getJSONObject("target").getString("login");
+                title = actor + " started following "
+                        + payload.getJSONObject("target").getString("login");
             } else if (eventType.contains("CreateEvent")) {
                 icon.setImageResource(R.drawable.create);
                 if (payload.getString("object").contains("repository")) {
@@ -211,7 +195,8 @@ public class SingleActivityItem extends Activity {
                 title = actor + " open sourced "
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("PullRequestEvent")) {
-                int number = (payload.get("pull_request") instanceof JSONObject) ? payload.getJSONObject("pull_request").getInt("number") : payload.getInt("number");
+                final int number = (payload.get("pull_request") instanceof JSONObject) ? payload
+                        .getJSONObject("pull_request").getInt("number") : payload.getInt("number");
                 if (payload.getString("action").equalsIgnoreCase("opened")) {
                     icon.setImageResource(R.drawable.issues_open);
                     title = actor + " opened pull request " + number + " on "
@@ -233,8 +218,8 @@ public class SingleActivityItem extends Activity {
             title_tv.setText(title);
 
             gravatar.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
-                    Intent i = new Intent(SingleActivityItem.this, Profile.class);
+                public void onClick(final View v) {
+                    final Intent i = new Intent(SingleActivityItem.this, Profile.class);
                     i.putExtra("username", actor);
                     startActivity(i);
                 }
@@ -268,41 +253,45 @@ public class SingleActivityItem extends Activity {
                 loadActivityItemBox();
                 final WebView content = (WebView) findViewById(R.id.wv_single_activity_item_content);
                 content.setWebViewClient(new WebViewClient() {
-                   public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                       if (url.startsWith("hubroid://")) {
-                           String parts[] = url.substring(10).split("/");
-                           if (parts[0].equals("showCommit")) {
-                               Intent intent = new Intent(SingleActivityItem.this, Commit.class);
-                               intent.putExtra("repo_owner", parts[1]);
-                               intent.putExtra("repo_name", parts[2]);
-                               intent.putExtra("commit_sha", parts[3]);
-                               startActivity(intent);
-                           } else if (parts[0].equals("showRepo")) {
-                               Intent intent = new Intent(SingleActivityItem.this, Repository.class);
-                               intent.putExtra("repo_owner", parts[1]);
-                               intent.putExtra("repo_name", parts[2]);
-                               startActivity(intent);
-                           } else if (parts[0].equals("showUser")) {
-                               Intent intent = new Intent(SingleActivityItem.this, Profile.class);
-                               intent.putExtra("username", parts[1]);
-                               startActivity(intent);
-                           } else if (parts[0].equals("showIssues")) {
-                               Intent intent = new Intent(SingleActivityItem.this, Issues.class);
-                               intent.putExtra("repo_owner", parts[1]);
-                               intent.putExtra("repo_name", parts[2]);
-                               startActivity(intent);
-                           }
-                           return true;
-                       }
-                       return false;
-                   } 
+                    public boolean shouldOverrideUrlLoading(final WebView view, final String url) {
+                        if (url.startsWith("hubroid://")) {
+                            final String parts[] = url.substring(10).split("/");
+                            if (parts[0].equals("showCommit")) {
+                                final Intent intent = new Intent(SingleActivityItem.this,
+                                        Commit.class);
+                                intent.putExtra("repo_owner", parts[1]);
+                                intent.putExtra("repo_name", parts[2]);
+                                intent.putExtra("commit_sha", parts[3]);
+                                startActivity(intent);
+                            } else if (parts[0].equals("showRepo")) {
+                                final Intent intent = new Intent(SingleActivityItem.this,
+                                        Repository.class);
+                                intent.putExtra("repo_owner", parts[1]);
+                                intent.putExtra("repo_name", parts[2]);
+                                startActivity(intent);
+                            } else if (parts[0].equals("showUser")) {
+                                final Intent intent = new Intent(SingleActivityItem.this,
+                                        Profile.class);
+                                intent.putExtra("username", parts[1]);
+                                startActivity(intent);
+                            } else if (parts[0].equals("showIssues")) {
+                                final Intent intent = new Intent(SingleActivityItem.this,
+                                        Issues.class);
+                                intent.putExtra("repo_owner", parts[1]);
+                                intent.putExtra("repo_name", parts[2]);
+                                startActivity(intent);
+                            }
+                            return true;
+                        }
+                        return false;
+                    }
                 });
                 String html = "";
-                String eventType = mJson.getString("type");
+                final String eventType = mJson.getString("type");
                 if (eventType.equals("PushEvent")) {
                     html = NewsFeedHelpers.linkifyPushItem(mJson);
                 } else if (eventType.equals("CreateEvent")) {
-                    String object = mJson.getJSONObject("payload").getString("object");
+                    final String object = mJson.getJSONObject("payload").getString("object");
                     if (object.equals("branch")) {
                         html = NewsFeedHelpers.linkifyCreateBranchItem(mJson);
                     } else if (object.equals("repository")) {
@@ -320,8 +309,7 @@ public class SingleActivityItem extends Activity {
                     html = NewsFeedHelpers.linkifyWatchItem(mJson);
                 }
                 final String out = CSS + html;
-                content.loadData(out, "text/html",
-                        "UTF-8");
+                content.loadData(out, "text/html", "UTF-8");
             } catch (final JSONException e) {
                 e.printStackTrace();
             }

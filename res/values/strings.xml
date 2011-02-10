@@ -5,7 +5,7 @@
     <string name="app_version">2.0-beta2</string>
 
 	<!-- Splash/Login Activity -->
-	<string name="copyright">Copyright © 2011 Idlesoft</string>
+	<string name="copyright">Copyright © 2011 Eddie Ringle</string>
 
 	<!-- Repositories Activity -->
 	<string name="my_repos">Repositories</string>

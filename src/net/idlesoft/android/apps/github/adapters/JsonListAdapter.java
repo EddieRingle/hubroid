@@ -1,14 +1,14 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.util.LinkedList;
+import com.github.droidfu.adapters.ListAdapterWithProgress;
 
 import net.idlesoft.android.apps.github.R;
 
@@ -19,7 +19,7 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.widget.AbsListView;
 
-import com.github.droidfu.adapters.ListAdapterWithProgress;
+import java.util.LinkedList;
 
 public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
 
@@ -27,9 +27,9 @@ public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
 
     protected LayoutInflater mInflater;
 
-    protected LinkedList<Object> mListData;
-
     protected JSONArray mJson;
+
+    protected LinkedList<Object> mListData;
 
     public JsonListAdapter(final Activity pActivity, final AbsListView pListView) {
         super(pActivity, pListView, R.layout.loading_listitem);
@@ -41,24 +41,26 @@ public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
 
     /**
      * Load data from Json into a LinkedList
+     * 
      * @param pJsonArray
      */
     public void loadData(final JSONArray pJsonArray) {
         mJson = pJsonArray;
 
         mListData.clear();
-        int length = pJsonArray.length();
+        final int length = pJsonArray.length();
         for (int i = 0; i < length; i++) {
             try {
                 mListData.add(i, pJsonArray.get(i));
-            } catch (JSONException e) {
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
         }
     }
 
     /**
-     * Called in the UI thread after loadData() has been called; populates the adapter
+     * Called in the UI thread after loadData() has been called; populates the
+     * adapter
      */
     public void pushData() {
         if (!hasItems()) {

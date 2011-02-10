@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -13,92 +13,58 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * NewsFeedHelpers
- *
- * Contains methods used to populate the WebView in SingleActivityItem
+ * NewsFeedHelpers Contains methods used to populate the WebView in
+ * SingleActivityItem
  */
 public class NewsFeedHelpers {
 
-    public static String linkifyPushItem(JSONObject pNewsItem) throws JSONException {
-        String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
-        String repoName = pNewsItem.getJSONObject("repository").getString("name");
-        JSONObject payload = pNewsItem.getJSONObject("payload");
-        String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
-        String html =
-                "<div>"
-                + "HEAD is at <a href=\""
-                        + commitUriPrefix
-                        + payload.getString("head")
-                        + "\">"
-                        + payload.getString("head").substring(0, 32)
-                        + "</a><br/>"
-                + "<ul>";
-        int shaCount = pNewsItem.getJSONObject("payload").getJSONArray("shas").length();
-        for (int i = 0; i < shaCount; i++) {
-            JSONArray commitInfo = pNewsItem.getJSONObject("payload").getJSONArray("shas").getJSONArray(i);
-            html += "<li>" + pNewsItem.getString("actor") + " committed <a href=\""
-                            + commitUriPrefix
-                            + commitInfo.getString(0)
-                            + "\">"
-                            + commitInfo.getString(0).substring(0, 8)
-                            + "</a>:<br/>"
-                    + "<span class=\"commit-message\">" + commitInfo.getString(2).split("\n")[0] + "</span>"
-                    + "</li>";
-        }
-        html += "</ul>"
-                + "</div>";
+    public static String linkifyCommitCommentItem(final JSONObject pNewsItem) throws JSONException {
+        final String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
+        final String repoName = pNewsItem.getJSONObject("repository").getString("name");
+        final String actor = pNewsItem.getString("actor");
+        final JSONObject payload = pNewsItem.getJSONObject("payload");
+        final String commit = payload.getString("commit");
+
+        final String userUriPrefix = "hubroid://showUser/";
+        final String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
+        final String html = "<div>" + "<a href=\"" + userUriPrefix + actor + "\">" + actor
+                + "</a> commented on <a href=\"" + commitUriPrefix + commit + "\">"
+                + commit.substring(0, 8) + "</a>." + "</div>";
         return html;
     }
 
-    public static String linkifyCreateBranchItem(JSONObject pNewsItem) throws JSONException {
-        String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
-        String repoName = pNewsItem.getJSONObject("repository").getString("name");
-        String actor = pNewsItem.getString("actor");
-        JSONObject payload = pNewsItem.getJSONObject("payload");
+    public static String linkifyCreateBranchItem(final JSONObject pNewsItem) throws JSONException {
+        final String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
+        final String repoName = pNewsItem.getJSONObject("repository").getString("name");
+        final String actor = pNewsItem.getString("actor");
+        final JSONObject payload = pNewsItem.getJSONObject("payload");
 
-        String userUriPrefix = "hubroid://showUser/";
-        String repoUri = "hubroid://showRepo/" + repoOwner + "/" + repoName;
-        String html =
-                "<div>"
-                + "<a href=\"" + userUriPrefix + actor + "\">" + actor + "</a> created branch " + payload.getString("object_name") + " at <a href=\"" + repoUri + "\">" + repoOwner + "/" + repoName + "</a>."
-                + "</div>";
+        final String userUriPrefix = "hubroid://showUser/";
+        final String repoUri = "hubroid://showRepo/" + repoOwner + "/" + repoName;
+        final String html = "<div>" + "<a href=\"" + userUriPrefix + actor + "\">" + actor
+                + "</a> created branch " + payload.getString("object_name") + " at <a href=\""
+                + repoUri + "\">" + repoOwner + "/" + repoName + "</a>." + "</div>";
 
         return html;
     }
 
-    public static String linkifyCommitCommentItem(JSONObject pNewsItem) throws JSONException {
-        String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
-        String repoName = pNewsItem.getJSONObject("repository").getString("name");
-        String actor = pNewsItem.getString("actor");
-        JSONObject payload = pNewsItem.getJSONObject("payload");
-        String commit = payload.getString("commit");
+    public static String linkifyCreateRepoItem(final JSONObject pNewsItem) throws JSONException {
+        final JSONObject repoJson = pNewsItem.getJSONObject("repository");
+        final String repoName = repoJson.getString("name");
+        final String repoPath = repoJson.getString("owner") + "/" + repoName;
+        final String repoDesc = repoJson.getString("description");
 
-        String userUriPrefix = "hubroid://showUser/";
-        String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
-        String html =
-                "<div>"
-                + "<a href=\"" + userUriPrefix + actor + "\">" + actor + "</a> commented on <a href=\"" + commitUriPrefix + commit + "\">" + commit.substring(0, 8) + "</a>."
-                + "</div>";
+        final String html = "<div>" + "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
+                + repoName + "</a>'s description: <br/><br/>" + "<span class=\"repo-desc\">"
+                + repoDesc + "</span>" + "</div>";
         return html;
     }
 
-    public static String linkifyWatchItem(JSONObject pNewsItem) throws JSONException {
-        String repoPath = pNewsItem.getJSONObject("payload").getString("repo");
-        String repoDesc = pNewsItem.getJSONObject("repository").getString("description");
-
-        String html =
-                "<div>"
-                + "<a href=\"hubroid://showRepo/" + repoPath + "/\">" + repoPath.split("/")[1] + "</a>'s description: <br/><br/>"
-                + "<span class=\"repo-desc\">" + repoDesc + "</span>"
-                + "</div>";
-        return html;
-    }
-
-    public static String linkifyFollowItem(JSONObject pNewsItem) throws JSONException {
+    public static String linkifyFollowItem(final JSONObject pNewsItem) throws JSONException {
         final JSONObject target = pNewsItem.getJSONObject("payload").getJSONObject("target");
-        String targetLogin = target.getString("login");
-        int targetRepoCount = target.getInt("repos");
-        int targetFollowersCount = target.getInt("followers");
+        final String targetLogin = target.getString("login");
+        final int targetRepoCount = target.getInt("repos");
+        final int targetFollowersCount = target.getInt("followers");
 
         String targetReposString, targetFollowersString;
         if (targetRepoCount == 1) {
@@ -112,48 +78,65 @@ public class NewsFeedHelpers {
             targetFollowersString = targetFollowersCount + " followers";
         }
 
-        String html =
-                "<div>"
-                + "<a href=\"hubroid://showUser/" + targetLogin + "/\">" + targetLogin + "</a> has " + targetReposString + " and " + targetFollowersString + "."
-                + "</div>";
+        final String html = "<div>" + "<a href=\"hubroid://showUser/" + targetLogin + "/\">"
+                + targetLogin + "</a> has " + targetReposString + " and " + targetFollowersString
+                + "." + "</div>";
         return html;
     }
 
-    public static String linkifyCreateRepoItem(JSONObject pNewsItem) throws JSONException {
-        final JSONObject repoJson = pNewsItem.getJSONObject("repository");
-        String repoName = repoJson.getString("name");
-        String repoPath = repoJson.getString("owner") + "/" + repoName;
-        String repoDesc = repoJson.getString("description");
-
-        String html =
-                "<div>"
-                + "<a href=\"hubroid://showRepo/" + repoPath + "/\">" + repoName + "</a>'s description: <br/><br/>"
-                + "<span class=\"repo-desc\">" + repoDesc + "</span>"
-                + "</div>";
-        return html;
-    }
-
-    public static String linkifyIssueItem(JSONObject pNewsItem) throws JSONException {
-        final JSONObject payload = pNewsItem.getJSONObject("payload");
-        String repoPath = payload.getString("repo");
-
-        String html =
-                "<div>"
-                + "To view <a href=\"hubroid://showRepo/" + repoPath + "/\">" + repoPath.split("/")[1] + "</a>'s issue list, <a href=\"hubroid://showIssues/" + repoPath + "/\">click here</a>."
-                + "</div>";
-        return html;
-    }
-
-    public static String linkifyForkItem(JSONObject pNewsItem) throws JSONException {
+    public static String linkifyForkItem(final JSONObject pNewsItem) throws JSONException {
         final JSONObject payload = pNewsItem.getJSONObject("payload");
         final JSONObject repository = pNewsItem.getJSONObject("repository");
-        String parentRepoPath = payload.getString("repo");
-        String forkedRepoPath = payload.getString("actor") + "/" + repository.getString("name");
+        final String parentRepoPath = payload.getString("repo");
+        final String forkedRepoPath = payload.getString("actor") + "/"
+                + repository.getString("name");
 
-        String html =
-                "<div>"
-                + "Forked repo is at <a href=\"hubroid://showRepo/" + forkedRepoPath + "/\">" + forkedRepoPath + "</a>, parent repo is at <a href=\"hubroid://showRepo/" + parentRepoPath + "/\">" + parentRepoPath + "</a>."
-                + "</div>";
+        final String html = "<div>" + "Forked repo is at <a href=\"hubroid://showRepo/"
+                + forkedRepoPath + "/\">" + forkedRepoPath
+                + "</a>, parent repo is at <a href=\"hubroid://showRepo/" + parentRepoPath + "/\">"
+                + parentRepoPath + "</a>." + "</div>";
+        return html;
+    }
+
+    public static String linkifyIssueItem(final JSONObject pNewsItem) throws JSONException {
+        final JSONObject payload = pNewsItem.getJSONObject("payload");
+        final String repoPath = payload.getString("repo");
+
+        final String html = "<div>" + "To view <a href=\"hubroid://showRepo/" + repoPath + "/\">"
+                + repoPath.split("/")[1] + "</a>'s issue list, <a href=\"hubroid://showIssues/"
+                + repoPath + "/\">click here</a>." + "</div>";
+        return html;
+    }
+
+    public static String linkifyPushItem(final JSONObject pNewsItem) throws JSONException {
+        final String repoOwner = pNewsItem.getJSONObject("repository").getString("owner");
+        final String repoName = pNewsItem.getJSONObject("repository").getString("name");
+        final JSONObject payload = pNewsItem.getJSONObject("payload");
+        final String commitUriPrefix = "hubroid://showCommit/" + repoOwner + "/" + repoName + "/";
+        String html = "<div>" + "HEAD is at <a href=\"" + commitUriPrefix
+                + payload.getString("head") + "\">" + payload.getString("head").substring(0, 32)
+                + "</a><br/>" + "<ul>";
+        final int shaCount = pNewsItem.getJSONObject("payload").getJSONArray("shas").length();
+        for (int i = 0; i < shaCount; i++) {
+            final JSONArray commitInfo = pNewsItem.getJSONObject("payload").getJSONArray("shas")
+                    .getJSONArray(i);
+            html += "<li>" + pNewsItem.getString("actor") + " committed <a href=\""
+                    + commitUriPrefix + commitInfo.getString(0) + "\">"
+                    + commitInfo.getString(0).substring(0, 8) + "</a>:<br/>"
+                    + "<span class=\"commit-message\">" + commitInfo.getString(2).split("\n")[0]
+                    + "</span>" + "</li>";
+        }
+        html += "</ul>" + "</div>";
+        return html;
+    }
+
+    public static String linkifyWatchItem(final JSONObject pNewsItem) throws JSONException {
+        final String repoPath = pNewsItem.getJSONObject("payload").getString("repo");
+        final String repoDesc = pNewsItem.getJSONObject("repository").getString("description");
+
+        final String html = "<div>" + "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
+                + repoPath.split("/")[1] + "</a>'s description: <br/><br/>"
+                + "<span class=\"repo-desc\">" + repoDesc + "</span>" + "</div>";
         return html;
     }
 }

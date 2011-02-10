@@ -1,20 +1,20 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.File;
+import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ActivityFeedAdapter;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -29,12 +29,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
-import com.flurry.android.FlurryAgent;
+import java.io.File;
 
 public class NewsFeed extends Activity {
     private static class LoadActivityFeedTask extends AsyncTask<Void, Void, Void> {
@@ -77,19 +77,25 @@ public class NewsFeed extends Activity {
         }
     }
 
+    private static boolean mPrivate;
+
+    private static String mTargetUser;
+
+    private ActivityFeedAdapter mActivityAdapter;
+
     private SharedPreferences.Editor mEditor;
 
     public GitHubAPI mGapi = new GitHubAPI();
+
+    public JSONArray mJson;
+
+    private ListView mListView;
 
     private LoadActivityFeedTask mLoadActivityTask;
 
     private String mPassword;
 
     private SharedPreferences mPrefs;
-
-    private ActivityFeedAdapter mActivityAdapter;
-
-    public JSONArray mJson;
 
     private String mUsername;
 
@@ -105,12 +111,6 @@ public class NewsFeed extends Activity {
             }
         }
     };
-
-    private ListView mListView;
-
-    private static String mTargetUser;
-
-    private static boolean mPrivate;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -130,7 +130,7 @@ public class NewsFeed extends Activity {
             }
         });
 
-        Bundle bundle = getIntent().getExtras();
+        final Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             mTargetUser = bundle.getString("username");
             mPrivate = false;

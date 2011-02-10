@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -31,33 +31,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class CreateIssue extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
-
-    private SharedPreferences mPrefs;
-
-    private ProgressDialog mProgressDialog;
-
-    private String mRepositoryName;
-
-    private String mRepositoryOwner;
-
-    private String mPassword;
-
-    private String mUsername;
-
-    private CreateIssueTask mCreateIssueTask;
-
-    private JSONObject mIssueJson;
-
     private static class CreateIssueTask extends AsyncTask<Void, Void, Integer> {
         public CreateIssue activity;
 
-        protected void onPreExecute() {
-            activity.mProgressDialog = ProgressDialog.show(activity, "Please Wait...",
-                    "Creating issue...");
-        }
-
-        protected Integer doInBackground(Void... params) {
+        @Override
+        protected Integer doInBackground(final Void... params) {
             final String title = ((TextView) activity.findViewById(R.id.et_create_issue_title))
                     .getText().toString();
             final String body = ((TextView) activity.findViewById(R.id.et_create_issue_body))
@@ -67,8 +45,8 @@ public class CreateIssue extends Activity {
                         activity.mRepositoryName, title, body);
                 if (createResp.statusCode == 201) {
                     try {
-                        activity.mIssueJson = new JSONObject(
-                                createResp.resp).getJSONObject("issue");
+                        activity.mIssueJson = new JSONObject(createResp.resp)
+                                .getJSONObject("issue");
                     } catch (final JSONException e) {
                         e.printStackTrace();
                     }
@@ -78,10 +56,10 @@ public class CreateIssue extends Activity {
             return null;
         }
 
-        protected void onPostExecute(Integer result) {
+        @Override
+        protected void onPostExecute(final Integer result) {
             if (result.intValue() == 201) {
-                final Intent i = new Intent(activity,
-                        SingleIssue.class);
+                final Intent i = new Intent(activity, SingleIssue.class);
                 i.putExtra("repo_owner", activity.mRepositoryOwner);
                 i.putExtra("repo_name", activity.mRepositoryName);
                 i.putExtra("json", activity.mIssueJson.toString());
@@ -90,11 +68,34 @@ public class CreateIssue extends Activity {
                 activity.startActivity(i);
                 activity.finish();
             } else {
-                Toast.makeText(activity, "Error creating issue.",
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Error creating issue.", Toast.LENGTH_SHORT).show();
             }
         }
+
+        @Override
+        protected void onPreExecute() {
+            activity.mProgressDialog = ProgressDialog.show(activity, "Please Wait...",
+                    "Creating issue...");
+        }
     }
+
+    private CreateIssueTask mCreateIssueTask;
+
+    private final GitHubAPI mGapi = new GitHubAPI();
+
+    private JSONObject mIssueJson;
+
+    private String mPassword;
+
+    private SharedPreferences mPrefs;
+
+    private ProgressDialog mProgressDialog;
+
+    private String mRepositoryName;
+
+    private String mRepositoryOwner;
+
+    private String mUsername;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -129,7 +130,8 @@ public class CreateIssue extends Activity {
         mCreateIssueTask.activity = this;
 
         if (mCreateIssueTask.getStatus() == AsyncTask.Status.RUNNING) {
-            mProgressDialog = ProgressDialog.show(CreateIssue.this, "Please Wait...", "Creating issue...", true);
+            mProgressDialog = ProgressDialog.show(CreateIssue.this, "Please Wait...",
+                    "Creating issue...", true);
         }
 
         ((TextView) findViewById(R.id.tv_page_title)).setText("New Issue");
@@ -170,16 +172,17 @@ public class CreateIssue extends Activity {
     }
 
     @Override
+    public Object onRetainNonConfigurationInstance() {
+        return mCreateIssueTask;
+    }
+
+    @Override
     public void onSaveInstanceState(final Bundle savedInstanceState) {
         savedInstanceState.putString("titleText",
                 ((EditText) findViewById(R.id.et_create_issue_title)).getText().toString());
         savedInstanceState.putString("bodyText",
                 ((EditText) findViewById(R.id.et_create_issue_body)).getText().toString());
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    public Object onRetainNonConfigurationInstance() {
-        return mCreateIssueTask;
     }
 
     @Override

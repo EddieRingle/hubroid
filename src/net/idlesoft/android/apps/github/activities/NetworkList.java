@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -32,45 +32,51 @@ import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class NetworkList extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
-
-    public ForkListAdapter mAdapter;
-
-    public JSONArray mJson;
-
     private static class GetForksTask extends AsyncTask<Void, Void, Void> {
         public NetworkList activity;
 
-        protected void onPreExecute() {
-            activity.mAdapter.setIsLoadingData(true);
-        }
-
-        protected Void doInBackground(Void... params) {
+        @Override
+        protected Void doInBackground(final Void... params) {
             try {
-                activity.mJson = new JSONObject(activity.mGapi.repo.network(activity.mRepositoryOwner,
-                        activity.mRepositoryName).resp).getJSONArray("network");
-            } catch (JSONException e) {
+                activity.mJson = new JSONObject(activity.mGapi.repo.network(
+                        activity.mRepositoryOwner, activity.mRepositoryName).resp)
+                        .getJSONArray("network");
+            } catch (final JSONException e) {
                 e.printStackTrace();
             }
             activity.mAdapter.loadData(activity.mJson);
             return null;
         }
 
-        protected void onPostExecute(Void result) {
+        @Override
+        protected void onPostExecute(final Void result) {
             activity.mAdapter.pushData();
             activity.mAdapter.setIsLoadingData(false);
         }
+
+        @Override
+        protected void onPreExecute() {
+            activity.mAdapter.setIsLoadingData(true);
+        }
     }
+
+    public ForkListAdapter mAdapter;
+
+    private final GitHubAPI mGapi = new GitHubAPI();
+
+    private GetForksTask mGetForksTask;
+
+    public JSONArray mJson;
+
+    private ListView mListView;
 
     private final OnItemClickListener mOnForkListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
             try {
-                Intent i = new Intent(NetworkList.this, Repository.class);
-                i.putExtra("repo_name", mJson.getJSONObject(position).getString(
-                        "name"));
-                i.putExtra("repo_owner", mJson.getJSONObject(position).getString(
-                        "owner"));
+                final Intent i = new Intent(NetworkList.this, Repository.class);
+                i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
+                i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
                 startActivity(i);
             } catch (final JSONException e) {
                 e.printStackTrace();
@@ -78,20 +84,17 @@ public class NetworkList extends Activity {
         }
     };
 
+    private String mPassword;
+
     private SharedPreferences mPrefs;
 
     public String mRepositoryName;
 
     public String mRepositoryOwner;
 
-    private String mPassword;
-
     private String mUsername;
 
-    private ListView mListView;
-
-    private GetForksTask mGetForksTask;
-
+    @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
         setContentView(R.layout.network);
@@ -124,6 +127,7 @@ public class NetworkList extends Activity {
         }
     }
 
+    @Override
     protected void onResume() {
         mGetForksTask = (GetForksTask) getLastNonConfigurationInstance();
         if (mGetForksTask == null) {
@@ -137,15 +141,18 @@ public class NetworkList extends Activity {
         super.onResume();
     }
 
+    @Override
     public Object onRetainNonConfigurationInstance() {
         return mGetForksTask;
     }
 
+    @Override
     public void onStart() {
         super.onStart();
         FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
     }
 
+    @Override
     public void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(this);

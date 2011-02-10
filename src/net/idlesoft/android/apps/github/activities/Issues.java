@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -29,9 +29,9 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class Issues extends TabActivity {
-    private static final String TAG_OPEN_ISSUES = "open_issues";
-
     private static final String TAG_CLOSED_ISSUES = "closed_issues";
+
+    private static final String TAG_OPEN_ISSUES = "open_issues";
 
     private final GitHubAPI mGapi = new GitHubAPI();
 
@@ -39,11 +39,11 @@ public class Issues extends TabActivity {
 
     private SharedPreferences mPrefs;
 
-    private TabHost mTabHost;
+    private String mRepositoryName;
 
     private String mRepositoryOwner;
 
-    private String mRepositoryName;
+    private TabHost mTabHost;
 
     private String mUsername;
 
@@ -95,19 +95,6 @@ public class Issues extends TabActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         Intent intent;
         switch (item.getItemId()) {
@@ -127,5 +114,18 @@ public class Issues extends TabActivity {
             menu.add(0, -1, 0, "Create Issue").setIcon(android.R.drawable.ic_menu_add);
         }
         return true;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        FlurryAgent.onEndSession(this);
     }
 }

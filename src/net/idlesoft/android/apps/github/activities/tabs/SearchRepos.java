@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -13,8 +13,8 @@ import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.activities.Repository;
 import net.idlesoft.android.apps.github.adapters.RepositoriesListAdapter;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -29,11 +29,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView.OnEditorActionListener;
 
 public class SearchRepos extends Activity {
@@ -77,49 +77,10 @@ public class SearchRepos extends Activity {
 
     private ListView mListView;
 
-    private EditText mSearchBox;
-
-    private ImageButton mSearchButton;
-
-    private String mSearchTerm;
-
-    private SearchReposTask mTask;
-
-    private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
-        public void onItemClick(final AdapterView<?> parent, final View view, final int position,
-                final long id) {
-            Intent i = new Intent(getApplicationContext(), Repository.class);
-            try {
-                i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
-                i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            startActivity(i);
-            return;
-        }
-    };
-
-    private final OnClickListener mOnSearchButtonClick = new OnClickListener() {
-        public void onClick(View v) {
-            mSearchBox.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
-            mSearchTerm = mSearchBox.getText().toString();
-            if (mTask.getStatus() == AsyncTask.Status.FINISHED) {
-                mTask = new SearchReposTask();
-                mTask.activity = SearchRepos.this;
-            }
-            if (mTask.getStatus() == AsyncTask.Status.PENDING) {
-                mTask.execute();
-            }
-        }
-    };
-
     private final OnEditorActionListener mOnEditorAction = new OnEditorActionListener() {
-        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        public boolean onEditorAction(final TextView v, final int actionId, final KeyEvent event) {
             mSearchBox.clearFocus();
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            final InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
             mSearchTerm = mSearchBox.getText().toString();
             if (mTask.getStatus() == AsyncTask.Status.FINISHED) {
@@ -133,9 +94,48 @@ public class SearchRepos extends Activity {
         }
     };
 
-    private String mUsername;
+    private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
+        public void onItemClick(final AdapterView<?> parent, final View view, final int position,
+                final long id) {
+            final Intent i = new Intent(getApplicationContext(), Repository.class);
+            try {
+                i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
+                i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
+            } catch (final JSONException e) {
+                e.printStackTrace();
+            }
+            startActivity(i);
+            return;
+        }
+    };
+
+    private final OnClickListener mOnSearchButtonClick = new OnClickListener() {
+        public void onClick(final View v) {
+            mSearchBox.clearFocus();
+            final InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            mSearchTerm = mSearchBox.getText().toString();
+            if (mTask.getStatus() == AsyncTask.Status.FINISHED) {
+                mTask = new SearchReposTask();
+                mTask.activity = SearchRepos.this;
+            }
+            if (mTask.getStatus() == AsyncTask.Status.PENDING) {
+                mTask.execute();
+            }
+        }
+    };
 
     private String mPassword;
+
+    private EditText mSearchBox;
+
+    private ImageButton mSearchButton;
+
+    private String mSearchTerm;
+
+    private SearchReposTask mTask;
+
+    private String mUsername;
 
     @Override
     public void onCreate(final Bundle icicle) {

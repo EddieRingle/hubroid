@@ -1,18 +1,12 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.activities;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import net.idlesoft.android.apps.github.R;
 
@@ -31,30 +25,24 @@ import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class Dashboard extends Activity {
-    public GetLatestBlogPostTask mGetLatestBlogPostTask;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
+public class Dashboard extends Activity {
     private static class GetLatestBlogPostTask extends AsyncTask<Void, Void, JSONObject> {
         public Dashboard activity;
 
         @Override
-        protected void onPreExecute() {
-            final TextView postTitle = (TextView) activity.findViewById(R.id.tv_dashboard_latestPost_title);
-            final TextView postLink = (TextView) activity.findViewById(R.id.tv_dashboard_latestPost_link);
-            final ProgressBar progress = (ProgressBar) activity.findViewById(R.id.pb_dashboard_latestPost_progress);
-
-            postTitle.setVisibility(View.GONE);
-            postLink.setVisibility(View.GONE);
-            progress.setVisibility(View.VISIBLE);
-
-            super.onPreExecute();
-        }
-
-        protected JSONObject doInBackground(Void... params) {
+        protected JSONObject doInBackground(final Void... params) {
             try {
-                Response response = new Response();
+                final Response response = new Response();
                 // Setup connection
-                HttpURLConnection conn = (HttpURLConnection) (new URL("http://query.yahooapis.com/v1/public/yql?q=select%20title%2Clink.href%20from%20atom%20where%20url%3D%22https%3A%2F%2Fgithub.com%2Fblog.atom%22%20limit%201&format=json")).openConnection();
+                HttpURLConnection conn = (HttpURLConnection) (new URL(
+                        "http://query.yahooapis.com/v1/public/yql?q=select%20title%2Clink.href%20from%20atom%20where%20url%3D%22https%3A%2F%2Fgithub.com%2Fblog.atom%22%20limit%201&format=json"))
+                        .openConnection();
                 conn.setRequestMethod("GET");
                 conn.connect();
 
@@ -69,7 +57,7 @@ public class Dashboard extends Activity {
                 // Store response in a Response object
                 try {
                     response.statusCode = conn.getResponseCode();
-                } catch (IOException e) {
+                } catch (final IOException e) {
                     response.statusCode = 401;
                 }
                 response.resp = sb.toString();
@@ -81,24 +69,29 @@ public class Dashboard extends Activity {
                 sb = null;
 
                 if (response.statusCode == 200) {
-                    JSONObject feedJson = new JSONObject(response.resp);
-                    return feedJson.getJSONObject("query").getJSONObject("results").getJSONObject("entry");
+                    final JSONObject feedJson = new JSONObject(response.resp);
+                    return feedJson.getJSONObject("query").getJSONObject("results").getJSONObject(
+                            "entry");
                 }
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
             return null;
         }
+
         @Override
-        protected void onPostExecute(JSONObject result) {
-            final TextView postTitle = (TextView) activity.findViewById(R.id.tv_dashboard_latestPost_title);
-            final TextView postLink = (TextView) activity.findViewById(R.id.tv_dashboard_latestPost_link);
-            final ProgressBar progress = (ProgressBar) activity.findViewById(R.id.pb_dashboard_latestPost_progress);
+        protected void onPostExecute(final JSONObject result) {
+            final TextView postTitle = (TextView) activity
+                    .findViewById(R.id.tv_dashboard_latestPost_title);
+            final TextView postLink = (TextView) activity
+                    .findViewById(R.id.tv_dashboard_latestPost_link);
+            final ProgressBar progress = (ProgressBar) activity
+                    .findViewById(R.id.pb_dashboard_latestPost_progress);
 
             try {
                 postTitle.setText(result.getString("title"));
                 postLink.setText(result.getJSONObject("link").getString("href"));
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 postTitle.setText("Visit the GitHub Blog!");
                 postLink.setText("http://www.github.com/blog");
                 e.printStackTrace();
@@ -108,7 +101,25 @@ public class Dashboard extends Activity {
             postTitle.setVisibility(View.VISIBLE);
             postLink.setVisibility(View.VISIBLE);
         }
+
+        @Override
+        protected void onPreExecute() {
+            final TextView postTitle = (TextView) activity
+                    .findViewById(R.id.tv_dashboard_latestPost_title);
+            final TextView postLink = (TextView) activity
+                    .findViewById(R.id.tv_dashboard_latestPost_link);
+            final ProgressBar progress = (ProgressBar) activity
+                    .findViewById(R.id.pb_dashboard_latestPost_progress);
+
+            postTitle.setVisibility(View.GONE);
+            postLink.setVisibility(View.GONE);
+            progress.setVisibility(View.VISIBLE);
+
+            super.onPreExecute();
+        }
     }
+
+    public GetLatestBlogPostTask mGetLatestBlogPostTask;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -150,13 +161,25 @@ public class Dashboard extends Activity {
     }
 
     @Override
+    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
+        final TextView postTitle = (TextView) findViewById(R.id.tv_dashboard_latestPost_title);
+        final TextView postLink = (TextView) findViewById(R.id.tv_dashboard_latestPost_link);
+
+        postTitle.setText(savedInstanceState.getString("postTitle"));
+        postLink.setText(savedInstanceState.getString("postLink"));
+
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
     protected void onResume() {
         mGetLatestBlogPostTask = (GetLatestBlogPostTask) getLastNonConfigurationInstance();
         if (mGetLatestBlogPostTask == null) {
             mGetLatestBlogPostTask = new GetLatestBlogPostTask();
         }
         mGetLatestBlogPostTask.activity = Dashboard.this;
-        if (mGetLatestBlogPostTask.getStatus() == AsyncTask.Status.PENDING && getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) {
+        if ((mGetLatestBlogPostTask.getStatus() == AsyncTask.Status.PENDING)
+                && (getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)) {
             mGetLatestBlogPostTask.execute();
         }
         super.onResume();
@@ -168,18 +191,7 @@ public class Dashboard extends Activity {
     }
 
     @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        final TextView postTitle = (TextView) findViewById(R.id.tv_dashboard_latestPost_title);
-        final TextView postLink = (TextView) findViewById(R.id.tv_dashboard_latestPost_link);
-
-        postTitle.setText(savedInstanceState.getString("postTitle"));
-        postLink.setText(savedInstanceState.getString("postLink"));
-
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(final Bundle outState) {
         final TextView postTitle = (TextView) findViewById(R.id.tv_dashboard_latestPost_title);
         final TextView postLink = (TextView) findViewById(R.id.tv_dashboard_latestPost_link);
 

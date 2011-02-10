@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
+
 public class RepositoriesListAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public TextView repo_description;
@@ -39,6 +40,7 @@ public class RepositoriesListAdapter extends JsonListAdapter {
         super(pActivity, pListView);
     }
 
+    @Override
     public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
@@ -61,7 +63,7 @@ public class RepositoriesListAdapter extends JsonListAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         try {
-            JSONObject object = (JSONObject) getData().get(index);
+            final JSONObject object = (JSONObject) getData().get(index);
             String owner = "";
             owner = object.getString("owner");
             holder.repo_name.setText(object.getString("name"));
@@ -83,4 +85,3 @@ public class RepositoriesListAdapter extends JsonListAdapter {
         return convertView;
     }
 }
-

@@ -1,17 +1,12 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.adapters;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
@@ -28,6 +23,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 public class ActivityFeedAdapter extends JsonListAdapter {
     public static class ViewHolder {
         public TextView date;
@@ -43,7 +44,8 @@ public class ActivityFeedAdapter extends JsonListAdapter {
 
     private final boolean mIsSingleUser;
 
-    public ActivityFeedAdapter(final Activity pActivity, final AbsListView pListView, final boolean single) {
+    public ActivityFeedAdapter(final Activity pActivity, final AbsListView pListView,
+            final boolean single) {
         super(pActivity, pListView);
 
         mIsSingleUser = single;
@@ -145,7 +147,8 @@ public class ActivityFeedAdapter extends JsonListAdapter {
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("FollowEvent")) {
                 holder.icon.setImageResource(R.drawable.follow);
-                title = actor + " started following " + payload.getJSONObject("target").getString("login");
+                title = actor + " started following "
+                        + payload.getJSONObject("target").getString("login");
             } else if (eventType.contains("CreateEvent")) {
                 holder.icon.setImageResource(R.drawable.create);
                 if (payload.getString("object").contains("repository")) {
@@ -197,7 +200,8 @@ public class ActivityFeedAdapter extends JsonListAdapter {
                 title = actor + " open sourced "
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("PullRequestEvent")) {
-                int number = (payload.get("pull_request") instanceof JSONObject) ? payload.getJSONObject("pull_request").getInt("number") : payload.getInt("number");
+                final int number = (payload.get("pull_request") instanceof JSONObject) ? payload
+                        .getJSONObject("pull_request").getInt("number") : payload.getInt("number");
                 if (payload.getString("action").equalsIgnoreCase("opened")) {
                     holder.icon.setImageResource(R.drawable.issues_open);
                     title = actor + " opened pull request " + number + " on "
@@ -225,15 +229,10 @@ public class ActivityFeedAdapter extends JsonListAdapter {
     }
 
     @Override
-    public void loadData(JSONArray pJsonArray) {
+    public void loadData(final JSONArray pJsonArray) {
         super.loadData(pJsonArray);
         mGravatars = new HashMap<String, Bitmap>(mListData.size());
         loadGravatars();
-    }
-
-    @Override
-    public void pushData() {
-        super.pushData();
     }
 
     /**
@@ -265,5 +264,10 @@ public class ActivityFeedAdapter extends JsonListAdapter {
         } catch (final JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void pushData() {
+        super.pushData();
     }
 }

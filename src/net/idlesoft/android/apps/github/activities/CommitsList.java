@@ -1,12 +1,14 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
 package net.idlesoft.android.apps.github.activities;
+
+import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.CommitListAdapter;
@@ -25,33 +27,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-
-import com.flurry.android.FlurryAgent;
+import android.widget.AdapterView.OnItemClickListener;
 
 public class CommitsList extends Activity {
-    private GitHubAPI mGapi = new GitHubAPI();
-
-    public CommitListAdapter mCommitListAdapter;
-
-    public JSONArray mCommitsJSON;
-
-    public ListView mCommitListView;
-
     private static class GatherCommitsTask extends AsyncTask<Void, Void, Void> {
         public CommitsList activity;
 
-        protected void onPreExecute() {
-            activity.mProgressDialog = ProgressDialog.show(activity, "Please wait...", "Loading repository's commits...", true);
-        }
-
-        protected Void doInBackground(Void... params) {
+        @Override
+        protected Void doInBackground(final Void... params) {
             try {
-                activity.mCommitsJSON = new JSONObject(activity.mGapi.commits.list(activity.mRepoOwner, activity.mRepoName,
-                        activity.mBranchName).resp).getJSONArray("commits");
+                activity.mCommitsJSON = new JSONObject(activity.mGapi.commits.list(
+                        activity.mRepoOwner, activity.mRepoName, activity.mBranchName).resp)
+                        .getJSONArray("commits");
                 activity.mCommitListAdapter = new CommitListAdapter(activity, activity.mCommitsJSON);
             } catch (final JSONException e) {
                 e.printStackTrace();
@@ -59,12 +49,33 @@ public class CommitsList extends Activity {
             return null;
         }
 
-        protected void onPostExecute(Void result) {
+        @Override
+        protected void onPostExecute(final Void result) {
             activity.mCommitListView.setAdapter(activity.mCommitListAdapter);
             activity.mProgressDialog.dismiss();
             super.onPostExecute(result);
         }
-    };
+
+        @Override
+        protected void onPreExecute() {
+            activity.mProgressDialog = ProgressDialog.show(activity, "Please wait...",
+                    "Loading repository's commits...", true);
+        }
+    }
+
+    public String mBranchName;
+
+    public CommitListAdapter mCommitListAdapter;
+
+    public ListView mCommitListView;
+
+    public JSONArray mCommitsJSON;;
+
+    private final GitHubAPI mGapi = new GitHubAPI();
+
+    private GatherCommitsTask mGatherCommitsTask;
+
+    private String mPassword;
 
     private SharedPreferences mPrefs;
 
@@ -74,13 +85,7 @@ public class CommitsList extends Activity {
 
     public String mRepoOwner;
 
-    public String mBranchName;
-
-    private String mPassword;
-
     private String mUsername;
-
-    private GatherCommitsTask mGatherCommitsTask;
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -114,6 +119,30 @@ public class CommitsList extends Activity {
     }
 
     @Override
+    public void onPause() {
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        super.onPause();
+    }
+
+    @Override
+    public void onRestoreInstanceState(final Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        try {
+            if (savedInstanceState.containsKey("commitsJson")) {
+                mCommitsJSON = new JSONArray(savedInstanceState.getString("commitsJson"));
+            }
+        } catch (final Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        if (mCommitsJSON != null) {
+            mCommitListAdapter = new CommitListAdapter(this, mCommitsJSON);
+        }
+    }
+
+    @Override
     protected void onResume() {
         if (mCommitListAdapter != null) {
             mCommitListView.setAdapter(mCommitListAdapter);
@@ -123,18 +152,24 @@ public class CommitsList extends Activity {
             mGatherCommitsTask = new GatherCommitsTask();
         }
         mGatherCommitsTask.activity = this;
-        if (mGatherCommitsTask.getStatus() == AsyncTask.Status.PENDING && mCommitListAdapter == null) {
+        if ((mGatherCommitsTask.getStatus() == AsyncTask.Status.PENDING)
+                && (mCommitListAdapter == null)) {
             mGatherCommitsTask.execute();
         }
         super.onResume();
     }
 
     @Override
-    public void onPause() {
-        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
-            mProgressDialog.dismiss();
+    public Object onRetainNonConfigurationInstance() {
+        return mGatherCommitsTask;
+    }
+
+    @Override
+    public void onSaveInstanceState(final Bundle savedInstanceState) {
+        if (mCommitsJSON != null) {
+            savedInstanceState.putString("commitsJson", mCommitsJSON.toString());
         }
-        super.onPause();
+        super.onSaveInstanceState(savedInstanceState);
     }
 
     @Override
@@ -169,33 +204,5 @@ public class CommitsList extends Activity {
     public void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(this);
-    }
-
-    public Object onRetainNonConfigurationInstance() {
-        return mGatherCommitsTask;
-    }
-
-    @Override
-    public void onRestoreInstanceState(final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        try {
-            if (savedInstanceState.containsKey("commitsJson")) {
-                mCommitsJSON = new JSONArray(savedInstanceState.getString("commitsJson"));
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        if (mCommitsJSON != null) {
-            mCommitListAdapter = new CommitListAdapter(this, mCommitsJSON);
-        }
-    }
-
-    @Override
-    public void onSaveInstanceState(final Bundle savedInstanceState) {
-        if (mCommitsJSON != null) {
-            savedInstanceState.putString("commitsJson", mCommitsJSON.toString());
-        }
-        super.onSaveInstanceState(savedInstanceState);
     }
 }

@@ -1,8 +1,8 @@
 /**
  * Hubroid - A GitHub app for Android
- * 
- * Copyright (c) 2011 Idlesoft LLC.
- * 
+ *
+ * Copyright (c) 2011 Eddie Ringle.
+ *
  * Licensed under the New BSD License.
  */
 
@@ -38,6 +38,7 @@ public class IssueCommentsAdapter extends GravatarListAdapter {
         super(pActivity, pListView);
     }
 
+    @Override
     public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
@@ -123,6 +124,7 @@ public class IssueCommentsAdapter extends GravatarListAdapter {
      * the first one if we are displaying a public activity feed for a single
      * user
      */
+    @Override
     public void loadGravatars() {
         try {
             final int length = mJson.length();
