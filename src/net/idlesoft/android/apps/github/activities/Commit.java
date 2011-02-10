@@ -387,7 +387,9 @@ public class Commit extends Activity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         try {
-            mJson = new JSONObject(savedInstanceState.getString("json"));
+            if (savedInstanceState.containsKey("json")) {
+                mJson = new JSONObject(savedInstanceState.getString("json"));
+            }
             if (mJson != null) {
                 buildUi();
             }
@@ -398,7 +400,9 @@ public class Commit extends Activity {
     }
 
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("json", mJson.toString());
+        if (mJson != null) {
+            outState.putString("json", mJson.toString());
+        }
         super.onSaveInstanceState(outState);
     }
 

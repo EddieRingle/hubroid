@@ -231,7 +231,9 @@ public class Repository extends Activity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putString("json", mJson.toString());
+        if (mJson != null) {
+            outState.putString("json", mJson.toString());
+        }
         super.onSaveInstanceState(outState);
     }
 
