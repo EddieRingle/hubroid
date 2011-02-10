@@ -143,7 +143,7 @@ public class Commit extends Activity {
      * Get the Gravatars of all users in the commit log
      */
     public static Bitmap loadGravatarByLoginName(final Activity pActivity, final String pLogin) {
-        if (!pLogin.equals("")) {
+        if (pLogin != null && !pLogin.equals("")) {
             return GravatarCache.getDipGravatar(GravatarCache.getGravatarID(pLogin), 30.0f,
                     pActivity.getResources().getDisplayMetrics().density);
         } else {
