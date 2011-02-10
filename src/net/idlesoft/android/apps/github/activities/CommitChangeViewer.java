@@ -130,7 +130,9 @@ public class CommitChangeViewer extends Activity {
                         splitDiff[i] = "<div class=\"removed\">".concat(splitDiff[i].concat("</div>"));
                     } else {
                         // Add an extra space before lines not beginning with "+" or "-" to make them line up properly
-                        splitDiff[i] = "<div>&nbsp;".concat(splitDiff[i].substring(1).concat("</div>"));
+                        if (splitDiff[i].length() > 0) {
+                            splitDiff[i] = "<div>&nbsp;".concat(splitDiff[i].substring(1).concat("</div>"));
+                        }
                     }
                     content += splitDiff[i];
                 }
