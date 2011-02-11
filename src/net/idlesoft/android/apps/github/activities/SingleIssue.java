@@ -73,7 +73,7 @@ public class SingleIssue extends Activity {
         }
     }
 
-    private static class CloseCommentTask extends AsyncTask<Void, Void, Integer> {
+    private static class CloseIssueTask extends AsyncTask<Void, Void, Integer> {
         public SingleIssue activity;
 
         @Override
@@ -130,9 +130,9 @@ public class SingleIssue extends Activity {
             activity.mProgressDialog.dismiss();
             if ((activity.mClickedBtn != null)
                     && (activity.mClickedBtn.getId() == R.id.btn_issue_comment_area_submit_and_close)) {
-                activity.mCloseCommentTask = new CloseCommentTask();
-                activity.mCloseCommentTask.activity = activity;
-                activity.mCloseCommentTask.execute();
+                activity.mCloseIssueTask = new CloseIssueTask();
+                activity.mCloseIssueTask.activity = activity;
+                activity.mCloseIssueTask.execute();
                 activity.mClickedBtn = null;
             }
         }
@@ -200,7 +200,7 @@ public class SingleIssue extends Activity {
 
     private View mClickedBtn;
 
-    private CloseCommentTask mCloseCommentTask;
+    private CloseIssueTask mCloseIssueTask;
 
     private View mCommentArea;
 
