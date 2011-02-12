@@ -11,33 +11,33 @@
 		</activity>
 		<activity android:name=".activities.Login" />
 		<activity android:name=".activities.Dashboard" />
-		<activity android:name=".activities.NewsFeed" />
-		<activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" />
-		<activity android:name=".activities.tabs.SearchRepos" />
-		<activity android:name=".activities.tabs.SearchUsers" />
-		<activity android:name=".activities.Repositories" />
-		<activity android:name=".activities.tabs.MyRepos" />
-		<activity android:name=".activities.tabs.WatchedRepos" />
-		<activity android:name=".activities.Users" />
-		<activity android:name=".activities.tabs.Followers" />
-		<activity android:name=".activities.tabs.Following" />
-		<activity android:name=".activities.Profile" />
-		<activity android:name=".activities.Repository" />
-		<activity android:name=".activities.BranchesList" />
-		<activity android:name=".activities.Branch" />
-		<activity android:name=".activities.BranchTree" />
-		<activity android:name=".activities.CommitsList" />
-		<activity android:name=".activities.Commit" />
-		<activity android:name=".activities.DiffFilesList" />
-		<activity android:name=".activities.Issues" />
-		<activity android:name=".activities.tabs.OpenIssues" />
-		<activity android:name=".activities.tabs.ClosedIssues" />
-		<activity android:name=".activities.CreateIssue" />
-		<activity android:name=".activities.SingleIssue" />
-		<activity android:name=".activities.NetworkList" />
-		<activity android:name=".activities.SingleActivityItem" />
-		<activity android:name=".activities.CommitChangeViewer" />
-		<activity android:name=".activities.FileViewer" />
+		<activity android:name=".activities.NewsFeed" android:configChanges="orientation" />
+		<activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.SearchRepos" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.SearchUsers" android:configChanges="orientation" />
+		<activity android:name=".activities.Repositories" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.MyRepos" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.WatchedRepos" android:configChanges="orientation" />
+		<activity android:name=".activities.Users" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.Followers" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.Following" android:configChanges="orientation" />
+		<activity android:name=".activities.Profile" android:configChanges="orientation" />
+		<activity android:name=".activities.Repository" android:configChanges="orientation" />
+		<activity android:name=".activities.BranchesList" android:configChanges="orientation" />
+		<activity android:name=".activities.Branch" android:configChanges="orientation" />
+		<activity android:name=".activities.BranchTree" android:configChanges="orientation" />
+		<activity android:name=".activities.CommitsList" android:configChanges="orientation" />
+		<activity android:name=".activities.Commit" android:configChanges="orientation" />
+		<activity android:name=".activities.DiffFilesList" android:configChanges="orientation" />
+		<activity android:name=".activities.Issues" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.OpenIssues" android:configChanges="orientation" />
+		<activity android:name=".activities.tabs.ClosedIssues" android:configChanges="orientation" />
+		<activity android:name=".activities.CreateIssue" android:configChanges="orientation" />
+		<activity android:name=".activities.SingleIssue" android:configChanges="orientation" />
+		<activity android:name=".activities.NetworkList" android:configChanges="orientation" />
+		<activity android:name=".activities.SingleActivityItem" android:configChanges="orientation" />
+		<activity android:name=".activities.CommitChangeViewer" android:configChanges="orientation" />
+		<activity android:name=".activities.FileViewer" android:configChanges="orientation" />
 	</application>
 	<uses-sdk android:minSdkVersion="7" android:targetSdkVersion="9"/>
 	<uses-permission android:name="android.permission.INTERNET" />
