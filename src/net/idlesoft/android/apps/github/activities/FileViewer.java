@@ -44,17 +44,6 @@ public class FileViewer extends Activity {
                 activity.mJson = new JSONObject(activity.mGapi.object.blob(
                         activity.mRepositoryOwner, activity.mRepositoryName, activity.mTreeSha,
                         activity.mBlobPath).resp).getJSONObject("blob");
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(final Void result) {
-            try {
-                final WebView webView = (WebView) activity.findViewById(R.id.wv_fileView_contents);
-
                 /*
                  * Prepare CSS for file
                  */
@@ -82,11 +71,15 @@ public class FileViewer extends Activity {
 
                     activity.mHtml += "<div>" + splitFile[i] + "</div>";
                 }
-                webView.loadData(activity.mHtml, "text/html", "UTF-8");
-
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(final Void result) {
+            activity.mWebView.loadData(activity.mHtml, "text/html", "UTF-8");
             activity.mProgressDialog.dismiss();
         }
 
@@ -125,6 +118,8 @@ public class FileViewer extends Activity {
 
     private String mUsername;
 
+    private WebView mWebView;
+
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
@@ -137,6 +132,8 @@ public class FileViewer extends Activity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        mWebView = (WebView) findViewById(R.id.wv_fileView_contents);
 
         ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
