@@ -88,7 +88,9 @@ public class Commit extends Activity {
 
         @Override
         protected void onPostExecute(final Void result) {
-            activity.buildUi();
+            if (activity.mJson != null) {
+                activity.buildUi();
+            }
             activity.mProgressLayout.setVisibility(View.GONE);
             activity.mCommitLayout.setVisibility(View.VISIBLE);
         }
