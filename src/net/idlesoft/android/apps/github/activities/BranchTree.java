@@ -97,6 +97,7 @@ public class BranchTree extends Activity {
                     i.putExtra("repo_name", mRepositoryName);
                     i.putExtra("tree_sha", mBranchSha);
                     i.putExtra("blob_path", treeItem.getString("name"));
+                    i.putExtra("blob_sha", treeItem.getString("sha"));
                     startActivity(i);
                 }
             } catch (final JSONException e) {

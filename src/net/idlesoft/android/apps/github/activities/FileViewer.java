@@ -55,21 +55,30 @@ public class FileViewer extends Activity {
                 activity.mHtml += "<div class=\"filename\">" + activity.mJson.getString("name")
                         + "</div><br/>";
 
-                final String[] splitFile = activity.mJson.getString("data").split("\n");
-                for (int i = 0; i < splitFile.length; i++) {
+                final String mimeType = activity.mJson.getString("mime_type");
 
-                    /* HTML Encode line to make it safe for viewing */
-                    splitFile[i] = TextUtils.htmlEncode(splitFile[i]);
+                if (mimeType.startsWith("text") || mimeType.startsWith("application")) {
+                    final String[] splitFile = activity.mJson.getString("data").split("\n");
+                    for (int i = 0; i < splitFile.length; i++) {
 
-                    // Replace all tabs with four non-breaking spaces (most
-                    // browsers truncate "\t+" to " ").
-                    splitFile[i] = splitFile[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+                        /* HTML Encode line to make it safe for viewing */
+                        splitFile[i] = TextUtils.htmlEncode(splitFile[i]);
 
-                    // Replace any sequence of two or more spaces with &nbsps
-                    // (most browsers truncate " +" to " ").
-                    splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
+                        // Replace all tabs with four non-breaking spaces (most
+                        // browsers truncate "\t+" to " ").
+                        splitFile[i] = splitFile[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 
-                    activity.mHtml += "<div>" + splitFile[i] + "</div>";
+                        // Replace any sequence of two or more spaces with &nbsps
+                        // (most browsers truncate " +" to " ").
+                        splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
+
+                        activity.mHtml += "<div>" + splitFile[i] + "</div>";
+                    }
+                } else if (mimeType.startsWith("image")) {
+                    activity.mHtml += "<img src=\"https://" + activity.mUsername + ":"
+                            + activity.mPassword + "@github.com/api/v2/json/blob/show/"
+                            + activity.mRepositoryOwner + "/" + activity.mRepositoryName + "/"
+                            + activity.mBlobSha + "\" alt=\"Image\" />";
                 }
             } catch (final JSONException e) {
                 e.printStackTrace();
@@ -120,6 +129,8 @@ public class FileViewer extends Activity {
 
     private WebView mWebView;
 
+    private String mBlobSha;
+
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle);
@@ -150,6 +161,7 @@ public class FileViewer extends Activity {
             mRepositoryOwner = extras.getString("repo_owner");
             mTreeSha = extras.getString("tree_sha");
             mBlobPath = extras.getString("blob_path");
+            mBlobSha = extras.getString("blob_sha");
 
             mLoadBlobTask = (LoadBlobTask) getLastNonConfigurationInstance();
             if (mLoadBlobTask == null) {
