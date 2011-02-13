@@ -72,6 +72,11 @@ public class FileViewer extends Activity {
                         // (most browsers truncate " +" to " ").
                         splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
 
+                        /* Encode percent signs */
+                        if (splitFile[i].contains("%")) {
+                            splitFile[i] = splitFile[i].replaceAll("%", "%25");
+                        }
+
                         activity.mHtml += "<div>" + splitFile[i] + "</div>";
                     }
                 } else if (mimeType.startsWith("image")) {

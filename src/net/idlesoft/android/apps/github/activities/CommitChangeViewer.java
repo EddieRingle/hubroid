@@ -115,6 +115,12 @@ public class CommitChangeViewer extends Activity {
                                     "</div>"));
                         }
                     }
+
+                    /* Encode percent signs */
+                    if (splitDiff[i].contains("%")) {
+                        splitDiff[i] = splitDiff[i].replaceAll("%", "%25");
+                    }
+
                     activity.mHtml += splitDiff[i];
                 }
             } catch (JSONException e) {
