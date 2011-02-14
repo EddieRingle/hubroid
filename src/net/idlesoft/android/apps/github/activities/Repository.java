@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.Spannable;
 import android.text.Spanned;
 import android.text.method.LinkMovementMethod;
@@ -36,8 +35,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import java.io.File;
 
 public class Repository extends Activity {
     private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
@@ -244,15 +241,14 @@ public class Repository extends Activity {
                         }
                     }
                     if (newRepoInfo != null) {
-                        final String newWatcherCount = newRepoInfo.getString("watchers");
-                        if (newWatcherCount != mJson.getString("watchers")) {
-                            if (newWatcherCount == "1") {
-                                ((TextView) findViewById(R.id.tv_repository_info_watchers))
-                                        .setText(newWatcherCount + " watcher");
-                            } else {
-                                ((TextView) findViewById(R.id.tv_repository_info_watchers))
-                                        .setText(newWatcherCount + " watchers");
-                            }
+                        final int newWatcherCount = newRepoInfo.getInt("watchers");
+                        mJson.put("watchers", newWatcherCount);
+                        if (newWatcherCount == 1) {
+                            ((TextView) findViewById(R.id.tv_repository_info_watchers))
+                                    .setText(newWatcherCount + " watcher");
+                        } else {
+                            ((TextView) findViewById(R.id.tv_repository_info_watchers))
+                                    .setText(newWatcherCount + " watchers");
                         }
                     }
                 } catch (final JSONException e) {
@@ -268,17 +264,6 @@ public class Repository extends Activity {
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
-            case 2:
-                final File root = Environment.getExternalStorageDirectory();
-                if (root.canWrite()) {
-                    final File hubroid = new File(root, "hubroid");
-                    if (!hubroid.exists() && !hubroid.isDirectory()) {
-                        return true;
-                    } else {
-                        hubroid.delete();
-                        return true;
-                    }
-                }
         }
         return false;
     }
@@ -294,8 +279,7 @@ public class Repository extends Activity {
             menu.add(0, 3, 0, "Watch");
         }
         menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(0, 1, 0, "Clear Preferences");
-        menu.add(0, 2, 0, "Clear Cache");
+        menu.add(0, 1, 0, "Logout");
         return true;
     }
 

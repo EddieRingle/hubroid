@@ -15,9 +15,12 @@ import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -120,11 +123,14 @@ public class Dashboard extends Activity {
     }
 
     public GetLatestBlogPostTask mGetLatestBlogPostTask;
+    private Editor mEditor;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard);
+
+        mEditor = getSharedPreferences(Hubroid.PREFS_NAME, 0).edit();
 
         ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
@@ -199,5 +205,26 @@ public class Dashboard extends Activity {
         outState.putString("postLink", postLink.getText().toString());
 
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 1:
+                mEditor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (menu.hasVisibleItems()) {
+            menu.clear();
+        }
+        menu.add(0, 1, 0, "Logout");
+        return true;
     }
 }

@@ -24,8 +24,11 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -248,6 +251,8 @@ public class SingleIssue extends Activity {
 
     private String mUsername;
 
+    private Editor mEditor;
+
     private void loadIssueItemBox() {
         final TextView date = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_updated_date);
         final ImageView icon = (ImageView) mHeader.findViewById(R.id.iv_issue_list_item_icon);
@@ -277,6 +282,7 @@ public class SingleIssue extends Activity {
         setContentView(R.layout.single_issue);
 
         mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
 
         mListView = (ListView) findViewById(R.id.lv_single_issue_comments);
 
@@ -413,5 +419,31 @@ public class SingleIssue extends Activity {
     public void onStop() {
         super.onStop();
         FlurryAgent.onEndSession(this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 0:
+                final Intent i1 = new Intent(this, Hubroid.class);
+                startActivity(i1);
+                return true;
+            case 1:
+                mEditor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (menu.hasVisibleItems()) {
+            menu.clear();
+        }
+        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 1, 0, "Logout");
+        return true;
     }
 }

@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,8 +29,6 @@ import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-import java.io.File;
 
 public class CommitChangeViewer extends Activity {
     private SharedPreferences.Editor mEditor;
@@ -185,6 +182,11 @@ public class CommitChangeViewer extends Activity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case 0:
@@ -196,33 +198,17 @@ public class CommitChangeViewer extends Activity {
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
-            case 2:
-                final File root = Environment.getExternalStorageDirectory();
-                if (root.canWrite()) {
-                    final File hubroid = new File(root, "hubroid");
-                    if (!hubroid.exists() && !hubroid.isDirectory()) {
-                        return true;
-                    } else {
-                        hubroid.delete();
-                        return true;
-                    }
-                }
         }
         return false;
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (!menu.hasVisibleItems()) {
-            menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-            menu.add(0, 1, 0, "Clear Preferences");
-            menu.add(0, 2, 0, "Clear Cache");
+        if (menu.hasVisibleItems()) {
+            menu.clear();
         }
+        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 1, 0, "Logout");
         return true;
     }
 

@@ -19,6 +19,7 @@ import org.idlesoft.libraries.ghapi.GitHubAPI;
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -47,6 +48,8 @@ public class Issues extends TabActivity {
 
     private String mUsername;
 
+    private Editor mEditor;
+
     private View buildIndicator(final int textRes) {
         final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
                 getTabWidget(), false);
@@ -60,6 +63,7 @@ public class Issues extends TabActivity {
         setContentView(R.layout.issues);
 
         mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
 
         mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
@@ -96,12 +100,21 @@ public class Issues extends TabActivity {
 
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
-        Intent intent;
+        final Intent intent;
         switch (item.getItemId()) {
             case -1:
                 intent = new Intent(this, CreateIssue.class);
                 intent.putExtra("repo_owner", mRepositoryOwner);
                 intent.putExtra("repo_name", mRepositoryName);
+                startActivity(intent);
+                return true;
+            case 0:
+                intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 1:
+                mEditor.clear().commit();
+                intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
         }
@@ -110,9 +123,12 @@ public class Issues extends TabActivity {
 
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (!menu.hasVisibleItems()) {
-            menu.add(0, -1, 0, "Create Issue").setIcon(android.R.drawable.ic_menu_add);
+        if (menu.hasVisibleItems()) {
+            menu.clear();
         }
+        menu.add(0, -1, 0, "Create Issue").setIcon(android.R.drawable.ic_menu_add);
+        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 1, 0, "Logout");
         return true;
     }
 

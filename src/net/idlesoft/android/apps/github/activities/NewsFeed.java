@@ -23,7 +23,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,8 +32,6 @@ import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
-
-import java.io.File;
 
 public class NewsFeed extends Activity {
     private static class LoadActivityFeedTask extends AsyncTask<Void, Void, Void> {
@@ -162,35 +159,26 @@ public class NewsFeed extends Activity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
+            case 0:
+                final Intent i1 = new Intent(this, Hubroid.class);
+                startActivity(i1);
+                return true;
             case 1:
                 mEditor.clear().commit();
-                final Intent intent = new Intent(NewsFeed.this, Hubroid.class);
+                final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
-                finish();
                 return true;
-            case 2:
-                final File root = Environment.getExternalStorageDirectory();
-                if (root.canWrite()) {
-                    final File hubroid = new File(root, "hubroid");
-                    if (!hubroid.exists() && !hubroid.isDirectory()) {
-                        return true;
-                    } else {
-                        hubroid.delete();
-                        return true;
-                    }
-                }
         }
         return false;
     }
 
     @Override
     public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (!menu.hasVisibleItems()) {
-            if (!mUsername.equals(null) && !mPassword.equals(null)) {
-                menu.add(0, 1, 0, "Sign out");
-            }
-            menu.add(0, 2, 0, "Clear Cache");
+        if (menu.hasVisibleItems()) {
+            menu.clear();
         }
+        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
+        menu.add(0, 1, 0, "Logout");
         return true;
     }
 
