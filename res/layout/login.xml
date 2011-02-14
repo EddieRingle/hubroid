@@ -47,6 +47,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:layout_centerHorizontal="true"
+		android:gravity="center"
 		android:id="@+id/rl_login_login_box"
 		android:padding="15dip"
 		android:background="#C555">
@@ -55,7 +56,7 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/tv_login_username_label"
 			android:textColor="#DDD"
-			android:text="Username:"
+			android:text="Username (not e-mail):"
 			android:textSize="12.5dip" />
 		<EditText
 			android:layout_below="@id/tv_login_username_label"
@@ -81,8 +82,9 @@
 			android:inputType="textPassword"
 			android:background="@android:drawable/editbox_background" />
 		<Button
-			android:layout_alignParentRight="true"
-			android:layout_alignBaseline="@id/tv_login_password_label"
+			android:layout_marginLeft="20dip"
+		    android:layout_toRightOf="@id/tv_login_username_label"
+		    android:layout_centerVertical="true"
 			android:layout_width="125dip"
 			android:layout_height="wrap_content"
 			android:id="@+id/btn_login_login"
