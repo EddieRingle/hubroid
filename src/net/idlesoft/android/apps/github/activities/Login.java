@@ -40,7 +40,7 @@ public class Login extends Activity {
             }
             final GitHubAPI ghapi = new GitHubAPI();
             ghapi.authenticate(user, pass);
-            final int returnCode = ghapi.user.private_activity().statusCode;
+            final int returnCode = ghapi.api.HTTPGet("https://github.com/api/v2/json/user/show").statusCode;
             if (returnCode == 200) {
                 final SharedPreferences prefs = activity
                         .getSharedPreferences(Hubroid.PREFS_NAME, 0);
