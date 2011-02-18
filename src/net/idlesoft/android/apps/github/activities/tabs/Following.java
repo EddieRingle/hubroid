@@ -102,6 +102,7 @@ public class Following extends Activity {
         setContentView(mListView);
 
         mAdapter = new FollowersFollowingListAdapter(Following.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -138,12 +139,6 @@ public class Following extends Activity {
             mAdapter.loadData(mJson);
             mAdapter.pushData();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mListView.setAdapter(mAdapter);
     }
 
     @Override

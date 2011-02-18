@@ -45,7 +45,7 @@ public class CommitsList extends Activity {
                 activity.mCommitsJSON = new JSONObject(activity.mGapi.commits.list(
                         activity.mRepoOwner, activity.mRepoName, activity.mBranchName).resp)
                         .getJSONArray("commits");
-                activity.mCommitListAdapter = new CommitListAdapter(activity, activity.mCommitsJSON);
+                activity.mCommitListAdapter.loadData(activity.mCommitsJSON);
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
@@ -54,15 +54,22 @@ public class CommitsList extends Activity {
 
         @Override
         protected void onPostExecute(final Void result) {
+            /*
             activity.mCommitListView.setAdapter(activity.mCommitListAdapter);
             activity.mProgressDialog.dismiss();
+            */
+            activity.mCommitListAdapter.pushData();
+            activity.mCommitListAdapter.setIsLoadingData(false);
             super.onPostExecute(result);
         }
 
         @Override
         protected void onPreExecute() {
+            /*
             activity.mProgressDialog = ProgressDialog.show(activity, "Please wait...",
                     "Loading repository's commits...", true);
+            */
+            activity.mCommitListAdapter.setIsLoadingData(true);
         }
     }
 
@@ -115,6 +122,27 @@ public class CommitsList extends Activity {
         title.setText("Recent Commits");
 
         mCommitListView = (ListView) findViewById(R.id.lv_commits_list_list);
+        mCommitListView.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                try {
+                    final Intent i = new Intent(CommitsList.this, Commit.class);
+                    i.putExtra("committer", mCommitsJSON.getJSONObject(position)
+                            .getJSONObject("committer").getString("login"));
+                    i.putExtra("author", mCommitsJSON.getJSONObject(position)
+                            .getJSONObject("author").getString("login"));
+                    i.putExtra("commit_sha", mCommitsJSON.getJSONObject(position)
+                            .getString("id"));
+                    i.putExtra("repo_name", mRepoName);
+                    i.putExtra("repo_owner", mRepoOwner);
+                    CommitsList.this.startActivity(i);
+                } catch (final JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        mCommitListAdapter = new CommitListAdapter(CommitsList.this, mCommitListView);
+        mCommitListView.setAdapter(mCommitListAdapter);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -138,28 +166,25 @@ public class CommitsList extends Activity {
         try {
             if (savedInstanceState.containsKey("commitsJson")) {
                 mCommitsJSON = new JSONArray(savedInstanceState.getString("commitsJson"));
+                if (mCommitsJSON != null) {
+                    mCommitListAdapter.loadData(mCommitsJSON);
+                    mCommitListAdapter.pushData();
+                }
             }
         } catch (final Exception e) {
             e.printStackTrace();
             return;
         }
-        if (mCommitsJSON != null) {
-            mCommitListAdapter = new CommitListAdapter(this, mCommitsJSON);
-        }
     }
 
     @Override
     protected void onResume() {
-        if (mCommitListAdapter != null) {
-            mCommitListView.setAdapter(mCommitListAdapter);
-        }
         mGatherCommitsTask = (GatherCommitsTask) getLastNonConfigurationInstance();
         if (mGatherCommitsTask == null) {
             mGatherCommitsTask = new GatherCommitsTask();
         }
         mGatherCommitsTask.activity = this;
-        if ((mGatherCommitsTask.getStatus() == AsyncTask.Status.PENDING)
-                && (mCommitListAdapter == null)) {
+        if (mGatherCommitsTask.getStatus() == AsyncTask.Status.PENDING) {
             mGatherCommitsTask.execute();
         }
         super.onResume();
@@ -181,29 +206,7 @@ public class CommitsList extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-
         FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-
-        ((ListView) findViewById(R.id.lv_commits_list_list))
-                .setOnItemClickListener(new OnItemClickListener() {
-                    public void onItemClick(final AdapterView<?> parent, final View v,
-                            final int position, final long id) {
-                        try {
-                            final Intent i = new Intent(CommitsList.this, Commit.class);
-                            i.putExtra("committer", mCommitsJSON.getJSONObject(position)
-                                    .getJSONObject("committer").getString("login"));
-                            i.putExtra("author", mCommitsJSON.getJSONObject(position)
-                                    .getJSONObject("author").getString("login"));
-                            i.putExtra("commit_sha", mCommitsJSON.getJSONObject(position)
-                                    .getString("id"));
-                            i.putExtra("repo_name", mRepoName);
-                            i.putExtra("repo_owner", mRepoOwner);
-                            CommitsList.this.startActivity(i);
-                        } catch (final JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
     }
 
     @Override

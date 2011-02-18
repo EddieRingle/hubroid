@@ -159,6 +159,7 @@ public class SearchRepos extends Activity {
         mSearchButton.setOnClickListener(mOnSearchButtonClick);
 
         mAdapter = new RepositoriesListAdapter(SearchRepos.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         mTask = (SearchReposTask) getLastNonConfigurationInstance();
         if ((mTask == null) || (mTask.getStatus() == AsyncTask.Status.FINISHED)) {
@@ -184,12 +185,6 @@ public class SearchRepos extends Activity {
             mAdapter.loadData(mJson);
             mAdapter.pushData();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mListView.setAdapter(mAdapter);
     }
 
     @Override

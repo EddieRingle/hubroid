@@ -160,6 +160,7 @@ public class SearchUsers extends Activity {
         mSearchButton.setOnClickListener(mOnSearchButtonClick);
 
         mAdapter = new SearchUsersListAdapter(SearchUsers.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         mTask = (SearchUsersTask) getLastNonConfigurationInstance();
         if ((mTask == null) || (mTask.getStatus() == AsyncTask.Status.FINISHED)) {
@@ -185,12 +186,6 @@ public class SearchUsers extends Activity {
             mAdapter.loadData(mJson);
             mAdapter.pushData();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mListView.setAdapter(mAdapter);
     }
 
     @Override

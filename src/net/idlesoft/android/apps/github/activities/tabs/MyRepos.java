@@ -110,6 +110,7 @@ public class MyRepos extends Activity {
         setContentView(mListView);
 
         mAdapter = new RepositoriesListAdapter(MyRepos.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -146,12 +147,6 @@ public class MyRepos extends Activity {
             mAdapter.loadData(mJson);
             mAdapter.pushData();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mListView.setAdapter(mAdapter);
     }
 
     @Override

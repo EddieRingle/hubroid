@@ -147,6 +147,7 @@ public class BranchTree extends Activity {
         mListView.setOnItemClickListener(mOnListItemClick);
 
         mAdapter = new BranchTreeListAdapter(BranchTree.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -159,8 +160,6 @@ public class BranchTree extends Activity {
 
     @Override
     protected void onResume() {
-        mListView.setAdapter(mAdapter);
-
         mLoadTreeTask = (LoadTreeTask) getLastNonConfigurationInstance();
         if (mLoadTreeTask == null) {
             mLoadTreeTask = new LoadTreeTask();
