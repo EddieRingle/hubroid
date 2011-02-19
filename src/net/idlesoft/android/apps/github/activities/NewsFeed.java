@@ -140,6 +140,8 @@ public class NewsFeed extends Activity {
         mListView.setOnItemClickListener(onActivityItemClick);
 
         mActivityAdapter = new ActivityFeedAdapter(NewsFeed.this, mListView, mPrivate == false);
+        mListView.setAdapter(mActivityAdapter);
+
         if (mPrivate) {
             ((TextView) findViewById(R.id.tv_page_title)).setText("News Feed");
         } else {
@@ -200,12 +202,6 @@ public class NewsFeed extends Activity {
             mActivityAdapter.loadData(mJson);
             mActivityAdapter.pushData();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        ((ListView) findViewById(R.id.lv_news_feed)).setAdapter(mActivityAdapter);
     }
 
     @Override
