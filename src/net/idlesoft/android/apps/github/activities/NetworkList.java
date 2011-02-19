@@ -122,6 +122,7 @@ public class NetworkList extends Activity {
         mListView.setOnItemClickListener(mOnForkListItemClick);
 
         mAdapter = new ForkListAdapter(NetworkList.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -143,7 +144,6 @@ public class NetworkList extends Activity {
         if (mGetForksTask.getStatus() == AsyncTask.Status.PENDING) {
             mGetForksTask.execute();
         }
-        mListView.setAdapter(mAdapter);
         super.onResume();
     }
 

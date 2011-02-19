@@ -12,24 +12,20 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.view.LayoutInflater;
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
 
-public class CommitListAdapter extends BaseAdapter {
+public class CommitListAdapter extends GravatarListAdapter {
     public static class ViewHolder {
         public TextView commit_date;
 
@@ -38,41 +34,11 @@ public class CommitListAdapter extends BaseAdapter {
         public ImageView gravatar;
     }
 
-    private final Context mContext;
-
-    private final HashMap<String, Bitmap> mGravatars;
-
-    private final LayoutInflater mInflater;
-
-    private JSONArray mJson = new JSONArray();
-
-    public CommitListAdapter(final Context context, final JSONArray jsonarray) {
-        mContext = context;
-        mInflater = LayoutInflater.from(mContext);
-        mJson = jsonarray;
-        mGravatars = new HashMap<String, Bitmap>(mJson.length());
-
-        loadGravatars();
+    public CommitListAdapter(final Activity pActivity, final AbsListView pListView) {
+        super(pActivity, pListView);
     }
 
-    public int getCount() {
-        return mJson.length();
-    }
-
-    public Object getItem(final int i) {
-        try {
-            return mJson.get(i);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public long getItemId(final int i) {
-        return i;
-    }
-
-    public View getView(final int index, View convertView, final ViewGroup parent) {
+    public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.commit_list_item, null);
@@ -127,7 +93,7 @@ public class CommitListAdapter extends BaseAdapter {
                 }
                 holder.commit_date.setText(sec + end);
             }
-            holder.gravatar.setBackgroundDrawable(mContext.getResources().getDrawable(
+            holder.gravatar.setBackgroundDrawable(mActivity.getResources().getDrawable(
                     R.drawable.gravatar_border));
             holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index).getJSONObject(
                     "author").getString("login")));
@@ -152,7 +118,7 @@ public class CommitListAdapter extends BaseAdapter {
                         "login");
                 if (!mGravatars.containsKey(login)) {
                     mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
-                            .getGravatarID(login), 30.0f, mContext.getResources()
+                            .getGravatarID(login), 30.0f, mActivity.getResources()
                             .getDisplayMetrics().density));
                 }
             } catch (final JSONException e) {

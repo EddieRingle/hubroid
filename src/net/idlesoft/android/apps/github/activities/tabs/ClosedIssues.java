@@ -126,6 +126,7 @@ public class ClosedIssues extends Activity {
         setContentView(mListView);
 
         mAdapter = new IssuesListAdapter(ClosedIssues.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -160,12 +161,6 @@ public class ClosedIssues extends Activity {
             mAdapter.loadData(mJson);
             mAdapter.pushData();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        mListView.setAdapter(mAdapter);
     }
 
     @Override
