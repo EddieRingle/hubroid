@@ -113,11 +113,6 @@ public class CommitChangeViewer extends Activity {
                         }
                     }
 
-                    /* Encode percent signs */
-                    if (splitDiff[i].contains("%")) {
-                        splitDiff[i] = splitDiff[i].replaceAll("%", "%25");
-                    }
-
                     activity.mHtml += splitDiff[i];
                 }
             } catch (JSONException e) {
@@ -127,7 +122,7 @@ public class CommitChangeViewer extends Activity {
         }
 
         protected void onPostExecute(Void result) {
-            activity.mWebView.loadData(activity.mHtml, "text/html", "UTF-8");
+            activity.mWebView.loadDataWithBaseURL("hubroid", activity.mHtml, "text/html", "UTF-8", "hubroid");
         }
 
     }

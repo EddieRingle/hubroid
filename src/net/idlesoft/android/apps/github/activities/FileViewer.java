@@ -69,11 +69,6 @@ public class FileViewer extends Activity {
                         // (most browsers truncate " +" to " ").
                         splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
 
-                        /* Encode percent signs */
-                        if (splitFile[i].contains("%")) {
-                            splitFile[i] = splitFile[i].replaceAll("%", "%25");
-                        }
-
                         activity.mHtml += "<div>" + splitFile[i] + "</div>";
                     }
                 } else if (mimeType.startsWith("image")) {
@@ -90,7 +85,7 @@ public class FileViewer extends Activity {
 
         @Override
         protected void onPostExecute(final Void result) {
-            activity.mWebView.loadData(activity.mHtml, "text/html", "UTF-8");
+            activity.mWebView.loadDataWithBaseURL("hubroid", activity.mHtml, "text/html", "UTF-8", "hubroid");
             activity.mProgressDialog.dismiss();
         }
 

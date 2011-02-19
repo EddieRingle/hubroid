@@ -307,7 +307,7 @@ public class SingleActivityItem extends Activity {
                     html = NewsFeedHelpers.linkifyWatchItem(mJson);
                 }
                 final String out = CSS + html;
-                content.loadData(out, "text/html", "UTF-8");
+                content.loadDataWithBaseURL("hubroid", out, "text/html", "UTF-8", "hubroid");
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
