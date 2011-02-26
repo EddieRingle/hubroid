@@ -92,7 +92,6 @@ public class Branch extends Activity {
                             "Commit Log", "View Branch's Tree"
                     }));
             infoList.setOnItemClickListener(new OnItemClickListener() {
-                @Override
                 public void onItemClick(final AdapterView<?> parent, final View v,
                         final int position, final long id) {
                     if (position == 0) {

@@ -12,6 +12,7 @@ import com.flurry.android.FlurryAgent;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
+import net.idlesoft.android.apps.github.activities.tabs.PushableRepos;
 import net.idlesoft.android.apps.github.activities.tabs.WatchedRepos;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
@@ -35,6 +36,8 @@ public class Repositories extends TabActivity {
     private static final String TAG_MY_REPOS = "my_repos";
 
     private static final String TAG_WATCHED_REPOS = "watched_repos";
+
+    private static final String TAG_PUSHABLE_REPOS = "pushable_repos";
 
     private final GitHubAPI mGapi = new GitHubAPI();
 
@@ -100,14 +103,22 @@ public class Repositories extends TabActivity {
 
         mTabHost = getTabHost();
 
-        final Intent intent = new Intent(getApplicationContext(), MyRepos.class);
+        Intent intent = new Intent(getApplicationContext(), MyRepos.class);
         intent.putExtra("target", mTarget);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_MY_REPOS).setIndicator(
                 buildIndicator(R.string.my_repos)).setContent(intent));
 
-        intent.setClass(getApplicationContext(), WatchedRepos.class);
+        intent = new Intent(getApplicationContext(), WatchedRepos.class);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_WATCHED_REPOS).setIndicator(
                 buildIndicator(R.string.watched_repos)).setContent(intent));
+
+        /* If we're viewing lists of logged in user's own repositories,
+         * show those he/she has push access to */
+        if (mTarget.equals(mUsername)) {
+            intent = new Intent(getApplicationContext(), PushableRepos.class);
+            mTabHost.addTab(mTabHost.newTabSpec(TAG_PUSHABLE_REPOS).setIndicator(
+                    buildIndicator(R.string.pushable_repos)).setContent(intent));
+        }
     }
 
     @Override

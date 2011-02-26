@@ -10,6 +10,7 @@
 	<!-- Repositories Activity -->
 	<string name="my_repos">Repositories</string>
 	<string name="watched_repos">Watching</string>
+	<string name="pushable_repos">Pushable</string>
 
 	<!-- Users Activity -->
 	<string name="followers">Followers</string>
