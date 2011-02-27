@@ -73,7 +73,7 @@ public class CommitChangeViewer extends Activity {
              */
             activity.mHtml = "<style type=\"text/css\">" + "div {" + "margin-right: 100%25;"
                     + "font-family: monospace;" + "white-space: nowrap;"
-                    + "display: inline-block;" + "}" + ".lines {"
+                    + "display: inline-block; float: left; clear: both;" + "}" + ".lines {"
                     + "background-color: #EAF2F5;" + "}" + ".added {"
                     + "background-color: #DDFFDD;" + "}" + ".removed {"
                     + "background-color: #FFDDDD;" + "}" + "</style>";
