@@ -46,7 +46,7 @@ public class FileViewer extends Activity {
                  */
                 activity.mHtml = "<style type=\"text/css\">" + "div {" + "margin-right: 100%25;"
                         + "font-family: monospace;" + "white-space: nowrap;"
-                        + "display: inline-block;" + "}" + ".filename {"
+                        + "display: inline-block; float: left; clear: both;" + "}" + ".filename {"
                         + "background-color: #EAF2F5;" + "}" + "</style>";
 
                 activity.mHtml += "<div class=\"filename\">" + activity.mJson.getString("name")
