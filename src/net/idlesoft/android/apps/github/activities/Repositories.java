@@ -109,6 +109,7 @@ public class Repositories extends TabActivity {
                 buildIndicator(R.string.my_repos)).setContent(intent));
 
         intent = new Intent(getApplicationContext(), WatchedRepos.class);
+        intent.putExtra("target", mTarget);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_WATCHED_REPOS).setIndicator(
                 buildIndicator(R.string.watched_repos)).setContent(intent));
 
