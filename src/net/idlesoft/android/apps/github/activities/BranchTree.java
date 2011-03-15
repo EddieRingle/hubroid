@@ -8,13 +8,11 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchTreeListAdapter;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,10 +28,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class BranchTree extends Activity {
     private static class LoadTreeTask extends AsyncTask<Void, Void, Void> {
@@ -174,18 +172,6 @@ public class BranchTree extends Activity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mLoadTreeTask;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 
     @Override

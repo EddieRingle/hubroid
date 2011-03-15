@@ -8,6 +8,10 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 
@@ -19,10 +23,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class IssuesListAdapter extends JsonListAdapter {
     public static class ViewHolder {

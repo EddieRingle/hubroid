@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.CommitListAdapter;
 
@@ -30,10 +28,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class CommitsList extends Activity {
     private static class GatherCommitsTask extends AsyncTask<Void, Void, Void> {
@@ -201,18 +199,6 @@ public class CommitsList extends Activity {
             savedInstanceState.putString("commitsJson", mCommitsJSON.toString());
         }
         super.onSaveInstanceState(savedInstanceState);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 
     @Override

@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
 import net.idlesoft.android.apps.github.activities.tabs.PushableRepos;
@@ -120,19 +118,6 @@ public class Repositories extends TabActivity {
             mTabHost.addTab(mTabHost.newTabSpec(TAG_PUSHABLE_REPOS).setIndicator(
                     buildIndicator(R.string.pushable_repos)).setContent(intent));
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 
     @Override

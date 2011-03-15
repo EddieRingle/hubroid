@@ -8,7 +8,9 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -30,10 +32,6 @@ import android.webkit.WebViewClient;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class SingleActivityItem extends Activity {
     public static final String CSS = "<style type=\"text/css\">" + "* {" + "font-size: 13px;"
@@ -317,18 +315,6 @@ public class SingleActivityItem extends Activity {
     @Override
     public void onPause() {
         super.onPause();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 
     @Override

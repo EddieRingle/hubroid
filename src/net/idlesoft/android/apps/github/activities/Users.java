@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.Followers;
 import net.idlesoft.android.apps.github.activities.tabs.Following;
@@ -108,18 +106,6 @@ public class Users extends TabActivity {
         intent.setClass(getApplicationContext(), Following.class);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING).setIndicator(
                 buildIndicator(R.string.following)).setContent(intent));
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 
     @Override

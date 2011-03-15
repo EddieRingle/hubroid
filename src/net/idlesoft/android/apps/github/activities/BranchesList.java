@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchListAdapter;
 
@@ -27,10 +25,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class BranchesList extends Activity {
     private static class GetBranchesTask extends AsyncTask<Void, Void, Void> {
@@ -180,17 +178,5 @@ public class BranchesList extends Activity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mGetBranchesTask;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 }

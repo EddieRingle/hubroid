@@ -8,12 +8,9 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.SearchRepos;
 import net.idlesoft.android.apps.github.activities.tabs.SearchUsers;
-
 import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
@@ -74,19 +71,6 @@ public class Search extends TabActivity {
     @Override
     public void onResume() {
         super.onResume();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 
     @Override

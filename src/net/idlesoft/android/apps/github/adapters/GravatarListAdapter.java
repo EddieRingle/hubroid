@@ -8,6 +8,8 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 
 import android.app.Activity;
@@ -15,8 +17,6 @@ import android.graphics.Bitmap;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.HashMap;
 
 public abstract class GravatarListAdapter extends JsonListAdapter {
     public class ViewHolder {

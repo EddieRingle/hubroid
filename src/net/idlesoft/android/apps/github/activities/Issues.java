@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.ClosedIssues;
 import net.idlesoft.android.apps.github.activities.tabs.OpenIssues;
@@ -130,18 +128,5 @@ public class Issues extends TabActivity {
         menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
         menu.add(0, 1, 0, "Logout");
         return true;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 }

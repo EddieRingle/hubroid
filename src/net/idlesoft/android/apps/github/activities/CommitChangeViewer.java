@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.flurry.android.FlurryAgent;
-
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.GitHubAPI;
@@ -205,18 +203,6 @@ public class CommitChangeViewer extends Activity {
         menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
         menu.add(0, 1, 0, "Logout");
         return true;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 
     protected void onSaveInstanceState(Bundle outState) {

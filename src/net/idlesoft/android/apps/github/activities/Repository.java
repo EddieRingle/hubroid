@@ -34,8 +34,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.flurry.android.FlurryAgent;
-
 public class Repository extends Activity {
     private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
         public Repository activity;
@@ -304,17 +302,5 @@ public class Repository extends Activity {
             outState.putString("json", mJson.toString());
         }
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        FlurryAgent.onStartSession(this, "K8C93KDB2HH3ANRDQH1Z");
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FlurryAgent.onEndSession(this);
     }
 }
