@@ -21,6 +21,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,12 +31,16 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class Profile extends Activity {
     private GitHubAPI mGapi;
 
     public JSONObject mJson;
+
+    public JSONArray mJsonFollowing;
 
     private String mPassword;
 
@@ -43,6 +49,44 @@ public class Profile extends Activity {
     private String mTarget;
 
     private String mUsername;
+
+    private Bitmap mGravatar;
+
+    private static class LoadProfileTask extends AsyncTask<Void, Void, Void> {
+    	public Profile activity;
+
+    	protected void onPreExecute() {
+    		((RelativeLayout) activity.findViewById(R.id.rl_profile_progress)).setVisibility(View.VISIBLE);
+    		((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.GONE);
+    	}
+
+    	protected Void doInBackground(Void... params) {
+    		try {
+	    		Response r = activity.mGapi.user.info(activity.mTarget);
+	    		if (r.statusCode == 200) {
+	    			activity.mJson = new JSONObject(r.resp);
+	    			Response fResp = activity.mGapi.user.following(activity.mUsername);
+	    			if (fResp.statusCode == 200) {
+	    				activity.mJsonFollowing = new JSONObject(fResp.resp).getJSONArray("users");
+	    			}
+	    			activity.mGravatar = GravatarCache.getDipGravatar(GravatarCache.
+	    					getGravatarID(activity.mTarget), 50.0f,
+	    					activity.getResources().getDisplayMetrics().density);
+	    		}
+    		} catch (JSONException e) {
+    			e.printStackTrace();
+    		}
+    		return null;
+    	}
+
+    	protected void onPostExecute(Void result) {
+    		activity.loadInfo();
+    		((RelativeLayout) activity.findViewById(R.id.rl_profile_progress)).setVisibility(View.GONE);
+    		((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.VISIBLE);
+    	}
+    }
+
+    private LoadProfileTask mTask;
 
     private final OnClickListener onButtonClick = new OnClickListener() {
         public void onClick(final View v) {
@@ -77,39 +121,8 @@ public class Profile extends Activity {
 
     private Editor mEditor;
 
-    @Override
-    public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.profile);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi = new GitHubAPI();
-        mGapi.authenticate(mUsername, mPassword);
-
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(Profile.this, Search.class));
-            }
-        });
-
-        final Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            mTarget = extras.getString("username");
-        }
-        try {
-            if ((mTarget == null) || mTarget.equals("")) {
-                mTarget = mUsername;
-            }
-            Response userInfoResp;
-            userInfoResp = mGapi.user.info(mTarget);
-            if (userInfoResp.statusCode == 200) {
-                mJson = new JSONObject(userInfoResp.resp);
-            }
+    public void loadInfo() {
+    	try {
             if (mJson == null) {
                 // User doesn't really exist, return to the previous activity
                 this.setResult(5005);
@@ -117,11 +130,9 @@ public class Profile extends Activity {
             } else {
                 mJson = mJson.getJSONObject("user");
 
-                final JSONArray following_list = new JSONObject(
-                        mGapi.user.following(mUsername).resp).getJSONArray("users");
-                final int length = following_list.length() - 1;
+                final int length = mJsonFollowing.length() - 1;
                 for (int i = 0; i <= length; i++) {
-                    if (following_list.getString(i).equalsIgnoreCase(mTarget)) {
+                    if (mJsonFollowing.getString(i).equalsIgnoreCase(mTarget)) {
                     }
                 }
 
@@ -160,9 +171,7 @@ public class Profile extends Activity {
 
                 // Set all the values in the layout
                 // ((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
-                ((ImageView) findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(GravatarCache
-                        .getDipGravatar(GravatarCache.getGravatarID(mTarget), 50.0f, getResources()
-                                .getDisplayMetrics().density));
+                ((ImageView) findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(mGravatar);
                 ((TextView) findViewById(R.id.tv_user_info_full_name)).setText(full_name);
                 ((TextView) findViewById(R.id.tv_user_info_company)).setText(company);
                 ((TextView) findViewById(R.id.tv_user_info_email)).setText(email);
@@ -181,6 +190,50 @@ public class Profile extends Activity {
         } catch (final JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onCreate(final Bundle icicle) {
+        super.onCreate(icicle);
+        setContentView(R.layout.profile);
+
+        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
+        mEditor = mPrefs.edit();
+
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
+
+        mGapi = new GitHubAPI();
+        mGapi.authenticate(mUsername, mPassword);
+
+        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Profile.this, Search.class));
+            }
+        });
+
+        final Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            mTarget = extras.getString("username");
+        }
+
+        if (mTarget == null) {
+        	mTarget = mUsername;
+        }
+
+        mTask = (LoadProfileTask) getLastNonConfigurationInstance();
+        if (mTask == null) {
+        	mTask = new LoadProfileTask();
+        }
+        mTask.activity = Profile.this;
+
+        if (mTask.getStatus() == AsyncTask.Status.PENDING) {
+        	mTask.execute();
+        }
+    }
+
+    public Object onRetainNonConfigurationInstance() {
+    	return mTask;
     }
 
     @Override
