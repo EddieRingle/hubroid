@@ -2,11 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 	android:layout_width="fill_parent"
 	android:layout_height="42dip"
-	android:background="#CCC">
+	android:background="@drawable/top_bar">
+	<ImageView
+	   android:layout_width="fill_parent"
+	   android:layout_height="1px"
+	   android:src="@drawable/top_bar_top_border" />
 	<TextView
 		android:textSize="22dip"
 		android:textStyle="bold"
-		android:textColor="#555"
+		android:textColor="#eee"
 		android:text="Hubroid"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
