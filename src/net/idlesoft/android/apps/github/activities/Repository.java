@@ -66,10 +66,12 @@ public class Repository extends Activity {
         protected void onPostExecute(final Void result) {
             activity.loadRepoInfo();
             activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
+            activity.findViewById(R.id.rl_repository_progress).setVisibility(View.GONE);
         }
 
         @Override
         protected void onPreExecute() {
+        	activity.findViewById(R.id.rl_repository_progress).setVisibility(View.VISIBLE);
             activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.GONE);
         }
 

@@ -153,4 +153,15 @@
 			</RelativeLayout>
 		</RelativeLayout>
 	</ScrollView>
+	<RelativeLayout
+       android:id="@+id/rl_repository_progress"
+       android:layout_width="fill_parent"
+       android:layout_height="fill_parent"
+       android:visibility="gone">
+       <ProgressBar
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:indeterminateOnly="true"
+           android:layout_centerInParent="true" />
+    </RelativeLayout>
 </RelativeLayout>
