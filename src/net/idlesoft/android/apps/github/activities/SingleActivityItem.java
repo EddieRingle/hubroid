@@ -276,6 +276,13 @@ public class SingleActivityItem extends Activity {
                                 intent.putExtra("repo_owner", parts[1]);
                                 intent.putExtra("repo_name", parts[2]);
                                 startActivity(intent);
+                            } else if (parts[0].equals("showIssue")) {
+                            	final Intent intent = new Intent(SingleActivityItem.this,
+                            			SingleIssue.class);
+                            	intent.putExtra("repo_owner", parts[1]);
+                            	intent.putExtra("repo_name", parts[2]);
+                            	intent.putExtra("number", Integer.parseInt(parts[3]));
+                            	startActivity(intent);
                             }
                             return true;
                         }

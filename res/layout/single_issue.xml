@@ -7,10 +7,27 @@
 	android:layout_width="fill_parent"
 	android:isScrollContainer="true">
 	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
-	<include android:id="@+id/include_page_title" layout="@layout/page_title" />
-	<ListView
-		android:id="@+id/lv_single_issue_comments"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:cacheColorHint="#FFF" />
+	<LinearLayout
+	   android:id="@+id/ll_single_issue_content"
+	   android:orientation="vertical"
+	   android:layout_height="fill_parent"
+	   android:layout_width="fill_parent">
+		<include android:id="@+id/include_page_title" layout="@layout/page_title" />
+		<ListView
+			android:id="@+id/lv_single_issue_comments"
+			android:layout_width="fill_parent"
+			android:layout_height="fill_parent"
+			android:cacheColorHint="#FFF" />
+	</LinearLayout>
+	<LinearLayout
+	   android:id="@+id/ll_single_issue_progress"
+	   android:layout_width="fill_parent"
+	   android:layout_height="fill_parent"
+	   android:gravity="center"
+	   android:visibility="gone">
+	   <ProgressBar
+	       android:layout_width="wrap_content"
+	       android:layout_height="wrap_content"
+	       android:indeterminateOnly="true" />
+	</LinearLayout>
 </LinearLayout>

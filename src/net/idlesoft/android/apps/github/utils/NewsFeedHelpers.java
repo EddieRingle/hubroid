@@ -101,8 +101,11 @@ public class NewsFeedHelpers {
     public static String linkifyIssueItem(final JSONObject pNewsItem) throws JSONException {
         final JSONObject payload = pNewsItem.getJSONObject("payload");
         final String repoPath = payload.getString("repo");
+        final int issueNumber = payload.getInt("number");
 
-        final String html = "<div>" + "To view <a href=\"hubroid://showRepo/" + repoPath + "/\">"
+        final String html = "<div>" + "View <a href=\"hubroid://showIssue/" + repoPath + "/"
+        		+ issueNumber + "\">Issue " + issueNumber + "</a>. <br/><br/>"
+        		+ "To view <a href=\"hubroid://showRepo/" + repoPath + "/\">"
                 + repoPath.split("/")[1] + "</a>'s issue list, <a href=\"hubroid://showIssues/"
                 + repoPath + "/\">click here</a>." + "</div>";
         return html;
