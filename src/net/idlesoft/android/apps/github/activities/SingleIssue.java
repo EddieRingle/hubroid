@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.IssueCommentsAdapter;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -35,7 +36,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -344,11 +344,7 @@ public class SingleIssue extends Activity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(SingleIssue.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(SingleIssue.this);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

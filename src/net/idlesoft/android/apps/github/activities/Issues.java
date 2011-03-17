@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.ClosedIssues;
 import net.idlesoft.android.apps.github.activities.tabs.OpenIssues;
@@ -22,8 +23,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -68,11 +67,7 @@ public class Issues extends TabActivity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(Issues.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(Issues.this);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

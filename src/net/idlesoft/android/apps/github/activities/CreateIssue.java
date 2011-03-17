@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -112,6 +113,8 @@ public class CreateIssue extends Activity {
         mPassword = mPrefs.getString("password", "");
 
         mGapi.authenticate(mUsername, mPassword);
+
+        HubroidApplication.setupActionBar(CreateIssue.this);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

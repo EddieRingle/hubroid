@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ForkListAdapter;
 
@@ -25,10 +26,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -110,11 +109,7 @@ public class NetworkList extends Activity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(NetworkList.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(NetworkList.this);
 
         mListView = (ListView) findViewById(R.id.lv_network_list);
         mListView.setOnItemClickListener(mOnForkListItemClick);

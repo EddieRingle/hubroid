@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -30,7 +31,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -132,11 +132,7 @@ public class Dashboard extends Activity {
 
         mEditor = getSharedPreferences(Hubroid.PREFS_NAME, 0).edit();
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(Dashboard.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(Dashboard.this, "Hubroid", true, false);
 
         ((Button) findViewById(R.id.btn_dashboard_newsfeed))
                 .setOnClickListener(new OnClickListener() {

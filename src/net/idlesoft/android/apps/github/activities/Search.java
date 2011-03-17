@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.SearchRepos;
 import net.idlesoft.android.apps.github.activities.tabs.SearchUsers;
@@ -18,7 +19,6 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -54,8 +54,7 @@ public class Search extends TabActivity {
 
         mEditor = getSharedPreferences(Hubroid.PREFS_NAME, 0).edit();
 
-        /* Hide the Search button in the top bar */
-        ((ImageButton) findViewById(R.id.btn_search)).setVisibility(View.GONE);
+        HubroidApplication.setupActionBar(Search.this, false);
 
         mTabHost = getTabHost();
 

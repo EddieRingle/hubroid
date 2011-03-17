@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.GitHubAPI;
@@ -23,10 +24,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.View.OnClickListener;
 import android.webkit.WebView;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class FileViewer extends Activity {
@@ -141,11 +139,7 @@ public class FileViewer extends Activity {
 
         mWebView = (WebView) findViewById(R.id.wv_fileView_contents);
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(FileViewer.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(FileViewer.this);
 
         final TextView title = (TextView) findViewById(R.id.tv_page_title);
         title.setText("File Viewer");

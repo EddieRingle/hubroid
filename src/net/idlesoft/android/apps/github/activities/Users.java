@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.Followers;
 import net.idlesoft.android.apps.github.activities.tabs.Following;
@@ -24,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -69,12 +69,6 @@ public class Users extends TabActivity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(Users.this, Search.class));
-            }
-        });
-
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mTarget = extras.getString("target");
@@ -82,6 +76,8 @@ public class Users extends TabActivity {
         if ((mTarget == null) || mTarget.equals("")) {
             mTarget = mUsername;
         }
+
+        HubroidApplication.setupActionBar(Users.this);
 
         final ImageView gravatar = (ImageView) findViewById(R.id.iv_users_gravatar);
         gravatar.setImageBitmap(GravatarCache.getDipGravatar(GravatarCache.getGravatarID(mTarget),

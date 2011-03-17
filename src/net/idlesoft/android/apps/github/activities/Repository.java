@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -31,7 +32,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class Repository extends Activity {
@@ -195,11 +195,7 @@ public class Repository extends Activity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(Repository.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(Repository.this);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

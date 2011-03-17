@@ -8,6 +8,7 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
 import net.idlesoft.android.apps.github.activities.tabs.PushableRepos;
@@ -25,7 +26,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -71,11 +71,7 @@ public class Repositories extends TabActivity {
 
         mGapi.authenticate(mUsername, mPassword);
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(Repositories.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(Repositories.this);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

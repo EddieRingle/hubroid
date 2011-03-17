@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 import net.idlesoft.android.apps.github.utils.NewsFeedHelpers;
@@ -29,7 +30,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -236,11 +236,7 @@ public class SingleActivityItem extends Activity {
         mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
         mEditor = mPrefs.edit();
 
-        ((ImageButton) findViewById(R.id.btn_search)).setOnClickListener(new OnClickListener() {
-            public void onClick(final View v) {
-                startActivity(new Intent(SingleActivityItem.this, Search.class));
-            }
-        });
+        HubroidApplication.setupActionBar(SingleActivityItem.this);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
