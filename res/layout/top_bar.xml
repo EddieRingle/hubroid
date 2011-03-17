@@ -7,22 +7,37 @@
 	   android:layout_width="fill_parent"
 	   android:layout_height="1px"
 	   android:src="@drawable/top_bar_top_border" />
+	<ImageView
+	   android:id="@+id/iv_top_bar_icon"
+	   android:layout_centerVertical="true"
+	   android:layout_marginLeft="5dip"
+	   android:layout_marginRight="5dip"
+	   android:layout_width="32dip"
+	   android:layout_height="32dip"
+	   android:src="@drawable/icon" />
+	<ImageView
+	   android:layout_toRightOf="@id/iv_top_bar_icon"
+	   android:layout_width="1dip"
+	   android:layout_height="fill_parent"
+	   android:src="@drawable/top_bar_btn_divider" />
 	<TextView
-		android:textSize="22dip"
+        android:id="@+id/tv_top_bar_text"
+		android:textSize="20dip"
 		android:textStyle="bold"
 		android:textColor="#eee"
 		android:text="Hubroid"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_marginLeft="10dip"
-		android:layout_alignParentLeft="true"
+		android:layout_toRightOf="@id/iv_top_bar_icon"
 		android:layout_centerVertical="true" />
 	<ImageButton android:id="@+id/btn_search"
 		android:src="@android:drawable/ic_search_category_default"
-		android:scaleType="fitXY"
+		android:scaleType="fitCenter"
 		android:background="@drawable/top_bar_button"
 		android:layout_width="42dip"
 		android:layout_height="fill_parent"
+		android:layout_centerVertical="true"
 		android:layout_alignParentRight="true" />
 	<LinearLayout android:id="@+id/divider_btn_search"
 		android:background="@drawable/top_bar_btn_divider"
