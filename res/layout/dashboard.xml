@@ -54,7 +54,7 @@
 		android:layout_height="wrap_content"
 		android:gravity="center"
 		android:layout_gravity="bottom"
-		android:background="#CCC"
+		android:background="#eee"
 		android:padding="10dip">
 		<TextView
 			android:id="@+id/tv_dashboard_latestPost_label"
