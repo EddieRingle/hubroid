@@ -17,13 +17,9 @@
 		android:layout_width="fill_parent"
 		android:layout_height="10dip"
 		android:background="@drawable/shadow" />
-	<ScrollView
+	<WebView
+		android:id="@+id/wv_single_activity_item_content"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:layout_below="@id/include_top_bar">
-		<WebView
-			android:id="@+id/wv_single_activity_item_content"
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent" />
-	</ScrollView>
+		android:layout_below="@id/include_top_bar" />
 </LinearLayout>
