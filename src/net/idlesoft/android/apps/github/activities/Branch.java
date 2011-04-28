@@ -73,12 +73,18 @@ public class Branch extends Activity {
             mBranchName = extras.getString("branch_name");
             mBranchSha = extras.getString("branch_sha");
 
+            // Break mBranchSha into two pieces - the first seven chars and the rest.
+            final String branch_sha_head = mBranchSha.substring(0, 7);
+            final String branch_sha_tail = mBranchSha.substring(7, 40);
+
             final TextView branchName = (TextView) findViewById(R.id.tv_branch_name);
-            final TextView branchSha = (TextView) findViewById(R.id.tv_branch_sha);
+            final TextView branchShaHead = (TextView) findViewById(R.id.tv_branch_sha_head);
+            final TextView branchShaTail = (TextView) findViewById(R.id.tv_branch_sha_tail);
             final ListView infoList = (ListView) findViewById(R.id.lv_branch_infoList);
 
             branchName.setText(mBranchName);
-            branchSha.setText(mBranchSha);
+            branchShaHead.setText(branch_sha_head);
+            branchShaTail.setText(branch_sha_tail);
 
             infoList.setAdapter(new ArrayAdapter<String>(Branch.this, R.layout.branch_info_item,
                     R.id.tv_branchInfoItem_text1, new String[] {
