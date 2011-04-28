@@ -80,7 +80,8 @@
 			android:layout_height="wrap_content"
 			android:singleLine="true"
 			android:inputType="textPassword"
-			android:background="@android:drawable/editbox_background" />
+			android:background="@android:drawable/editbox_background"
+			android:nextFocusDown="@+id/btn_login_login" />
 		<Button
 			android:layout_marginLeft="20dip"
 		    android:layout_toRightOf="@id/tv_login_username_label"
