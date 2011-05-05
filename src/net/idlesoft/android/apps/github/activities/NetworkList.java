@@ -44,7 +44,9 @@ public class NetworkList extends Activity {
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
-            activity.mAdapter.loadData(activity.mJson);
+            if (activity.mJson != null) {
+            	activity.mAdapter.loadData(activity.mJson);
+            }
             return null;
         }
 
