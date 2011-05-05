@@ -35,8 +35,14 @@ public class GravatarCache {
     private final static String ROOT_DIR = "hubroid/gravatars";
 
     private static Bitmap downloadGravatar(final String id) throws IOException {
-        final URL aURL = new URL("http://www.gravatar.com/avatar/" + URLEncoder.encode(id)
-                + "?size=100&d=mm");
+    	final URL aURL;
+    	if (id != null && !id.equals("")) {
+    		aURL = new URL("http://www.gravatar.com/avatar/" + URLEncoder.encode(id)
+    				+ "?size=100&d=mm");
+    	} else {
+    		aURL = new URL("http://www.gravatar.com/avatar/?size=100&d=mm");
+    	}
+    		
         final HttpURLConnection conn = (HttpURLConnection) aURL.openConnection();
         conn.setDoInput(true);
         conn.connect();
