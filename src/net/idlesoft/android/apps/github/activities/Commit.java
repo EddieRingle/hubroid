@@ -219,7 +219,7 @@ public class Commit extends Activity {
 
             try {
                 commit_time = dateFormat.parse(mJson.getString("authored_date"));
-                current_time = dateFormat.parse(dateFormat.format(new Date()));
+                current_time = new Date();
                 ((TextView) findViewById(R.id.commit_view_author_time)).setText(Commit
                         .getHumanDate(current_time, commit_time));
 
