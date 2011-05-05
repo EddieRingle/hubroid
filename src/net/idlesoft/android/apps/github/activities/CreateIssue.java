@@ -60,7 +60,7 @@ public class CreateIssue extends Activity {
 
         @Override
         protected void onPostExecute(final Integer result) {
-            if (result.intValue() == 201) {
+            if (result.intValue() == 201 && activity.mIssueJson != null) {
                 final Intent i = new Intent(activity, SingleIssue.class);
                 i.putExtra("repo_owner", activity.mRepositoryOwner);
                 i.putExtra("repo_name", activity.mRepositoryName);
