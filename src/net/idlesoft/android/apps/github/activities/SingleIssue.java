@@ -166,7 +166,7 @@ public class SingleIssue extends Activity {
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Hubroid.GITHUB_ISSUES_TIME_FORMAT);
             final Date item_time = dateFormat.parse(pTime);
-            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final Date current_time = new Date();
             final long ms = current_time.getTime() - item_time.getTime();
             final long sec = ms / 1000;
             final long min = sec / 60;

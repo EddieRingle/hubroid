@@ -61,7 +61,7 @@ public class IssuesListAdapter extends JsonListAdapter {
                     Hubroid.GITHUB_ISSUES_TIME_FORMAT);
             final Date commit_time = dateFormat.parse(mJson.getJSONObject(index).getString(
                     "updated_at"));
-            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final Date current_time = new Date();
             final long ms = current_time.getTime() - commit_time.getTime();
             final long sec = ms / 1000;
             final long min = sec / 60;
