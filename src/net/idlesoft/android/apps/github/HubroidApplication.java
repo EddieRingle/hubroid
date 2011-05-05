@@ -20,7 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class HubroidApplication extends Application {
-    private static final boolean DEVELOPER_MODE = true;
+    private static final boolean DEVELOPER_MODE = false;
 
     @Override
     public void onCreate() {
