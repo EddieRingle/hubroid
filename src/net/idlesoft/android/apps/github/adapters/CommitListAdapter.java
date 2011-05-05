@@ -58,7 +58,7 @@ public class CommitListAdapter extends GravatarListAdapter {
             final SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
             final Date commit_time = dateFormat.parse(mJson.getJSONObject(index).getString(
                     "committed_date"));
-            final Date current_time = dateFormat.parse(dateFormat.format(new Date()));
+            final Date current_time = new Date();
             final long ms = current_time.getTime() - commit_time.getTime();
             final long sec = ms / 1000;
             final long min = sec / 60;
