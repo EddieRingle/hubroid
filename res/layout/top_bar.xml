@@ -4,10 +4,6 @@
 	android:layout_height="42dip"
 	android:background="@drawable/top_bar">
 	<ImageView
-	   android:layout_width="fill_parent"
-	   android:layout_height="1px"
-	   android:src="@drawable/top_bar_top_border" />
-	<ImageView
 	   android:id="@+id/iv_top_bar_icon"
 	   android:layout_centerVertical="true"
 	   android:layout_marginLeft="5dip"
@@ -24,7 +20,7 @@
         android:id="@+id/tv_top_bar_text"
 		android:textSize="20dip"
 		android:textStyle="bold"
-		android:textColor="#eee"
+		android:textColor="#555"
 		android:text="Hubroid"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
