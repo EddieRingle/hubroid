@@ -13,61 +13,26 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.Followers;
 import net.idlesoft.android.apps.github.activities.tabs.Following;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
-
-import org.idlesoft.libraries.ghapi.GitHubAPI;
-
-import android.app.TabActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import android.widget.TextView;
 
-public class Users extends TabActivity {
+public class Users extends BaseTabActivity {
 
     private static final String TAG_FOLLOWERS = "followers";
 
     private static final String TAG_FOLLOWING = "following";
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
-    private TabHost mTabHost;
-
     private String mTarget;
-
-    private String mUsername;
-
-    private Editor mEditor;
-
-    private View buildIndicator(final int textRes) {
-        final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
-                getTabWidget(), false);
-        indicator.setText(textRes);
-        return indicator;
-    }
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.users);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.users);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -92,8 +57,6 @@ public class Users extends TabActivity {
             }
         });
 
-        mTabHost = getTabHost();
-
         final Intent intent = new Intent(getApplicationContext(), Followers.class);
         intent.putExtra("target", mTarget);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS).setIndicator(
@@ -112,7 +75,7 @@ public class Users extends TabActivity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

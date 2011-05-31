@@ -12,60 +12,24 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.ClosedIssues;
 import net.idlesoft.android.apps.github.activities.tabs.OpenIssues;
-
-import org.idlesoft.libraries.ghapi.GitHubAPI;
-
-import android.app.TabActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TabHost;
 import android.widget.TextView;
 
-public class Issues extends TabActivity {
+public class Issues extends BaseTabActivity {
     private static final String TAG_CLOSED_ISSUES = "closed_issues";
 
     private static final String TAG_OPEN_ISSUES = "open_issues";
-
-    private final GitHubAPI mGapi = new GitHubAPI();
-
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
 
     private String mRepositoryName;
 
     private String mRepositoryOwner;
 
-    private TabHost mTabHost;
-
-    private String mUsername;
-
-    private Editor mEditor;
-
-    private View buildIndicator(final int textRes) {
-        final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
-                getTabWidget(), false);
-        indicator.setText(textRes);
-        return indicator;
-    }
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.issues);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.issues);
 
         HubroidApplication.setupActionBar(Issues.this);
 
@@ -76,8 +40,6 @@ public class Issues extends TabActivity {
         }
 
         ((TextView) findViewById(R.id.tv_page_title)).setText("Issues");
-
-        mTabHost = getTabHost();
 
         final Intent intent = new Intent(getApplicationContext(), OpenIssues.class);
         intent.putExtra("repo_owner", mRepositoryOwner);
@@ -106,7 +68,7 @@ public class Issues extends TabActivity {
                 startActivity(intent);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

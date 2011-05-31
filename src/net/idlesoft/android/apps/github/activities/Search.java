@@ -12,32 +12,16 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.SearchRepos;
 import net.idlesoft.android.apps.github.activities.tabs.SearchUsers;
-import android.app.TabActivity;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TabHost;
-import android.widget.TextView;
 import android.widget.Toast;
 
-public class Search extends TabActivity {
+public class Search extends BaseTabActivity {
     private static final String TAG_SEARCH_REPOS = "search_repos";
 
     private static final String TAG_SEARCH_USERS = "search_users";
-
-    private TabHost mTabHost;
-
-    private Editor mEditor;
-
-    private View buildIndicator(final int textRes) {
-        final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
-                getTabWidget(), false);
-        indicator.setText(textRes);
-        return indicator;
-    }
 
     @Override
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
@@ -49,14 +33,9 @@ public class Search extends TabActivity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.search);
-
-        mEditor = getSharedPreferences(Hubroid.PREFS_NAME, 0).edit();
+        super.onCreate(icicle, R.layout.search);
 
         HubroidApplication.setupActionBar(Search.this, false);
-
-        mTabHost = getTabHost();
 
         final Intent intent = new Intent(Search.this, SearchRepos.class);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_SEARCH_REPOS).setIndicator(
@@ -80,7 +59,7 @@ public class Search extends TabActivity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

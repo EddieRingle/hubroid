@@ -14,62 +14,27 @@ import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
 import net.idlesoft.android.apps.github.activities.tabs.PushableRepos;
 import net.idlesoft.android.apps.github.activities.tabs.WatchedRepos;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
-
-import org.idlesoft.libraries.ghapi.GitHubAPI;
-
-import android.app.TabActivity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.TabHost;
 import android.widget.TextView;
 
-public class Repositories extends TabActivity {
+public class Repositories extends BaseTabActivity {
     private static final String TAG_MY_REPOS = "my_repos";
 
     private static final String TAG_WATCHED_REPOS = "watched_repos";
 
     private static final String TAG_PUSHABLE_REPOS = "pushable_repos";
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
-    private TabHost mTabHost;
-
     private String mTarget;
-
-    private String mUsername;
-
-    private Editor mEditor;
-
-    private View buildIndicator(final int textRes) {
-        final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
-                getTabWidget(), false);
-        indicator.setText(textRes);
-        return indicator;
-    }
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.repositories);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.repositories);
 
         HubroidApplication.setupActionBar(Repositories.this);
 
@@ -94,8 +59,6 @@ public class Repositories extends TabActivity {
                 startActivity(i);
             }
         });
-
-        mTabHost = getTabHost();
 
         Intent intent = new Intent(getApplicationContext(), MyRepos.class);
         intent.putExtra("target", mTarget);
@@ -124,7 +87,7 @@ public class Repositories extends TabActivity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
