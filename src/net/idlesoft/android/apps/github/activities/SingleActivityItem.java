@@ -200,8 +200,8 @@ public class SingleActivityItem extends BaseActivity {
                 }
             } else if (eventType.contains("MemberEvent")) {
                 icon.setImageResource(R.drawable.follow);
-                title = actor + " added " + payload.getString("member") + " to "
-                        + entry.getJSONObject("repository").getString("owner") + "/"
+                title = actor + " added " + payload.getJSONObject("member").getString("login")
+                        + " to " + entry.getJSONObject("repository").getString("owner") + "/"
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("IssueCommentEvent")) {
                 icon.setImageResource(R.drawable.comment);
