@@ -302,6 +302,8 @@ public class SingleActivityItem extends BaseActivity {
                     html = NewsFeedHelpers.linkifyIssueItem(mJson);
                 } else if (eventType.equals("WatchEvent")) {
                     html = NewsFeedHelpers.linkifyWatchItem(mJson);
+                } else if (eventType.equals("GistEvent")) {
+                    html = NewsFeedHelpers.linkifyGistItem(mJson);
                 } else {
                     html = NewsFeedHelpers.linkifyOtherItem(mJson);
                 }

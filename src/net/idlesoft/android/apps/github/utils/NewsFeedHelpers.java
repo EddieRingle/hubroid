@@ -144,6 +144,18 @@ public class NewsFeedHelpers {
         return html;
     }
 
+    public static String linkifyGistItem(final JSONObject pNewsItem) throws JSONException {
+        final JSONObject payload = pNewsItem.getJSONObject("payload");
+        final String html = "<div>"
+                + "<h2>" + payload.getString("name") + "</h2>"
+                + "<b>URL:</b> <a href=\"" + payload.getString("url") + "\">"
+                + payload.getString("url") + "</a><br/><br/>"
+                + "<b>Snippet:</b><br/><br/>"
+                + "<pre>" + payload.getString("snippet") + "</pre>"
+                + "</div>";
+        return html;
+    }
+
     public static String linkifyOtherItem(final JSONObject pNewsItem) throws JSONException {
         String repohtml;
         try {
