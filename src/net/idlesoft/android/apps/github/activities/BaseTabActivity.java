@@ -1,3 +1,4 @@
+
 package net.idlesoft.android.apps.github.activities;
 
 import net.idlesoft.android.apps.github.R;
@@ -13,38 +14,41 @@ import android.widget.TabHost;
 import android.widget.TextView;
 
 public class BaseTabActivity extends TabActivity {
-	protected SharedPreferences mPrefs;
-	protected SharedPreferences.Editor mPrefsEditor;
+    protected SharedPreferences mPrefs;
 
-	protected String mUsername;
-	protected String mPassword;
+    protected SharedPreferences.Editor mPrefsEditor;
 
-	protected GitHubClient mGitHubClient;
-	protected GitHubAPI mGApi;
+    protected String mUsername;
 
-	protected TabHost mTabHost;
+    protected String mPassword;
 
-	protected View buildIndicator(final int textRes) {
+    protected GitHubClient mGitHubClient;
+
+    protected GitHubAPI mGApi;
+
+    protected TabHost mTabHost;
+
+    protected View buildIndicator(final int textRes) {
         final TextView indicator = (TextView) getLayoutInflater().inflate(R.layout.tab_indicator,
                 getTabWidget(), false);
         indicator.setText(textRes);
         return indicator;
     }
 
-	protected void onCreate(final Bundle icicle, final int layout) {
-		super.onCreate(icicle);
-		setContentView(layout);
+    protected void onCreate(final Bundle icicle, final int layout) {
+        super.onCreate(icicle);
+        setContentView(layout);
 
-		mPrefs = getSharedPreferences("HubroidPrefs", 0);
-		mPrefsEditor = mPrefs.edit();
+        mPrefs = getSharedPreferences("HubroidPrefs", 0);
+        mPrefsEditor = mPrefs.edit();
 
-		mUsername = mPrefs.getString("username", "");
-		mPassword = mPrefs.getString("password", "");
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
 
-		mGitHubClient = new GitHubClient().setCredentials(mUsername, mPassword);
-		mGApi = new GitHubAPI();
-		mGApi.authenticate(mUsername, mPassword);
+        mGitHubClient = new GitHubClient().setCredentials(mUsername, mPassword);
+        mGApi = new GitHubAPI();
+        mGApi.authenticate(mUsername, mPassword);
 
-		mTabHost = getTabHost();
-	}
+        mTabHost = getTabHost();
+    }
 }

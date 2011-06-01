@@ -1,3 +1,4 @@
+
 package net.idlesoft.android.apps.github.activities;
 
 import net.idlesoft.android.apps.github.HubroidApplication;
@@ -10,31 +11,35 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 public class BaseActivity extends Activity {
-	protected static final int NO_LAYOUT = -1;
+    protected static final int NO_LAYOUT = -1;
 
-	protected SharedPreferences mPrefs;
-	protected SharedPreferences.Editor mPrefsEditor;
+    protected SharedPreferences mPrefs;
 
-	protected String mUsername;
-	protected String mPassword;
+    protected SharedPreferences.Editor mPrefsEditor;
 
-	protected GitHubClient mGitHubClient;
-	protected GitHubAPI mGApi;
+    protected String mUsername;
 
-	protected void onCreate(final Bundle icicle, final int layout) {
-		super.onCreate(icicle);
-		if (layout != NO_LAYOUT) {
-			setContentView(layout);
-		}
+    protected String mPassword;
 
-		mPrefs = getSharedPreferences("HubroidPrefs", 0);
-		mPrefsEditor = mPrefs.edit();
+    protected GitHubClient mGitHubClient;
 
-		mUsername = mPrefs.getString("username", "");
-		mPassword = mPrefs.getString("password", "");
+    protected GitHubAPI mGApi;
 
-		mGitHubClient = HubroidApplication.getGitHubClientInstance().setCredentials(mUsername, mPassword);
-		mGApi = HubroidApplication.getGApiInstance();
-		mGApi.authenticate(mUsername, mPassword);
-	}
+    protected void onCreate(final Bundle icicle, final int layout) {
+        super.onCreate(icicle);
+        if (layout != NO_LAYOUT) {
+            setContentView(layout);
+        }
+
+        mPrefs = getSharedPreferences("HubroidPrefs", 0);
+        mPrefsEditor = mPrefs.edit();
+
+        mUsername = mPrefs.getString("username", "");
+        mPassword = mPrefs.getString("password", "");
+
+        mGitHubClient = HubroidApplication.getGitHubClientInstance().setCredentials(mUsername,
+                mPassword);
+        mGApi = HubroidApplication.getGApiInstance();
+        mGApi.authenticate(mUsername, mPassword);
+    }
 }

@@ -44,15 +44,15 @@ public class CommitChangeViewer extends BaseActivity {
         protected Void doInBackground(Void... params) {
             /*
              * This new method of displaying file diffs was inspired by
-             * iOctocat's approach. Thanks to Dennis Bloete (dbloete on
-             * GitHub) for creating iOctocat and making me realize Android
-             * needed some GitHub love too. ;-)
+             * iOctocat's approach. Thanks to Dennis Bloete (dbloete on GitHub)
+             * for creating iOctocat and making me realize Android needed some
+             * GitHub love too. ;-)
              */
 
             /*
-             * Prepare CSS for diff: Added lines are green, removed lines
-             * are red, and the special lines that specify how many lines
-             * were affected in the chunk are a light blue.
+             * Prepare CSS for diff: Added lines are green, removed lines are
+             * red, and the special lines that specify how many lines were
+             * affected in the chunk are a light blue.
              */
             activity.mHtml = "<style type=\"text/css\">" + "div {" + "margin-right: 100%25;"
                     + "font-family: monospace;" + "white-space: nowrap;"
@@ -63,21 +63,21 @@ public class CommitChangeViewer extends BaseActivity {
 
             try {
                 final String[] splitDiff = activity.mJson.getString("diff").split("\n");
-                
+
                 for (int i = 0; i < splitDiff.length; i++) {
                     // HTML encode any elements, else any diff containing
                     // "<div>" or any HTML element will be interpreted as one by
                     // the browser
                     splitDiff[i] = TextUtils.htmlEncode(splitDiff[i]);
-    
+
                     // Replace all tabs with four non-breaking spaces (most
                     // browsers truncate "\t+" to " ").
                     splitDiff[i] = splitDiff[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
-    
+
                     // Replace any sequence of two or more spaces with &nbsps
                     // (most browsers truncate " +" to " ").
                     splitDiff[i] = splitDiff[i].replaceAll("(?<= ) ", "&nbsp;");
-    
+
                     if (splitDiff[i].startsWith("@@")) {
                         splitDiff[i] = "<div class=\"lines\">"
                                 .concat(splitDiff[i].concat("</div>"));
@@ -105,7 +105,8 @@ public class CommitChangeViewer extends BaseActivity {
         }
 
         protected void onPostExecute(Void result) {
-            activity.mWebView.loadDataWithBaseURL("hubroid", activity.mHtml, "text/html", "UTF-8", "hubroid");
+            activity.mWebView.loadDataWithBaseURL("hubroid", activity.mHtml, "text/html", "UTF-8",
+                    "hubroid");
         }
 
     }

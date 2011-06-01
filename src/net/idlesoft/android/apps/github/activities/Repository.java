@@ -44,17 +44,18 @@ public class Repository extends BaseActivity {
                 if (resp.statusCode == 200) {
                     activity.mJson = new JSONObject(resp.resp).getJSONObject("repository");
 
-                    final JSONArray watched_list = new JSONObject(activity.mGApi.user
-                            .watching(activity.mUsername).resp).getJSONArray("repositories");
+                    final JSONArray watched_list = new JSONObject(
+                            activity.mGApi.user.watching(activity.mUsername).resp)
+                            .getJSONArray("repositories");
                     final int length = watched_list.length() - 1;
                     for (int i = 0; i <= length; i++) {
-                        if (watched_list.getJSONObject(i).getString("name").equalsIgnoreCase(
-                                activity.mRepositoryName)) {
+                        if (watched_list.getJSONObject(i).getString("name")
+                                .equalsIgnoreCase(activity.mRepositoryName)) {
                             activity.mIsWatching = true;
                         }
                     }
                 } else if (resp.statusCode == 404) {
-                	activity.mJson = null;
+                    activity.mJson = null;
                 }
             } catch (final JSONException e) {
                 e.printStackTrace();
@@ -64,19 +65,19 @@ public class Repository extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Void result) {
-        	if (activity.mJson != null) {
-	            activity.loadRepoInfo();
-	            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
-	            activity.findViewById(R.id.rl_repository_progress).setVisibility(View.GONE);
-        	} else {
-        		Toast.makeText(activity, "Repository no longer exists.", Toast.LENGTH_SHORT).show();
-        		activity.finish();
-        	}
+            if (activity.mJson != null) {
+                activity.loadRepoInfo();
+                activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
+                activity.findViewById(R.id.rl_repository_progress).setVisibility(View.GONE);
+            } else {
+                Toast.makeText(activity, "Repository no longer exists.", Toast.LENGTH_SHORT).show();
+                activity.finish();
+            }
         }
 
         @Override
         protected void onPreExecute() {
-        	activity.findViewById(R.id.rl_repository_progress).setVisibility(View.VISIBLE);
+            activity.findViewById(R.id.rl_repository_progress).setVisibility(View.VISIBLE);
             activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.GONE);
         }
 

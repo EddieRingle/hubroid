@@ -9,6 +9,7 @@
 package net.idlesoft.android.apps.github.activities;
 
 import net.idlesoft.android.apps.github.R;
+
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -33,7 +34,8 @@ public class Login extends BaseActivity {
                 return 100;
             }
             activity.mGApi.authenticate(user, pass);
-            final int returnCode = activity.mGApi.api.HTTPGet("https://github.com/api/v2/json/user/show").statusCode;
+            final int returnCode = activity.mGApi.api
+                    .HTTPGet("https://github.com/api/v2/json/user/show").statusCode;
             if (returnCode == 200) {
                 activity.mPrefsEditor.putString("username", user);
                 activity.mPrefsEditor.putString("password", pass);

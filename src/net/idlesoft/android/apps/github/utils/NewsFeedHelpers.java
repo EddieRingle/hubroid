@@ -105,8 +105,8 @@ public class NewsFeedHelpers {
         final int issueNumber = payload.getInt("number");
 
         final String html = "<div>" + "View <a href=\"hubroid://showIssue/" + repoPath + "/"
-        		+ issueNumber + "\">Issue " + issueNumber + "</a>. <br/><br/>"
-        		+ "To view <a href=\"hubroid://showRepo/" + repoPath + "/\">"
+                + issueNumber + "\">Issue " + issueNumber + "</a>. <br/><br/>"
+                + "To view <a href=\"hubroid://showRepo/" + repoPath + "/\">"
                 + repoPath.split("/")[1] + "</a>'s issue list, <a href=\"hubroid://showIssues/"
                 + repoPath + "/\">click here</a>." + "</div>";
         return html;
@@ -145,31 +145,27 @@ public class NewsFeedHelpers {
     }
 
     public static String linkifyOtherItem(final JSONObject pNewsItem) throws JSONException {
-    	String repohtml;
-    	try {
-        	final JSONObject repo = pNewsItem.getJSONObject("repository");
-        	if (repo != null) {
-        		final String repoPath = repo.getString("owner") + "/" + repo.getString("name");
-        		repohtml = "<b>Repository:</b> <a href=\"hubroid://showRepo/" + repoPath + "/\">"
-        				+ repoPath.split("/")[1] + "</a><br/>"
-        				+ "<b>Repository Owner:</b> <a href=\"hubroid://showUser/" + repoPath.split("/")[0]
-        			    + "/\">" + repoPath.split("/")[0] + "</a><br/>";
-        	} else {
-        		repohtml = "";
-        	}
-    	} catch (JSONException e) {
-    		repohtml = "";
-    	}
-    	
-    	final String html = "<div>"
-    			+ "<h2>Uh-oh!</h2><br/>"
-    			+ "Either Hubroid doesn't know how to handle this event or the API "
-    			+ "does not provide enough information to work with.<br/><br/>"
-    			+ "In the meantime, here's some generic information about the event:<br/>"
-    			+ "<ul style='line-height: 1.5em;'>"
-    			+ repohtml
-    			+ "</ul>"
-    			+ "</div>";
-    	return html;
+        String repohtml;
+        try {
+            final JSONObject repo = pNewsItem.getJSONObject("repository");
+            if (repo != null) {
+                final String repoPath = repo.getString("owner") + "/" + repo.getString("name");
+                repohtml = "<b>Repository:</b> <a href=\"hubroid://showRepo/" + repoPath + "/\">"
+                        + repoPath.split("/")[1] + "</a><br/>"
+                        + "<b>Repository Owner:</b> <a href=\"hubroid://showUser/"
+                        + repoPath.split("/")[0] + "/\">" + repoPath.split("/")[0] + "</a><br/>";
+            } else {
+                repohtml = "";
+            }
+        } catch (JSONException e) {
+            repohtml = "";
+        }
+
+        final String html = "<div>" + "<h2>Uh-oh!</h2><br/>"
+                + "Either Hubroid doesn't know how to handle this event or the API "
+                + "does not provide enough information to work with.<br/><br/>"
+                + "In the meantime, here's some generic information about the event:<br/>"
+                + "<ul style='line-height: 1.5em;'>" + repohtml + "</ul>" + "</div>";
+        return html;
     }
 }

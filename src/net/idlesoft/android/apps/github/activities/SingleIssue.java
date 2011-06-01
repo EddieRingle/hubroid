@@ -8,10 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.IssueCommentsAdapter;
@@ -38,6 +34,10 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SingleIssue extends BaseActivity {
     private static class AddCommentTask extends AsyncTask<Void, Void, Integer> {
@@ -104,18 +104,19 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	if (activity.mJson == null) {
-        		try {
-        			final Response r = activity.mGApi.issues.issue(activity.mRepositoryOwner, activity.mRepositoryName, activity.mIssueNumber);
-        			if (r.statusCode != 200) {
-        				/* Something happened */
-        				return null;
-        			}
-        			activity.mJson = new JSONObject(r.resp).getJSONObject("issue");
-        		} catch (final JSONException e) {
-        			e.printStackTrace();
-        		}
-        	}
+            if (activity.mJson == null) {
+                try {
+                    final Response r = activity.mGApi.issues.issue(activity.mRepositoryOwner,
+                            activity.mRepositoryName, activity.mIssueNumber);
+                    if (r.statusCode != 200) {
+                        /* Something happened */
+                        return null;
+                    }
+                    activity.mJson = new JSONObject(r.resp).getJSONObject("issue");
+                } catch (final JSONException e) {
+                    e.printStackTrace();
+                }
+            }
             if (activity.mCommentsJson == null) {
                 try {
                     final Response resp = activity.mGApi.issues.list_comments(
@@ -136,10 +137,12 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Void result) {
-        	activity.fillViewInfo();
+            activity.fillViewInfo();
             activity.mAdapter.pushData();
-            ((LinearLayout) activity.findViewById(R.id.ll_single_issue_progress)).setVisibility(View.GONE);
-            ((LinearLayout) activity.findViewById(R.id.ll_single_issue_content)).setVisibility(View.VISIBLE);
+            ((LinearLayout) activity.findViewById(R.id.ll_single_issue_progress))
+                    .setVisibility(View.GONE);
+            ((LinearLayout) activity.findViewById(R.id.ll_single_issue_content))
+                    .setVisibility(View.VISIBLE);
             if ((activity.mClickedBtn != null)
                     && (activity.mClickedBtn.getId() == R.id.btn_issue_comment_area_submit_and_close)) {
                 activity.mCloseIssueTask = new CloseIssueTask();
@@ -151,8 +154,10 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected void onPreExecute() {
-        	((LinearLayout) activity.findViewById(R.id.ll_single_issue_progress)).setVisibility(View.VISIBLE);
-            ((LinearLayout) activity.findViewById(R.id.ll_single_issue_content)).setVisibility(View.GONE);
+            ((LinearLayout) activity.findViewById(R.id.ll_single_issue_progress))
+                    .setVisibility(View.VISIBLE);
+            ((LinearLayout) activity.findViewById(R.id.ll_single_issue_content))
+                    .setVisibility(View.GONE);
             activity.mAdapter.clear();
         }
     }
@@ -276,12 +281,11 @@ public class SingleIssue extends BaseActivity {
     }
 
     public void loadView() {
-    	mHeader = getLayoutInflater().inflate(R.layout.issue_header, null);
+        mHeader = getLayoutInflater().inflate(R.layout.issue_header, null);
         ((ListView) findViewById(R.id.lv_single_issue_comments)).addHeaderView(mHeader);
 
         mCommentArea = getLayoutInflater().inflate(R.layout.issue_comment_area, null);
-        ((ListView) findViewById(R.id.lv_single_issue_comments))
-                .addFooterView(mCommentArea);
+        ((ListView) findViewById(R.id.lv_single_issue_comments)).addFooterView(mCommentArea);
         ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit))
                 .setOnClickListener(mOnSubmitClickListener);
         ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
@@ -289,28 +293,28 @@ public class SingleIssue extends BaseActivity {
     }
 
     public void fillViewInfo() {
-    	try {
-	    	loadIssueItemBox();
-	
-	    	((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
-	        .setImageBitmap(GravatarCache.getDipGravatar(GravatarCache
-	                .getGravatarID(mJson.getString("user")), 30.0f, getResources()
-	                .getDisplayMetrics().density));
-	((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mJson
-	        .getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
-	
-	((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
-	        + getTimeSince(mJson.getString("created_at") + " by "
-	                + mJson.getString("user")));
-	
-			if (mJson.getString("state").equals("closed")) {
-			    ((Button) mCommentArea
-			            .findViewById(R.id.btn_issue_comment_area_submit_and_close))
-			            .setVisibility(View.GONE);
-			}
-    	} catch (JSONException e) {
-    		e.printStackTrace();
-    	}
+        try {
+            loadIssueItemBox();
+
+            ((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
+                    .setImageBitmap(GravatarCache.getDipGravatar(
+                            GravatarCache.getGravatarID(mJson.getString("user")), 30.0f,
+                            getResources().getDisplayMetrics().density));
+            ((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mJson
+                    .getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
+
+            ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta))
+                    .setText("Posted "
+                            + getTimeSince(mJson.getString("created_at") + " by "
+                                    + mJson.getString("user")));
+
+            if (mJson.getString("state").equals("closed")) {
+                ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
+                        .setVisibility(View.GONE);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -329,10 +333,10 @@ public class SingleIssue extends BaseActivity {
                 mRepositoryOwner = extras.getString("repo_owner");
                 mRepositoryName = extras.getString("repo_name");
                 if (extras.containsKey("json")) {
-                	mJson = new JSONObject(extras.getString("json"));
-                	mIssueNumber = mJson.getInt("number");
+                    mJson = new JSONObject(extras.getString("json"));
+                    mIssueNumber = mJson.getInt("number");
                 } else if (extras.containsKey("number")) {
-                	mIssueNumber = extras.getInt("number");
+                    mIssueNumber = extras.getInt("number");
                 }
 
                 loadView();

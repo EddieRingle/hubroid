@@ -96,8 +96,8 @@ public class DiffFilesList extends BaseActivity {
                 final String[] filenames = new String[mJson.getJSONArray(mType).length()];
                 for (int i = 0; i < filenames.length; i++) {
                     if (mType.equals("modified")) {
-                        filenames[i] = mJson.getJSONArray("modified").getJSONObject(i).getString(
-                                "filename");
+                        filenames[i] = mJson.getJSONArray("modified").getJSONObject(i)
+                                .getString("filename");
                     } else {
                         filenames[i] = mJson.getJSONArray(mType).getString(i);
                     }

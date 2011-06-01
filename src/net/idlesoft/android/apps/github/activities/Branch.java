@@ -50,7 +50,8 @@ public class Branch extends BaseActivity {
             mBranchName = extras.getString("branch_name");
             mBranchSha = extras.getString("branch_sha");
 
-            // Break mBranchSha into two pieces - the first seven chars and the rest.
+            // Break mBranchSha into two pieces - the first seven chars and the
+            // rest.
             final String branch_sha_head = mBranchSha.substring(0, 7);
             final String branch_sha_tail = mBranchSha.substring(7, 40);
 

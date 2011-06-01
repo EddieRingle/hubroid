@@ -13,6 +13,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.Followers;
 import net.idlesoft.android.apps.github.activities.tabs.Following;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -59,12 +60,12 @@ public class Users extends BaseTabActivity {
 
         final Intent intent = new Intent(getApplicationContext(), Followers.class);
         intent.putExtra("target", mTarget);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS).setIndicator(
-                buildIndicator(R.string.followers)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS)
+                .setIndicator(buildIndicator(R.string.followers)).setContent(intent));
 
         intent.setClass(getApplicationContext(), Following.class);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING).setIndicator(
-                buildIndicator(R.string.following)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING)
+                .setIndicator(buildIndicator(R.string.following)).setContent(intent));
     }
 
     @Override

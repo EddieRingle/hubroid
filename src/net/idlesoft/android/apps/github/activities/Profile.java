@@ -41,37 +41,39 @@ public class Profile extends BaseActivity {
     private Bitmap mGravatar;
 
     private static class LoadProfileTask extends AsyncTask<Void, Void, Void> {
-    	public Profile activity;
+        public Profile activity;
 
-    	protected void onPreExecute() {
-    		((RelativeLayout) activity.findViewById(R.id.rl_profile_progress)).setVisibility(View.VISIBLE);
-    		((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.GONE);
-    	}
+        protected void onPreExecute() {
+            ((RelativeLayout) activity.findViewById(R.id.rl_profile_progress))
+                    .setVisibility(View.VISIBLE);
+            ((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.GONE);
+        }
 
-    	protected Void doInBackground(Void... params) {
-    		try {
-	    		Response r = activity.mGApi.user.info(activity.mTarget);
-	    		if (r.statusCode == 200) {
-	    			activity.mJson = new JSONObject(r.resp);
-	    			Response fResp = activity.mGApi.user.following(activity.mUsername);
-	    			if (fResp.statusCode == 200) {
-	    				activity.mJsonFollowing = new JSONObject(fResp.resp).getJSONArray("users");
-	    			}
-	    			activity.mGravatar = GravatarCache.getDipGravatar(GravatarCache.
-	    					getGravatarID(activity.mTarget), 50.0f,
-	    					activity.getResources().getDisplayMetrics().density);
-	    		}
-    		} catch (JSONException e) {
-    			e.printStackTrace();
-    		}
-    		return null;
-    	}
+        protected Void doInBackground(Void... params) {
+            try {
+                Response r = activity.mGApi.user.info(activity.mTarget);
+                if (r.statusCode == 200) {
+                    activity.mJson = new JSONObject(r.resp);
+                    Response fResp = activity.mGApi.user.following(activity.mUsername);
+                    if (fResp.statusCode == 200) {
+                        activity.mJsonFollowing = new JSONObject(fResp.resp).getJSONArray("users");
+                    }
+                    activity.mGravatar = GravatarCache.getDipGravatar(GravatarCache
+                            .getGravatarID(activity.mTarget), 50.0f, activity.getResources()
+                            .getDisplayMetrics().density);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
-    	protected void onPostExecute(Void result) {
-    		activity.loadInfo();
-    		((RelativeLayout) activity.findViewById(R.id.rl_profile_progress)).setVisibility(View.GONE);
-    		((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.VISIBLE);
-    	}
+        protected void onPostExecute(Void result) {
+            activity.loadInfo();
+            ((RelativeLayout) activity.findViewById(R.id.rl_profile_progress))
+                    .setVisibility(View.GONE);
+            ((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.VISIBLE);
+        }
     }
 
     private LoadProfileTask mTask;
@@ -108,7 +110,7 @@ public class Profile extends BaseActivity {
     };
 
     public void loadInfo() {
-    	try {
+        try {
             if (mJson == null) {
                 // User doesn't really exist, return to the previous activity
                 this.setResult(5005);
@@ -190,22 +192,22 @@ public class Profile extends BaseActivity {
         }
 
         if (mTarget == null) {
-        	mTarget = mUsername;
+            mTarget = mUsername;
         }
 
         mTask = (LoadProfileTask) getLastNonConfigurationInstance();
         if (mTask == null) {
-        	mTask = new LoadProfileTask();
+            mTask = new LoadProfileTask();
         }
         mTask.activity = Profile.this;
 
         if (mTask.getStatus() == AsyncTask.Status.PENDING) {
-        	mTask.execute();
+            mTask.execute();
         }
     }
 
     public Object onRetainNonConfigurationInstance() {
-    	return mTask;
+        return mTask;
     }
 
     @Override

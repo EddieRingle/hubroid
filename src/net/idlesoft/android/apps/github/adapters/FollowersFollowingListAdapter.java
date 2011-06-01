@@ -10,6 +10,7 @@ package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
+
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;

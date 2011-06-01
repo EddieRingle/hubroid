@@ -12,7 +12,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 public class Hubroid extends BaseActivity {
-	/* TODO: Review these time format constants, as the new GitHub library provides them */
+    /*
+     * TODO: Review these time format constants, as the new GitHub library
+     * provides them
+     */
     // Time format used by GitHub in their issue API. Inconsistent, tsk, tsk.
     public static final String GITHUB_ISSUES_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss ZZZZ";
 

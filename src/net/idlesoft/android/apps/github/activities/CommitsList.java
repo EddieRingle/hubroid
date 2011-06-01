@@ -48,9 +48,9 @@ public class CommitsList extends BaseActivity {
         @Override
         protected void onPostExecute(final Void result) {
             /*
-            activity.mCommitListView.setAdapter(activity.mCommitListAdapter);
-            activity.mProgressDialog.dismiss();
-            */
+             * activity.mCommitListView.setAdapter(activity.mCommitListAdapter);
+             * activity.mProgressDialog.dismiss();
+             */
             activity.mCommitListAdapter.pushData();
             activity.mCommitListAdapter.setIsLoadingData(false);
             super.onPostExecute(result);
@@ -59,9 +59,9 @@ public class CommitsList extends BaseActivity {
         @Override
         protected void onPreExecute() {
             /*
-            activity.mProgressDialog = ProgressDialog.show(activity, "Please wait...",
-                    "Loading repository's commits...", true);
-            */
+             * activity.mProgressDialog = ProgressDialog.show(activity,
+             * "Please wait...", "Loading repository's commits...", true);
+             */
             activity.mCommitListAdapter.setIsLoadingData(true);
         }
     }
@@ -96,12 +96,14 @@ public class CommitsList extends BaseActivity {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 try {
                     final Intent i = new Intent(CommitsList.this, Commit.class);
-                    i.putExtra("committer", mCommitsJSON.getJSONObject(position)
-                            .getJSONObject("committer").getString("login"));
-                    i.putExtra("author", mCommitsJSON.getJSONObject(position)
-                            .getJSONObject("author").getString("login"));
-                    i.putExtra("commit_sha", mCommitsJSON.getJSONObject(position)
-                            .getString("id"));
+                    i.putExtra("committer",
+                            mCommitsJSON.getJSONObject(position).getJSONObject("committer")
+                                    .getString("login"));
+                    i.putExtra(
+                            "author",
+                            mCommitsJSON.getJSONObject(position).getJSONObject("author")
+                                    .getString("login"));
+                    i.putExtra("commit_sha", mCommitsJSON.getJSONObject(position).getString("id"));
                     i.putExtra("repo_name", mRepoName);
                     i.putExtra("repo_owner", mRepoOwner);
                     CommitsList.this.startActivity(i);

@@ -34,7 +34,8 @@ public class PushableRepos extends BaseActivity {
         protected Void doInBackground(final Void... params) {
             if (activity.mJson == null) {
                 try {
-                    final Response resp = activity.mGApi.api.HTTPGet("https://github.com/api/v2/json/repos/pushable");
+                    final Response resp = activity.mGApi.api
+                            .HTTPGet("https://github.com/api/v2/json/repos/pushable");
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
@@ -71,7 +72,7 @@ public class PushableRepos extends BaseActivity {
                 final long id) {
             final Intent i = new Intent(getApplicationContext(), Repository.class);
             try {
-            	i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
+                i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
                 i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
             } catch (final JSONException e) {
                 e.printStackTrace();

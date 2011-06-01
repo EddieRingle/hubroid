@@ -12,6 +12,7 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.SearchRepos;
 import net.idlesoft.android.apps.github.activities.tabs.SearchUsers;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -38,12 +39,12 @@ public class Search extends BaseTabActivity {
         HubroidApplication.setupActionBar(Search.this, false);
 
         final Intent intent = new Intent(Search.this, SearchRepos.class);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_SEARCH_REPOS).setIndicator(
-                buildIndicator(R.string.search_repos)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_SEARCH_REPOS)
+                .setIndicator(buildIndicator(R.string.search_repos)).setContent(intent));
 
         intent.setClass(getApplicationContext(), SearchUsers.class);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_SEARCH_USERS).setIndicator(
-                buildIndicator(R.string.search_users)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_SEARCH_USERS)
+                .setIndicator(buildIndicator(R.string.search_users)).setContent(intent));
     }
 
     @Override

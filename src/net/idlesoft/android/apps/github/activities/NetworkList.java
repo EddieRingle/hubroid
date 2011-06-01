@@ -41,7 +41,7 @@ public class NetworkList extends BaseActivity {
                 e.printStackTrace();
             }
             if (activity.mJson != null) {
-            	activity.mAdapter.loadData(activity.mJson);
+                activity.mAdapter.loadData(activity.mJson);
             }
             return null;
         }

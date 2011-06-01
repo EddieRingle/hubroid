@@ -8,10 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -30,6 +26,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SingleActivityItem extends BaseActivity {
     public static final String CSS = "<style type=\"text/css\">" + "* {" + "margin: 0px;" + "}"
@@ -269,12 +269,12 @@ public class SingleActivityItem extends BaseActivity {
                                 intent.putExtra("repo_name", parts[2]);
                                 startActivity(intent);
                             } else if (parts[0].equals("showIssue")) {
-                            	final Intent intent = new Intent(SingleActivityItem.this,
-                            			SingleIssue.class);
-                            	intent.putExtra("repo_owner", parts[1]);
-                            	intent.putExtra("repo_name", parts[2]);
-                            	intent.putExtra("number", Integer.parseInt(parts[3]));
-                            	startActivity(intent);
+                                final Intent intent = new Intent(SingleActivityItem.this,
+                                        SingleIssue.class);
+                                intent.putExtra("repo_owner", parts[1]);
+                                intent.putExtra("repo_name", parts[2]);
+                                intent.putExtra("number", Integer.parseInt(parts[3]));
+                                startActivity(intent);
                             }
                             return true;
                         }

@@ -12,6 +12,7 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.ClosedIssues;
 import net.idlesoft.android.apps.github.activities.tabs.OpenIssues;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -45,12 +46,12 @@ public class Issues extends BaseTabActivity {
         intent.putExtra("repo_owner", mRepositoryOwner);
         intent.putExtra("repo_name", mRepositoryName);
 
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_OPEN_ISSUES).setIndicator(
-                buildIndicator(R.string.open_issues)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_OPEN_ISSUES)
+                .setIndicator(buildIndicator(R.string.open_issues)).setContent(intent));
 
         intent.setClass(getApplicationContext(), ClosedIssues.class);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_CLOSED_ISSUES).setIndicator(
-                buildIndicator(R.string.closed_issues)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_CLOSED_ISSUES)
+                .setIndicator(buildIndicator(R.string.closed_issues)).setContent(intent));
     }
 
     @Override

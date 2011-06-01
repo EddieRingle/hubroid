@@ -58,7 +58,8 @@ public class FileViewer extends BaseActivity {
                         // browsers truncate "\t+" to " ").
                         splitFile[i] = splitFile[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 
-                        // Replace any sequence of two or more spaces with &nbsps
+                        // Replace any sequence of two or more spaces with
+                        // &nbsps
                         // (most browsers truncate " +" to " ").
                         splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
 
@@ -78,7 +79,8 @@ public class FileViewer extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Void result) {
-            activity.mWebView.loadDataWithBaseURL("hubroid", activity.mHtml, "text/html", "UTF-8", "hubroid");
+            activity.mWebView.loadDataWithBaseURL("hubroid", activity.mHtml, "text/html", "UTF-8",
+                    "hubroid");
             activity.mProgressDialog.dismiss();
         }
 

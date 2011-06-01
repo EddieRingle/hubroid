@@ -8,10 +8,6 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -24,6 +20,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CommitListAdapter extends GravatarListAdapter {
     public static class ViewHolder {
@@ -95,10 +95,10 @@ public class CommitListAdapter extends GravatarListAdapter {
             }
             holder.gravatar.setBackgroundDrawable(mActivity.getResources().getDrawable(
                     R.drawable.gravatar_border));
-            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index).getJSONObject(
-                    "author").getString("login")));
-            holder.commit_shortdesc.setText(mJson.getJSONObject(index).getString("message").split(
-                    "\n")[0]);
+            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index)
+                    .getJSONObject("author").getString("login")));
+            holder.commit_shortdesc.setText(mJson.getJSONObject(index).getString("message")
+                    .split("\n")[0]);
         } catch (final JSONException e) {
             e.printStackTrace();
         } catch (final ParseException e) {
@@ -114,8 +114,8 @@ public class CommitListAdapter extends GravatarListAdapter {
         final int length = mJson.length();
         for (int i = 0; i < length; i++) {
             try {
-                final String login = mJson.getJSONObject(i).getJSONObject("author").getString(
-                        "login");
+                final String login = mJson.getJSONObject(i).getJSONObject("author")
+                        .getString("login");
                 if (!mGravatars.containsKey(login)) {
                     mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
                             .getGravatarID(login), 30.0f, mActivity.getResources()

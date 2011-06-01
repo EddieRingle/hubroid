@@ -14,6 +14,7 @@ import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
 import net.idlesoft.android.apps.github.activities.tabs.PushableRepos;
 import net.idlesoft.android.apps.github.activities.tabs.WatchedRepos;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -62,20 +63,22 @@ public class Repositories extends BaseTabActivity {
 
         Intent intent = new Intent(getApplicationContext(), MyRepos.class);
         intent.putExtra("target", mTarget);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_MY_REPOS).setIndicator(
-                buildIndicator(R.string.my_repos)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_MY_REPOS)
+                .setIndicator(buildIndicator(R.string.my_repos)).setContent(intent));
 
         intent = new Intent(getApplicationContext(), WatchedRepos.class);
         intent.putExtra("target", mTarget);
-        mTabHost.addTab(mTabHost.newTabSpec(TAG_WATCHED_REPOS).setIndicator(
-                buildIndicator(R.string.watched_repos)).setContent(intent));
+        mTabHost.addTab(mTabHost.newTabSpec(TAG_WATCHED_REPOS)
+                .setIndicator(buildIndicator(R.string.watched_repos)).setContent(intent));
 
-        /* If we're viewing lists of logged in user's own repositories,
-         * show those he/she has push access to */
+        /*
+         * If we're viewing lists of logged in user's own repositories, show
+         * those he/she has push access to
+         */
         if (mTarget.equals(mUsername)) {
             intent = new Intent(getApplicationContext(), PushableRepos.class);
-            mTabHost.addTab(mTabHost.newTabSpec(TAG_PUSHABLE_REPOS).setIndicator(
-                    buildIndicator(R.string.pushable_repos)).setContent(intent));
+            mTabHost.addTab(mTabHost.newTabSpec(TAG_PUSHABLE_REPOS)
+                    .setIndicator(buildIndicator(R.string.pushable_repos)).setContent(intent));
         }
     }
 

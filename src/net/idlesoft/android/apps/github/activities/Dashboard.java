@@ -8,12 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
@@ -31,6 +25,12 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class Dashboard extends BaseActivity {
     private static class GetLatestBlogPostTask extends AsyncTask<Void, Void, JSONObject> {
@@ -71,8 +71,8 @@ public class Dashboard extends BaseActivity {
 
                 if (response.statusCode == 200) {
                     final JSONObject feedJson = new JSONObject(response.resp);
-                    return feedJson.getJSONObject("query").getJSONObject("results").getJSONObject(
-                            "entry");
+                    return feedJson.getJSONObject("query").getJSONObject("results")
+                            .getJSONObject("entry");
                 }
             } catch (final Exception e) {
                 e.printStackTrace();

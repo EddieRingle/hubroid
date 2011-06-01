@@ -8,6 +8,15 @@
 
 package net.idlesoft.android.apps.github.utils;
 
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Environment;
+import android.util.Log;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -20,29 +29,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Environment;
-import android.util.Log;
-
 public class GravatarCache {
 
     /* Root directory for gravatar storage on the SD card */
     private final static String ROOT_DIR = "hubroid/gravatars";
 
     private static Bitmap downloadGravatar(final String id) throws IOException {
-    	final URL aURL;
-    	if (id != null && !id.equals("")) {
-    		aURL = new URL("http://www.gravatar.com/avatar/" + URLEncoder.encode(id)
-    				+ "?size=100&d=mm");
-    	} else {
-    		aURL = new URL("http://www.gravatar.com/avatar/?size=100&d=mm");
-    	}
-    		
+        final URL aURL;
+        if (id != null && !id.equals("")) {
+            aURL = new URL("http://www.gravatar.com/avatar/" + URLEncoder.encode(id)
+                    + "?size=100&d=mm");
+        } else {
+            aURL = new URL("http://www.gravatar.com/avatar/?size=100&d=mm");
+        }
+
         final HttpURLConnection conn = (HttpURLConnection) aURL.openConnection();
         conn.setDoInput(true);
         conn.connect();

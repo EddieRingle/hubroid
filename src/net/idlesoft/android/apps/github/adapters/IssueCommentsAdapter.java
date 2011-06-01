@@ -8,10 +8,6 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -24,6 +20,10 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class IssueCommentsAdapter extends GravatarListAdapter {
     public static class ViewHolder {
@@ -108,8 +108,8 @@ public class IssueCommentsAdapter extends GravatarListAdapter {
             }
             holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index).getString(
                     "user")));
-            holder.body.setText(mJson.getJSONObject(index).getString("body").replaceAll("\r\n",
-                    "\n").replaceAll("\r", "\n"));
+            holder.body.setText(mJson.getJSONObject(index).getString("body")
+                    .replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
         } catch (final JSONException e) {
             e.printStackTrace();
         } catch (final ParseException e) {
