@@ -30,6 +30,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Repository extends BaseActivity {
     private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
@@ -52,6 +53,8 @@ public class Repository extends BaseActivity {
                             activity.mIsWatching = true;
                         }
                     }
+                } else if (resp.statusCode == 404) {
+                	activity.mJson = null;
                 }
             } catch (final JSONException e) {
                 e.printStackTrace();
@@ -61,9 +64,14 @@ public class Repository extends BaseActivity {
 
         @Override
         protected void onPostExecute(final Void result) {
-            activity.loadRepoInfo();
-            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
-            activity.findViewById(R.id.rl_repository_progress).setVisibility(View.GONE);
+        	if (activity.mJson != null) {
+	            activity.loadRepoInfo();
+	            activity.findViewById(R.id.sv_repository_scrollView).setVisibility(View.VISIBLE);
+	            activity.findViewById(R.id.rl_repository_progress).setVisibility(View.GONE);
+        	} else {
+        		Toast.makeText(activity, "Repository no longer exists.", Toast.LENGTH_SHORT).show();
+        		activity.finish();
+        	}
         }
 
         @Override
