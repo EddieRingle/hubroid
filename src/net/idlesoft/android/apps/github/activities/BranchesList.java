@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchListAdapter;
 
@@ -97,7 +96,7 @@ public class BranchesList extends BaseActivity {
         mBranchList = (ListView) findViewById(R.id.lv_branchList_list);
         mBranchList.setOnItemClickListener(mOnBranchListItemClick);
 
-        HubroidApplication.setupActionBar(BranchesList.this);
+        setupActionBar();
 
         final TextView title = (TextView) findViewById(R.id.tv_page_title);
         title.setText("Branches");

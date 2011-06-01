@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.json.JSONObject;
@@ -41,7 +40,7 @@ public class Branch extends BaseActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.branch);
 
-        HubroidApplication.setupActionBar(Branch.this);
+        setupActionBar();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

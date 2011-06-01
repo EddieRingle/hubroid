@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.ClosedIssues;
 import net.idlesoft.android.apps.github.activities.tabs.OpenIssues;
@@ -32,7 +31,7 @@ public class Issues extends BaseTabActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.issues);
 
-        HubroidApplication.setupActionBar(Issues.this);
+        setupActionBar();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

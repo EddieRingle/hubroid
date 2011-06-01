@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.SearchRepos;
 import net.idlesoft.android.apps.github.activities.tabs.SearchUsers;
@@ -36,7 +35,7 @@ public class Search extends BaseTabActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.search);
 
-        HubroidApplication.setupActionBar(Search.this, false);
+        setupActionBar(false);
 
         final Intent intent = new Intent(Search.this, SearchRepos.class);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_SEARCH_REPOS)

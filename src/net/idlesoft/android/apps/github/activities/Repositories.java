@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
 import net.idlesoft.android.apps.github.activities.tabs.PushableRepos;
@@ -37,7 +36,7 @@ public class Repositories extends BaseTabActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.repositories);
 
-        HubroidApplication.setupActionBar(Repositories.this);
+        setupActionBar();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

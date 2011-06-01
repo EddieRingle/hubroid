@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.json.JSONException;
@@ -119,7 +118,7 @@ public class FileViewer extends BaseActivity {
 
         mWebView = (WebView) findViewById(R.id.wv_fileView_contents);
 
-        HubroidApplication.setupActionBar(FileViewer.this);
+        setupActionBar();
 
         final TextView title = (TextView) findViewById(R.id.tv_page_title);
         title.setText("File Viewer");

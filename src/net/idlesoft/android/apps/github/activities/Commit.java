@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
@@ -331,7 +330,7 @@ public class Commit extends BaseActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.commit);
 
-        HubroidApplication.setupActionBar(Commit.this);
+        setupActionBar();
 
         mCommitLayout = (ScrollView) findViewById(R.id.sv_commit_content);
         mProgressLayout = (RelativeLayout) findViewById(R.id.rl_commit_progressLayout);

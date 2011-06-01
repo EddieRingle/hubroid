@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchTreeListAdapter;
 
@@ -108,7 +107,7 @@ public class BranchTree extends BaseActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.branch_tree_list);
 
-        HubroidApplication.setupActionBar(BranchTree.this);
+        setupActionBar();
 
         final TextView pageTitle = (TextView) findViewById(R.id.tv_page_title);
         pageTitle.setText("Tree Browser");

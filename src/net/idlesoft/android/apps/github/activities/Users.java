@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.Followers;
 import net.idlesoft.android.apps.github.activities.tabs.Following;
@@ -43,7 +42,7 @@ public class Users extends BaseTabActivity {
             mTarget = mUsername;
         }
 
-        HubroidApplication.setupActionBar(Users.this);
+        setupActionBar();
 
         final ImageView gravatar = (ImageView) findViewById(R.id.iv_users_gravatar);
         gravatar.setImageBitmap(GravatarCache.getDipGravatar(GravatarCache.getGravatarID(mTarget),

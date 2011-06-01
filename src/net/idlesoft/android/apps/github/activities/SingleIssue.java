@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.IssueCommentsAdapter;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -325,7 +324,7 @@ public class SingleIssue extends BaseActivity {
 
         mAdapter = new IssueCommentsAdapter(SingleIssue.this, mListView);
 
-        HubroidApplication.setupActionBar(SingleIssue.this);
+        setupActionBar();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

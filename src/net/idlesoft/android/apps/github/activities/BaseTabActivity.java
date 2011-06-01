@@ -7,9 +7,12 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 
 import android.app.TabActivity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -50,5 +53,49 @@ public class BaseTabActivity extends TabActivity {
         mGApi.authenticate(mUsername, mPassword);
 
         mTabHost = getTabHost();
+    }
+
+    public void setupActionBar(final String pTitle, final boolean pShowSearch,
+            final boolean pLinkIcon) {
+        final TextView title = (TextView) findViewById(R.id.tv_top_bar_text);
+        if (pTitle == null) {
+            title.setText("Hubroid");
+        } else {
+            title.setText(pTitle);
+        }
+
+        if (pLinkIcon) {
+            final OnClickListener onActionBarIconClick = new OnClickListener() {
+                public void onClick(View v) {
+                    startActivity(new Intent(BaseTabActivity.this, Dashboard.class));
+                }
+            };
+            final ImageView icon = (ImageView) findViewById(R.id.iv_top_bar_icon);
+            icon.setOnClickListener(onActionBarIconClick);
+        }
+
+        final ImageView search = (ImageView) findViewById(R.id.btn_search);
+        if (pShowSearch) {
+            final OnClickListener onActionBarSearchClick = new OnClickListener() {
+                public void onClick(View v) {
+                    startActivity(new Intent(BaseTabActivity.this, Search.class));
+                }
+            };
+            search.setOnClickListener(onActionBarSearchClick);
+        } else {
+            search.setVisibility(View.GONE);
+        }
+    }
+
+    public void setupActionBar() {
+        setupActionBar("Hubroid", true, true);
+    }
+
+    public void setupActionBar(final String pTitle) {
+        setupActionBar(pTitle, true, true);
+    }
+
+    public void setupActionBar(final boolean pShowSearch) {
+        setupActionBar("Hubroid", pShowSearch, true);
     }
 }

@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -183,7 +182,7 @@ public class Repository extends BaseActivity {
 
         mIsWatching = false;
 
-        HubroidApplication.setupActionBar(Repository.this);
+        setupActionBar();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

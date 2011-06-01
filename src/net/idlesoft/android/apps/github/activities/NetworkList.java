@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ForkListAdapter;
 
@@ -88,7 +87,7 @@ public class NetworkList extends BaseActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.network);
 
-        HubroidApplication.setupActionBar(NetworkList.this);
+        setupActionBar();
 
         mListView = (ListView) findViewById(R.id.lv_network_list);
         mListView.setOnItemClickListener(mOnForkListItemClick);

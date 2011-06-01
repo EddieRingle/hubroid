@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 import net.idlesoft.android.apps.github.utils.NewsFeedHelpers;
@@ -232,7 +231,7 @@ public class SingleActivityItem extends BaseActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.single_activity_item);
 
-        HubroidApplication.setupActionBar(SingleActivityItem.this);
+        setupActionBar();
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

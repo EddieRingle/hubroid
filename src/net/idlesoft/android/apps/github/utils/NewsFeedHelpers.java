@@ -146,13 +146,10 @@ public class NewsFeedHelpers {
 
     public static String linkifyGistItem(final JSONObject pNewsItem) throws JSONException {
         final JSONObject payload = pNewsItem.getJSONObject("payload");
-        final String html = "<div>"
-                + "<h2>" + payload.getString("name") + "</h2>"
+        final String html = "<div>" + "<h2>" + payload.getString("name") + "</h2>"
                 + "<b>URL:</b> <a href=\"" + payload.getString("url") + "\">"
-                + payload.getString("url") + "</a><br/><br/>"
-                + "<b>Snippet:</b><br/><br/>"
-                + "<pre>" + payload.getString("snippet") + "</pre>"
-                + "</div>";
+                + payload.getString("url") + "</a><br/><br/>" + "<b>Snippet:</b><br/><br/>"
+                + "<pre>" + payload.getString("snippet") + "</pre>" + "</div>";
         return html;
     }
 
@@ -173,11 +170,14 @@ public class NewsFeedHelpers {
             repohtml = "";
         }
 
-        final String html = "<div>" + "<h2>Uh-oh!</h2><br/>"
+        final String html = "<div>"
+                + "<h2>Uh-oh!</h2><br/>"
                 + "Either Hubroid doesn't know how to handle this event or the API "
                 + "does not provide enough information to work with.<br/><br/>"
                 + "In the meantime, here's some generic information about the event:<br/>"
-                + "<ul style='line-height: 1.5em;'>" + repohtml + "</ul>"
+                + "<ul style='line-height: 1.5em;'>"
+                + repohtml
+                + "</ul>"
                 + "<img style=\"position: absolute; bottom: 0;right: 0;\" src=\"file:///android_asset/octocat_sad.png\" />"
                 + "</div>";
         return html;

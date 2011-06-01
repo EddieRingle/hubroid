@@ -8,7 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -126,7 +125,7 @@ public class Dashboard extends BaseActivity {
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.dashboard);
 
-        HubroidApplication.setupActionBar(Dashboard.this, "Hubroid", true, false);
+        setupActionBar("Hubroid", true, false);
 
         ((Button) findViewById(R.id.btn_dashboard_newsfeed))
                 .setOnClickListener(new OnClickListener() {
