@@ -12,15 +12,12 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -34,19 +31,19 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class Repository extends Activity {
+public class Repository extends BaseActivity {
     private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
         public Repository activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                final Response resp = activity.mGapi.repo.info(activity.mRepositoryOwner,
+                final Response resp = activity.mGApi.repo.info(activity.mRepositoryOwner,
                         activity.mRepositoryName);
                 if (resp.statusCode == 200) {
                     activity.mJson = new JSONObject(resp.resp).getJSONObject("repository");
 
-                    final JSONArray watched_list = new JSONObject(activity.mGapi.user
+                    final JSONArray watched_list = new JSONObject(activity.mGApi.user
                             .watching(activity.mUsername).resp).getJSONArray("repositories");
                     final int length = watched_list.length() - 1;
                     for (int i = 0; i <= length; i++) {
@@ -77,10 +74,6 @@ public class Repository extends Activity {
 
     }
 
-    private SharedPreferences.Editor mEditor;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     public Intent mIntent;
 
     private boolean mIsWatching;
@@ -89,17 +82,11 @@ public class Repository extends Activity {
 
     private LoadRepositoryTask mLoadRepositoryTask;
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     public ProgressDialog mProgressDialog;
 
     private String mRepositoryName;
 
     private String mRepositoryOwner;
-
-    private String mUsername;
 
     public void loadRepoInfo() {
         try {
@@ -183,17 +170,9 @@ public class Repository extends Activity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.repository);
+        super.onCreate(icicle, R.layout.repository);
 
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
         mIsWatching = false;
-
-        mGapi.authenticate(mUsername, mPassword);
 
         HubroidApplication.setupActionBar(Repository.this);
 
@@ -220,7 +199,7 @@ public class Repository extends Activity {
                 try {
                     JSONObject newRepoInfo = null;
                     if (mIsWatching) {
-                        final Response unwatchResp = mGapi.repo.unwatch(mRepositoryOwner,
+                        final Response unwatchResp = mGApi.repo.unwatch(mRepositoryOwner,
                                 mRepositoryName);
                         if (unwatchResp.statusCode == 200) {
                             newRepoInfo = new JSONObject(unwatchResp.resp)
@@ -228,7 +207,7 @@ public class Repository extends Activity {
                             mIsWatching = false;
                         }
                     } else {
-                        final Response watchResp = mGapi.repo.watch(mRepositoryOwner,
+                        final Response watchResp = mGApi.repo.watch(mRepositoryOwner,
                                 mRepositoryName);
                         if (watchResp.statusCode == 200) {
                             newRepoInfo = new JSONObject(watchResp.resp)
@@ -256,7 +235,7 @@ public class Repository extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

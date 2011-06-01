@@ -12,16 +12,12 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.CommitListAdapter;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,14 +28,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class CommitsList extends Activity {
+public class CommitsList extends BaseActivity {
     private static class GatherCommitsTask extends AsyncTask<Void, Void, Void> {
         public CommitsList activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                activity.mCommitsJSON = new JSONObject(activity.mGapi.commits.list(
+                activity.mCommitsJSON = new JSONObject(activity.mGApi.commits.list(
                         activity.mRepoOwner, activity.mRepoName, activity.mBranchName).resp)
                         .getJSONArray("commits");
                 activity.mCommitListAdapter.loadData(activity.mCommitsJSON);
@@ -76,15 +72,9 @@ public class CommitsList extends Activity {
 
     public ListView mCommitListView;
 
-    public JSONArray mCommitsJSON;;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
+    public JSONArray mCommitsJSON;
 
     private GatherCommitsTask mGatherCommitsTask;
-
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
 
     public ProgressDialog mProgressDialog;
 
@@ -92,22 +82,9 @@ public class CommitsList extends Activity {
 
     public String mRepoOwner;
 
-    private String mUsername;
-
-    private Editor mEditor;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.commits_list);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.commits_list);
 
         HubroidApplication.setupActionBar(CommitsList.this);
 
@@ -204,7 +181,7 @@ public class CommitsList extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

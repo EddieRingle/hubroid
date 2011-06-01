@@ -11,14 +11,11 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -27,14 +24,14 @@ import android.view.MenuItem;
 import android.webkit.WebView;
 import android.widget.TextView;
 
-public class FileViewer extends Activity {
+public class FileViewer extends BaseActivity {
     private static class LoadBlobTask extends AsyncTask<Void, Void, Void> {
         FileViewer activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                activity.mJson = new JSONObject(activity.mGapi.object.blob(
+                activity.mJson = new JSONObject(activity.mGApi.object.blob(
                         activity.mRepositoryOwner, activity.mRepositoryName, activity.mTreeSha,
                         activity.mBlobPath).resp).getJSONObject("blob");
                 /*
@@ -94,10 +91,6 @@ public class FileViewer extends Activity {
 
     public String mBlobPath;
 
-    private SharedPreferences.Editor mEditor;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     private String mHtml;
 
     public Intent mIntent;
@@ -105,10 +98,6 @@ public class FileViewer extends Activity {
     public JSONObject mJson;
 
     private LoadBlobTask mLoadBlobTask;
-
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
 
     private ProgressDialog mProgressDialog;
 
@@ -118,24 +107,13 @@ public class FileViewer extends Activity {
 
     public String mTreeSha;
 
-    private String mUsername;
-
     private WebView mWebView;
 
     private String mBlobSha;
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.file_view);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.file_view);
 
         mWebView = (WebView) findViewById(R.id.wv_fileView_contents);
 
@@ -208,7 +186,7 @@ public class FileViewer extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

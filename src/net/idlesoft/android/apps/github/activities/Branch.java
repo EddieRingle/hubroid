@@ -11,13 +11,9 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,41 +24,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class Branch extends Activity {
+public class Branch extends BaseActivity {
     private String mBranchName;
 
     private String mBranchSha;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
 
     public Intent mIntent;
 
     public JSONObject mJson;
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     private String mRepositoryName;
 
     private String mRepositoryOwner;
 
-    private String mUsername;
-
-    private Editor mEditor;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.branch);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.branch);
 
         HubroidApplication.setupActionBar(Branch.this);
 
@@ -120,7 +97,7 @@ public class Branch extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

@@ -20,9 +20,7 @@ import net.idlesoft.android.apps.github.R;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences.Editor;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,7 +32,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class Dashboard extends Activity {
+public class Dashboard extends BaseActivity {
     private static class GetLatestBlogPostTask extends AsyncTask<Void, Void, JSONObject> {
         public Dashboard activity;
 
@@ -123,14 +121,10 @@ public class Dashboard extends Activity {
     }
 
     public GetLatestBlogPostTask mGetLatestBlogPostTask;
-    private Editor mEditor;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.dashboard);
-
-        mEditor = getSharedPreferences(Hubroid.PREFS_NAME, 0).edit();
+        super.onCreate(savedInstanceState, R.layout.dashboard);
 
         HubroidApplication.setupActionBar(Dashboard.this, "Hubroid", true, false);
 
@@ -207,7 +201,7 @@ public class Dashboard extends Activity {
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

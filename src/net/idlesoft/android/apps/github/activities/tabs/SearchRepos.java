@@ -9,19 +9,16 @@
 package net.idlesoft.android.apps.github.activities.tabs;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.activities.Hubroid;
+import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Repository;
 import net.idlesoft.android.apps.github.adapters.RepositoriesListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -36,14 +33,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class SearchRepos extends Activity {
+public class SearchRepos extends BaseActivity {
     private static class SearchReposTask extends AsyncTask<Void, Void, Void> {
         public SearchRepos activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                final Response resp = activity.mGapi.repo.search(activity.mSearchTerm);
+                final Response resp = activity.mGApi.repo.search(activity.mSearchTerm);
                 if (resp.statusCode != 200) {
                     /* Oh noez, something went wrong */
                     return null;
@@ -70,8 +67,6 @@ public class SearchRepos extends Activity {
     }
 
     private RepositoriesListAdapter mAdapter;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
 
     private JSONArray mJson;
 
@@ -125,8 +120,6 @@ public class SearchRepos extends Activity {
         }
     };
 
-    private String mPassword;
-
     private EditText mSearchBox;
 
     private ImageButton mSearchButton;
@@ -135,19 +128,9 @@ public class SearchRepos extends Activity {
 
     private SearchReposTask mTask;
 
-    private String mUsername;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-
-        final SharedPreferences prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mUsername = prefs.getString("username", "");
-        mPassword = prefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
-
-        setContentView(R.layout.search_tab);
+        super.onCreate(icicle, R.layout.search_tab);
 
         mListView = (ListView) findViewById(R.id.lv_searchTab_list);
         mListView.setOnItemClickListener(mOnListItemClick);

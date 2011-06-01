@@ -13,15 +13,11 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -35,20 +31,12 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class Profile extends Activity {
-    private GitHubAPI mGapi;
-
+public class Profile extends BaseActivity {
     public JSONObject mJson;
 
     public JSONArray mJsonFollowing;
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     private String mTarget;
-
-    private String mUsername;
 
     private Bitmap mGravatar;
 
@@ -62,10 +50,10 @@ public class Profile extends Activity {
 
     	protected Void doInBackground(Void... params) {
     		try {
-	    		Response r = activity.mGapi.user.info(activity.mTarget);
+	    		Response r = activity.mGApi.user.info(activity.mTarget);
 	    		if (r.statusCode == 200) {
 	    			activity.mJson = new JSONObject(r.resp);
-	    			Response fResp = activity.mGapi.user.following(activity.mUsername);
+	    			Response fResp = activity.mGApi.user.following(activity.mUsername);
 	    			if (fResp.statusCode == 200) {
 	    				activity.mJsonFollowing = new JSONObject(fResp.resp).getJSONArray("users");
 	    			}
@@ -118,8 +106,6 @@ public class Profile extends Activity {
             }
         }
     };
-
-    private Editor mEditor;
 
     public void loadInfo() {
     	try {
@@ -194,17 +180,7 @@ public class Profile extends Activity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.profile);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi = new GitHubAPI();
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.profile);
 
         HubroidApplication.setupActionBar(Profile.this);
 
@@ -240,7 +216,7 @@ public class Profile extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

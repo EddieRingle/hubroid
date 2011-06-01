@@ -13,13 +13,10 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ActivityFeedAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -30,7 +27,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class NewsFeed extends Activity {
+public class NewsFeed extends BaseActivity {
     private static class LoadActivityFeedTask extends AsyncTask<Void, Void, Void> {
         public NewsFeed activity;
 
@@ -40,9 +37,9 @@ public class NewsFeed extends Activity {
                 try {
                     final Response resp;
                     if (mPrivate) {
-                        resp = activity.mGapi.user.private_activity();
+                        resp = activity.mGApi.user.private_activity();
                     } else {
-                        resp = activity.mGapi.user.activity(mTargetUser);
+                        resp = activity.mGApi.user.activity(mTargetUser);
                     }
                     if (resp.statusCode != 200) {
                         /* Let the user know something went wrong */
@@ -77,21 +74,11 @@ public class NewsFeed extends Activity {
 
     private ActivityFeedAdapter mActivityAdapter;
 
-    private SharedPreferences.Editor mEditor;
-
-    public GitHubAPI mGapi = new GitHubAPI();
-
     public JSONArray mJson;
 
     private ListView mListView;
 
     private LoadActivityFeedTask mLoadActivityTask;
-
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
-    private String mUsername;
 
     private final OnItemClickListener onActivityItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> arg0, final View arg1, final int arg2,
@@ -108,15 +95,7 @@ public class NewsFeed extends Activity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.news_feed);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.news_feed);
 
         HubroidApplication.setupActionBar(NewsFeed.this);
 
@@ -159,7 +138,7 @@ public class NewsFeed extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

@@ -13,15 +13,11 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchTreeListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,13 +28,13 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class BranchTree extends Activity {
+public class BranchTree extends BaseActivity {
     private static class LoadTreeTask extends AsyncTask<Void, Void, Void> {
         public BranchTree activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            final Response r = activity.mGapi.object.tree(activity.mRepositoryOwner,
+            final Response r = activity.mGApi.object.tree(activity.mRepositoryOwner,
                     activity.mRepositoryName, activity.mBranchSha);
             if (r.statusCode == 200) {
                 try {
@@ -68,8 +64,6 @@ public class BranchTree extends Activity {
     private String mBranchName;
 
     private String mBranchSha;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
 
     public Intent mIntent;
 
@@ -106,30 +100,13 @@ public class BranchTree extends Activity {
         }
     };
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     private String mRepositoryName;
 
     private String mRepositoryOwner;
 
-    private String mUsername;
-
-    private Editor mEditor;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.branch_tree_list);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.branch_tree_list);
 
         HubroidApplication.setupActionBar(BranchTree.this);
 
@@ -177,7 +154,7 @@ public class BranchTree extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

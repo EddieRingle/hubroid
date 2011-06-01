@@ -20,9 +20,7 @@ import net.idlesoft.android.apps.github.utils.NewsFeedHelpers;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,19 +31,15 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class SingleActivityItem extends Activity {
+public class SingleActivityItem extends BaseActivity {
     public static final String CSS = "<style type=\"text/css\">" + "* {" + "font-size: 13px;"
             + "margin: 0px;" + "}" + "div {" + "margin: 10px;" + "}" + "ul, li {" + "margin: 0;"
             + "padding: 0;" + "margin-top: 10px;" + "margin-bottom: 10px;" + "margin-left: 10px;"
             + "}" + "span {" + "color: #999;" + "margin: 0;" + "}" + "</style>";
 
-    private SharedPreferences.Editor mEditor;
-
     public Intent mIntent;
 
     private JSONObject mJson = new JSONObject();
-
-    private SharedPreferences mPrefs;
 
     private void loadActivityItemBox() {
         final TextView date = (TextView) findViewById(R.id.tv_activity_item_date);
@@ -230,11 +224,7 @@ public class SingleActivityItem extends Activity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.single_activity_item);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
+        super.onCreate(icicle, R.layout.single_activity_item);
 
         HubroidApplication.setupActionBar(SingleActivityItem.this);
 
@@ -328,7 +318,7 @@ public class SingleActivityItem extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

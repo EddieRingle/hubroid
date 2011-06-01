@@ -9,19 +9,16 @@
 package net.idlesoft.android.apps.github.activities.tabs;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.activities.Hubroid;
+import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Profile;
 import net.idlesoft.android.apps.github.adapters.FollowersFollowingListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -29,7 +26,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class Followers extends Activity {
+public class Followers extends BaseActivity {
     private static class FollowersTask extends AsyncTask<Void, Void, Void> {
         public Followers activity;
 
@@ -37,7 +34,7 @@ public class Followers extends Activity {
         protected Void doInBackground(final Void... params) {
             if (activity.mJson == null) {
                 try {
-                    final Response resp = activity.mGapi.user.followers(activity.mTarget);
+                    final Response resp = activity.mGApi.user.followers(activity.mTarget);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
@@ -65,8 +62,6 @@ public class Followers extends Activity {
 
     private FollowersFollowingListAdapter mAdapter;
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     private JSONArray mJson;
 
     private ListView mListView;
@@ -91,10 +86,7 @@ public class Followers extends Activity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-
-        final SharedPreferences prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mGapi.authenticate(prefs.getString("username", ""), prefs.getString("password", ""));
+        super.onCreate(icicle, NO_LAYOUT);
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
         mListView.setOnItemClickListener(mOnListItemClick);
@@ -109,7 +101,7 @@ public class Followers extends Activity {
             mTarget = extras.getString("target");
         }
         if ((mTarget == null) || mTarget.equals("")) {
-            mTarget = prefs.getString("username", "");
+            mTarget = mUsername;
         }
 
         mTask = (FollowersTask) getLastNonConfigurationInstance();

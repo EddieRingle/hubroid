@@ -12,13 +12,10 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchListAdapter;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -29,14 +26,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class BranchesList extends Activity {
+public class BranchesList extends BaseActivity {
     private static class GetBranchesTask extends AsyncTask<Void, Void, Void> {
         BranchesList activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                activity.mJson = new JSONObject(activity.mGapi.repo.branches(activity.mRepoOwner,
+                activity.mJson = new JSONObject(activity.mGApi.repo.branches(activity.mRepoOwner,
                         activity.mRepoName).resp).getJSONObject("branches");
                 activity.mBranchListAdapter = new BranchListAdapter(activity, activity.mJson);
             } catch (final JSONException e) {
@@ -64,10 +61,6 @@ public class BranchesList extends Activity {
 
     public BranchListAdapter mBranchListAdapter;
 
-    private SharedPreferences.Editor mEditor;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     public GetBranchesTask mGetBranchesTask;
 
     public Intent mIntent;
@@ -92,28 +85,13 @@ public class BranchesList extends Activity {
         }
     };
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     public String mRepoName;
 
     public String mRepoOwner;
 
-    private String mUsername;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.branch_list);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.branch_list);
 
         mLoadView = getLayoutInflater().inflate(R.layout.loading_listitem, null);
         mBranchList = (ListView) findViewById(R.id.lv_branchList_list);
@@ -152,7 +130,7 @@ public class BranchesList extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

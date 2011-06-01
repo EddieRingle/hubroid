@@ -11,14 +11,10 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,10 +25,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class DiffFilesList extends Activity {
+public class DiffFilesList extends BaseActivity {
     public ArrayAdapter<String> mAdapter;
-
-    private final GitHubAPI mGapi = new GitHubAPI();
 
     public JSONObject mJson;
 
@@ -60,32 +54,15 @@ public class DiffFilesList extends Activity {
         }
     };
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     public String mRepositoryName;
 
     public String mRepositoryOwner;
 
     public String mType;
 
-    private String mUsername;
-
-    private Editor mEditor;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.diff_file_list);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.diff_file_list);
 
         HubroidApplication.setupActionBar(DiffFilesList.this);
 
@@ -149,7 +126,7 @@ public class DiffFilesList extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

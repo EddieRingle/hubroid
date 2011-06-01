@@ -17,14 +17,11 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,14 +37,14 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-public class Commit extends Activity {
+public class Commit extends BaseActivity {
     private static class GetCommitTask extends AsyncTask<Void, Void, Void> {
         public Commit activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                final Response commitResponse = activity.mGapi.commits.commit(
+                final Response commitResponse = activity.mGApi.commits.commit(
                         activity.mRepositoryOwner, activity.mRepositoryName, activity.mCommitSha);
                 if (commitResponse.statusCode != 200) {
                     /*
@@ -170,27 +167,17 @@ public class Commit extends Activity {
 
     private String mCommitterName;
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     private GetCommitTask mGetCommitTask;
 
     public Intent mIntent;
 
     private JSONObject mJson;
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     private RelativeLayout mProgressLayout;
 
     private String mRepositoryName;
 
     private String mRepositoryOwner;
-
-    private String mUsername;
-
-    private Editor mEditor;
 
     protected void buildUi() {
         // Get the commit data for that commit ID so that we can get the
@@ -342,16 +329,7 @@ public class Commit extends Activity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.commit);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.commit);
 
         HubroidApplication.setupActionBar(Commit.this);
 
@@ -419,7 +397,7 @@ public class Commit extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

@@ -9,19 +9,16 @@
 package net.idlesoft.android.apps.github.activities.tabs;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.activities.Hubroid;
+import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Repository;
 import net.idlesoft.android.apps.github.adapters.RepositoriesListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -29,7 +26,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class MyRepos extends Activity {
+public class MyRepos extends BaseActivity {
     private static class MyReposTask extends AsyncTask<Void, Void, Void> {
         public MyRepos activity;
 
@@ -37,7 +34,7 @@ public class MyRepos extends Activity {
         protected Void doInBackground(final Void... params) {
             if (activity.mJson == null) {
                 try {
-                    final Response resp = activity.mGapi.repo.list(activity.mTarget);
+                    final Response resp = activity.mGApi.repo.list(activity.mTarget);
                     if (resp.statusCode != 200) {
                         /* Oh noez, something went wrong */
                         return null;
@@ -65,8 +62,6 @@ public class MyRepos extends Activity {
 
     private RepositoriesListAdapter mAdapter;
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     private JSONArray mJson;
 
     private ListView mListView;
@@ -86,23 +81,13 @@ public class MyRepos extends Activity {
         }
     };
 
-    private String mPassword;
-
     private String mTarget;
 
     private MyReposTask mTask;
 
-    private String mUsername;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-
-        final SharedPreferences prefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mUsername = prefs.getString("username", "");
-        mPassword = prefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, NO_LAYOUT);
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
         mListView.setOnItemClickListener(mOnListItemClick);

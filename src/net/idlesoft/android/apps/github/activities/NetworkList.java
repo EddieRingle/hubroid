@@ -12,15 +12,11 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ForkListAdapter;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -31,14 +27,14 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class NetworkList extends Activity {
+public class NetworkList extends BaseActivity {
     private static class GetForksTask extends AsyncTask<Void, Void, Void> {
         public NetworkList activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                activity.mJson = new JSONObject(activity.mGapi.repo.network(
+                activity.mJson = new JSONObject(activity.mGApi.repo.network(
                         activity.mRepositoryOwner, activity.mRepositoryName).resp)
                         .getJSONArray("network");
             } catch (final JSONException e) {
@@ -64,8 +60,6 @@ public class NetworkList extends Activity {
 
     public ForkListAdapter mAdapter;
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     private GetForksTask mGetForksTask;
 
     public JSONArray mJson;
@@ -86,30 +80,13 @@ public class NetworkList extends Activity {
         }
     };
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     public String mRepositoryName;
 
     public String mRepositoryOwner;
 
-    private String mUsername;
-
-    private Editor mEditor;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.network);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.network);
 
         HubroidApplication.setupActionBar(NetworkList.this);
 
@@ -155,7 +132,7 @@ public class NetworkList extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

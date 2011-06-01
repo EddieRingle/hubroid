@@ -18,16 +18,12 @@ import net.idlesoft.android.apps.github.adapters.IssueCommentsAdapter;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -43,13 +39,13 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SingleIssue extends Activity {
+public class SingleIssue extends BaseActivity {
     private static class AddCommentTask extends AsyncTask<Void, Void, Integer> {
         public SingleIssue activity;
 
         @Override
         protected Integer doInBackground(final Void... params) {
-            return activity.mGapi.issues
+            return activity.mGApi.issues
                     .add_comment(activity.mRepositoryOwner, activity.mRepositoryName,
                             activity.mIssueNumber, ((EditText) activity.mCommentArea
                                     .findViewById(R.id.et_issue_comment_area_body)).getText()
@@ -80,7 +76,7 @@ public class SingleIssue extends Activity {
 
         @Override
         protected Integer doInBackground(final Void... params) {
-            final int statusCode = activity.mGapi.issues.close(activity.mRepositoryOwner,
+            final int statusCode = activity.mGApi.issues.close(activity.mRepositoryOwner,
                     activity.mRepositoryName, activity.mIssueNumber).statusCode;
             return statusCode;
         }
@@ -110,7 +106,7 @@ public class SingleIssue extends Activity {
         protected Void doInBackground(final Void... params) {
         	if (activity.mJson == null) {
         		try {
-        			final Response r = activity.mGapi.issues.issue(activity.mRepositoryOwner, activity.mRepositoryName, activity.mIssueNumber);
+        			final Response r = activity.mGApi.issues.issue(activity.mRepositoryOwner, activity.mRepositoryName, activity.mIssueNumber);
         			if (r.statusCode != 200) {
         				/* Something happened */
         				return null;
@@ -122,7 +118,7 @@ public class SingleIssue extends Activity {
         	}
             if (activity.mCommentsJson == null) {
                 try {
-                    final Response resp = activity.mGapi.issues.list_comments(
+                    final Response resp = activity.mGApi.issues.list_comments(
                             activity.mRepositoryOwner, activity.mRepositoryName,
                             activity.mIssueNumber);
                     if (resp.statusCode != 200) {
@@ -222,8 +218,6 @@ public class SingleIssue extends Activity {
 
     private JSONArray mCommentsJson;
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     private LoadIssueTask mLoadIssueTask;
 
     private View mHeader;
@@ -252,19 +246,11 @@ public class SingleIssue extends Activity {
         }
     };
 
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
-
     private ProgressDialog mProgressDialog;
 
     private String mRepositoryName;
 
     private String mRepositoryOwner;
-
-    private String mUsername;
-
-    private Editor mEditor;
 
     private void loadIssueItemBox() {
         final TextView date = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_updated_date);
@@ -329,20 +315,11 @@ public class SingleIssue extends Activity {
 
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.single_issue);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
+        super.onCreate(icicle, R.layout.single_issue);
 
         mListView = (ListView) findViewById(R.id.lv_single_issue_comments);
 
         mAdapter = new IssueCommentsAdapter(SingleIssue.this, mListView);
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
 
         HubroidApplication.setupActionBar(SingleIssue.this);
 
@@ -436,7 +413,7 @@ public class SingleIssue extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;

@@ -12,15 +12,11 @@ import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,7 +28,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CreateIssue extends Activity {
+public class CreateIssue extends BaseActivity {
     private static class CreateIssueTask extends AsyncTask<Void, Void, Integer> {
         public CreateIssue activity;
 
@@ -43,7 +39,7 @@ public class CreateIssue extends Activity {
             final String body = ((TextView) activity.findViewById(R.id.et_create_issue_body))
                     .getText().toString();
             if (!title.equals("") && !body.equals("")) {
-                final Response createResp = activity.mGapi.issues.open(activity.mRepositoryOwner,
+                final Response createResp = activity.mGApi.issues.open(activity.mRepositoryOwner,
                         activity.mRepositoryName, title, body);
                 if (createResp.statusCode == 201) {
                     try {
@@ -83,13 +79,7 @@ public class CreateIssue extends Activity {
 
     private CreateIssueTask mCreateIssueTask;
 
-    private final GitHubAPI mGapi = new GitHubAPI();
-
     private JSONObject mIssueJson;
-
-    private String mPassword;
-
-    private SharedPreferences mPrefs;
 
     private ProgressDialog mProgressDialog;
 
@@ -97,22 +87,9 @@ public class CreateIssue extends Activity {
 
     private String mRepositoryOwner;
 
-    private String mUsername;
-
-    private Editor mEditor;
-
     @Override
     public void onCreate(final Bundle icicle) {
-        super.onCreate(icicle);
-        setContentView(R.layout.create_issue);
-
-        mPrefs = getSharedPreferences(Hubroid.PREFS_NAME, 0);
-        mEditor = mPrefs.edit();
-
-        mUsername = mPrefs.getString("username", "");
-        mPassword = mPrefs.getString("password", "");
-
-        mGapi.authenticate(mUsername, mPassword);
+        super.onCreate(icicle, R.layout.create_issue);
 
         HubroidApplication.setupActionBar(CreateIssue.this);
 
@@ -200,7 +177,7 @@ public class CreateIssue extends Activity {
                 startActivity(i1);
                 return true;
             case 1:
-                mEditor.clear().commit();
+                mPrefsEditor.clear().commit();
                 final Intent intent = new Intent(this, Hubroid.class);
                 startActivity(intent);
                 return true;
