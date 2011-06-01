@@ -8,6 +8,9 @@
 
 package net.idlesoft.android.apps.github;
 
+import org.eclipse.egit.github.core.client.GitHubClient;
+import org.idlesoft.libraries.ghapi.GitHubAPI;
+
 import net.idlesoft.android.apps.github.activities.Dashboard;
 import net.idlesoft.android.apps.github.activities.Search;
 import android.app.Activity;
@@ -21,6 +24,24 @@ import android.widget.TextView;
 
 public class HubroidApplication extends Application {
     private static final boolean DEVELOPER_MODE = false;
+
+    private static GitHubAPI mGApi;
+
+    private static GitHubClient mGitHubClient;
+
+    public static GitHubAPI getGApiInstance() {
+    	if (mGApi == null) {
+    		mGApi = new GitHubAPI();
+    	}
+    	return mGApi;
+    }
+
+    public static GitHubClient getGitHubClientInstance() {
+    	if (mGitHubClient == null) {
+    		mGitHubClient = new GitHubClient();
+    	}
+    	return mGitHubClient;
+    }
 
     @Override
     public void onCreate() {

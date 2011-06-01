@@ -1,5 +1,7 @@
 package net.idlesoft.android.apps.github.activities;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
+
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 
@@ -31,8 +33,8 @@ public class BaseActivity extends Activity {
 		mUsername = mPrefs.getString("username", "");
 		mPassword = mPrefs.getString("password", "");
 
-		mGitHubClient = new GitHubClient().setCredentials(mUsername, mPassword);
-		mGApi = new GitHubAPI();
+		mGitHubClient = HubroidApplication.getGitHubClientInstance().setCredentials(mUsername, mPassword);
+		mGApi = HubroidApplication.getGApiInstance();
 		mGApi.authenticate(mUsername, mPassword);
 	}
 }
