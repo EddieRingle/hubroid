@@ -11,34 +11,34 @@
         </activity>
         <activity android:name=".activities.Login" />
         <activity android:name=".activities.Dashboard" />
-        <activity android:name=".activities.NewsFeed" android:configChanges="orientation" />
-        <activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.SearchRepos" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.SearchUsers" android:configChanges="orientation" />
-        <activity android:name=".activities.Repositories" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.MyRepos" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.WatchedRepos" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.PushableRepos" android:configChanges="orientation" />
-        <activity android:name=".activities.Users" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.Followers" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.Following" android:configChanges="orientation" />
-        <activity android:name=".activities.Profile" android:configChanges="orientation" />
-        <activity android:name=".activities.Repository" android:configChanges="orientation" />
-        <activity android:name=".activities.BranchesList" android:configChanges="orientation" />
-        <activity android:name=".activities.Branch" android:configChanges="orientation" />
-        <activity android:name=".activities.BranchTree" android:configChanges="orientation" />
-        <activity android:name=".activities.CommitsList" android:configChanges="orientation" />
-        <activity android:name=".activities.Commit" android:configChanges="orientation" />
-        <activity android:name=".activities.DiffFilesList" android:configChanges="orientation" />
-        <activity android:name=".activities.Issues" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.OpenIssues" android:configChanges="orientation" />
-        <activity android:name=".activities.tabs.ClosedIssues" android:configChanges="orientation" />
-        <activity android:name=".activities.CreateIssue" android:configChanges="orientation" />
-        <activity android:name=".activities.SingleIssue" android:configChanges="orientation" />
-        <activity android:name=".activities.NetworkList" android:configChanges="orientation" />
-        <activity android:name=".activities.SingleActivityItem" android:configChanges="orientation" />
-        <activity android:name=".activities.CommitChangeViewer" android:configChanges="orientation" />
-        <activity android:name=".activities.FileViewer" android:configChanges="orientation" />
+        <activity android:name=".activities.NewsFeed" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.SearchRepos" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.SearchUsers" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Repositories" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.MyRepos" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.WatchedRepos" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.PushableRepos" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Users" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.Followers" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.Following" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Profile" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Repository" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.BranchesList" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Branch" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.BranchTree" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.CommitsList" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Commit" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.DiffFilesList" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Issues" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.OpenIssues" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.ClosedIssues" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.CreateIssue" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.SingleIssue" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.NetworkList" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.SingleActivityItem" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.CommitChangeViewer" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.FileViewer" android:configChanges="orientation|keyboard|keyboardHidden" />
     </application>
     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="10" android:maxSdkVersion="10" />
     <uses-permission android:name="android.permission.INTERNET" />
