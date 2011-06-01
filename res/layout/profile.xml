@@ -5,12 +5,15 @@
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
 	<!-- Top Bar -->
-	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<com.markupartist.android.widget.ActionBar
+        android:id="@+id/actionbar"
+        style="@style/ActionBar"
+    />
 	<!-- Contain the rest in a scroll view to give the views more space -->
 	<ScrollView android:id="@+id/sv_userInfo"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:layout_below="@id/include_top_bar"
+		android:layout_below="@id/actionbar"
 		android:fadingEdge="none">
 		<RelativeLayout
 			android:layout_width="fill_parent"

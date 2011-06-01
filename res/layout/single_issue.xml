@@ -6,7 +6,10 @@
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent"
 	android:isScrollContainer="true">
-	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<com.markupartist.android.widget.ActionBar
+        android:id="@+id/actionbar"
+        style="@style/ActionBar"
+    />
 	<LinearLayout
 	   android:id="@+id/ll_single_issue_content"
 	   android:orientation="vertical"

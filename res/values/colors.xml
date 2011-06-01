@@ -12,4 +12,10 @@
 	<color name="yellow">#FFCC00</color>
 	<color name="gray">#808080</color>
 	<color name="transparent">#00000000</color>
+
+    <!-- Action bar colors -->
+    <color name="actionbar_divider">#F0F0F0</color>
+    <color name="actionbar_background_start">#DDD</color>
+    <color name="actionbar_background_end">#DDD</color>
+    <color name="actionbar_title">#555</color>
 </resources>

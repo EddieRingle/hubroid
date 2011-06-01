@@ -10,7 +10,10 @@
 			android:orientation="vertical"
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
-			<include android:id="@+id/top_bar" layout="@layout/top_bar" />
+			<com.markupartist.android.widget.ActionBar
+    android:id="@+id/actionbar"
+    style="@style/ActionBar"
+    />
 			<LinearLayout
 				android:orientation="horizontal"
 				android:layout_width="fill_parent"

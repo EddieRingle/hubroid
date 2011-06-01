@@ -12,13 +12,16 @@
 		<RelativeLayout
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
-			<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+			<com.markupartist.android.widget.ActionBar
+		        android:id="@+id/actionbar"
+		        style="@style/ActionBar"
+		    />
 			<TabWidget
 					android:id="@android:id/tabs"
 					android:layout_width="fill_parent"
 					android:layout_height="wrap_content"
 					android:background="@null"
-					android:layout_below="@id/include_top_bar"
+					android:layout_below="@id/actionbar"
 					android:layout_marginTop="5dip"
 					android:layout_marginLeft="-2dip"
 					android:layout_marginRight="-2dip" />

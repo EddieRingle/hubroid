@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<style name="Theme.Hubroid" parent="android:style/Theme.Light">
+	<style name="Theme.Hubroid" parent="style/Theme.ActionBar.Light">
 		<item name="android:windowNoTitle">true</item>
 		<item name="android:windowContentOverlay">@null</item>
 	</style>

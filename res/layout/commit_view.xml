@@ -4,8 +4,10 @@
 	android:background="#FFF"
 	android:orientation="vertical"
 	android:layout_height="fill_parent">
-	<include android:id="@+id/include_top_bar"
-		layout="@layout/top_bar" />
+	<com.markupartist.android.widget.ActionBar
+        android:id="@+id/actionbar"
+        style="@style/ActionBar"
+    />
 	<include android:id="@+id/include_page_title"
 		layout="@layout/page_title" />
 	<WebView

@@ -5,7 +5,10 @@
 	android:orientation="vertical"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
-	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<com.markupartist.android.widget.ActionBar
+        android:id="@+id/actionbar"
+        style="@style/ActionBar"
+    />
 	<include android:id="@+id/include_activity_item" layout="@layout/activity_item" />
 	<LinearLayout
 		android:id="@+id/ll_single_activity_item_strip"
@@ -21,5 +24,5 @@
 		android:id="@+id/wv_single_activity_item_content"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:layout_below="@id/include_top_bar" />
+		android:layout_below="@id/actionbar" />
 </LinearLayout>

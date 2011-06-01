@@ -1,6 +1,9 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.ActionBar.Action;
+
 import net.idlesoft.android.apps.github.R;
 
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -10,9 +13,8 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -55,47 +57,68 @@ public class BaseTabActivity extends TabActivity {
         mTabHost = getTabHost();
     }
 
+    protected ActionBar getActionBar() {
+        return (ActionBar) findViewById(R.id.actionbar);
+    }
+
     public void setupActionBar(final String pTitle, final boolean pShowSearch,
-            final boolean pLinkIcon) {
-        final TextView title = (TextView) findViewById(R.id.tv_top_bar_text);
-        if (pTitle == null) {
-            title.setText("Hubroid");
-        } else {
-            title.setText(pTitle);
-        }
+            final boolean pShowCreate) {
+        final ActionBar actionBar = (ActionBar) findViewById(R.id.actionbar);
+        if (actionBar != null) {
+            int displayFlags = ActionBar.DISPLAY_SHOW_TITLE | ActionBar.DISPLAY_SHOW_HOME;
+            actionBar.setDisplayOptions(displayFlags);
 
-        if (pLinkIcon) {
-            final OnClickListener onActionBarIconClick = new OnClickListener() {
-                public void onClick(View v) {
-                    startActivity(new Intent(BaseTabActivity.this, Dashboard.class));
-                }
-            };
-            final ImageView icon = (ImageView) findViewById(R.id.iv_top_bar_icon);
-            icon.setOnClickListener(onActionBarIconClick);
-        }
+            getMenuInflater().inflate(R.menu.actionbar, actionBar.asMenu());
 
-        final ImageView search = (ImageView) findViewById(R.id.btn_search);
-        if (pShowSearch) {
-            final OnClickListener onActionBarSearchClick = new OnClickListener() {
-                public void onClick(View v) {
-                    startActivity(new Intent(BaseTabActivity.this, Search.class));
-                }
-            };
-            search.setOnClickListener(onActionBarSearchClick);
-        } else {
-            search.setVisibility(View.GONE);
+            if (pTitle == null) {
+                actionBar.setTitle(R.string.app_name);
+            } else {
+                actionBar.setTitle(pTitle);
+            }
+
+            final Action createAction = (Action) actionBar.findAction(R.id.actionbar_item_create);
+            final Action searchAction = (Action) actionBar.findAction(R.id.actionbar_item_search);
+
+            if (pShowCreate) {
+                createAction.setEnabled(true);
+                createAction.setVisible(true);
+            }
+
+            if (pShowSearch) {
+                searchAction.setEnabled(true);
+                searchAction.setVisible(true);
+            }
         }
     }
 
     public void setupActionBar() {
-        setupActionBar("Hubroid", true, true);
+        setupActionBar("Hubroid", true, false);
     }
 
     public void setupActionBar(final String pTitle) {
-        setupActionBar(pTitle, true, true);
+        setupActionBar(pTitle, true, false);
     }
 
     public void setupActionBar(final boolean pShowSearch) {
-        setupActionBar("Hubroid", pShowSearch, true);
+        setupActionBar("Hubroid", pShowSearch, false);
+    }
+
+    @Override
+    public boolean onMenuItemSelected(int featureId, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.actionbar_item_home:
+                startActivity(new Intent(BaseTabActivity.this, Dashboard.class));
+                return true;
+            case R.id.actionbar_item_create:
+                return onCreateActionClicked();
+            case R.id.actionbar_item_search:
+                startActivity(new Intent(BaseTabActivity.this, Search.class));
+                return true;
+        }
+        return super.onMenuItemSelected(featureId, item);
+    }
+
+    public boolean onCreateActionClicked() {
+        return true;
     }
 }

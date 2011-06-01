@@ -4,12 +4,15 @@
 	android:background="#FFF"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
-	<include android:id="@+id/include_top_bar" layout="@layout/top_bar" />
+	<com.markupartist.android.widget.ActionBar
+        android:id="@+id/actionbar"
+        style="@style/ActionBar"
+    />
 	<ScrollView
 		android:id="@+id/sv_repository_scrollView"
 		android:layout_width="fill_parent"
 		android:layout_height="fill_parent"
-		android:layout_below="@id/include_top_bar">
+		android:layout_below="@id/actionbar">
 		<RelativeLayout
 			android:layout_width="fill_parent"
 			android:layout_height="fill_parent">
