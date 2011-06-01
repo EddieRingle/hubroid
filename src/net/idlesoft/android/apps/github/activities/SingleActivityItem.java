@@ -32,8 +32,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class SingleActivityItem extends BaseActivity {
-    public static final String CSS = "<style type=\"text/css\">" + "* {" + "font-size: 13px;"
-            + "margin: 0px;" + "}" + "div {" + "margin: 10px;" + "}" + "ul, li {" + "margin: 0;"
+    public static final String CSS = "<style type=\"text/css\">" + "* {" + "margin: 0px;" + "}"
+            + "div {" + "margin: 10px;" + "font-size: 13px;" + "}" + "ul, li {" + "margin: 0;"
             + "padding: 0;" + "margin-top: 10px;" + "margin-bottom: 10px;" + "margin-left: 10px;"
             + "}" + "span {" + "color: #999;" + "margin: 0;" + "}" + "</style>";
 
@@ -302,6 +302,8 @@ public class SingleActivityItem extends BaseActivity {
                     html = NewsFeedHelpers.linkifyIssueItem(mJson);
                 } else if (eventType.equals("WatchEvent")) {
                     html = NewsFeedHelpers.linkifyWatchItem(mJson);
+                } else {
+                    html = NewsFeedHelpers.linkifyOtherItem(mJson);
                 }
                 final String out = CSS + html;
                 content.loadDataWithBaseURL("hubroid", out, "text/html", "UTF-8", "hubroid");
