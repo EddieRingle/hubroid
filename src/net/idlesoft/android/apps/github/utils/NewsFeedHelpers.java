@@ -177,7 +177,9 @@ public class NewsFeedHelpers {
                 + "Either Hubroid doesn't know how to handle this event or the API "
                 + "does not provide enough information to work with.<br/><br/>"
                 + "In the meantime, here's some generic information about the event:<br/>"
-                + "<ul style='line-height: 1.5em;'>" + repohtml + "</ul>" + "</div>";
+                + "<ul style='line-height: 1.5em;'>" + repohtml + "</ul>"
+                + "<img style=\"position: absolute; bottom: 0;right: 0;\" src=\"file:///android_asset/octocat_sad.png\" />"
+                + "</div>";
         return html;
     }
 }
