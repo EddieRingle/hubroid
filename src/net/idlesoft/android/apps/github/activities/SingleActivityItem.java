@@ -203,6 +203,12 @@ public class SingleActivityItem extends BaseActivity {
                 title = actor + " added " + payload.getString("member") + " to "
                         + entry.getJSONObject("repository").getString("owner") + "/"
                         + entry.getJSONObject("repository").getString("name");
+            } else if (eventType.contains("IssueCommentEvent")) {
+                icon.setImageResource(R.drawable.comment);
+                title = actor + " commented on issue "
+                        + entry.getString("url").split("/")[6].split("#")[0] + " on "
+                        + entry.getJSONObject("repository").getString("owner") + "/"
+                        + entry.getJSONObject("repository").getString("name");
             }
 
             title_tv.setText(title);

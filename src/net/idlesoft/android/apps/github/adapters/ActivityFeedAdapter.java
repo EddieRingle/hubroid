@@ -218,6 +218,12 @@ public class ActivityFeedAdapter extends JsonListAdapter {
                 title = actor + " added " + payload.getString("member") + " to "
                         + entry.getJSONObject("repository").getString("owner") + "/"
                         + entry.getJSONObject("repository").getString("name");
+            } else if (eventType.contains("IssueCommentEvent")) {
+                holder.icon.setImageResource(R.drawable.comment);
+                title = actor + " commented on issue "
+                        + entry.getString("url").split("/")[6].split("#")[0] + " on "
+                        + entry.getJSONObject("repository").getString("owner") + "/"
+                        + entry.getJSONObject("repository").getString("name");
             }
             holder.title.setText(title);
         } catch (final JSONException e) {
