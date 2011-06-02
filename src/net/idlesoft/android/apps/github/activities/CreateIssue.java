@@ -47,23 +47,27 @@ public class CreateIssue extends BaseActivity {
                     }
                 }
                 return createResp.statusCode;
+            } else {
+                return -1;
             }
-            return null;
         }
 
         @Override
         protected void onPostExecute(final Integer result) {
+            activity.mProgressDialog.dismiss();
+
             if (result.intValue() == 201 && activity.mIssueJson != null) {
                 final Intent i = new Intent(activity, SingleIssue.class);
                 i.putExtra("repo_owner", activity.mRepositoryOwner);
                 i.putExtra("repo_name", activity.mRepositoryName);
                 i.putExtra("json", activity.mIssueJson.toString());
 
-                activity.mProgressDialog.dismiss();
                 activity.startActivity(i);
                 activity.finish();
+            } else if (result.intValue() == -1) {
+                Toast.makeText(activity, "Title and body fields cannot be blank.", Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(activity, "Error creating issue.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Error creating issue. Error " + result.intValue(), Toast.LENGTH_SHORT).show();
             }
         }
 
