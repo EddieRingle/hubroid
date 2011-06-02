@@ -135,13 +135,13 @@ public class SingleActivityItem extends BaseActivity {
                         + payload.getJSONObject("target").getString("login");
             } else if (eventType.contains("CreateEvent")) {
                 icon.setImageResource(R.drawable.create);
-                if (payload.getString("object").contains("repository")) {
+                if (payload.getString("ref_type").contains("repository")) {
                     title = actor + " created repository " + payload.getString("name");
-                } else if (payload.getString("object").contains("branch")) {
+                } else if (payload.getString("ref_type").contains("branch")) {
                     title = actor + " created branch " + payload.getString("object_name") + " at "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
-                } else if (payload.getString("object").contains("tag")) {
+                } else if (payload.getString("ref_type").contains("tag")) {
                     title = actor + " created tag " + payload.getString("object_name") + " at "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
@@ -285,7 +285,7 @@ public class SingleActivityItem extends BaseActivity {
                 if (eventType.equals("PushEvent")) {
                     html = NewsFeedHelpers.linkifyPushItem(mJson);
                 } else if (eventType.equals("CreateEvent")) {
-                    final String object = mJson.getJSONObject("payload").getString("object");
+                    final String object = mJson.getJSONObject("payload").getString("ref_type");
                     if (object.equals("branch")) {
                         html = NewsFeedHelpers.linkifyCreateBranchItem(mJson);
                     } else if (object.equals("repository")) {
