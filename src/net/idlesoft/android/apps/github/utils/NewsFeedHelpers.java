@@ -135,7 +135,8 @@ public class NewsFeedHelpers {
     }
 
     public static String linkifyWatchItem(final JSONObject pNewsItem) throws JSONException {
-        final String repoPath = pNewsItem.getJSONObject("payload").getString("repo");
+        final JSONObject repo = pNewsItem.getJSONObject("repository");
+        final String repoPath = repo.getString("owner") + "/" + repo.getString("name");
         final String repoDesc = pNewsItem.getJSONObject("repository").getString("description");
 
         final String html = "<div>" + "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
