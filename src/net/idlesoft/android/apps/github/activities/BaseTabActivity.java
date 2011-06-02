@@ -13,6 +13,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
@@ -119,6 +120,31 @@ public class BaseTabActivity extends TabActivity {
     }
 
     public boolean onCreateActionClicked() {
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(final MenuItem item) {
+        switch (item.getItemId()) {
+            case 1:
+                mPrefsEditor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 0:
+                startActivity(new Intent(this, HubroidPreferences.class));
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(final Menu menu) {
+        if (menu.hasVisibleItems()) {
+            menu.clear();
+        }
+        menu.add(0, 0, 0, "Settings").setIcon(android.R.drawable.ic_menu_preferences);
+        menu.add(0, 1, 0, "Logout").setIcon(android.R.drawable.ic_lock_power_off);
         return true;
     }
 }

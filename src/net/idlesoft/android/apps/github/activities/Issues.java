@@ -14,8 +14,6 @@ import net.idlesoft.android.apps.github.activities.tabs.OpenIssues;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.TextView;
 
 public class Issues extends BaseTabActivity {
@@ -31,7 +29,7 @@ public class Issues extends BaseTabActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.issues);
 
-        setupActionBar();
+        setupActionBar("Hubroid", true, true);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -54,36 +52,11 @@ public class Issues extends BaseTabActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        final Intent intent;
-        switch (item.getItemId()) {
-            case -1:
-                intent = new Intent(this, CreateIssue.class);
-                intent.putExtra("repo_owner", mRepositoryOwner);
-                intent.putExtra("repo_name", mRepositoryName);
-                startActivity(intent);
-                return true;
-            case 0:
-                intent = new Intent(this, Hubroid.class);
-                startActivity(intent);
-                return true;
-            case 1:
-                mPrefsEditor.clear().commit();
-                intent = new Intent(this, Hubroid.class);
-                startActivity(intent);
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (menu.hasVisibleItems()) {
-            menu.clear();
-        }
-        menu.add(0, -1, 0, "Create Issue").setIcon(android.R.drawable.ic_menu_add);
-        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(0, 1, 0, "Logout");
+    public boolean onCreateActionClicked() {
+        final Intent intent = new Intent(this, CreateIssue.class);
+        intent.putExtra("repo_owner", mRepositoryOwner);
+        intent.putExtra("repo_name", mRepositoryName);
+        startActivity(intent);
         return true;
     }
 }

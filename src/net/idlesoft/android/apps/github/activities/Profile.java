@@ -20,8 +20,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -207,31 +205,5 @@ public class Profile extends BaseActivity {
 
     public Object onRetainNonConfigurationInstance() {
         return mTask;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case 0:
-                final Intent i1 = new Intent(this, Hubroid.class);
-                startActivity(i1);
-                return true;
-            case 1:
-                mPrefsEditor.clear().commit();
-                final Intent intent = new Intent(this, Hubroid.class);
-                startActivity(intent);
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (menu.hasVisibleItems()) {
-            menu.clear();
-        }
-        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(0, 1, 0, "Logout");
-        return true;
     }
 }

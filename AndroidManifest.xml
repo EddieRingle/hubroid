@@ -11,6 +11,7 @@
         </activity>
         <activity android:name=".activities.Login" />
         <activity android:name=".activities.Dashboard" />
+        <activity android:name=".activities.HubroidPreferences" />
         <activity android:name=".activities.NewsFeed" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.Search" android:windowSoftInputMode="adjustPan" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.tabs.SearchRepos" android:configChanges="orientation|keyboard|keyboardHidden" />

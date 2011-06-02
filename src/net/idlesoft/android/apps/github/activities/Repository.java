@@ -203,6 +203,14 @@ public class Repository extends BaseActivity {
     @Override
     public boolean onOptionsItemSelected(final MenuItem item) {
         switch (item.getItemId()) {
+            case 1:
+                mPrefsEditor.clear().commit();
+                final Intent intent = new Intent(this, Hubroid.class);
+                startActivity(intent);
+                return true;
+            case 0:
+                startActivity(new Intent(this, HubroidPreferences.class));
+                return true;
             case 3:
                 try {
                     JSONObject newRepoInfo = null;
@@ -238,15 +246,6 @@ public class Repository extends BaseActivity {
                     e.printStackTrace();
                 }
                 break;
-            case 0:
-                final Intent i1 = new Intent(this, Hubroid.class);
-                startActivity(i1);
-                return true;
-            case 1:
-                mPrefsEditor.clear().commit();
-                final Intent intent = new Intent(this, Hubroid.class);
-                startActivity(intent);
-                return true;
         }
         return false;
     }
@@ -261,8 +260,8 @@ public class Repository extends BaseActivity {
         } else {
             menu.add(0, 3, 0, "Watch");
         }
-        menu.add(0, 0, 0, "Back to Main").setIcon(android.R.drawable.ic_menu_revert);
-        menu.add(0, 1, 0, "Logout");
+        menu.add(0, 0, 0, "Settings").setIcon(android.R.drawable.ic_menu_preferences);
+        menu.add(0, 1, 0, "Logout").setIcon(android.R.drawable.ic_lock_power_off);
         return true;
     }
 

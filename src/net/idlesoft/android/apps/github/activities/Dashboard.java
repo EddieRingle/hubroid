@@ -17,8 +17,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -194,26 +192,5 @@ public class Dashboard extends BaseActivity {
         outState.putString("postLink", postLink.getText().toString());
 
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        switch (item.getItemId()) {
-            case 1:
-                mPrefsEditor.clear().commit();
-                final Intent intent = new Intent(this, Hubroid.class);
-                startActivity(intent);
-                return true;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-        if (menu.hasVisibleItems()) {
-            menu.clear();
-        }
-        menu.add(0, 1, 0, "Logout");
-        return true;
     }
 }
