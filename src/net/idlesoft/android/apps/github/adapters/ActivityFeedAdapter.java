@@ -174,14 +174,14 @@ public class ActivityFeedAdapter extends JsonListAdapter {
                         + entry.getJSONObject("repository").getString("name");
             } else if (eventType.contains("DeleteEvent")) {
                 holder.icon.setImageResource(R.drawable.delete);
-                if (payload.getString("object").contains("repository")) {
+                if (payload.getString("ref_type").contains("repository")) {
                     title = actor + " deleted repository " + payload.getString("name");
-                } else if (payload.getString("object").contains("branch")) {
-                    title = actor + " deleted branch " + payload.getString("object_name") + " at "
+                } else if (payload.getString("ref_type").contains("branch")) {
+                    title = actor + " deleted branch " + payload.getString("ref") + " at "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
-                } else if (payload.getString("object").contains("tag")) {
-                    title = actor + " deleted tag " + payload.getString("object_name") + " at "
+                } else if (payload.getString("ref_type").contains("tag")) {
+                    title = actor + " deleted tag " + payload.getString("ref") + " at "
                             + entry.getJSONObject("repository").getString("owner") + "/"
                             + entry.getJSONObject("repository").getString("name");
                 }
