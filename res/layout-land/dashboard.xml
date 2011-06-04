@@ -54,41 +54,48 @@
 	</LinearLayout>
 	<!--  This layout is just here so that the IDs exist in landscape mode -->
 	<LinearLayout
-		android:orientation="vertical"
-		android:layout_width="fill_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center"
-		android:layout_gravity="bottom"
-		android:background="#CCC"
-		android:padding="10dip"
-		android:visibility="gone">
-		<TextView
-			android:id="@+id/tv_dashboard_latestPost_label"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:textColor="@color/darkText"
-			android:textSize="10dip"
-			android:text="Latest Blog Post" />
-		<TextView
-			android:id="@+id/tv_dashboard_latestPost_title"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:ellipsize="end"
-			android:textColor="@color/darkText"
-			android:textSize="16dip" />
-		<TextView
-			android:id="@+id/tv_dashboard_latestPost_link"
-			android:layout_height="wrap_content"
-			android:layout_width="wrap_content"
-			android:textSize="12dip"
-			android:autoLink="web"
-			android:ellipsize="end" />
-		<ProgressBar
-			android:id="@+id/pb_dashboard_latestPost_progress"
-			android:layout_height="28dip"
-			android:layout_width="28dip"
-			android:indeterminateOnly="true"
-			android:layout_margin="5dip"
-			android:visibility="gone" />
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="bottom"
+        android:background="#f4f4f4"
+        android:paddingBottom="10dip"
+        android:visibility="gone">
+        <LinearLayout
+          android:layout_width="fill_parent"
+          android:layout_height="1dip"
+          android:background="#ccc"
+          android:layout_marginBottom="9dip" />
+        <TextView
+            android:id="@+id/tv_dashboard_latestPost_label"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/darkText"
+            android:textSize="10dip"
+            android:text="Latest Blog Post" />
+        <TextView
+            android:id="@+id/tv_dashboard_latestPost_title"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textColor="@color/darkText"
+            android:textSize="16dip" />
+        <TextView
+            android:id="@+id/tv_dashboard_latestPost_link"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="12dip"
+            android:autoLink="web"
+            android:singleLine="true"
+            android:ellipsize="end" />
+        <ProgressBar
+            android:id="@+id/pb_dashboard_latestPost_progress"
+            android:layout_height="28dip"
+            android:layout_width="28dip"
+            android:indeterminateOnly="true"
+            android:layout_margin="5dip"
+            android:visibility="gone" />
     </LinearLayout>
 </LinearLayout>
