@@ -40,7 +40,6 @@ public class SearchUsersListAdapter extends GravatarListAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.text.setTextColor(R.color.textColor);
         try {
             final String username = ((JSONObject) getData().get(index)).getString("username");
             holder.text.setText(username);

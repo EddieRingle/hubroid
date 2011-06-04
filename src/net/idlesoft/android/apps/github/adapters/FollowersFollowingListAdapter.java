@@ -36,7 +36,6 @@ public class FollowersFollowingListAdapter extends GravatarListAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        holder.text.setTextColor(R.color.textColor);
         final String username = (String) getData().get(index);
         holder.text.setText(username);
         holder.gravatar.setImageBitmap(mGravatars.get(username));

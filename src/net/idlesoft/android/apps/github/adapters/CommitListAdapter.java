@@ -93,8 +93,6 @@ public class CommitListAdapter extends GravatarListAdapter {
                 }
                 holder.commit_date.setText(sec + end);
             }
-            holder.gravatar.setBackgroundDrawable(mActivity.getResources().getDrawable(
-                    R.drawable.gravatar_border));
             holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index)
                     .getJSONObject("author").getString("login")));
             holder.commit_shortdesc.setText(mJson.getJSONObject(index).getString("message")

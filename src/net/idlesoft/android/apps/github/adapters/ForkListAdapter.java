@@ -41,9 +41,6 @@ public class ForkListAdapter extends JsonListAdapter {
         }
         try {
             holder.text.setText(mJson.getJSONObject(index).getString("owner"));
-            holder.text.setEllipsize(TruncateAt.END);
-            holder.text.setTextColor(R.color.textColor);
-            holder.text.setMaxLines(1);
         } catch (final JSONException e) {
             e.printStackTrace();
         }
