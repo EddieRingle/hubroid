@@ -13,6 +13,7 @@
 	<color name="yellow">#FFCC00</color>
 	<color name="gray">#808080</color>
 	<color name="transparent">#00000000</color>
+	<color name="grayText">#99A7AF</color>
 
     <color name="gravatar_border">#D8D8D8</color>
     <!-- Action bar colors -->
