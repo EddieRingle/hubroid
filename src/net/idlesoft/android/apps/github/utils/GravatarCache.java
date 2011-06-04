@@ -190,12 +190,14 @@ public class GravatarCache {
                     files[i].delete();
                 }
             }
+            return path.delete();
+        } else {
+            return false;
         }
-        return path.delete();
     }
 
     public static boolean clearCache() {
-        final File gravatars = new File(ROOT_DIR);
+        final File gravatars = new File(Environment.getExternalStorageDirectory(), ROOT_DIR);
         return deleteDirectory(gravatars);
     }
 }
