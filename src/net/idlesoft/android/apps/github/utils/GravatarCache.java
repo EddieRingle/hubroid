@@ -8,6 +8,9 @@
 
 package net.idlesoft.android.apps.github.utils;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
+import net.idlesoft.android.apps.github.R;
+
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,17 +41,22 @@ public class GravatarCache {
         final URL aURL;
         if (id != null && !id.equals("")) {
             aURL = new URL("http://www.gravatar.com/avatar/" + URLEncoder.encode(id)
-                    + "?size=100&d=mm");
+                    + "?size=100&d=404");
         } else {
-            aURL = new URL("http://www.gravatar.com/avatar/?size=100&d=mm");
+            aURL = new URL("http://www.gravatar.com/avatar/?size=140&d=404");
         }
 
         final HttpURLConnection conn = (HttpURLConnection) aURL.openConnection();
         conn.setDoInput(true);
         conn.connect();
-        final InputStream is = conn.getInputStream();
-        final Bitmap bm = BitmapFactory.decodeStream(is);
-        is.close();
+        final Bitmap bm;
+        if (conn.getResponseCode() != 404) {
+            final InputStream is = conn.getInputStream();
+            bm = BitmapFactory.decodeStream(is);
+            is.close();
+        } else {
+            bm = BitmapFactory.decodeResource(HubroidApplication.getAppResources(), R.drawable.gravatar);
+        }
         return bm;
     }
 
@@ -182,12 +190,14 @@ public class GravatarCache {
                     files[i].delete();
                 }
             }
+            return path.delete();
+        } else {
+            return false;
         }
-        return path.delete();
     }
 
     public static boolean clearCache() {
-        final File gravatars = new File(ROOT_DIR);
+        final File gravatars = new File(Environment.getExternalStorageDirectory(), ROOT_DIR);
         return deleteDirectory(gravatars);
     }
 }

@@ -20,6 +20,7 @@
     android:layout_height="fill_parent"
     android:layout_weight="1"
     android:gravity="center"
+    android:textColor="@color/minitab"
     android:textSize="14sp"
     android:textStyle="bold"
     android:minHeight="38dp"

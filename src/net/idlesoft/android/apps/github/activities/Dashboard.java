@@ -14,12 +14,19 @@ import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -124,6 +131,27 @@ public class Dashboard extends BaseActivity {
         super.onCreate(savedInstanceState, R.layout.dashboard);
 
         setupActionBar("Hubroid", true, false);
+
+        LinearLayout custom = new LinearLayout(Dashboard.this);
+        custom.setOrientation(LinearLayout.HORIZONTAL);
+        custom.setGravity(Gravity.CENTER_VERTICAL);
+
+        ImageView logo = new ImageView(Dashboard.this);
+        logo.setImageResource(R.drawable.icon);
+        logo.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        custom.addView(logo);
+
+        TextView title = new TextView(Dashboard.this);
+        title.setText("Hubroid");
+        title.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+        title.setTextColor(Color.parseColor("#333333"));
+        title.setTextSize(16.0f);
+        title.setTypeface(Typeface.DEFAULT, Typeface.BOLD);
+        title.setPadding(10, 0, 0, 0);
+        custom.addView(title);
+
+        getActionBar().setDisplayShowCustomEnabled(true);
+        getActionBar().setCustomView(custom);
 
         ((Button) findViewById(R.id.btn_dashboard_newsfeed))
                 .setOnClickListener(new OnClickListener() {

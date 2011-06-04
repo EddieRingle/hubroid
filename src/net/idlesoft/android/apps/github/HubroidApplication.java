@@ -12,6 +12,7 @@ import org.eclipse.egit.github.core.client.GitHubClient;
 import org.idlesoft.libraries.ghapi.GitHubAPI;
 
 import android.app.Application;
+import android.content.res.Resources;
 import android.os.StrictMode;
 
 public class HubroidApplication extends Application {
@@ -20,6 +21,8 @@ public class HubroidApplication extends Application {
     private static GitHubAPI mGApi;
 
     private static GitHubClient mGitHubClient;
+
+    public static Resources mResources;
 
     public static GitHubAPI getGApiInstance() {
         if (mGApi == null) {
@@ -35,6 +38,10 @@ public class HubroidApplication extends Application {
         return mGitHubClient;
     }
 
+    public static Resources getAppResources() {
+        return mResources;
+    }
+
     @Override
     public void onCreate() {
         /* Enable Strict Mode if DEVELOPER_MODE is set */
@@ -44,6 +51,7 @@ public class HubroidApplication extends Application {
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll().penaltyLog()
                     .penaltyDeath().build());
         }
+        mResources = getResources();
         super.onCreate();
     }
 }
