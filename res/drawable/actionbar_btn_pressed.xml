@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/actionbar_background_border" />
+        </shape>
+    </item>
+    <item android:bottom="1dip">
+        <shape android:shape="rectangle">
+		    <gradient
+		        android:startColor="@color/actionbar_background_item_pressed_start"
+		        android:endColor="@color/actionbar_background_item_pressed_end"
+		        android:angle="-90"/>
+        </shape>
+    </item>
+</layer-list>

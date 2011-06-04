@@ -1,8 +1,9 @@
 <resources>
 	<color name="background">#FFFFFFFF</color>
 	<color name="lightText">#D888</color>
-	<color name="textColor">#D333</color>
+	<color name="textColor">#333</color>
 	<color name="darkText">#333</color>
+	<color name="white">#fff</color>
 	<color name="gitHubBlue">#4183C4</color>
 	<color name="addedText">#DDFFDD</color>
 	<color name="removedText">#FFDDDD</color>
@@ -15,8 +16,9 @@
 
     <color name="gravatar_border">#D8D8D8</color>
     <!-- Action bar colors -->
-    <color name="actionbar_divider">#F0F0F0</color>
-    <color name="actionbar_background_start">#DDD</color>
-    <color name="actionbar_background_end">#DDD</color>
-    <color name="actionbar_title">#555</color>
+    <color name="actionbar_divider">#bbb</color>
+    <color name="actionbar_background_start">#ededed</color>
+    <color name="actionbar_background_end">#cdcdcd</color>
+    <color name="actionbar_background_border">#aaa</color>
+    <color name="actionbar_title">#333</color>
 </resources>
