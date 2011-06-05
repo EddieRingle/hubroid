@@ -65,9 +65,11 @@ public class CreateIssue extends BaseActivity {
                 activity.startActivity(i);
                 activity.finish();
             } else if (result.intValue() == -1) {
-                Toast.makeText(activity, "Title and body fields cannot be blank.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Title and body fields cannot be blank.",
+                        Toast.LENGTH_SHORT).show();
             } else {
-                Toast.makeText(activity, "Error creating issue. Error " + result.intValue(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity, "Error creating issue. Error " + result.intValue(),
+                        Toast.LENGTH_SHORT).show();
             }
         }
 

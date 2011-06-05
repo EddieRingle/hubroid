@@ -42,8 +42,8 @@ public class NewsFeedHelpers {
         final String userUriPrefix = "hubroid://showUser/";
         final String repoUri = "hubroid://showRepo/" + repoOwner + "/" + repoName;
         final String html = "<div>" + "<a href=\"" + userUriPrefix + actor + "\">" + actor
-                + "</a> created branch " + payload.getString("ref") + " at <a href=\""
-                + repoUri + "\">" + repoOwner + "/" + repoName + "</a>." + "</div>";
+                + "</a> created branch " + payload.getString("ref") + " at <a href=\"" + repoUri
+                + "\">" + repoOwner + "/" + repoName + "</a>." + "</div>";
 
         return html;
     }

@@ -55,7 +55,8 @@ public class GravatarCache {
             bm = BitmapFactory.decodeStream(is);
             is.close();
         } else {
-            bm = BitmapFactory.decodeResource(HubroidApplication.getAppResources(), R.drawable.gravatar);
+            bm = BitmapFactory.decodeResource(HubroidApplication.getAppResources(),
+                    R.drawable.gravatar);
         }
         return bm;
     }

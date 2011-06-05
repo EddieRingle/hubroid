@@ -13,7 +13,6 @@ import net.idlesoft.android.apps.github.R;
 import org.json.JSONException;
 
 import android.app.Activity;
-import android.text.TextUtils.TruncateAt;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;

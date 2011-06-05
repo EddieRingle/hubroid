@@ -14,7 +14,6 @@ import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONObject;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
