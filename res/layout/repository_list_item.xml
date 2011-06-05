@@ -30,7 +30,7 @@
 			<TextView
 				android:id="@+id/repository_list_item_name"
 				android:layout_height="wrap_content"
-				android:textColor="@color/darkText"
+				android:textColor="@color/gitHubBlue"
 				android:textStyle="bold"
 				android:ellipsize="end"
 				android:maxLines="1"
