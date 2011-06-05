@@ -19,6 +19,11 @@
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>
 
+    <!-- Gists Activity -->
+    <string name="my_gists">Gists</string>
+    <string name="starred_gists">Starred</string>
+    <string name="public_gists">Public</string>
+
 	<!-- Search Activity -->
 	<string name="search_repos">Repositories</string>
 	<string name="search_users">Users</string>
