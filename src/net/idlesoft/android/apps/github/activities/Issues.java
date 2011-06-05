@@ -21,6 +21,12 @@ public class Issues extends BaseTabActivity {
 
     private static final String TAG_OPEN_ISSUES = "open_issues";
 
+    public final static int CONTEXT_MENU_DETAILS = 1;
+
+    public final static int CONTEXT_MENU_CLOSE = 2;
+
+    public final static int CONTEXT_MENU_REOPEN = 4;
+
     private String mRepositoryName;
 
     private String mRepositoryOwner;
