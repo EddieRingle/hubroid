@@ -63,6 +63,7 @@ public class CreateIssue extends BaseActivity {
                 i.putExtra("json", activity.mIssueJson.toString());
 
                 activity.startActivity(i);
+                activity.setResult(0);
                 activity.finish();
             } else if (result.intValue() == -1) {
                 Toast.makeText(activity, "Title and body fields cannot be blank.",

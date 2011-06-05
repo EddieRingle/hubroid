@@ -62,7 +62,19 @@ public class Issues extends BaseTabActivity {
         final Intent intent = new Intent(this, CreateIssue.class);
         intent.putExtra("repo_owner", mRepositoryOwner);
         intent.putExtra("repo_name", mRepositoryName);
-        startActivity(intent);
+        startActivityForResult(intent, 0);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            final Intent refreshIssuesIntent = new Intent(this, Issues.class);
+            refreshIssuesIntent.putExtra("repo_owner", mRepositoryOwner);
+            refreshIssuesIntent.putExtra("repo_name", mRepositoryName);
+            startActivity(refreshIssuesIntent);
+            finish();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
