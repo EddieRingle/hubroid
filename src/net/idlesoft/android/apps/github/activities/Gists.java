@@ -10,7 +10,6 @@ package net.idlesoft.android.apps.github.activities;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.MyGists;
-import net.idlesoft.android.apps.github.activities.tabs.PublicGists;
 import net.idlesoft.android.apps.github.activities.tabs.StarredGists;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
@@ -67,25 +66,9 @@ public class Gists extends BaseTabActivity {
             intent.putExtra("target", mTarget);
             mTabHost.addTab(mTabHost.newTabSpec(TAG_STARRED_GISTS)
                     .setIndicator(buildIndicator(R.string.starred_gists)).setContent(intent));
-        } else {
-            /*
-             * If no user is logged in, hide the Gravatar ImageView and the tab widget,
-             * as all we will display is a list of all public Gists.
-             *
-             * We shouldn't even encounter this situation until a future Explore Mode is added,
-             * however.
-             */
-            gravatar.setVisibility(View.GONE);
-            mTabHost.getTabWidget().setVisibility(View.GONE);
         }
-
-        /*
-         * Add a list displaying all public Gists, whether or not the user is logged in or not.
-         */
-        if (mTarget.equals(mUsername)) {
-            final Intent intent = new Intent(getApplicationContext(), PublicGists.class);
-            mTabHost.addTab(mTabHost.newTabSpec(TAG_PUBLIC_GISTS)
-                    .setIndicator(buildIndicator(R.string.public_gists)).setContent(intent));
+        if (!mTarget.equals(mUsername)) {
+            mTabHost.getTabWidget().setVisibility(View.GONE);
         }
     }
 }
