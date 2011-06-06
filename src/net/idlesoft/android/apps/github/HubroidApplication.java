@@ -32,10 +32,7 @@ public class HubroidApplication extends Application {
     }
 
     public static GitHubClient getGitHubClientInstance() {
-        if (mGitHubClient == null) {
-            mGitHubClient = new GitHubClient();
-        }
-        return mGitHubClient;
+        return new GitHubClient();
     }
 
     public static Resources getAppResources() {

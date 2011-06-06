@@ -39,19 +39,13 @@ public class MyGists extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-            Log.d("HUBROID", "Started MyGistsTask");
             if (activity.mGists == null) {
-                Log.d("HUBROID", "mGists was null, continuing");
                 try {
-                    Log.d("HUBROID", "Fetching gists");
                     final GistService gs = new GistService(activity.getGitHubClient());
                     activity.mGists = new ArrayList<Gist>(gs.getGists(activity.mTarget));
-                    Log.d("HUBROID", "Gists fetched successfully");
                 } catch (final RequestException e) {
-                    Log.d("HUBROID", "Encountered RequestException");
                     e.getStatus();
                 } catch (final IOException e) {
-                    Log.d("HUBROID", "Encountered IOException");
                     e.printStackTrace();
                 }
             }
