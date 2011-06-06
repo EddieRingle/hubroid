@@ -1,5 +1,7 @@
 package net.idlesoft.android.apps.github.adapters;
 
+import net.idlesoft.android.apps.github.R;
+
 import org.eclipse.egit.github.core.Gist;
 
 import android.app.Activity;
@@ -11,6 +13,9 @@ import android.widget.TextView;
 public class GistListAdapter extends ArrayListAdapter<Gist> {
     public static class ViewHolder {
         public TextView gistId;
+        public TextView gistDescription;
+        public TextView gistLastModified;
+        public TextView gistFileCount;
     }
 
     public GistListAdapter(Activity pActivity, AbsListView pListView) {
@@ -21,14 +26,20 @@ public class GistListAdapter extends ArrayListAdapter<Gist> {
     public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {
-            convertView = mInflater.inflate(android.R.layout.simple_list_item_1, null);
+            convertView = mInflater.inflate(R.layout.gist_list_item, null);
             holder = new ViewHolder();
-            holder.gistId = (TextView) convertView.findViewById(android.R.id.text1);
+            holder.gistId = (TextView) convertView.findViewById(R.id.tv_gist_id);
+            holder.gistDescription = (TextView) convertView.findViewById(R.id.tv_gist_description);
+            holder.gistLastModified = (TextView) convertView.findViewById(R.id.tv_gist_lastModified);
+            holder.gistFileCount = (TextView) convertView.findViewById(R.id.tv_gist_fileCount);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.gistId.setText(mData.get(index).getId());
+        holder.gistDescription.setText(mData.get(index).getDescription());
+        holder.gistLastModified.setText(mData.get(index).getUpdatedAt().toString());
+        holder.gistFileCount.setText(mData.get(index).getFiles().size() + " file(s)");
         /*
         try {
             String end;
