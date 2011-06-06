@@ -47,7 +47,7 @@ public class Gists extends BaseTabActivity {
         if (mTarget != null && !mTarget.equals("")) {
             gravatar.setImageBitmap(GravatarCache.getDipGravatar(GravatarCache.getGravatarID(mTarget),
                     38.0f, getResources().getDisplayMetrics().density));
-            ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget);
+            ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget + "'s Gists");
     
             gravatar.setOnClickListener(new OnClickListener() {
                 public void onClick(final View v) {

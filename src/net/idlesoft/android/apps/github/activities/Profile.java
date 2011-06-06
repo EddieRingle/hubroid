@@ -99,6 +99,12 @@ public class Profile extends BaseActivity {
                     intent.putExtra("target", mTarget);
                     startActivity(intent);
                     break;
+                case R.id.btn_user_info_gists:
+                    /* Go to the Gists screen */
+                    intent = new Intent(Profile.this, Gists.class);
+                    intent.putExtra("target", mTarget);
+                    startActivity(intent);
+                    break;
                 default:
                     /* oh well... */
                     break;
@@ -167,10 +173,12 @@ public class Profile extends BaseActivity {
                 final Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
                 final Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
                 final Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
+                final Button gistsBtn = (Button) findViewById(R.id.btn_user_info_gists);
 
                 activityBtn.setOnClickListener(onButtonClick);
                 repositoriesBtn.setOnClickListener(onButtonClick);
                 followersFollowingBtn.setOnClickListener(onButtonClick);
+                gistsBtn.setOnClickListener(onButtonClick);
             }
         } catch (final JSONException e) {
             e.printStackTrace();
