@@ -47,7 +47,9 @@ public class FileViewer extends BaseActivity {
                 final String mimeType = activity.mJson.getString("mime_type");
 
                 if (mimeType.startsWith("text") || mimeType.startsWith("application")) {
-                    if (activity.mJson.getString("name").endsWith(".md")) {
+                    if (activity.mJson.getString("name").endsWith(".md")
+                            || activity.mJson.getString("name").endsWith(".markdown")
+                            || activity.mJson.getString("name").endsWith(".mdown")) {
                         activity.mHtml += new MarkdownProcessor().markdown(activity.mJson.getString("data"));
                     } else {
                         final String[] splitFile = activity.mJson.getString("data").split("\n");
