@@ -9,6 +9,7 @@
 package net.idlesoft.android.apps.github.activities;
 
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.activities.tabs.MyGists;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 import net.idlesoft.android.apps.github.utils.NewsFeedHelpers;
 
@@ -17,6 +18,7 @@ import org.json.JSONObject;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
@@ -271,6 +273,12 @@ public class SingleActivityItem extends BaseActivity {
                                 intent.putExtra("repo_owner", parts[1]);
                                 intent.putExtra("repo_name", parts[2]);
                                 intent.putExtra("number", Integer.parseInt(parts[3]));
+                                startActivity(intent);
+                            } else if (parts[0].equals("showGist")) {
+                                final Intent intent = new Intent(SingleActivityItem.this,
+                                        MyGists.class);
+                                intent.putExtra("gistId", parts[1]);
+                                intent.putExtra("redirectToGist", true);
                                 startActivity(intent);
                             }
                             return true;
