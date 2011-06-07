@@ -50,23 +50,26 @@ public class FileViewer extends BaseActivity {
                     if (activity.mJson.getString("name").endsWith(".md")
                             || activity.mJson.getString("name").endsWith(".markdown")
                             || activity.mJson.getString("name").endsWith(".mdown")) {
-                        activity.mHtml += new MarkdownProcessor().markdown(activity.mJson.getString("data"));
+                        activity.mHtml += new MarkdownProcessor().markdown(activity.mJson
+                                .getString("data"));
                     } else {
                         final String[] splitFile = activity.mJson.getString("data").split("\n");
                         for (int i = 0; i < splitFile.length; i++) {
-    
+
                             /* HTML Encode line to make it safe for viewing */
                             splitFile[i] = TextUtils.htmlEncode(splitFile[i]);
-    
-                            // Replace all tabs with four non-breaking spaces (most
+
+                            // Replace all tabs with four non-breaking spaces
+                            // (most
                             // browsers truncate "\t+" to " ").
-                            splitFile[i] = splitFile[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
-    
+                            splitFile[i] = splitFile[i]
+                                    .replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+
                             // Replace any sequence of two or more spaces with
                             // &nbsps
                             // (most browsers truncate " +" to " ").
                             splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
-    
+
                             activity.mHtml += "<div>" + splitFile[i] + "</div>";
                         }
                     }

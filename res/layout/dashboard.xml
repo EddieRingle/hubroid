@@ -22,14 +22,14 @@
 				android:layout_height="100dip"
 				android:background="#00ffffff"
 				android:text="News Feed"
-				android:textColor="#555"
+				android:textColor="@color/textColor"
 				android:drawableTop="@drawable/dash_feeds_button" />
 			<Button android:id="@+id/btn_dashboard_myprofile"
 				android:layout_width="120dip"
 				android:layout_height="100dip"
 				android:background="#00ffffff"
 				android:drawableTop="@drawable/dash_profile_button"
-				android:textColor="#555"
+				android:textColor="@color/textColor"
 				android:text="Profile" />
 		</LinearLayout>
 		<LinearLayout
@@ -40,16 +40,27 @@
 				android:layout_height="100dip"
 				android:background="#00ffffff"
 				android:drawableTop="@drawable/dash_repos_button"
-				android:textColor="#555"
+				android:textColor="@color/textColor"
 				android:text="Repositories" />
 			<Button android:id="@+id/btn_dashboard_users"
 				android:layout_width="120dip"
 				android:layout_height="100dip"
 				android:background="#00ffffff"
 				android:drawableTop="@drawable/dash_users_button"
-				android:textColor="#555"
+				android:textColor="@color/textColor"
 				android:text="Users" />
 		</LinearLayout>
+		<LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <Button android:id="@+id/btn_dashboard_gists"
+                android:layout_width="120dip"
+                android:layout_height="100dip"
+                android:background="#00ffffff"
+                android:drawableTop="@drawable/dash_gists_button"
+                android:textColor="@color/textColor"
+                android:text="Gists" />
+        </LinearLayout>
 	</LinearLayout>
 	<LinearLayout
 		android:orientation="vertical"

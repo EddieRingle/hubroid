@@ -147,11 +147,22 @@
 					android:layout_height="wrap_content"
 					android:layout_below="@id/btn_user_info_repositories"
 					android:layout_marginTop="5dip"
-					android:layout_marginBottom="15dip"
+					android:layout_marginBottom="5dip"
 					android:layout_centerHorizontal="true"
 					android:drawableLeft="@drawable/group"
 					android:drawableRight="@drawable/group"
 					android:text="Followers &amp; Following" />
+				<Button
+                    android:id="@+id/btn_user_info_gists"
+                    android:layout_width="175dip"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/btn_user_info_followers_following"
+                    android:layout_marginTop="5dip"
+                    android:layout_marginBottom="15dip"
+                    android:layout_centerHorizontal="true"
+                    android:drawableLeft="@drawable/gist"
+                    android:drawableRight="@drawable/gist"
+                    android:text="Gists" />
 			</RelativeLayout>
 		</RelativeLayout>
 	</ScrollView>

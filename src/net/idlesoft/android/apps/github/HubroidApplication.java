@@ -20,9 +20,9 @@ public class HubroidApplication extends Application {
 
     private static GitHubAPI mGApi;
 
-    private static GitHubClient mGitHubClient;
-
     public static Resources mResources;
+
+    private static GitHubClient mGitHubClient;
 
     public static GitHubAPI getGApiInstance() {
         if (mGApi == null) {
@@ -32,10 +32,7 @@ public class HubroidApplication extends Application {
     }
 
     public static GitHubClient getGitHubClientInstance() {
-        if (mGitHubClient == null) {
-            mGitHubClient = new GitHubClient();
-        }
-        return mGitHubClient;
+        return new GitHubClient();
     }
 
     public static Resources getAppResources() {

@@ -152,6 +152,7 @@ public class Dashboard extends BaseActivity {
         getActionBar().setDisplayShowCustomEnabled(true);
         getActionBar().setCustomView(custom);
 
+        // News Feed
         ((Button) findViewById(R.id.btn_dashboard_newsfeed))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(final View v) {
@@ -159,6 +160,7 @@ public class Dashboard extends BaseActivity {
                     }
                 });
 
+        // Repositories
         ((Button) findViewById(R.id.btn_dashboard_repositories))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(final View v) {
@@ -166,18 +168,27 @@ public class Dashboard extends BaseActivity {
                     }
                 });
 
+        // Followers/Following
         ((Button) findViewById(R.id.btn_dashboard_users)).setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
                 startActivity(new Intent(Dashboard.this, Users.class));
             }
         });
 
+        // Profile
         ((Button) findViewById(R.id.btn_dashboard_myprofile))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(final View v) {
                         startActivity(new Intent(Dashboard.this, Profile.class));
                     }
                 });
+
+        // Gists
+        ((Button) findViewById(R.id.btn_dashboard_gists)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Dashboard.this, Gists.class));
+            }
+        });
     }
 
     @Override

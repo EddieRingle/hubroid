@@ -19,6 +19,13 @@
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>
 
+    <!-- Gists Activity -->
+    <string name="my_gists">Gists</string>
+    <string name="starred_gists">Starred</string>
+    <string name="public_gists">Public</string>
+
+    <string name="gist_id_label">Gist</string>
+
 	<!-- Search Activity -->
 	<string name="search_repos">Repositories</string>
 	<string name="search_users">Users</string>
@@ -41,4 +48,7 @@
 	<string name="user_location_label">Location:</string>
 	<string name="user_repository_count_label"># of Public Repos:</string>
 	<string name="commit_list_item_sha_label">SHA:</string>
+
+    <!-- Miscellaneous -->
+    <string name="bar">|</string>
 </resources>

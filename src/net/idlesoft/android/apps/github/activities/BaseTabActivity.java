@@ -4,6 +4,7 @@ package net.idlesoft.android.apps.github.activities;
 import com.markupartist.android.widget.ActionBar;
 import com.markupartist.android.widget.ActionBar.Action;
 
+import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -28,8 +29,6 @@ public class BaseTabActivity extends TabActivity {
 
     protected String mPassword;
 
-    protected GitHubClient mGitHubClient;
-
     protected GitHubAPI mGApi;
 
     protected TabHost mTabHost;
@@ -51,11 +50,14 @@ public class BaseTabActivity extends TabActivity {
         mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
 
-        mGitHubClient = new GitHubClient().setCredentials(mUsername, mPassword);
         mGApi = new GitHubAPI();
         mGApi.authenticate(mUsername, mPassword);
 
         mTabHost = getTabHost();
+    }
+
+    protected GitHubClient getGitHubClient() {
+        return HubroidApplication.getGitHubClientInstance().setCredentials(mUsername, mPassword);
     }
 
     protected ActionBar getActionBar() {

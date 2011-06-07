@@ -40,6 +40,12 @@
         <activity android:name=".activities.SingleActivityItem" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.CommitChangeViewer" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.FileViewer" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.Gists" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.MyGists" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.StarredGists" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.SingleGist" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.GistFilesList" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.GistFileViewer" android:configChanges="orientation|keyboard|keyboardHidden" />
     </application>
     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="10" android:maxSdkVersion="10" />
     <uses-permission android:name="android.permission.INTERNET" />
