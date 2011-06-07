@@ -22,8 +22,6 @@ public class HubroidApplication extends Application {
 
     public static Resources mResources;
 
-    private static GitHubClient mGitHubClient;
-
     public static GitHubAPI getGApiInstance() {
         if (mGApi == null) {
             mGApi = new GitHubAPI();

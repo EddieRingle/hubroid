@@ -25,8 +25,6 @@ public class Gists extends BaseTabActivity {
 
     private static final String TAG_STARRED_GISTS = "starred_gists";
 
-    private static final String TAG_PUBLIC_GISTS = "public_gists";
-
     private String mTarget;
 
     @Override
