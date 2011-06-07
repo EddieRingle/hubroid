@@ -10,14 +10,13 @@ package net.idlesoft.android.apps.github.activities.tabs;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
-import net.idlesoft.android.apps.github.activities.Repository;
+import net.idlesoft.android.apps.github.activities.SingleGist;
 import net.idlesoft.android.apps.github.adapters.GistListAdapter;
 
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.client.RequestException;
 import org.eclipse.egit.github.core.service.GistService;
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -74,13 +73,8 @@ public class StarredGists extends BaseActivity {
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
-            final Intent i = new Intent(getApplicationContext(), Repository.class);
-            i.putExtra("repo_owner", mTarget);
-            try {
-                i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            final Intent i = new Intent(getApplicationContext(), SingleGist.class);
+            i.putExtra("gistId", mGists.get(position).getId());
             startActivity(i);
             return;
         }
@@ -95,7 +89,7 @@ public class StarredGists extends BaseActivity {
         super.onCreate(icicle, NO_LAYOUT);
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
-        //mListView.setOnItemClickListener(mOnListItemClick);
+        mListView.setOnItemClickListener(mOnListItemClick);
 
         setContentView(mListView);
 
