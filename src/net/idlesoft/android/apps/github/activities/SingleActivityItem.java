@@ -17,6 +17,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -282,6 +283,10 @@ public class SingleActivityItem extends BaseActivity {
                                 startActivity(intent);
                             }
                             return true;
+                        } else {
+                            final Intent intent = new Intent("android.intent.action.VIEW",
+                                    Uri.parse(url));
+                            startActivity(intent);
                         }
                         return false;
                     }
