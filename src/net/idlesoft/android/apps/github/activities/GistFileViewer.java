@@ -8,6 +8,8 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import com.petebevin.markdown.MarkdownProcessor;
+
 import net.idlesoft.android.apps.github.R;
 
 import org.eclipse.egit.github.core.GistFile;
@@ -34,25 +36,31 @@ public class GistFileViewer extends BaseActivity {
                     + "display: inline-block; float: left; clear: both;" + "}" + ".filename {"
                     + "background-color: #EAF2F5;" + "}" + "</style>";
 
-            activity.mHtml += "<div class=\"filename\">" + activity.mGistFile.getFilename()
-                    + "</div><br/>";
+            final String filename = activity.mGistFile.getFilename();
 
-            final String[] splitFile = activity.mGistFile.getContent().split("\n");
-            for (int i = 0; i < splitFile.length; i++) {
+            activity.mHtml += "<div class=\"filename\">" + filename + "</div><br/>";
 
-                /* HTML Encode line to make it safe for viewing */
-                splitFile[i] = TextUtils.htmlEncode(splitFile[i]);
+            if (filename.endsWith(".md") || filename.endsWith(".markdown")
+                    || filename.endsWith(".mdown")) {
+                activity.mHtml += new MarkdownProcessor().markdown(activity.mGistFile.getContent());
+            } else {
+                final String[] splitFile = activity.mGistFile.getContent().split("\n");
+                for (int i = 0; i < splitFile.length; i++) {
 
-                // Replace all tabs with four non-breaking spaces (most
-                // browsers truncate "\t+" to " ").
-                splitFile[i] = splitFile[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+                    /* HTML Encode line to make it safe for viewing */
+                    splitFile[i] = TextUtils.htmlEncode(splitFile[i]);
 
-                // Replace any sequence of two or more spaces with
-                // &nbsps
-                // (most browsers truncate " +" to " ").
-                splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
+                    // Replace all tabs with four non-breaking spaces (most
+                    // browsers truncate "\t+" to " ").
+                    splitFile[i] = splitFile[i].replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
 
-                activity.mHtml += "<div>" + splitFile[i] + "</div>";
+                    // Replace any sequence of two or more spaces with
+                    // &nbsps
+                    // (most browsers truncate " +" to " ").
+                    splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
+
+                    activity.mHtml += "<div>" + splitFile[i] + "</div>";
+                }
             }
             return null;
         }
