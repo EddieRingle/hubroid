@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.webkit.WebView;
@@ -284,8 +283,8 @@ public class SingleActivityItem extends BaseActivity {
                             }
                             return true;
                         } else {
-                            final Intent intent = new Intent("android.intent.action.VIEW",
-                                    Uri.parse(url));
+                            final Intent intent = new Intent("android.intent.action.VIEW", Uri
+                                    .parse(url));
                             startActivity(intent);
                         }
                         return false;

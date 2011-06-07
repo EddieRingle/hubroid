@@ -136,9 +136,9 @@ public class MyGists extends BaseActivity {
         if (!mRedirectToGist) {
             mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
             mListView.setOnItemClickListener(mOnListItemClick);
-    
+
             setContentView(mListView);
-    
+
             mAdapter = new GistListAdapter(MyGists.this, mListView);
             mListView.setAdapter(mAdapter);
         }

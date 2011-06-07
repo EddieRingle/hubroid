@@ -12,8 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 /**
  * NewsFeedHelpers Contains methods used to populate the WebView in
  * SingleActivityItem
@@ -151,9 +149,8 @@ public class NewsFeedHelpers {
         final JSONObject payload = pNewsItem.getJSONObject("payload");
         final String html = "<div>" + "<h2>" + payload.getString("name") + "</h2><br/>"
                 + "<b>URL:</b> <a href=\"" + payload.getString("url") + "\">"
-                + payload.getString("url") + "</a><br/><br/>"
-                + "<a href=\"hubroid://showGist/" + payload.getInt("id") + "/\">"
-                + "View this Gist in Hubroid</a></div>";
+                + payload.getString("url") + "</a><br/><br/>" + "<a href=\"hubroid://showGist/"
+                + payload.getInt("id") + "/\">" + "View this Gist in Hubroid</a></div>";
         return html;
     }
 
