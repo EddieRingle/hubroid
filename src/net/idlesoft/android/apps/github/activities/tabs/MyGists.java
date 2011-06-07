@@ -72,7 +72,14 @@ public class MyGists extends BaseActivity {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
             final Intent i = new Intent(getApplicationContext(), SingleGist.class);
-            i.putExtra("gistId", mGists.get(position).getId());
+            final Gist g = mGists.get(position);
+            i.putExtra("gistId", g.getId());
+            i.putExtra("gistDescription", g.getDescription());
+            i.putExtra("gistOwner", g.getUser().getLogin());
+            i.putExtra("gistURL", g.getHtmlUrl());
+            i.putExtra("gistUpdatedDate", g.getUpdatedAt().toString());
+            i.putExtra("gistCreatedDate", g.getCreatedAt().toString());
+            i.putExtra("gistFileCount", g.getFiles().size());
             startActivity(i);
             return;
         }
