@@ -36,15 +36,16 @@ public class MyGists extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
+            try {
+                final GistService gs = new GistService(activity.getGitHubClient());
+                activity.mGists = new ArrayList<Gist>(gs.getGists(activity.mTarget));
+            } catch (final RequestException e) {
+                e.getStatus();
+            } catch (final IOException e) {
+                e.printStackTrace();
+            }
             if (activity.mGists == null) {
-                try {
-                    final GistService gs = new GistService(activity.getGitHubClient());
-                    activity.mGists = new ArrayList<Gist>(gs.getGists(activity.mTarget));
-                } catch (final RequestException e) {
-                    e.getStatus();
-                } catch (final IOException e) {
-                    e.printStackTrace();
-                }
+                activity.mGists = new ArrayList<Gist>();
             }
             if (!activity.mRedirectToGist) {
                 activity.mAdapter.loadData(activity.mGists);

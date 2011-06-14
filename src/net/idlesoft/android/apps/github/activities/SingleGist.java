@@ -8,6 +8,8 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import com.google.gson.Gson;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.SingleGistInfoListAdapter;
 

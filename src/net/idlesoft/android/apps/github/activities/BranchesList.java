@@ -70,11 +70,13 @@ public class BranchesList extends BaseActivity {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
             try {
-                mIntent = new Intent(BranchesList.this, Branch.class);
-                mIntent.putExtra("repo_name", mRepoName);
-                mIntent.putExtra("repo_owner", mRepoOwner);
-                mIntent.putExtra("branch_name", mJson.names().getString(position));
-                mIntent.putExtra("branch_sha", mJson.getString(mJson.names().getString(position)));
+                if (mJson != null) {
+                    mIntent = new Intent(BranchesList.this, Branch.class);
+                    mIntent.putExtra("repo_name", mRepoName);
+                    mIntent.putExtra("repo_owner", mRepoOwner);
+                    mIntent.putExtra("branch_name", mJson.names().getString(position));
+                    mIntent.putExtra("branch_sha", mJson.getString(mJson.names().getString(position)));
+                }
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
