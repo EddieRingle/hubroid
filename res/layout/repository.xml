@@ -132,10 +132,21 @@
 					android:drawableRight="@drawable/branch"
 					android:text="Branches" />
 				<Button
-					android:id="@+id/btn_repository_info_issues"
+					android:id="@+id/btn_repository_info_clone"
 					android:layout_width="175dip"
 					android:layout_height="wrap_content"
 					android:layout_below="@id/btn_repository_info_branches"
+					android:layout_centerHorizontal="true"
+					android:drawableLeft="@drawable/clone"
+					android:drawableRight="@drawable/clone"
+					android:layout_marginTop="5dip"
+					android:layout_marginBottom="5dip"
+					android:text="Clone" />
+				<Button
+					android:id="@+id/btn_repository_info_issues"
+					android:layout_width="175dip"
+					android:layout_height="wrap_content"
+					android:layout_below="@id/btn_repository_info_clone"
 					android:layout_centerHorizontal="true"
 					android:drawableLeft="@drawable/issues"
 					android:drawableRight="@drawable/issues"
