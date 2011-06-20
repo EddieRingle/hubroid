@@ -8,6 +8,10 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import static android.content.pm.PackageManager.MATCH_DEFAULT_ONLY;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+import static java.lang.Boolean.parseBoolean;
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -16,7 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -32,6 +39,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class Repository extends BaseActivity {
+    private static final String GIT_CLONE_INTENT = "org.openintents.git.clone.PREPARE";
+
     private static class LoadRepositoryTask extends AsyncTask<Void, Void, Void> {
         public Repository activity;
 
@@ -96,6 +105,10 @@ public class Repository extends BaseActivity {
 
     private String mRepositoryOwner;
 
+    private Uri mRepositoryUrl;
+
+    private boolean mRepositoryPrivate;
+    
     public void loadRepoInfo() {
         try {
             // TextView title =
@@ -126,6 +139,9 @@ public class Repository extends BaseActivity {
             } else {
                 repo_website.setText("N/A");
             }
+            
+            mRepositoryUrl = Uri.parse(mJson.getString("url"));
+            mRepositoryPrivate = parseBoolean(mJson.getString("private"));
 
             /* Make the repository owner text link to his/her profile */
             repo_owner.setMovementMethod(LinkMovementMethod.getInstance());
@@ -165,6 +181,27 @@ public class Repository extends BaseActivity {
                         startActivity(intent);
                     }
                 });
+        
+        Button cloneButton = (Button) findViewById(R.id.btn_repository_info_clone);
+        if (isIntentAvailable(this, GIT_CLONE_INTENT)) {
+        	cloneButton.setVisibility(VISIBLE);
+			cloneButton.setOnClickListener(new OnClickListener() {
+	                    public void onClick(final View v) {
+	                        String host = mRepositoryUrl.getHost(),path=mRepositoryUrl.getPath().substring(1);
+	                        //SSH READ+WRITE : 'git@' domain ':' path '.git'
+	                        //GIT READ ONLY : 'git://' domain '/' path '.git'
+	
+	                        String cloneUrl=mRepositoryPrivate?("git@"+host+":"+path +".git"):("git://"+host+"/"+path +".git");
+					
+	                        final Intent intent = new Intent(GIT_CLONE_INTENT);
+	                        intent.putExtra("source-uri", cloneUrl);
+	                        startActivity(intent);
+	            }
+	        });
+        } else {
+        	cloneButton.setVisibility(GONE);
+        }
+        
         ((Button) findViewById(R.id.btn_repository_info_network))
                 .setOnClickListener(new OnClickListener() {
                     public void onClick(final View v) {
@@ -174,6 +211,17 @@ public class Repository extends BaseActivity {
                         startActivity(intent);
                     }
                 });
+    }
+    
+    /**
+     * Indicates whether the specified action can be used as an intent.
+     * 
+     * Adapted from http://android-developers.blogspot.com/2009/01/can-i-use-this-intent.html
+     */
+    public static boolean isIntentAvailable(Context context, String action) {
+        PackageManager packageManager = context.getPackageManager();
+        Intent intent = new Intent(action);
+        return !packageManager.queryIntentActivities(intent, MATCH_DEFAULT_ONLY).isEmpty();
     }
 
     @Override
