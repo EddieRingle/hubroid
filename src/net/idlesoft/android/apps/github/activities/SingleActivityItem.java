@@ -276,9 +276,8 @@ public class SingleActivityItem extends BaseActivity {
                                 startActivity(intent);
                             } else if (parts[0].equals("showGist")) {
                                 final Intent intent = new Intent(SingleActivityItem.this,
-                                        MyGists.class);
+                                        SingleGist.class);
                                 intent.putExtra("gistId", parts[1]);
-                                intent.putExtra("redirectToGist", true);
                                 startActivity(intent);
                             }
                             return true;

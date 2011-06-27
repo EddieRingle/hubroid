@@ -47,47 +47,19 @@ public class MyGists extends BaseActivity {
             if (activity.mGists == null) {
                 activity.mGists = new ArrayList<Gist>();
             }
-            if (!activity.mRedirectToGist) {
-                activity.mAdapter.loadData(activity.mGists);
-            }
+            activity.mAdapter.loadData(activity.mGists);
             return null;
         }
 
         @Override
         protected void onPostExecute(final Void result) {
-            if (!activity.mRedirectToGist) {
-                activity.mAdapter.pushData();
-                activity.mAdapter.setIsLoadingData(false);
-            } else {
-                /* Go directly to the Gist */
-                final Intent intent = new Intent(activity, SingleGist.class);
-                Gist g = null;
-                for (int i = 0; i < activity.mGists.size(); i++) {
-                    if (activity.mGists.get(i).getId().equals(activity.mTargetGist)) {
-                        g = activity.mGists.get(i);
-                        break;
-                    }
-                }
-                if (g != null) {
-                    intent.putExtra("gistId", g.getId());
-                    intent.putExtra("gistDescription", g.getDescription());
-                    intent.putExtra("gistOwner", g.getUser().getLogin());
-                    intent.putExtra("gistURL", g.getHtmlUrl());
-                    intent.putExtra("gistUpdatedDate", g.getUpdatedAt().toString());
-                    intent.putExtra("gistCreatedDate", g.getCreatedAt().toString());
-                    intent.putExtra("gistFileCount", g.getFiles().size());
-                    activity.startActivity(intent);
-                } else {
-                    activity.finish();
-                }
-            }
+            activity.mAdapter.pushData();
+            activity.mAdapter.setIsLoadingData(false);
         }
 
         @Override
         protected void onPreExecute() {
-            if (!activity.mRedirectToGist) {
-                activity.mAdapter.setIsLoadingData(true);
-            }
+            activity.mAdapter.setIsLoadingData(true);
         }
     }
 
@@ -116,10 +88,6 @@ public class MyGists extends BaseActivity {
 
     private MyGistsTask mTask;
 
-    private boolean mRedirectToGist;
-
-    private String mTargetGist;
-
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, NO_LAYOUT);
@@ -127,22 +95,18 @@ public class MyGists extends BaseActivity {
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mTarget = extras.getString("target");
-            mTargetGist = extras.getString("gistId");
-            mRedirectToGist = extras.getBoolean("redirectToGist", false);
         }
         if ((mTarget == null) || mTarget.equals("")) {
             mTarget = mUsername;
         }
 
-        if (!mRedirectToGist) {
-            mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
-            mListView.setOnItemClickListener(mOnListItemClick);
+        mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
+        mListView.setOnItemClickListener(mOnListItemClick);
 
-            setContentView(mListView);
+        setContentView(mListView);
 
-            mAdapter = new GistListAdapter(MyGists.this, mListView);
-            mListView.setAdapter(mAdapter);
-        }
+        mAdapter = new GistListAdapter(MyGists.this, mListView);
+        mListView.setAdapter(mAdapter);
 
         mTask = (MyGistsTask) getLastNonConfigurationInstance();
         if ((mTask == null) || (mTask.getStatus() == AsyncTask.Status.FINISHED)) {
