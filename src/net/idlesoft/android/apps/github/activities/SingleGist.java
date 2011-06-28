@@ -55,16 +55,18 @@ public class SingleGist extends BaseActivity {
 
     protected void buildUI()
     {
-        final TextView gistId = (TextView) findViewById(R.id.tv_gist_id);
-        gistId.setText("Gist " + mGistId);
-
         final JSONArray listItems = new JSONArray();
         try {
-            listItems.put(buildListItem("Owner", mGistOwner));
-            listItems.put(buildListItem("Description", mGistDescription));
-            listItems.put(buildListItem("Gist URL", mGistURL));
-            listItems.put(buildListItem("Last Updated", mGistUpdatedDate));
-            listItems.put(buildListItem("Created On", mGistCreatedDate));
+            if (!mGistOwner.equals(""))
+                listItems.put(buildListItem("Owner", mGistOwner));
+            if (!mGistDescription.equals(""))
+                listItems.put(buildListItem("Description", mGistDescription));
+            if (!mGistURL.equals(""))
+                listItems.put(buildListItem("Gist URL", mGistURL));
+            if (!mGistUpdatedDate.equals(""))
+                listItems.put(buildListItem("Last Updated", mGistUpdatedDate));
+            if (!mGistCreatedDate.equals(""))
+                listItems.put(buildListItem("Created On", mGistCreatedDate));
             listItems.put(buildListItem("Files", String.valueOf(mGistFileCount)));
         } catch (JSONException e) {
             e.printStackTrace();
@@ -122,12 +124,12 @@ public class SingleGist extends BaseActivity {
             GistService gs = new GistService(client);
 
             try {
-                Gist g = gs.getGist(activity.mGistId);
+                Gist g = gs.getGist(activity.mGistId); 
                 activity.mGistOwner = g.getUser().getLogin();
                 activity.mGistDescription = g.getDescription();
                 activity.mGistUpdatedDate = g.getUpdatedAt().toString();
                 activity.mGistCreatedDate = g.getCreatedAt().toString();
-                activity.mGistURL = g.getUrl();
+                activity.mGistURL = g.getHtmlUrl();
                 activity.mGistFileCount = g.getFiles().size();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -149,6 +151,24 @@ public class SingleGist extends BaseActivity {
             super.onPostExecute(result);
         }
     }
+
+    private String getFromBundle(Bundle extras, String key) {
+        if (extras != null) {
+            if (extras.containsKey(key)) {
+                String s = extras.getString(key);
+                if (s != null) {
+                    return s;
+                } else {
+                    return "";
+                }
+            } else {
+                return "";
+            }
+        } else {
+            return "";
+        }
+    }
+
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.gist);
@@ -163,20 +183,22 @@ public class SingleGist extends BaseActivity {
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            mGistId = extras.getString("gistId");
-            if (extras.containsKey("gistOwner")) {
-                mGistOwner = extras.getString("gistOwner");
-                mGistDescription = extras.getString("gistDescription");
-                mGistUpdatedDate = extras.getString("gistUpdatedDate");
-                mGistCreatedDate = extras.getString("gistCreatedDate");
-                mGistURL = extras.getString("gistURL");
-                mGistFileCount = extras.getInt("gistFileCount");
+            mGistId = getFromBundle(extras, "gistId");
+            mGistOwner = getFromBundle(extras, "gistOwner");
+            mGistDescription = getFromBundle(extras, "gistDescription");
+            mGistUpdatedDate = getFromBundle(extras, "gistUpdatedDate");
+            mGistCreatedDate = getFromBundle(extras, "gistCreatedDate");
+            mGistURL = getFromBundle(extras, "gistURL");
+            mGistFileCount = extras.getInt("gistFileCount", 0);
+            if (!mGistOwner.equals("")) {
                 buildUI();
             } else {
                 if (mTask.getStatus() == AsyncTask.Status.PENDING) {
                     mTask.execute();
                 }
             }
+            final TextView gistId = (TextView) findViewById(R.id.tv_gist_id);
+            gistId.setText("Gist " + mGistId);
         }
     }
 
