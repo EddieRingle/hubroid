@@ -120,8 +120,7 @@ public class SingleGist extends BaseActivity {
         }
 
         protected Boolean doInBackground(Void... params) {
-            GitHubClient client = new GitHubClient();
-            GistService gs = new GistService(client);
+            GistService gs = new GistService(activity.getGitHubClient());
 
             try {
                 Gist g = gs.getGist(activity.mGistId); 
