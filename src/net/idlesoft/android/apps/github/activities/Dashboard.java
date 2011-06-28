@@ -22,12 +22,14 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -125,10 +127,53 @@ public class Dashboard extends BaseActivity {
 
     public GetLatestBlogPostTask mGetLatestBlogPostTask;
 
+    public static final byte DEFAULT_ACTION_DASHBOARD = 0;
+    public static final byte DEFAULT_ACTION_NEWSFEED = 1;
+    public static final byte DEFAULT_ACTION_PROFILE = 2;
+    public static final byte DEFAULT_ACTION_REPOS = 3;
+    public static final byte DEFAULT_ACTION_USERS = 4;
+    public static final byte DEFAULT_ACTION_GISTS = 5;
+
+    private void setDefaultAction(final byte action) {
+        mPrefsEditor.putInt("dashboardDefault", action);
+        mPrefsEditor.commit();
+        Toast.makeText(Dashboard.this, "Default action set", Toast.LENGTH_SHORT).show();
+    }
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState, R.layout.dashboard);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            if (extras.getBoolean("fresh", false)) {
+                final byte defaultAction = (byte)mPrefs.getInt("dashboardDefault", 0);
+                switch (defaultAction) {
+                case DEFAULT_ACTION_DASHBOARD:
+                    break;
+                case DEFAULT_ACTION_NEWSFEED:
+                    startActivity(new Intent(Dashboard.this, NewsFeed.class));
+                    finish();
+                    break;
+                case DEFAULT_ACTION_PROFILE:
+                    startActivity(new Intent(Dashboard.this, Profile.class));
+                    finish();
+                    break;
+                case DEFAULT_ACTION_REPOS:
+                    startActivity(new Intent(Dashboard.this, Repositories.class));
+                    finish();
+                    break;
+                case DEFAULT_ACTION_USERS:
+                    startActivity(new Intent(Dashboard.this, Users.class));
+                    finish();
+                    break;
+                case DEFAULT_ACTION_GISTS:
+                    startActivity(new Intent(Dashboard.this, Gists.class));
+                    finish();
+                    break;
+                }
+            }
+        }
         setupActionBar("Hubroid", true, false);
 
         LinearLayout custom = new LinearLayout(Dashboard.this);
@@ -152,43 +197,79 @@ public class Dashboard extends BaseActivity {
         getActionBar().setDisplayShowCustomEnabled(true);
         getActionBar().setCustomView(custom);
 
+        OnLongClickListener onButtonLongClick = new OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                switch (v.getId()) {
+                case R.id.btn_dashboard_newsfeed:
+                    setDefaultAction(DEFAULT_ACTION_NEWSFEED);
+                    break;
+                case R.id.btn_dashboard_myprofile:
+                    setDefaultAction(DEFAULT_ACTION_PROFILE);
+                    break;
+                case R.id.btn_dashboard_repositories:
+                    setDefaultAction(DEFAULT_ACTION_REPOS);
+                    break;
+                case R.id.btn_dashboard_users:
+                    setDefaultAction(DEFAULT_ACTION_USERS);
+                    break;
+                case R.id.btn_dashboard_gists:
+                    setDefaultAction(DEFAULT_ACTION_GISTS);
+                    break;
+                default:
+                    setDefaultAction(DEFAULT_ACTION_DASHBOARD);
+                    break;
+                }
+                return true;
+            }
+        };
+
+        logo.setOnLongClickListener(onButtonLongClick);
+
         // News Feed
-        ((Button) findViewById(R.id.btn_dashboard_newsfeed))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(final View v) {
-                        startActivity(new Intent(Dashboard.this, NewsFeed.class));
-                    }
-                });
+        final Button newsFeedBtn = (Button) findViewById(R.id.btn_dashboard_newsfeed);
+        newsFeedBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Dashboard.this, NewsFeed.class));
+            }
+        });
+        newsFeedBtn.setOnLongClickListener(onButtonLongClick);
 
         // Repositories
-        ((Button) findViewById(R.id.btn_dashboard_repositories))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(final View v) {
-                        startActivity(new Intent(Dashboard.this, Repositories.class));
-                    }
-                });
+        final Button reposBtn = (Button) findViewById(R.id.btn_dashboard_repositories);
+        reposBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Dashboard.this, Repositories.class));
+            }
+        });
+        reposBtn.setOnLongClickListener(onButtonLongClick);
 
         // Followers/Following
-        ((Button) findViewById(R.id.btn_dashboard_users)).setOnClickListener(new OnClickListener() {
+        final Button usersBtn = (Button) findViewById(R.id.btn_dashboard_users);
+        usersBtn.setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
                 startActivity(new Intent(Dashboard.this, Users.class));
             }
         });
+        usersBtn.setOnLongClickListener(onButtonLongClick);
 
         // Profile
-        ((Button) findViewById(R.id.btn_dashboard_myprofile))
-                .setOnClickListener(new OnClickListener() {
-                    public void onClick(final View v) {
-                        startActivity(new Intent(Dashboard.this, Profile.class));
-                    }
-                });
+        final Button profileBtn = (Button) findViewById(R.id.btn_dashboard_myprofile);
+        profileBtn.setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                startActivity(new Intent(Dashboard.this, Profile.class));
+            }
+        });
+        profileBtn.setOnLongClickListener(onButtonLongClick);
 
         // Gists
-        ((Button) findViewById(R.id.btn_dashboard_gists)).setOnClickListener(new OnClickListener() {
+        final Button gistsBtn = (Button) findViewById(R.id.btn_dashboard_gists);
+        gistsBtn.setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
                 startActivity(new Intent(Dashboard.this, Gists.class));
             }
         });
+        gistsBtn.setOnLongClickListener(onButtonLongClick);
     }
 
     @Override
