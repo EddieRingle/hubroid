@@ -22,7 +22,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class SearchUsersListAdapter extends GravatarListAdapter {
+public class SearchUsersListAdapter extends GravatarJsonListAdapter {
 
     public SearchUsersListAdapter(final Activity pActivity, final AbsListView pListView) {
         super(pActivity, pListView);

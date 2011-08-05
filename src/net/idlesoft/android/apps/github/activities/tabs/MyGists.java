@@ -14,21 +14,23 @@ import net.idlesoft.android.apps.github.activities.SingleGist;
 import net.idlesoft.android.apps.github.adapters.GistListAdapter;
 
 import org.eclipse.egit.github.core.Gist;
-import org.eclipse.egit.github.core.client.RequestException;
+import org.eclipse.egit.github.core.client.PageIterator;
 import org.eclipse.egit.github.core.service.GistService;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MyGists extends BaseActivity {
+    private PageIterator<Gist> mGistPages;
     private ArrayList<Gist> mGists;
 
     private static class MyGistsTask extends AsyncTask<Void, Void, Void> {
@@ -36,13 +38,12 @@ public class MyGists extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-            try {
-                final GistService gs = new GistService(activity.getGitHubClient());
-                activity.mGists = new ArrayList<Gist>(gs.getGists(activity.mTarget));
-            } catch (final RequestException e) {
-                e.getStatus();
-            } catch (final IOException e) {
-                e.printStackTrace();
+            final GistService gs = new GistService(activity.getGitHubClient());
+            if (activity.mGistPages == null) {
+                activity.mGistPages = gs.pageGists(activity.mTarget, 10);
+            }
+            if (activity.mGistPages.hasNext()) {
+                activity.mGists = new ArrayList<Gist>(activity.mGistPages.next());
             }
             if (activity.mGists == null) {
                 activity.mGists = new ArrayList<Gist>();

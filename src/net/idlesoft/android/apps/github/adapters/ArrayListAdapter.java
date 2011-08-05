@@ -37,11 +37,6 @@ public abstract class ArrayListAdapter<E> extends ListAdapterWithProgress<Object
         mListData = new LinkedList<Object>();
     }
 
-    /**
-     * Load data from Json into a LinkedList
-     * 
-     * @param pJsonArray
-     */
     public void loadData(final ArrayList<E> pArrayList) {
         mData = pArrayList;
 

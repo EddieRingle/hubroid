@@ -13,6 +13,7 @@ import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.view.View;
@@ -25,7 +26,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class CommitListAdapter extends GravatarListAdapter {
+public class CommitListAdapter extends GravatarArrayListAdapter<JSONObject> {
     public static class ViewHolder {
         public TextView commit_date;
 
@@ -56,7 +57,7 @@ public class CommitListAdapter extends GravatarListAdapter {
         try {
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
-            final Date commit_time = dateFormat.parse(mJson.getJSONObject(index).getString(
+            final Date commit_time = dateFormat.parse(((JSONObject)mData.get(index)).getString(
                     "committed_date"));
             final Date current_time = new Date();
             final long ms = current_time.getTime() - commit_time.getTime();
@@ -93,9 +94,9 @@ public class CommitListAdapter extends GravatarListAdapter {
                 }
                 holder.commit_date.setText(sec + end);
             }
-            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index)
+            holder.gravatar.setImageBitmap(mGravatars.get(((JSONObject)mData.get(index))
                     .getJSONObject("author").getString("login")));
-            holder.commit_shortdesc.setText(mJson.getJSONObject(index).getString("message")
+            holder.commit_shortdesc.setText(((JSONObject)mData.get(index)).getString("message")
                     .split("\n")[0]);
         } catch (final JSONException e) {
             e.printStackTrace();
@@ -109,10 +110,10 @@ public class CommitListAdapter extends GravatarListAdapter {
      * Get the Gravatars of all users in the commit log
      */
     public void loadGravatars() {
-        final int length = mJson.length();
+        final int length = mData.size();
         for (int i = 0; i < length; i++) {
             try {
-                final String login = mJson.getJSONObject(i).getJSONObject("author")
+                final String login = ((JSONObject)mData.get(i)).getJSONObject("author")
                         .getString("login");
                 if (!mGravatars.containsKey(login)) {
                     mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache

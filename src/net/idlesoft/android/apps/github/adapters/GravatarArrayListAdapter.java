@@ -8,17 +8,16 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import org.json.JSONArray;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class GravatarListAdapter extends JsonListAdapter {
+public abstract class GravatarArrayListAdapter<E> extends ArrayListAdapter<E> {
     public class ViewHolder {
         public ImageView gravatar;
 
@@ -27,15 +26,15 @@ public abstract class GravatarListAdapter extends JsonListAdapter {
 
     protected HashMap<String, Bitmap> mGravatars;
 
-    public GravatarListAdapter(final Activity pActivity, final AbsListView pListView) {
+    public GravatarArrayListAdapter(final Activity pActivity, final AbsListView pListView) {
         super(pActivity, pListView);
     }
 
     @Override
-    public void loadData(final JSONArray pJsonArray) {
-        super.loadData(pJsonArray);
+    public void loadData(final ArrayList<E> pArrayList) {
+        super.loadData(pArrayList);
         /*
-         * Load gravatars after Json has loaded but before the LinkedList is
+         * Load gravatars after the ArrayList has loaded but before the LinkedList is
          * populated
          */
         mGravatars = new HashMap<String, Bitmap>(mListData.size());

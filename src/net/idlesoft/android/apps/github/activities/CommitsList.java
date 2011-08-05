@@ -25,6 +25,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 public class CommitsList extends BaseActivity {
     private static class GatherCommitsTask extends AsyncTask<Void, Void, Void> {
         public CommitsList activity;
@@ -35,7 +37,12 @@ public class CommitsList extends BaseActivity {
                 activity.mCommitsJSON = new JSONObject(activity.mGApi.commits.list(
                         activity.mRepoOwner, activity.mRepoName, activity.mBranchName).resp)
                         .getJSONArray("commits");
-                activity.mCommitListAdapter.loadData(activity.mCommitsJSON);
+                ArrayList<JSONObject> list = new ArrayList<JSONObject>();
+                int size = activity.mCommitsJSON.length();
+                for (int i = 0; i < size; i++) {
+                    list.add(activity.mCommitsJSON.getJSONObject(i));
+                }
+                activity.mCommitListAdapter.loadData(list);
             } catch (final JSONException e) {
                 e.printStackTrace();
             }
@@ -136,7 +143,12 @@ public class CommitsList extends BaseActivity {
             if (savedInstanceState.containsKey("commitsJson")) {
                 mCommitsJSON = new JSONArray(savedInstanceState.getString("commitsJson"));
                 if (mCommitsJSON != null) {
-                    mCommitListAdapter.loadData(mCommitsJSON);
+                    ArrayList<JSONObject> list = new ArrayList<JSONObject>();
+                    int size = mCommitsJSON.length();
+                    for (int i = 0; i < size; i++) {
+                        list.add(mCommitsJSON.getJSONObject(i));
+                    }
+                    mCommitListAdapter.loadData(list);
                     mCommitListAdapter.pushData();
                 }
             }

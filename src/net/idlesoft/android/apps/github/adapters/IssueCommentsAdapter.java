@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class IssueCommentsAdapter extends GravatarListAdapter {
+public class IssueCommentsAdapter extends GravatarJsonListAdapter {
     public static class ViewHolder {
         public TextView body;
 
