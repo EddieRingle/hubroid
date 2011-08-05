@@ -54,7 +54,12 @@ public class NewsFeedHelpers {
         final JSONObject repoJson = pNewsItem.getJSONObject("repository");
         final String repoName = repoJson.getString("name");
         final String repoPath = repoJson.getString("owner") + "/" + repoName;
-        final String repoDesc = repoJson.getString("description");
+        String repoDesc;
+        try {
+        	repoDesc = repoJson.getString("description");
+        } catch (JSONException e) {
+        	repoDesc = "N/A";
+        }
 
         final String html = "<div>" + "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
                 + repoName + "</a>'s description: <br/><br/>" + "<span class=\"repo-desc\">"

@@ -136,7 +136,7 @@ public class SingleActivityItem extends BaseActivity {
             } else if (eventType.contains("CreateEvent")) {
                 icon.setImageResource(R.drawable.create);
                 if (payload.getString("ref_type").contains("repository")) {
-                    title = actor + " created repository " + payload.getString("name");
+                    title = actor + " created repository " + entry.getJSONObject("repository").getString("name");
                 } else if (payload.getString("ref_type").contains("branch")) {
                     title = actor + " created branch " + payload.getString("ref") + " at "
                             + entry.getJSONObject("repository").getString("owner") + "/"
