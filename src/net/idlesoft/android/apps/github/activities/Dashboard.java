@@ -132,7 +132,8 @@ public class Dashboard extends BaseActivity {
     public static final byte DEFAULT_ACTION_PROFILE = 2;
     public static final byte DEFAULT_ACTION_REPOS = 3;
     public static final byte DEFAULT_ACTION_USERS = 4;
-    public static final byte DEFAULT_ACTION_GISTS = 5;
+    public static final byte DEFAULT_ACTION_ORGS = 5;
+    public static final byte DEFAULT_ACTION_GISTS = 6;
 
     private void setDefaultAction(final byte action) {
         mPrefsEditor.putInt("dashboardDefault", action);
@@ -167,6 +168,10 @@ public class Dashboard extends BaseActivity {
                     startActivity(new Intent(Dashboard.this, Users.class));
                     finish();
                     break;
+                case DEFAULT_ACTION_ORGS:
+                	startActivity(new Intent(Dashboard.this, Organizations.class));
+                	finish();
+                	break;
                 case DEFAULT_ACTION_GISTS:
                     startActivity(new Intent(Dashboard.this, Gists.class));
                     finish();
@@ -213,6 +218,9 @@ public class Dashboard extends BaseActivity {
                 case R.id.btn_dashboard_users:
                     setDefaultAction(DEFAULT_ACTION_USERS);
                     break;
+                case R.id.btn_dashboard_organizations:
+                	setDefaultAction(DEFAULT_ACTION_ORGS);
+                	break;
                 case R.id.btn_dashboard_gists:
                     setDefaultAction(DEFAULT_ACTION_GISTS);
                     break;
@@ -261,6 +269,15 @@ public class Dashboard extends BaseActivity {
             }
         });
         profileBtn.setOnLongClickListener(onButtonLongClick);
+
+        // Organizations
+        final Button orgsBtn = (Button) findViewById(R.id.btn_dashboard_organizations);
+        orgsBtn.setOnClickListener(new OnClickListener() {
+        	public void onClick(final View v) {
+        		startActivity(new Intent(Dashboard.this, Organizations.class));
+        	}
+        });
+        orgsBtn.setOnLongClickListener(onButtonLongClick);
 
         // Gists
         final Button gistsBtn = (Button) findViewById(R.id.btn_dashboard_gists);
