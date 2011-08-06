@@ -169,6 +169,9 @@ public class Dashboard extends BaseActivity {
                     finish();
                     break;
                 case DEFAULT_ACTION_ORGS:
+                	startActivity(new Intent(Dashboard.this, Organizations.class));
+                	finish();
+                	break;
                 case DEFAULT_ACTION_GISTS:
                     startActivity(new Intent(Dashboard.this, Gists.class));
                     finish();
@@ -271,7 +274,7 @@ public class Dashboard extends BaseActivity {
         final Button orgsBtn = (Button) findViewById(R.id.btn_dashboard_organizations);
         orgsBtn.setOnClickListener(new OnClickListener() {
         	public void onClick(final View v) {
-        		startActivity(new Intent(Dashboard.this, Gists.class));
+        		startActivity(new Intent(Dashboard.this, Organizations.class));
         	}
         });
         orgsBtn.setOnLongClickListener(onButtonLongClick);

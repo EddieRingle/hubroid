@@ -19,6 +19,9 @@
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>
 
+	<!-- Organizations Activity -->
+	<string name="my_orgs">Organizations</string>
+
     <!-- Gists Activity -->
     <string name="my_gists">Gists</string>
     <string name="starred_gists">Starred</string>
