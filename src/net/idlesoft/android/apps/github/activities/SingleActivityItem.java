@@ -48,7 +48,12 @@ public class SingleActivityItem extends BaseActivity {
 
         try {
             final JSONObject entry = mJson;
-            final JSONObject payload = entry.getJSONObject("payload");
+            final JSONObject payload;
+            if (entry.has("payload")) {
+            	payload = entry.getJSONObject("payload");
+            } else {
+            	payload = new JSONObject();
+            }
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Hubroid.GITHUB_ISSUES_TIME_FORMAT);
@@ -314,6 +319,8 @@ public class SingleActivityItem extends BaseActivity {
                     html = NewsFeedHelpers.linkifyWatchItem(mJson);
                 } else if (eventType.equals("GistEvent")) {
                     html = NewsFeedHelpers.linkifyGistItem(mJson);
+                } else if (eventType.equals("PublicEvent")) {
+                	html = NewsFeedHelpers.linkifyPublicItem(mJson);
                 } else {
                     html = NewsFeedHelpers.linkifyOtherItem(mJson);
                 }

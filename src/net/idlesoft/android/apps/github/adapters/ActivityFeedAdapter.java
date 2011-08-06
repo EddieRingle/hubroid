@@ -66,7 +66,12 @@ public class ActivityFeedAdapter extends JsonListAdapter {
         }
         try {
             final JSONObject entry = (JSONObject) getData().get(index);
-            final JSONObject payload = entry.getJSONObject("payload");
+            final JSONObject payload;
+            if (entry.has("payload")) {
+            	payload = entry.getJSONObject("payload");
+            } else {
+            	payload = new JSONObject();
+            }
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
                     Hubroid.GITHUB_ISSUES_TIME_FORMAT);
