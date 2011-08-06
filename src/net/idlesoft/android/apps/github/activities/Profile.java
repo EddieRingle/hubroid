@@ -111,7 +111,7 @@ public class Profile extends BaseActivity {
 	                try {
 	                    final String title = ((JSONObject) listItems.get(position))
 	                            .getString("title");
-	                    final String content = ((JSONObject) listItems.get(position))
+	                    String content = ((JSONObject) listItems.get(position))
 	                            .getString("content");
 	                    final Intent intent;
 	
@@ -120,6 +120,9 @@ public class Profile extends BaseActivity {
 	                    	intent.setType("text/plain");
 	                    	intent.putExtra(android.content.Intent.EXTRA_EMAIL, content);
 	                    } else if (title.equals("Blog")) {
+	                    	if (content.indexOf("://") == -1) {
+	                    		content = "http://" + content;
+	                    	}
 	                        intent = new Intent("android.intent.action.VIEW", Uri.parse(content));
 	                    } else if (title.equals("Public Activity")) {
 	                    	intent = new Intent(Profile.this, NewsFeed.class);
