@@ -85,6 +85,11 @@ public class Profile extends BaseActivity {
 	        	listItems.put(buildListItem("Repositories",
 	        			Integer.toString(mUser.getPublicRepos()
 	        					+ mUser.getTotalPrivateRepos())));
+	        	if (IsNotNullNorEmpty(mUser.getType())) {
+	        		if (mUser.getType().equalsIgnoreCase("Organization")) {
+	        			listItems.put(buildListItem("Members & Teams", "Find out who makes this organization tick"));
+	        		}
+	        	}
 	        	listItems.put(buildListItem("Followers / Following",
 	        			Integer.toString(mUser.getFollowers()) + " / "
 	        			+ Integer.toString(mUser.getFollowing())));
@@ -130,6 +135,10 @@ public class Profile extends BaseActivity {
 	                	} else if (title.equals("Repositories")) {
 	                    	intent = new Intent(Profile.this, Repositories.class);
 	                    	intent.putExtra("target", mTarget);
+	                	} else if (title.equals("Members & Teams")) {
+	                		intent = new Intent(Profile.this, Users.class);
+	                		intent.putExtra("target", mTarget);
+	                		intent.putExtra("isOrganization", true);
 	                    } else if (title.equals("Followers / Following")) {
 	                    	intent = new Intent(Profile.this, Users.class);
 	                    	intent.putExtra("target", mTarget);

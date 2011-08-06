@@ -18,6 +18,8 @@
 	<!-- Users Activity -->
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>
+	<string name="members">Members</string>
+	<string name="teams">Teams</string>
 
 	<!-- Organizations Activity -->
 	<string name="my_orgs">Organizations</string>

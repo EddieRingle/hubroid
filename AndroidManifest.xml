@@ -48,6 +48,8 @@
         <activity android:name=".activities.GistFileViewer" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.Organizations" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.tabs.MyOrgs" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.Members" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.tabs.Teams" android:configChanges="orientation|keyboard|keyboardHidden" />
     </application>
     <uses-sdk android:minSdkVersion="4" android:targetSdkVersion="10" android:maxSdkVersion="10" />
     <uses-permission android:name="android.permission.INTERNET" />
