@@ -9,7 +9,7 @@
 package net.idlesoft.android.apps.github.activities;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.adapters.SingleGistInfoListAdapter;
+import net.idlesoft.android.apps.github.adapters.InfoListAdapter;
 
 import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -73,7 +73,7 @@ public class SingleGist extends BaseActivity {
         }
 
         final ListView infoList = (ListView) findViewById(R.id.lv_gist_info);
-        final SingleGistInfoListAdapter adapter = new SingleGistInfoListAdapter(this, infoList);
+        final InfoListAdapter adapter = new InfoListAdapter(this, infoList);
         adapter.loadData(listItems);
         adapter.pushData();
         infoList.setAdapter(adapter);

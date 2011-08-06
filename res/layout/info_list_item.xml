@@ -8,14 +8,14 @@
 	android:paddingLeft="10dip"
 	android:paddingRight="10dip">
 	<TextView
-		android:id="@+id/tv_singlegistinfo_title"
+		android:id="@+id/tv_title"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:textColor="@color/darkText"
 		android:textSize="20dip"
 		android:maxLines="1" />
     <TextView
-        android:id="@+id/tv_singlegistinfo_content"
+        android:id="@+id/tv_content"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/darkText"

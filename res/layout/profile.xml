@@ -1,180 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/rl_user_info_root"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
 	android:background="#FFF"
 	android:layout_height="fill_parent"
 	android:layout_width="fill_parent">
-	<!-- Top Bar -->
 	<com.markupartist.android.widget.ActionBar
         android:id="@+id/actionbar"
         style="@style/ActionBar"
     />
-	<!-- Contain the rest in a scroll view to give the views more space -->
-	<ScrollView android:id="@+id/sv_userInfo"
+	<LinearLayout
+		android:orientation="horizontal"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:layout_below="@id/actionbar"
-		android:fadingEdge="none">
-		<RelativeLayout
-			android:layout_width="fill_parent"
-			android:layout_height="fill_parent">
-			<RelativeLayout
-				android:id="@+id/rl_user_info_userbox"
-				android:layout_width="fill_parent"
-				android:layout_height="wrap_content"
-				android:background="#F4F4F4"
-				android:padding="10dip">
-				<ImageView
-					android:id="@+id/iv_user_info_gravatar"
-					android:layout_width="54dip"
-					android:layout_height="54dip"
-					android:scaleType="center"
-					android:layout_alignParentLeft="true"
-					android:layout_marginRight="10dip"
-					android:background="@drawable/gravatar_border" />
-				<TextView
-					android:id="@+id/tv_user_info_full_name"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_toRightOf="@id/iv_user_info_gravatar"
-					android:textColor="#333"
-					android:textStyle="bold"
-					android:textSize="24dip" />
-				<TextView
-					android:id="@+id/tv_user_info_company"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/tv_user_info_full_name"
-					android:layout_alignLeft="@id/tv_user_info_full_name"
-					android:maxLines="1"
-					android:ellipsize="end"
-					android:textSize="16dip" />
-			</RelativeLayout>
-			<LinearLayout
-				android:id="@+id/ll_user_info_strip"
-				android:layout_width="fill_parent"
-				android:layout_height="2.5dip"
-				android:layout_below="@id/rl_user_info_userbox"
-				android:background="@drawable/gray_strip" />
-			<LinearLayout
-				android:id="@+id/ll_user_info_shadow"
-				android:layout_width="fill_parent"
-				android:layout_height="10dip"
-				android:layout_below="@id/ll_user_info_strip"
-				android:background="@drawable/shadow" />
-			<RelativeLayout
-				android:layout_below="@id/ll_user_info_shadow"
-				android:layout_centerHorizontal="true"
-				android:layout_width="275dip"
-				android:layout_height="wrap_content">
-				<TextView
-					android:id="@+id/tv_user_info_location_label"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Location:"
-					android:layout_alignParentLeft="true"
-					android:textColor="#666"
-					android:paddingTop="10dip"
-					android:paddingBottom="5dip" />
-				<TextView
-					android:id="@+id/tv_user_info_location"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textColor="#666"
-					android:layout_alignBaseline="@id/tv_user_info_location_label"
-					android:layout_alignParentRight="true" />
-				<TextView
-					android:id="@+id/tv_user_info_email_label"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="E-Mail:"
-					android:textColor="#666"
-					android:layout_below="@id/tv_user_info_location_label"
-					android:layout_alignParentLeft="true"
-					android:paddingTop="5dip"
-					android:paddingBottom="5dip" />
-				<TextView
-					android:id="@+id/tv_user_info_email"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textColor="#666"
-					android:autoLink="email"
-					android:layout_alignBaseline="@id/tv_user_info_email_label"
-					android:layout_alignParentRight="true" />
-				<TextView
-					android:id="@+id/tv_user_info_blog_label"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:text="Blog:"
-					android:textColor="#666"
-					android:layout_below="@id/tv_user_info_email_label"
-					android:layout_alignParentLeft="true"
-					android:paddingTop="5dip"
-					android:paddingBottom="10dip" />
-				<TextView
-					android:id="@+id/tv_user_info_blog"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textColor="#666"
-					android:autoLink="web"
-					android:layout_alignBaseline="@id/tv_user_info_blog_label"
-					android:layout_alignParentRight="true" />
-				<Button
-					android:id="@+id/btn_user_info_public_activity"
-					android:layout_width="175dip"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/tv_user_info_blog_label"
-					android:layout_marginTop="15dip"
-					android:layout_marginBottom="5dip"
-					android:layout_centerHorizontal="true"
-					android:drawableLeft="@drawable/feed"
-					android:drawableRight="@drawable/feed"
-					android:text="Latest Activity" />
-				<Button
-					android:id="@+id/btn_user_info_repositories"
-					android:layout_width="175dip"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/btn_user_info_public_activity"
-					android:layout_marginTop="5dip"
-					android:layout_marginBottom="5dip"
-					android:layout_centerHorizontal="true"
-					android:drawableLeft="@drawable/push"
-					android:drawableRight="@drawable/push"
-					android:text="Repositories" />
-				<Button
-					android:id="@+id/btn_user_info_followers_following"
-					android:layout_width="175dip"
-					android:layout_height="wrap_content"
-					android:layout_below="@id/btn_user_info_repositories"
-					android:layout_marginTop="5dip"
-					android:layout_marginBottom="5dip"
-					android:layout_centerHorizontal="true"
-					android:drawableLeft="@drawable/group"
-					android:drawableRight="@drawable/group"
-					android:text="Followers &amp; Following" />
-				<Button
-                    android:id="@+id/btn_user_info_gists"
-                    android:layout_width="175dip"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/btn_user_info_followers_following"
-                    android:layout_marginTop="5dip"
-                    android:layout_marginBottom="15dip"
-                    android:layout_centerHorizontal="true"
-                    android:drawableLeft="@drawable/gist"
-                    android:drawableRight="@drawable/gist"
-                    android:text="Gists" />
-			</RelativeLayout>
-		</RelativeLayout>
-	</ScrollView>
-	<RelativeLayout
-	   android:id="@+id/rl_profile_progress"
-	   android:layout_width="fill_parent"
-	   android:layout_height="fill_parent"
-	   android:visibility="gone">
-	   <ProgressBar
-	       android:layout_width="wrap_content"
-	       android:layout_height="wrap_content"
-	       android:indeterminateOnly="true"
-	       android:layout_centerInParent="true" />
-	</RelativeLayout>
-</RelativeLayout>
+		android:layout_height="wrap_content"
+		android:background="#F4F4F4"
+		android:padding="10dip"
+		android:gravity="center_vertical">
+		<ImageView
+			android:id="@+id/iv_profile_gravatar"
+			android:layout_width="54dip"
+			android:layout_height="54dip"
+			android:scaleType="center"
+			android:layout_marginRight="10dip"
+			android:background="@drawable/gravatar_border" />
+		<TextView
+			android:id="@+id/tv_profile_username"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:textColor="#333"
+			android:textStyle="bold"
+			android:textSize="24dip" />
+	</LinearLayout>
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="2.5dip"
+		android:background="@drawable/gray_strip" />
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="10dip"
+		android:background="@drawable/shadow" />
+	<ListView
+		android:id="@+id/lv_profile_info"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent">
+	</ListView>
+</LinearLayout>

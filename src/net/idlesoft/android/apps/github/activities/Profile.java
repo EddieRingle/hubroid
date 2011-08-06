@@ -8,25 +8,30 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.io.IOException;
+
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.service.UserService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class Profile extends BaseActivity {
     public JSONObject mJson;
@@ -37,153 +42,148 @@ public class Profile extends BaseActivity {
 
     private Bitmap mGravatar;
 
-    private static class LoadProfileTask extends AsyncTask<Void, Void, Void> {
+    private User mUser = null;
+
+    protected boolean IsNotNullNorEmpty(final String subject)
+    {
+    	if (subject != null && !subject.equals("")) {
+    		return true;
+    	} else {
+    		return false;
+    	}
+    }
+
+    protected JSONObject buildListItem(final String title, final String content)
+            throws JSONException {
+        return new JSONObject().put("title", title).put("content", content);
+    }
+
+    protected void buildUI()
+    {
+    	if (mUser != null) {
+    		((ImageView) findViewById(R.id.iv_profile_gravatar)).setImageBitmap(mGravatar);
+    		((TextView) findViewById(R.id.tv_profile_username)).setText(mTarget);
+
+	        final JSONArray listItems = new JSONArray();
+	        try {
+	        	if (IsNotNullNorEmpty(mUser.getName())) {
+	        		listItems.put(buildListItem("Name", mUser.getName()));
+	        	}
+	        	if (IsNotNullNorEmpty(mUser.getCompany())) {
+	        		listItems.put(buildListItem("Company", mUser.getCompany()));
+	        	}
+	        	if (IsNotNullNorEmpty(mUser.getEmail())) {
+	        		listItems.put(buildListItem("Email", mUser.getEmail()));
+	        	}
+	        	if (IsNotNullNorEmpty(mUser.getBlog())) {
+	        		listItems.put(buildListItem("Blog", mUser.getBlog()));
+	        	}
+	        	if (IsNotNullNorEmpty(mUser.getLocation())) {
+	        		listItems.put(buildListItem("Location", mUser.getLocation()));
+	        	}
+	        	listItems.put(buildListItem("Public Activity", "View " + mTarget + "'s public activity"));
+	        	listItems.put(buildListItem("Repositories",
+	        			Integer.toString(mUser.getPublicRepos()
+	        					+ mUser.getTotalPrivateRepos())));
+	        	listItems.put(buildListItem("Followers / Following",
+	        			Integer.toString(mUser.getFollowers()) + " / "
+	        			+ Integer.toString(mUser.getFollowing())));
+	        	listItems.put(buildListItem("Gists",
+	        			Integer.toString(mUser.getPublicGists()
+	        					+ mUser.getPrivateGists())));
+	        	if (IsNotNullNorEmpty(mUser.getCreatedAt().toString())) {
+	        		listItems.put(buildListItem("Join Date",
+	        				mUser.getCreatedAt().toString()));
+	        	}
+	        } catch (JSONException e) {
+	            e.printStackTrace();
+	        }
+	
+	        final ListView infoList = (ListView) findViewById(R.id.lv_profile_info);
+	        final InfoListAdapter adapter = new InfoListAdapter(this, infoList);
+	        adapter.loadData(listItems);
+	        adapter.pushData();
+	        infoList.setAdapter(adapter);
+	
+	        infoList.setOnItemClickListener(new OnItemClickListener() {
+	            public void onItemClick(final AdapterView<?> parent, final View v,
+	                    final int position, final long id) {
+	                try {
+	                    final String title = ((JSONObject) listItems.get(position))
+	                            .getString("title");
+	                    final String content = ((JSONObject) listItems.get(position))
+	                            .getString("content");
+	                    final Intent intent;
+	
+	                    if (title.equals("Email")) {
+	                    	intent = new Intent(android.content.Intent.ACTION_SEND);
+	                    	intent.setType("text/plain");
+	                    	intent.putExtra(android.content.Intent.EXTRA_EMAIL, content);
+	                    } else if (title.equals("Blog")) {
+	                        intent = new Intent("android.intent.action.VIEW", Uri.parse(content));
+	                    } else if (title.equals("Public Activity")) {
+	                    	intent = new Intent(Profile.this, NewsFeed.class);
+	                    	intent.putExtra("username", mTarget);
+	                	} else if (title.equals("Repositories")) {
+	                    	intent = new Intent(Profile.this, Repositories.class);
+	                    	intent.putExtra("target", mTarget);
+	                    } else if (title.equals("Followers / Following")) {
+	                    	intent = new Intent(Profile.this, Users.class);
+	                    	intent.putExtra("target", mTarget);
+	                    } else if (title.equals("Gists")) {
+	                    	intent = new Intent(Profile.this, Gists.class);
+	                    	intent.putExtra("target", mTarget);
+	                    } else {
+	                    	return;
+	                    }
+	                    startActivity(intent);
+	                } catch (JSONException e) {
+	                    e.printStackTrace();
+	                }
+	            }
+	        });
+    	}
+    }
+
+    private static class LoadProfileTask extends AsyncTask<Void, Void, Boolean> {
         public Profile activity;
 
         protected void onPreExecute() {
-            ((RelativeLayout) activity.findViewById(R.id.rl_profile_progress))
-                    .setVisibility(View.VISIBLE);
-            ((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.GONE);
+        	super.onPreExecute();
+        	activity.getActionBar().setProgressBarVisibility(View.VISIBLE);
         }
 
-        protected Void doInBackground(Void... params) {
-            try {
-                Response r = activity.mGApi.user.info(activity.mTarget);
-                if (r.statusCode == 200) {
-                    activity.mJson = new JSONObject(r.resp);
-                    Response fResp = activity.mGApi.user.following(activity.mUsername);
-                    if (fResp.statusCode == 200) {
-                        activity.mJsonFollowing = new JSONObject(fResp.resp).getJSONArray("users");
-                    }
-                    activity.mGravatar = GravatarCache.getDipGravatar(GravatarCache
-                            .getGravatarID(activity.mTarget), 50.0f, activity.getResources()
-                            .getDisplayMetrics().density);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+        protected Boolean doInBackground(Void... params) {
+        	UserService service = new UserService(activity.getGitHubClient());
+        	try {
+        		if (activity.mTarget.equalsIgnoreCase(activity.mUsername)) {
+        			activity.mUser = service.getUser();
+        		} else {
+        			activity.mUser = service.getUser(activity.mTarget);
+        		}
+        		activity.mGravatar = GravatarCache.getDipGravatar(
+        				GravatarCache.getGravatarID(activity.mTarget), 50.0f,
+        				activity.getResources().getDisplayMetrics().density);
+        		return true;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+        }
+
+        protected void onPostExecute(Boolean result) {
+            if (result) {
+                activity.buildUI();
+                activity.getActionBar().setProgressBarVisibility(View.GONE);
+            } else {
+                Toast.makeText(activity, "Failed to load user profile.", Toast.LENGTH_SHORT).show();
+                activity.finish();
             }
-            return null;
-        }
-
-        protected void onPostExecute(Void result) {
-            activity.loadInfo();
-            ((RelativeLayout) activity.findViewById(R.id.rl_profile_progress))
-                    .setVisibility(View.GONE);
-            ((ScrollView) activity.findViewById(R.id.sv_userInfo)).setVisibility(View.VISIBLE);
+            super.onPostExecute(result);
         }
     }
 
     private LoadProfileTask mTask;
-
-    private final OnClickListener onButtonClick = new OnClickListener() {
-        public void onClick(final View v) {
-            final Intent intent;
-            /* Figure out what button was clicked */
-            final int id = v.getId();
-            switch (id) {
-                case R.id.btn_user_info_public_activity:
-                    /* Go to the user's public activity feed */
-                    intent = new Intent(Profile.this, NewsFeed.class);
-                    intent.putExtra("username", mTarget);
-                    startActivity(intent);
-                    break;
-                case R.id.btn_user_info_repositories:
-                    /* Go to the user's list of repositories */
-                    intent = new Intent(Profile.this, Repositories.class);
-                    intent.putExtra("target", mTarget);
-                    startActivity(intent);
-                    break;
-                case R.id.btn_user_info_followers_following:
-                    /* Go to the Followers/Following screen */
-                    intent = new Intent(Profile.this, Users.class);
-                    intent.putExtra("target", mTarget);
-                    startActivity(intent);
-                    break;
-                case R.id.btn_user_info_gists:
-                    /* Go to the Gists screen */
-                    intent = new Intent(Profile.this, Gists.class);
-                    intent.putExtra("target", mTarget);
-                    startActivity(intent);
-                    break;
-                default:
-                    /* oh well... */
-                    break;
-            }
-        }
-    };
-
-    public void loadInfo() {
-        try {
-            if (mJson == null) {
-                // User doesn't really exist, return to the previous activity
-                this.setResult(5005);
-                finish();
-            } else {
-                mJson = mJson.getJSONObject("user");
-
-                final int length = mJsonFollowing.length() - 1;
-                for (int i = 0; i <= length; i++) {
-                    if (mJsonFollowing.getString(i).equalsIgnoreCase(mTarget)) {
-                    }
-                }
-
-                String company, location, full_name, email, blog;
-
-                // Replace empty values with "N/A"
-                if (mJson.has("company") && !mJson.getString("company").equals("null")
-                        && !mJson.getString("company").equals("")) {
-                    company = mJson.getString("company");
-                } else {
-                    company = "N/A";
-                }
-                if (mJson.has("location") && !mJson.getString("location").equals("null")
-                        && !mJson.getString("location").equals("")) {
-                    location = mJson.getString("location");
-                } else {
-                    location = "N/A";
-                }
-                if (mJson.has("name") && !mJson.getString("name").equals("null")) {
-                    full_name = mJson.getString("name");
-                } else {
-                    full_name = mTarget;
-                }
-                if (mJson.has("email") && !mJson.getString("email").equals("null")
-                        && !mJson.getString("email").equals("")) {
-                    email = mJson.getString("email");
-                } else {
-                    email = "N/A";
-                }
-                if (mJson.has("blog") && !mJson.getString("blog").equals("null")
-                        && !mJson.getString("blog").equals("")) {
-                    blog = mJson.getString("blog");
-                } else {
-                    blog = "N/A";
-                }
-
-                // Set all the values in the layout
-                // ((TextView)findViewById(R.id.tv_top_bar_title)).setText(m_targetUser);
-                ((ImageView) findViewById(R.id.iv_user_info_gravatar)).setImageBitmap(mGravatar);
-                ((TextView) findViewById(R.id.tv_user_info_full_name)).setText(full_name);
-                ((TextView) findViewById(R.id.tv_user_info_company)).setText(company);
-                ((TextView) findViewById(R.id.tv_user_info_email)).setText(email);
-                ((TextView) findViewById(R.id.tv_user_info_location)).setText(location);
-                ((TextView) findViewById(R.id.tv_user_info_blog)).setText(blog);
-
-                // Make the buttons work
-                final Button activityBtn = (Button) findViewById(R.id.btn_user_info_public_activity);
-                final Button repositoriesBtn = (Button) findViewById(R.id.btn_user_info_repositories);
-                final Button followersFollowingBtn = (Button) findViewById(R.id.btn_user_info_followers_following);
-                final Button gistsBtn = (Button) findViewById(R.id.btn_user_info_gists);
-
-                activityBtn.setOnClickListener(onButtonClick);
-                repositoriesBtn.setOnClickListener(onButtonClick);
-                followersFollowingBtn.setOnClickListener(onButtonClick);
-                gistsBtn.setOnClickListener(onButtonClick);
-            }
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     public void onCreate(final Bundle icicle) {
@@ -200,6 +200,7 @@ public class Profile extends BaseActivity {
             mTarget = mUsername;
         }
 
+        ((TextView) findViewById(R.id.tv_profile_username)).setText(mTarget);
         mTask = (LoadProfileTask) getLastNonConfigurationInstance();
         if (mTask == null) {
             mTask = new LoadProfileTask();

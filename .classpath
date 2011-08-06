@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="libs/org.apache.httpcomponents.httpcore_4.1.0.v201101201700.jar"/>
 	<classpathentry kind="lib" path="libs/org.eclipse.egit.github.core.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com_markupartist_android_widget_actionbar"/>
-	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="src" path="com_markupartist_android_widget_actionbar_src"/>
+	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
