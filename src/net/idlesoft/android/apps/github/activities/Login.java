@@ -8,6 +8,12 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.io.IOException;
+
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.RequestException;
+import org.eclipse.egit.github.core.service.UserService;
+
 import net.idlesoft.android.apps.github.R;
 
 import android.app.ProgressDialog;
@@ -33,15 +39,25 @@ public class Login extends BaseActivity {
             if (user.equals("") || pass.equals("")) {
                 return 100;
             }
-            activity.mGApi.authenticate(user, pass);
-            final int returnCode = activity.mGApi.api
-                    .HTTPGet("https://github.com/api/v2/json/user/show").statusCode;
-            if (returnCode == 200) {
-                activity.mPrefsEditor.putString("username", user);
-                activity.mPrefsEditor.putString("password", pass);
-                activity.mPrefsEditor.commit();
+            final UserService us = new UserService(activity.getGitHubClient().setCredentials(user, pass));
+            try {
+            	User u = us.getUser();
+
+            	if (u != null) {
+            		activity.mPrefsEditor.putString("username", u.getLogin());
+            		activity.mPrefsEditor.putString("password", pass);
+            		activity.mPrefsEditor.commit();
+            		return 200;
+            	} else {
+            		return -1;
+            	}
+            } catch (IOException e) {
+            	if (e instanceof RequestException) {
+            		return ((RequestException) e).getStatus();
+            	} else {
+            		return -2;
+            	}
             }
-            return returnCode;
         }
 
         @Override

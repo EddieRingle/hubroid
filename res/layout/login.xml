@@ -56,7 +56,7 @@
 			android:layout_height="wrap_content"
 			android:id="@+id/tv_login_username_label"
 			android:textColor="#DDD"
-			android:text="Username (not e-mail):"
+			android:text="Username or Email:"
 			android:textSize="12.5dip" />
 		<EditText
 			android:layout_below="@id/tv_login_username_label"
