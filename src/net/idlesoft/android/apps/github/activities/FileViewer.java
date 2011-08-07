@@ -129,8 +129,7 @@ public class FileViewer extends BaseActivity {
 
         setupActionBar();
 
-        final TextView title = (TextView) findViewById(R.id.tv_page_title);
-        title.setText("File Viewer");
+        getActionBar().setTitle("File Viewer");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

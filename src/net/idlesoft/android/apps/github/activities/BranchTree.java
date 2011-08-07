@@ -107,8 +107,7 @@ public class BranchTree extends BaseActivity {
 
         setupActionBar();
 
-        final TextView pageTitle = (TextView) findViewById(R.id.tv_page_title);
-        pageTitle.setText("Tree Browser");
+        getActionBar().setTitle("Tree Browser");
 
         mListView = (ListView) findViewById(R.id.lv_branchTreeList_list);
         mListView.setOnItemClickListener(mOnListItemClick);

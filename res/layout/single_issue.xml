@@ -15,7 +15,6 @@
 	   android:orientation="vertical"
 	   android:layout_height="fill_parent"
 	   android:layout_width="fill_parent">
-		<include android:id="@+id/include_page_title" layout="@layout/page_title" />
 		<ListView
 			android:id="@+id/lv_single_issue_comments"
 			android:layout_width="fill_parent"

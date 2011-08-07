@@ -8,7 +8,6 @@
         android:id="@+id/actionbar"
         style="@style/ActionBar"
     />
-	<include android:id="@+id/include_page_title" layout="@layout/page_title" />
 	<ListView
 		android:id="@+id/lv_gistFiles"
 		android:cacheColorHint="#FFF"

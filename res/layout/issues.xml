@@ -16,7 +16,6 @@
 		        android:id="@+id/actionbar"
 		        style="@style/ActionBar"
 		    />
-			<include android:id="@+id/include_page_title" layout="@layout/page_title" />
 			<TabWidget
 					android:id="@android:id/tabs"
 					android:layout_width="fill_parent"

@@ -75,15 +75,14 @@ public class DiffFilesList extends BaseActivity {
             }
 
             try {
-                final TextView title = (TextView) findViewById(R.id.tv_page_title);
                 if (mType.equals("added")) {
-                    title.setText("Added Files");
+                    getActionBar().setTitle("Added Files");
                 } else if (mType.equals("removed")) {
-                    title.setText("Removed Files");
+                    getActionBar().setTitle("Removed Files");
                 } else if (mType.equals("modified")) {
-                    title.setText("Changed Files");
+                    getActionBar().setTitle("Changed Files");
                 } else {
-                    title.setText("Files");
+                    getActionBar().setTitle("Files");
                 }
 
                 /*

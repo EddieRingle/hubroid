@@ -33,7 +33,7 @@ public class Search extends BaseTabActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.search);
 
-        setupActionBar(false);
+        setupActionBar("Search GitHub", false, false);
 
         final Intent intent = new Intent(Search.this, SearchRepos.class);
         mTabHost.addTab(mTabHost.newTabSpec(TAG_SEARCH_REPOS)

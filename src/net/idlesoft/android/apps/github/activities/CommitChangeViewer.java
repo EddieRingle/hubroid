@@ -116,8 +116,7 @@ public class CommitChangeViewer extends BaseActivity {
 
         setupActionBar();
 
-        final TextView title = (TextView) findViewById(R.id.tv_page_title);
-        title.setText("Commit Diff");
+        getActionBar().setTitle("Commit Diff");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

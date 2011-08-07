@@ -264,8 +264,6 @@ public class SingleIssue extends BaseActivity {
         final TextView title = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_title);
         final TextView number = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_number);
 
-        final TextView topbar = (TextView) findViewById(R.id.tv_page_title);
-
         try {
             date.setText(getTimeSince(mJson.getString("updated_at")));
             if (mJson.getString("state").equalsIgnoreCase("open")) {
@@ -275,7 +273,7 @@ public class SingleIssue extends BaseActivity {
             }
             number.setText("#" + mJson.getString("number"));
             title.setText(mJson.getString("title"));
-            topbar.setText("Issue " + number.getText().toString());
+            getActionBar().setTitle("Issue " + number.getText().toString());
         } catch (final Exception e) {
             e.printStackTrace();
         }

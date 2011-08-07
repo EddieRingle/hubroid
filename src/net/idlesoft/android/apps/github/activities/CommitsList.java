@@ -92,8 +92,7 @@ public class CommitsList extends BaseActivity {
 
         setupActionBar();
 
-        final TextView title = (TextView) findViewById(R.id.tv_page_title);
-        title.setText("Recent Commits");
+        getActionBar().setTitle("Recent Commits");
 
         mCommitListView = (ListView) findViewById(R.id.lv_commits_list_list);
         mCommitListView.setOnItemClickListener(new OnItemClickListener() {

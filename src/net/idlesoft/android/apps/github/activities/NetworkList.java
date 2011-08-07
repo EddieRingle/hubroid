@@ -87,6 +87,8 @@ public class NetworkList extends BaseActivity {
 
         setupActionBar();
 
+        getActionBar().setTitle("Network");
+
         mListView = (ListView) findViewById(R.id.lv_network_list);
         mListView.setOnItemClickListener(mOnForkListItemClick);
 
@@ -97,9 +99,6 @@ public class NetworkList extends BaseActivity {
         if (extras != null) {
             mRepositoryName = extras.getString("repo_name");
             mRepositoryOwner = extras.getString("username");
-
-            final TextView title = (TextView) findViewById(R.id.tv_page_title);
-            title.setText("Network");
         }
     }
 

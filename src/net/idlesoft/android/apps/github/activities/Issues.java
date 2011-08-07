@@ -35,15 +35,13 @@ public class Issues extends BaseTabActivity {
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.issues);
 
-        setupActionBar("Hubroid", true, true);
+        setupActionBar("Issues", true, true);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mRepositoryOwner = extras.getString("repo_owner");
             mRepositoryName = extras.getString("repo_name");
         }
-
-        ((TextView) findViewById(R.id.tv_page_title)).setText("Issues");
 
         final Intent intent = new Intent(getApplicationContext(), OpenIssues.class);
         intent.putExtra("repo_owner", mRepositoryOwner);

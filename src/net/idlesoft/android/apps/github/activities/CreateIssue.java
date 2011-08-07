@@ -125,7 +125,7 @@ public class CreateIssue extends BaseActivity {
                     "Creating issue...", true);
         }
 
-        ((TextView) findViewById(R.id.tv_page_title)).setText("New Issue");
+        getActionBar().setTitle("New Issue");
 
         ((Button) findViewById(R.id.btn_create_issue_submit))
                 .setOnClickListener(new OnClickListener() {

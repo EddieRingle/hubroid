@@ -98,8 +98,7 @@ public class BranchesList extends BaseActivity {
 
         setupActionBar();
 
-        final TextView title = (TextView) findViewById(R.id.tv_page_title);
-        title.setText("Branches");
+        getActionBar().setTitle("Branches");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

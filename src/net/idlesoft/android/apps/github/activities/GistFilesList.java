@@ -97,8 +97,7 @@ public class GistFilesList extends BaseActivity {
 
         setupActionBar();
 
-        final TextView title = (TextView) findViewById(R.id.tv_page_title);
-        title.setText("Gist Files");
+        getActionBar().setTitle("Gist Files");
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {

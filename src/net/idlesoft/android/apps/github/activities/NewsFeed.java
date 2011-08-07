@@ -112,9 +112,9 @@ public class NewsFeed extends BaseActivity {
         mListView.setAdapter(mActivityAdapter);
 
         if (mPrivate) {
-            ((TextView) findViewById(R.id.tv_page_title)).setText("News Feed");
+        	getActionBar().setTitle("News Feed");
         } else {
-            ((TextView) findViewById(R.id.tv_page_title)).setText(mTargetUser + "'s Activity");
+        	getActionBar().setTitle("Public Activity");
         }
 
         mLoadActivityTask = (LoadActivityFeedTask) getLastNonConfigurationInstance();
