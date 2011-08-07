@@ -163,6 +163,10 @@ public class SingleRepository extends BaseActivity {
 	                    	intent = new Intent(SingleRepository.this, Issues.class);
 	                    	intent.putExtra("repo_owner", mRepository.getOwner().getLogin());
 	                    	intent.putExtra("repo_name", mRepository.getName());
+	                    } else if (title.equals("Forks")) {
+	                    	intent = new Intent(SingleRepository.this, NetworkList.class);
+	                    	intent.putExtra("repo_owner", mRepository.getOwner().getLogin());
+	                    	intent.putExtra("repo_name", mRepository.getName());
 	                    } else if (title.equals("Clone")) {
 	                        intent = new Intent(GIT_CLONE_INTENT);
 	                        intent.putExtra("source-uri", mRepository.getCloneUrl());
