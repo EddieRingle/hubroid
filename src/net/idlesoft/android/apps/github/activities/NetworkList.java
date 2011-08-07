@@ -98,7 +98,7 @@ public class NetworkList extends BaseActivity {
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mRepositoryName = extras.getString("repo_name");
-            mRepositoryOwner = extras.getString("username");
+            mRepositoryOwner = extras.getString("repo_owner");
         }
     }
 
