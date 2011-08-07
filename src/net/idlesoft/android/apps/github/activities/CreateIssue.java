@@ -33,9 +33,12 @@ public class CreateIssue extends BaseActivity {
         protected Integer doInBackground(final Void... params) {
             final String title = ((TextView) activity.findViewById(R.id.et_create_issue_title))
                     .getText().toString();
-            final String body = ((TextView) activity.findViewById(R.id.et_create_issue_body))
+            String body = ((TextView) activity.findViewById(R.id.et_create_issue_body))
                     .getText().toString();
             if (!title.equals("") && !body.equals("")) {
+            	if (activity.mPrefs.getBoolean(activity.getString(R.string.preferences_key_issue_signature), true)) {
+            		body += "\n\n_Sent via Hubroid_";
+            	}
                 final Response createResp = activity.mGApi.issues.open(activity.mRepositoryOwner,
                         activity.mRepositoryName, title, body);
                 if (createResp.statusCode == 201) {
