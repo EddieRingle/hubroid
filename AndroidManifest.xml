@@ -24,7 +24,7 @@
         <activity android:name=".activities.tabs.Followers" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.tabs.Following" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.Profile" android:configChanges="orientation|keyboard|keyboardHidden" />
-        <activity android:name=".activities.Repository" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.SingleRepository" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.BranchesList" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.Branch" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.BranchTree" android:configChanges="orientation|keyboard|keyboardHidden" />

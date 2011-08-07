@@ -10,7 +10,7 @@ package net.idlesoft.android.apps.github.activities.tabs;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
-import net.idlesoft.android.apps.github.activities.Repository;
+import net.idlesoft.android.apps.github.activities.SingleRepository;
 import net.idlesoft.android.apps.github.adapters.RepositoriesListAdapter;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -70,7 +70,7 @@ public class PushableRepos extends BaseActivity {
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
-            final Intent i = new Intent(getApplicationContext(), Repository.class);
+            final Intent i = new Intent(getApplicationContext(), SingleRepository.class);
             try {
                 i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
                 i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));

@@ -67,7 +67,7 @@ public class NetworkList extends BaseActivity {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
             try {
-                final Intent i = new Intent(NetworkList.this, Repository.class);
+                final Intent i = new Intent(NetworkList.this, SingleRepository.class);
                 i.putExtra("repo_name", mJson.getJSONObject(position).getString("name"));
                 i.putExtra("repo_owner", mJson.getJSONObject(position).getString("owner"));
                 startActivity(i);

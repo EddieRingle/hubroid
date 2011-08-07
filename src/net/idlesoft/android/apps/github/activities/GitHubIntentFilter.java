@@ -33,7 +33,7 @@ public class GitHubIntentFilter extends BaseActivity {
 					intent.putExtra("username", parts[3]);
 					startActivity(intent);
 				} else if (parts.length == 5) {
-						intent.setClass(getApplicationContext(), Repository.class);
+						intent.setClass(getApplicationContext(), SingleRepository.class);
 						intent.putExtra("repo_owner", parts[3]);
 						intent.putExtra("repo_name", parts[4]);
 						startActivity(intent);

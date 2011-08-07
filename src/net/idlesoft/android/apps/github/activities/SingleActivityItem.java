@@ -257,7 +257,7 @@ public class SingleActivityItem extends BaseActivity {
                                 startActivity(intent);
                             } else if (parts[0].equals("showRepo")) {
                                 final Intent intent = new Intent(SingleActivityItem.this,
-                                        Repository.class);
+                                        SingleRepository.class);
                                 intent.putExtra("repo_owner", parts[1]);
                                 intent.putExtra("repo_name", parts[2]);
                                 startActivity(intent);
