@@ -14,6 +14,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,7 +45,7 @@ public class BaseTabActivity extends TabActivity {
         super.onCreate(icicle);
         setContentView(layout);
 
-        mPrefs = getSharedPreferences("HubroidPrefs", 0);
+        mPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         mPrefsEditor = mPrefs.edit();
 
         mUsername = mPrefs.getString("username", "");

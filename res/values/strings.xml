@@ -56,4 +56,12 @@
 
     <!-- Miscellaneous -->
     <string name="bar">|</string>
+
+	<!-- Preferences -->
+    <string name="preferences_category_issues">Issues</string>
+    <string name="preferences_category_general">General</string>
+    <string name="preferences_key_issue_comment_signature">issue_comment_signature</string>
+    <string name="preferences_title_issues_comment_signature">Comment Signature</string>
+    <string name="preferences_summary_on_issue_comment_signature">\"Sent via Hubroid\" will be appended to issue comments</string>
+    <string name="preferences_summary_off_issue_comment_signature">\"Sent via Hubroid\" will not be appended to issue comments</string>
 </resources>

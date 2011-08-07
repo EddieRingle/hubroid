@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen
   xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="General Settings">
+    <PreferenceCategory android:title="@string/preferences_category_general">
         <Preference
             android:key="clear_gravatar_cache"
             android:title="Clear Gravatar Cache" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_category_issues">
+        <CheckBoxPreference android:title="@string/preferences_title_issues_comment_signature" android:key="@string/preferences_key_issue_comment_signature" android:defaultValue="true" android:summaryOff="@string/preferences_summary_off_issue_comment_signature" android:summaryOn="@string/preferences_summary_on_issue_comment_signature"></CheckBoxPreference>
     </PreferenceCategory>
 </PreferenceScreen>

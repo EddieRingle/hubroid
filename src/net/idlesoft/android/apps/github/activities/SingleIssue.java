@@ -42,11 +42,15 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected Integer doInBackground(final Void... params) {
+        	String commentBody = ((EditText) activity.mCommentArea
+                    .findViewById(R.id.et_issue_comment_area_body)).getText()
+                    .toString();
+        	if (activity.mPrefs.getBoolean(activity.getString(R.string.preferences_key_issue_comment_signature), true)) {
+        		commentBody += "\n\n_Sent via Hubroid_";
+        	}
             return activity.mGApi.issues
                     .add_comment(activity.mRepositoryOwner, activity.mRepositoryName,
-                            activity.mIssueNumber, ((EditText) activity.mCommentArea
-                                    .findViewById(R.id.et_issue_comment_area_body)).getText()
-                                    .toString()).statusCode;
+                            activity.mIssueNumber, commentBody).statusCode;
         }
 
         @Override
