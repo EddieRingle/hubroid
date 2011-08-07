@@ -125,8 +125,8 @@ public class SingleGist extends BaseActivity {
             try {
                 Gist g = gs.getGist(activity.mGistId); 
                 activity.mGistOwner = g.getUser().getLogin();
-                activity.mGistDescription = g.getDescription();
-                activity.mGistUpdatedDate = g.getUpdatedAt().toString();
+                activity.mGistDescription = (g.getDescription() != null) ? g.getDescription() : "";
+                activity.mGistUpdatedDate = (g.getUpdatedAt() != null) ? g.getUpdatedAt().toString() : "";
                 activity.mGistCreatedDate = g.getCreatedAt().toString();
                 activity.mGistURL = g.getHtmlUrl();
                 activity.mGistFileCount = g.getFiles().size();
