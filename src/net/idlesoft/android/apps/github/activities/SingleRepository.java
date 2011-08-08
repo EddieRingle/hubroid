@@ -24,6 +24,7 @@ import org.json.JSONObject;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -112,6 +113,9 @@ public class SingleRepository extends BaseActivity {
 	        	if (IsNotNullNorEmpty(mRepository.getDescription())) {
 	        		listItems.put(buildListItem("Description", mRepository.getDescription()));
 	        	}
+	        	if (IsNotNullNorEmpty(mRepository.getHomepage())) {
+	        		listItems.put(buildListItem("Homepage", mRepository.getHomepage()));
+	        	}
 	        	if (mRepository.isFork() && mRepository.getParent() != null) {
 	        		listItems.put(buildListItem("Parent Repository", "This repository is a fork of " + mRepository.getParent().getOwner().getLogin() + "'s repository"));
 	        	}
@@ -151,6 +155,11 @@ public class SingleRepository extends BaseActivity {
 	                    if (title.equals("Owner")) {
 	                    	intent = new Intent(SingleRepository.this, Profile.class);
 	                    	intent.putExtra("username", content);
+	                    } else if (title.equals("Homepage")) {
+	                    	if (content.indexOf("://") == -1) {
+	                    		content = "http://" + content;
+	                    	}
+	                    	intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(content));
 	                    } else if (title.equals("Parent Repository")) {
 	                    	intent = new Intent(SingleRepository.this, SingleRepository.class);
 	                    	intent.putExtra("repo_owner", mRepository.getParent().getOwner().getLogin());
