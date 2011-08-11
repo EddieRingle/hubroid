@@ -8,11 +8,14 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.io.IOException;
+
 import net.idlesoft.android.apps.github.R;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.client.RequestException;
+import org.eclipse.egit.github.core.service.IssueService;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -39,17 +42,23 @@ public class CreateIssue extends BaseActivity {
             	if (activity.mPrefs.getBoolean(activity.getString(R.string.preferences_key_issue_signature), true)) {
             		body += "\n\n_Sent via Hubroid_";
             	}
-                final Response createResp = activity.mGApi.issues.open(activity.mRepositoryOwner,
-                        activity.mRepositoryName, title, body);
-                if (createResp.statusCode == 201) {
-                    try {
-                        activity.mIssueJson = new JSONObject(createResp.resp)
-                                .getJSONObject("issue");
-                    } catch (final JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return createResp.statusCode;
+            	final IssueService is = new IssueService(activity.getGitHubClient());
+            	final Issue newIssue = new Issue();
+            	newIssue.setTitle(title);
+            	newIssue.setBody(body);
+            	try {
+					Issue result = is.createIssue(activity.mRepositoryOwner,
+							activity.mRepositoryName, newIssue);
+					activity.mIssueJson = GsonUtils.toJson(result);
+					return 201;
+				} catch (IOException e) {
+					e.printStackTrace();
+					if (e instanceof RequestException) {
+						return ((RequestException) e).getStatus();
+					} else {
+						return -2;
+					}
+				}
             } else {
                 return -1;
             }
@@ -63,7 +72,7 @@ public class CreateIssue extends BaseActivity {
                 final Intent i = new Intent(activity, SingleIssue.class);
                 i.putExtra("repo_owner", activity.mRepositoryOwner);
                 i.putExtra("repo_name", activity.mRepositoryName);
-                i.putExtra("json", activity.mIssueJson.toString());
+                i.putExtra("json", activity.mIssueJson);
 
                 activity.startActivity(i);
                 activity.setResult(0);
@@ -86,7 +95,7 @@ public class CreateIssue extends BaseActivity {
 
     private CreateIssueTask mCreateIssueTask;
 
-    private JSONObject mIssueJson;
+    private String mIssueJson;
 
     private ProgressDialog mProgressDialog;
 

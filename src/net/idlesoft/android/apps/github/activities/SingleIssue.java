@@ -8,14 +8,22 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import static org.eclipse.egit.github.core.service.IssueService.STATE_OPEN;
+import static org.eclipse.egit.github.core.service.IssueService.STATE_CLOSED;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.IssueCommentsAdapter;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.Comment;
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.client.RequestException;
+import org.eclipse.egit.github.core.service.IssueService;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -32,11 +40,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class SingleIssue extends BaseActivity {
+	private Issue mIssue;
+
+	private ArrayList<Comment> mComments;
+
     private static class AddCommentTask extends AsyncTask<Void, Void, Integer> {
         public SingleIssue activity;
 
@@ -45,12 +53,23 @@ public class SingleIssue extends BaseActivity {
         	String commentBody = ((EditText) activity.mCommentArea
                     .findViewById(R.id.et_issue_comment_area_body)).getText()
                     .toString();
-        	if (activity.mPrefs.getBoolean(activity.getString(R.string.preferences_key_issue_comment_signature), true)) {
+        	if (activity.mPrefs.getBoolean(activity.getString(
+        			R.string.preferences_key_issue_comment_signature), true)) {
         		commentBody += "\n\n_Sent via Hubroid_";
         	}
-            return activity.mGApi.issues
-                    .add_comment(activity.mRepositoryOwner, activity.mRepositoryName,
-                            activity.mIssueNumber, commentBody).statusCode;
+        	final IssueService is = new IssueService(activity.getGitHubClient());
+        	try {
+        		is.createComment(activity.mRepositoryOwner, activity.mRepositoryName,
+        				Integer.toString(activity.mIssue.getNumber()), commentBody);
+        		return 200;
+        	} catch (IOException e) {
+        		e.printStackTrace();
+        		if (e instanceof RequestException) {
+        			return ((RequestException) e).getStatus();
+        		} else {
+        			return -1;
+        		}
+        	}
         }
 
         @Override
@@ -59,7 +78,6 @@ public class SingleIssue extends BaseActivity {
                     .setVisibility(View.GONE);
             ((EditText) activity.mCommentArea.findViewById(R.id.et_issue_comment_area_body))
                     .setText("");
-            activity.mCommentsJson = null;
             activity.mLoadIssueTask = new LoadIssueTask();
             activity.mLoadIssueTask.activity = activity;
             activity.mLoadIssueTask.execute();
@@ -77,9 +95,19 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected Integer doInBackground(final Void... params) {
-            final int statusCode = activity.mGApi.issues.close(activity.mRepositoryOwner,
-                    activity.mRepositoryName, activity.mIssueNumber).statusCode;
-            return statusCode;
+        	final IssueService is = new IssueService(activity.getGitHubClient());
+        	try {
+        		is.editIssue(activity.mRepositoryOwner, activity.mRepositoryName,
+        				activity.mIssue.setState(STATE_CLOSED));
+        		return 200;
+        	} catch (IOException e) {
+        		e.printStackTrace();
+        		if (e instanceof RequestException) {
+        			return ((RequestException) e).getStatus();
+        		} else {
+        			return -1;
+        		}
+        	}
         }
 
         @Override
@@ -105,34 +133,22 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-            if (activity.mJson == null) {
-                try {
-                    final Response r = activity.mGApi.issues.issue(activity.mRepositoryOwner,
-                            activity.mRepositoryName, activity.mIssueNumber);
-                    if (r.statusCode != 200) {
-                        /* Something happened */
-                        return null;
-                    }
-                    activity.mJson = new JSONObject(r.resp).getJSONObject("issue");
-                } catch (final JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            if (activity.mCommentsJson == null) {
-                try {
-                    final Response resp = activity.mGApi.issues.list_comments(
-                            activity.mRepositoryOwner, activity.mRepositoryName,
-                            activity.mIssueNumber);
-                    if (resp.statusCode != 200) {
-                        /* Oh noez, something went wrong */
-                        return null;
-                    }
-                    activity.mCommentsJson = (new JSONObject(resp.resp)).getJSONArray("comments");
-                } catch (final JSONException e) {
-                    e.printStackTrace();
-                }
-                activity.mAdapter.loadData(activity.mCommentsJson);
-            }
+        	final IssueService is = new IssueService(activity.getGitHubClient());
+        	try {
+        		activity.mIssue = is.getIssue(activity.mRepositoryOwner, activity.mRepositoryName,
+        				Integer.toString(activity.mIssue.getNumber()));
+        		if (activity.mIssue != null) {
+	        		activity.mComments = new ArrayList<Comment>(is.getComments(
+	        				activity.mRepositoryOwner, activity.mRepositoryName,
+	        				Integer.toString(activity.mIssue.getNumber())));
+        		}
+        	} catch (IOException e) {
+        		e.printStackTrace();
+        	}
+        	if (activity.mComments == null) {
+        		activity.mComments = new ArrayList<Comment>();
+        	}
+        	activity.mAdapter.loadData(activity.mComments);
             return null;
         }
 
@@ -163,53 +179,46 @@ public class SingleIssue extends BaseActivity {
         }
     }
 
-    public static String getTimeSince(final String pTime) {
-        try {
-            final SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            final Date item_time = dateFormat.parse(pTime);
-            final Date current_time = new Date();
-            final long ms = current_time.getTime() - item_time.getTime();
-            final long sec = ms / 1000;
-            final long min = sec / 60;
-            final long hour = min / 60;
-            final long day = hour / 24;
-            final long year = day / 365;
-            if (year > 0) {
-                if (year == 1) {
-                    return "Updated " + year + " year ago";
-                } else {
-                    return "Updated " + year + " years ago";
-                }
-            } else if (day > 0) {
-                if (day == 1) {
-                    return "Updated " + day + " day ago";
-                } else {
-                    return "Updated " + day + " days ago";
-                }
-            } else if (hour > 0) {
-                if (hour == 1) {
-                    return "Updated " + hour + " hour ago";
-                } else {
-                    return "Updated " + hour + " hours ago";
-                }
-            } else if (min > 0) {
-                if (min == 1) {
-                    return "Updated " + min + " minute ago";
-                } else {
-                    return "Updated " + min + " minutes ago";
-                }
-            } else {
-                if (sec == 1) {
-                    return "Updated " + sec + " second ago";
-                } else {
-                    return "Updated " + sec + " seconds ago";
-                }
-            }
-        } catch (final ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public static String getTimeSince(final Date pTime) {
+        final Date item_time = pTime;
+		final Date current_time = new Date();
+		final long ms = current_time.getTime() - item_time.getTime();
+		final long sec = ms / 1000;
+		final long min = sec / 60;
+		final long hour = min / 60;
+		final long day = hour / 24;
+		final long year = day / 365;
+		if (year > 0) {
+		    if (year == 1) {
+		        return year + " year";
+		    } else {
+		        return year + " years";
+		    }
+		} else if (day > 0) {
+		    if (day == 1) {
+		        return day + " day";
+		    } else {
+		        return day + " days";
+		    }
+		} else if (hour > 0) {
+		    if (hour == 1) {
+		        return hour + " hour";
+		    } else {
+		        return hour + " hours";
+		    }
+		} else if (min > 0) {
+		    if (min == 1) {
+		        return min + " minute";
+		    } else {
+		        return min + " minutes";
+		    }
+		} else {
+		    if (sec == 1) {
+		        return sec + " second";
+		    } else {
+		        return sec + " seconds";
+		    }
+		}
     }
 
     private IssueCommentsAdapter mAdapter;
@@ -222,17 +231,11 @@ public class SingleIssue extends BaseActivity {
 
     private View mCommentArea;
 
-    private JSONArray mCommentsJson;
-
     private LoadIssueTask mLoadIssueTask;
 
     private View mHeader;
 
     public Intent mIntent;
-
-    private int mIssueNumber;
-
-    private JSONObject mJson;
 
     private ListView mListView;
 
@@ -265,14 +268,14 @@ public class SingleIssue extends BaseActivity {
         final TextView number = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_number);
 
         try {
-            date.setText(getTimeSince(mJson.getString("updated_at")));
-            if (mJson.getString("state").equalsIgnoreCase("open")) {
+        	date.setText("Updated " + getTimeSince(mIssue.getUpdatedAt()) + " ago");
+        	if (mIssue.getState().equalsIgnoreCase(STATE_OPEN)) {
                 icon.setImageResource(R.drawable.issues_open);
             } else {
                 icon.setImageResource(R.drawable.issues_closed);
             }
-            number.setText("#" + mJson.getString("number"));
-            title.setText(mJson.getString("title"));
+        	number.setText("#" + mIssue.getNumber());
+        	title.setText(mIssue.getTitle());
             getActionBar().setTitle("Issue " + number.getText().toString());
         } catch (final Exception e) {
             e.printStackTrace();
@@ -292,28 +295,24 @@ public class SingleIssue extends BaseActivity {
     }
 
     public void fillViewInfo() {
-        try {
-            loadIssueItemBox();
+        loadIssueItemBox();
 
-            ((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
-                    .setImageBitmap(GravatarCache.getDipGravatar(
-                            GravatarCache.getGravatarID(mJson.getString("user")), 30.0f,
-                            getResources().getDisplayMetrics().density));
-            ((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mJson
-                    .getString("body").replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
+		((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
+		        .setImageBitmap(GravatarCache.getDipGravatar(
+		                GravatarCache.getGravatarID(mIssue.getUser().getLogin()), 30.0f,
+		                getResources().getDisplayMetrics().density));
+		((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mIssue.getBody()
+				.replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 
-            ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta))
-                    .setText("Posted "
-                            + getTimeSince(mJson.getString("created_at") + " by "
-                                    + mJson.getString("user")));
+		((TextView) mHeader.findViewById(R.id.tv_single_issue_meta))
+		        .setText("Posted "
+		                + getTimeSince(mIssue.getCreatedAt()) + " by "
+		                        + mIssue.getUser().getLogin());
 
-            if (mJson.getString("state").equals("closed")) {
-                ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
-                        .setVisibility(View.GONE);
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+		if (mIssue.getState().equalsIgnoreCase(STATE_CLOSED)) {
+		    ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
+		            .setVisibility(View.GONE);
+		}
     }
 
     @Override
@@ -328,31 +327,26 @@ public class SingleIssue extends BaseActivity {
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            try {
-                mRepositoryOwner = extras.getString("repo_owner");
-                mRepositoryName = extras.getString("repo_name");
-                if (extras.containsKey("json")) {
-                    mJson = new JSONObject(extras.getString("json"));
-                    mIssueNumber = mJson.getInt("number");
-                } else if (extras.containsKey("number")) {
-                    mIssueNumber = extras.getInt("number");
-                }
+            mRepositoryOwner = extras.getString("repo_owner");
+			mRepositoryName = extras.getString("repo_name");
+			if (extras.containsKey("json")) {
+				mIssue = GsonUtils.fromJson(extras.getString("json"), Issue.class);
+			} else if (extras.containsKey("number")) {
+			    mIssue = new Issue();
+			    mIssue.setNumber(extras.getInt("number"));
+			}
 
-                loadView();
+			loadView();
 
-                mLoadIssueTask = (LoadIssueTask) getLastNonConfigurationInstance();
-                if (mLoadIssueTask == null) {
-                    mLoadIssueTask = new LoadIssueTask();
-                }
-                mLoadIssueTask.activity = SingleIssue.this;
+			mLoadIssueTask = (LoadIssueTask) getLastNonConfigurationInstance();
+			if (mLoadIssueTask == null) {
+			    mLoadIssueTask = new LoadIssueTask();
+			}
+			mLoadIssueTask.activity = SingleIssue.this;
 
-                if ((mLoadIssueTask.getStatus() == AsyncTask.Status.PENDING)
-                        && (mJson == null || mCommentsJson == null)) {
-                    mLoadIssueTask.execute();
-                }
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+			if ((mLoadIssueTask.getStatus() == AsyncTask.Status.PENDING)) {
+			    mLoadIssueTask.execute();
+			}
         }
     }
 
@@ -371,20 +365,6 @@ public class SingleIssue extends BaseActivity {
             ((EditText) mCommentArea.findViewById(R.id.et_issue_comment_area_body))
                     .setText(savedInstanceState.getString("commentText"));
         }
-        try {
-            if (savedInstanceState.containsKey("commentsJson")) {
-                mCommentsJson = new JSONArray(savedInstanceState.getString("commentsJson"));
-            } else {
-                return;
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        if (mCommentsJson != null) {
-            mAdapter.loadData(mCommentsJson);
-            mAdapter.pushData();
-        }
     }
 
     @Override
@@ -402,9 +382,6 @@ public class SingleIssue extends BaseActivity {
     public void onSaveInstanceState(final Bundle savedInstanceState) {
         savedInstanceState.putString("commentText", ((EditText) mCommentArea
                 .findViewById(R.id.et_issue_comment_area_body)).getText().toString());
-        if (mCommentsJson != null) {
-            savedInstanceState.putString("commentsJson", mCommentsJson.toString());
-        }
         super.onSaveInstanceState(savedInstanceState);
     }
 }

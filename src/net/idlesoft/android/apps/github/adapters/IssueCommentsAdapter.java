@@ -9,10 +9,10 @@
 package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.activities.Hubroid;
+import net.idlesoft.android.apps.github.activities.SingleIssue;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
-import org.json.JSONException;
+import org.eclipse.egit.github.core.Comment;
 
 import android.app.Activity;
 import android.view.View;
@@ -21,11 +21,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class IssueCommentsAdapter extends GravatarJsonListAdapter {
+public class IssueCommentsAdapter extends GravatarArrayListAdapter<Comment> {
     public static class ViewHolder {
         public TextView body;
 
@@ -51,69 +47,12 @@ public class IssueCommentsAdapter extends GravatarJsonListAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        try {
-            String end;
-            final SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    Hubroid.GITHUB_ISSUES_TIME_FORMAT);
-            final Date item_time = dateFormat.parse(mJson.getJSONObject(index).getString(
-                    "created_at"));
-            final Date current_time = new Date();
-            final long ms = current_time.getTime() - item_time.getTime();
-            final long sec = ms / 1000;
-            final long min = sec / 60;
-            final long hour = min / 60;
-            final long day = hour / 24;
-            final long year = day / 365;
-            if (year > 0) {
-                if (year == 1) {
-                    end = " year ago";
-                } else {
-                    end = " years ago";
-                }
-                holder.meta.setText("Posted " + year + end + " by "
-                        + mJson.getJSONObject(index).getString("user"));
-            }
-            if (day > 0) {
-                if (day == 1) {
-                    end = " day ago";
-                } else {
-                    end = " days ago";
-                }
-                holder.meta.setText("Posted " + day + end + " by "
-                        + mJson.getJSONObject(index).getString("user"));
-            } else if (hour > 0) {
-                if (hour == 1) {
-                    end = " hour ago";
-                } else {
-                    end = " hours ago";
-                }
-                holder.meta.setText("Posted " + hour + end + " by "
-                        + mJson.getJSONObject(index).getString("user"));
-            } else if (min > 0) {
-                if (min == 1) {
-                    end = " minute ago";
-                } else {
-                    end = " minutes ago";
-                }
-                holder.meta.setText("Posted " + min + end + " by "
-                        + mJson.getJSONObject(index).getString("user"));
-            } else {
-                if (sec == 1) {
-                    end = " second ago";
-                } else {
-                    end = " seconds ago";
-                }
-                holder.meta.setText("Posted " + sec + end + " by "
-                        + mJson.getJSONObject(index).getString("user"));
-            }
-            holder.gravatar.setImageBitmap(mGravatars.get(mJson.getJSONObject(index).getString(
-                    "user")));
-            holder.body.setText(mJson.getJSONObject(index).getString("body")
-                    .replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        } catch (final ParseException e) {
-            e.printStackTrace();
+        holder.meta.setText("Posted " + SingleIssue.getTimeSince(mData.get(index).getCreatedAt())
+        		+ " ago by " + mData.get(index).getUser().getLogin());
+        holder.gravatar.setImageBitmap(mGravatars.get(mData.get(index).getUser().getLogin()));
+        if (mData.get(index).getBody() != null) {
+        	holder.body.setText(mData.get(index).getBody().replaceAll("\r\n", "\n")
+        			.replaceAll("\r", "\n"));
         }
         return convertView;
     }
@@ -126,18 +65,14 @@ public class IssueCommentsAdapter extends GravatarJsonListAdapter {
      */
     @Override
     public void loadGravatars() {
-        try {
-            final int length = mJson.length();
-            for (int i = 0; i < length; i++) {
-                final String actor = mJson.getJSONObject(i).getString("user");
-                if (!mGravatars.containsKey(actor)) {
-                    mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-                            .getGravatarID(actor), 30.0f, mActivity.getResources()
-                            .getDisplayMetrics().density));
-                }
-            }
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        }
+        final int length = mListData.size();
+		for (int i = 0; i < length; i++) {
+		    final String actor = mData.get(i).getUser().getLogin();
+		    if (!mGravatars.containsKey(actor)) {
+		        mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+		                .getGravatarID(actor), 30.0f, mActivity.getResources()
+		                .getDisplayMetrics().density));
+		    }
+		}
     }
 }

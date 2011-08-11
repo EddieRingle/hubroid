@@ -11,10 +11,8 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.ClosedIssues;
 import net.idlesoft.android.apps.github.activities.tabs.OpenIssues;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.TextView;
 
 public class Issues extends BaseTabActivity {
     private static final String TAG_CLOSED_ISSUES = "closed_issues";

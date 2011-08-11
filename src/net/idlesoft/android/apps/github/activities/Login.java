@@ -55,6 +55,7 @@ public class Login extends BaseActivity {
             	if (e instanceof RequestException) {
             		return ((RequestException) e).getStatus();
             	} else {
+            		e.printStackTrace();
             		return -2;
             	}
             }

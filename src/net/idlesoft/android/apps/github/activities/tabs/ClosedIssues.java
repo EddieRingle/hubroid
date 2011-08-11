@@ -8,16 +8,24 @@
 
 package net.idlesoft.android.apps.github.activities.tabs;
 
+import static org.eclipse.egit.github.core.service.IssueService.FILTER_STATE;
+import static org.eclipse.egit.github.core.service.IssueService.STATE_CLOSED;
+import static org.eclipse.egit.github.core.service.IssueService.STATE_OPEN;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Issues;
 import net.idlesoft.android.apps.github.activities.SingleIssue;
 import net.idlesoft.android.apps.github.adapters.IssuesListAdapter;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.client.RequestException;
+import org.eclipse.egit.github.core.service.IssueService;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -37,40 +45,47 @@ public class ClosedIssues extends BaseActivity {
 
     private static final int TASK_REOPEN_ISSUE = 2;
 
-    private static class ClosedIssuesTask extends AsyncTask<Void, Void, Integer> {
+    private ArrayList<Issue> mIssues;
+
+    private static class ClosedIssuesTask extends AsyncTask<Issue, Void, Integer> {
         public int taskId = 0;
 
         public ClosedIssues activity;
 
         @Override
-        protected Integer doInBackground(final Void... params) {
+        protected Integer doInBackground(final Issue... params) {
+        	final IssueService is = new IssueService(activity.getGitHubClient());
             switch (taskId) {
                 case TASK_LOAD_ISSUES:
-                    if (activity.mJson == null) {
-                        try {
-                            final Response resp = activity.mGApi.issues.list(
-                                    activity.mRepositoryOwner, activity.mRepositoryName, "closed");
-                            if (resp.statusCode != 200) {
-                                /* Oh noez, something went wrong */
-                                return resp.statusCode;
-                            }
-                            activity.mJson = (new JSONObject(resp.resp)).getJSONArray("issues");
-                            activity.mAdapter.loadData(activity.mJson);
-                            return resp.statusCode;
-                        } catch (final JSONException e) {
-                            e.printStackTrace();
-                            return -1;
-                        }
-                    }
-                    break;
+                	try {
+                		activity.mIssues = new ArrayList<Issue>(is.getIssues(
+                				activity.mRepositoryOwner, activity.mRepositoryName,
+                				Collections.singletonMap(FILTER_STATE, STATE_CLOSED)));
+                	} catch (IOException e) {
+                		e.printStackTrace();
+                		return ((RequestException) e).getStatus();
+                	}
+                	if (activity.mIssues == null) {
+                		activity.mIssues = new ArrayList<Issue>();
+                	}
+                	activity.mAdapter.loadData(activity.mIssues);
+                	return 200;
                 case TASK_REOPEN_ISSUE:
-                    final int statusCode = activity.mGApi.issues.reopen(activity.mRepositoryOwner,
-                            activity.mRepositoryName, activity.mIssueNumber).statusCode;
-                    return statusCode;
+                	try {
+                		is.editIssue(activity.mRepositoryOwner, activity.mRepositoryName,
+                				params[0].setState(STATE_OPEN));
+                		return 200;
+                	} catch (IOException e) {
+                		e.printStackTrace();
+                		if (e instanceof RequestException) {
+                			return ((RequestException) e).getStatus();
+                		} else {
+                			return -1;
+                		}
+                	}
                 default:
                     return 0;
             }
-            return 0;
         }
 
         @Override
@@ -91,7 +106,7 @@ public class ClosedIssues extends BaseActivity {
                     } else {
                         Toast.makeText(
                                 activity,
-                                "Error reopening issue " + activity.mIssueNumber + ": "
+                                "Error reopening issue: "
                                         + result.intValue(), Toast.LENGTH_SHORT).show();
                     }
                     break;
@@ -116,13 +131,9 @@ public class ClosedIssues extends BaseActivity {
         }
     }
 
-    private int mIssueNumber;
-
     private ProgressDialog mProgressDialog;
 
     private IssuesListAdapter mAdapter;
-
-    private JSONArray mJson;
 
     private ListView mListView;
 
@@ -132,11 +143,7 @@ public class ClosedIssues extends BaseActivity {
             final Intent i = new Intent(getApplicationContext(), SingleIssue.class);
             i.putExtra("repo_owner", mRepositoryOwner);
             i.putExtra("repo_name", mRepositoryName);
-            try {
-                i.putExtra("json", mJson.getJSONObject(position).toString());
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            i.putExtra("json", GsonUtils.toJson(mIssues.get(position)));
             startActivityForResult(i, 1);
             return;
         }
@@ -152,7 +159,6 @@ public class ClosedIssues extends BaseActivity {
     protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         if (resultCode == 1) {
             mAdapter.clear();
-            mJson = null;
             mTask = new ClosedIssuesTask();
             mTask.activity = ClosedIssues.this;
             mTask.taskId = TASK_LOAD_ISSUES;
@@ -176,12 +182,6 @@ public class ClosedIssues extends BaseActivity {
         final AdapterView.AdapterContextMenuInfo info = ((AdapterView.AdapterContextMenuInfo) item
                 .getMenuInfo());
 
-        try {
-            mIssueNumber = mJson.getJSONObject(info.position).getInt("number");
-        } catch (JSONException e) {
-            mIssueNumber = -1;
-            e.printStackTrace();
-        }
         switch (item.getItemId()) {
             case Issues.CONTEXT_MENU_DETAILS:
                 mListView.performItemClick(info.targetView, info.position, info.id);
@@ -190,7 +190,7 @@ public class ClosedIssues extends BaseActivity {
                 mTask = new ClosedIssuesTask();
                 mTask.activity = ClosedIssues.this;
                 mTask.taskId = TASK_REOPEN_ISSUE;
-                mTask.execute();
+                mTask.execute(mIssues.get(info.position));
                 break;
             default:
                 break;
@@ -234,34 +234,7 @@ public class ClosedIssues extends BaseActivity {
     }
 
     @Override
-    public void onRestoreInstanceState(final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        try {
-            if (savedInstanceState.containsKey("json")) {
-                mJson = new JSONArray(savedInstanceState.getString("json"));
-            } else {
-                return;
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        if (mJson != null) {
-            mAdapter.loadData(mJson);
-            mAdapter.pushData();
-        }
-    }
-
-    @Override
     public Object onRetainNonConfigurationInstance() {
         return mTask;
-    }
-
-    @Override
-    public void onSaveInstanceState(final Bundle savedInstanceState) {
-        if (mJson != null) {
-            savedInstanceState.putString("json", mJson.toString());
-        }
-        super.onSaveInstanceState(savedInstanceState);
     }
 }
