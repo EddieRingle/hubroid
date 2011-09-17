@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.petebevin.markdown.MarkdownProcessor;
-
 import net.idlesoft.android.apps.github.R;
 
 import org.json.JSONException;
@@ -20,8 +18,10 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.webkit.WebView;
-import android.widget.TextView;
+
+import com.petebevin.markdown.MarkdownProcessor;
 
 public class FileViewer extends BaseActivity {
     private static class LoadBlobTask extends AsyncTask<Void, Void, Void> {
@@ -185,5 +185,10 @@ public class FileViewer extends BaseActivity {
     protected void onSaveInstanceState(final Bundle outState) {
         outState.putString("html", mHtml);
         super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return volumeZoom(event, mWebView);
     }
 }
