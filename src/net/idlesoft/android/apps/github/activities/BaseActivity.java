@@ -1,9 +1,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.ActionBar.Action;
-
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
@@ -15,8 +12,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.WebView;
+
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.ActionBar.Action;
 
 public class BaseActivity extends Activity {
     protected static final int NO_LAYOUT = -1;
@@ -142,5 +144,24 @@ public class BaseActivity extends Activity {
         menu.add(0, 0, 0, "Settings").setIcon(android.R.drawable.ic_menu_preferences);
         menu.add(0, 1, 0, "Logout").setIcon(android.R.drawable.ic_lock_power_off);
         return true;
+    }
+
+    public boolean volumeZoom(KeyEvent event, WebView view) {
+        int action = event.getAction();
+        int keyCode = event.getKeyCode();
+        switch (keyCode) {
+        case KeyEvent.KEYCODE_VOLUME_UP:
+            if (action == KeyEvent.ACTION_UP) {
+                view.zoomIn();
+            }
+            return true;
+        case KeyEvent.KEYCODE_VOLUME_DOWN:
+            if (action == KeyEvent.ACTION_UP) {
+                view.zoomOut();
+            }
+            return true;
+        default:
+            return super.dispatchKeyEvent(event);
+        }
     }
 }
