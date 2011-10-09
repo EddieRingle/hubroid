@@ -11,9 +11,10 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.CommitListAdapter;
 
-import org.eclipse.egit.github.core.PullRequestCommit;
+import org.eclipse.egit.github.core.RepositoryCommit;
+import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.PageIterator;
-import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.egit.github.core.service.CommitService;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -26,21 +27,21 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class CommitsList extends BaseActivity {
-    private ArrayList<PullRequestCommit> mCommits;
+    private ArrayList<RepositoryCommit> mCommits;
 
     private static class GatherCommitsTask extends AsyncTask<Void, Void, Void> {
         public CommitsList activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            final RepositoryService rs = new RepositoryService(activity.getGitHubClient());
-            PageIterator<PullRequestCommit> itr = rs.pageCommits(activity.mRepoOwner,
-                    activity.mRepoName, activity.mBranchName, null, 30);
+            final CommitService cs = new CommitService(activity.getGitHubClient());
+            PageIterator<RepositoryCommit> itr = cs.pageCommits(RepositoryId.create(
+                    activity.mRepoOwner, activity.mRepoName), activity.mBranchName, null, 30);
             if (itr.hasNext()) {
-                activity.mCommits = new ArrayList<PullRequestCommit>(itr.next());
+                activity.mCommits = new ArrayList<RepositoryCommit>(itr.next());
             }
             if (activity.mCommits == null) {
-                activity.mCommits = new ArrayList<PullRequestCommit>();
+                activity.mCommits = new ArrayList<RepositoryCommit>();
             }
             activity.mCommitListAdapter.loadData(activity.mCommits);
             return null;

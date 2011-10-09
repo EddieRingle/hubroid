@@ -11,7 +11,7 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.StringUtils;
 
-import org.apache.commons.codec.binary.Base64;
+import shade.org.apache.commons.codec.binary.Base64;
 import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GsonUtils;

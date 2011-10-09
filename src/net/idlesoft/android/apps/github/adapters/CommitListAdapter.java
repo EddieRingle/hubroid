@@ -12,7 +12,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 import net.idlesoft.android.apps.github.utils.StringUtils;
 
-import org.eclipse.egit.github.core.PullRequestCommit;
+import org.eclipse.egit.github.core.RepositoryCommit;
 
 import android.app.Activity;
 import android.view.View;
@@ -21,7 +21,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class CommitListAdapter extends GravatarArrayListAdapter<PullRequestCommit> {
+public class CommitListAdapter extends GravatarArrayListAdapter<RepositoryCommit> {
     public static class ViewHolder {
         public TextView commit_date;
 
