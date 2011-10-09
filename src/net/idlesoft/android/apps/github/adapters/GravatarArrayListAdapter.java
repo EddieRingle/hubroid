@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public abstract class GravatarArrayListAdapter<E> extends ArrayListAdapter<E> {
-    public class ViewHolder {
+    public static class ViewHolder {
         public ImageView gravatar;
 
         public TextView text;
