@@ -8,9 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities.tabs;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.adapters.TeamsListAdapter;
@@ -25,23 +22,27 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class Teams extends BaseActivity {
-	private ArrayList<Team> mTeams;
+    private ArrayList<Team> mTeams;
+
     private static class TeamsTask extends AsyncTask<Void, Void, Void> {
         public Teams activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	final TeamService ts = new TeamService(activity.getGitHubClient());
-        	try {
-        		activity.mTeams = new ArrayList<Team>(ts.getTeams(activity.mTarget));
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        	}
-        	if (activity.mTeams == null) {
-        		activity.mTeams = new ArrayList<Team>();
-        	}
-        	activity.mAdapter.loadData(activity.mTeams);
+            final TeamService ts = new TeamService(activity.getGitHubClient());
+            try {
+                activity.mTeams = new ArrayList<Team>(ts.getTeams(activity.mTarget));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (activity.mTeams == null) {
+                activity.mTeams = new ArrayList<Team>();
+            }
+            activity.mAdapter.loadData(activity.mTeams);
             return null;
         }
 
@@ -64,9 +65,12 @@ public class Teams extends BaseActivity {
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {/*
-            final Intent i = new Intent(getApplicationContext(), SingleTeam.class);
-            i.putExtra("id", mTeams.get(position).getId());
-            startActivity(i);*/
+                                 * final Intent i = new
+                                 * Intent(getApplicationContext(),
+                                 * SingleTeam.class); i.putExtra("id",
+                                 * mTeams.get(position).getId());
+                                 * startActivity(i);
+                                 */
             return;
         }
     };

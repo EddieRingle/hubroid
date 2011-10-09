@@ -8,10 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 import net.idlesoft.android.apps.github.utils.NewsFeedHelpers;
@@ -28,6 +24,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class SingleActivityItem extends BaseActivity {
     public static final String CSS = "<style type=\"text/css\">" + "* {" + "margin: 0px;" + "}"
@@ -49,9 +49,9 @@ public class SingleActivityItem extends BaseActivity {
             final JSONObject entry = mJson;
             final JSONObject payload;
             if (entry.has("payload")) {
-            	payload = entry.getJSONObject("payload");
+                payload = entry.getJSONObject("payload");
             } else {
-            	payload = new JSONObject();
+                payload = new JSONObject();
             }
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -140,7 +140,8 @@ public class SingleActivityItem extends BaseActivity {
             } else if (eventType.contains("CreateEvent")) {
                 icon.setImageResource(R.drawable.create);
                 if (payload.getString("ref_type").contains("repository")) {
-                    title = actor + " created repository " + entry.getJSONObject("repository").getString("name");
+                    title = actor + " created repository "
+                            + entry.getJSONObject("repository").getString("name");
                 } else if (payload.getString("ref_type").contains("branch")) {
                     title = actor + " created branch " + payload.getString("ref") + " at "
                             + entry.getJSONObject("repository").getString("owner") + "/"
@@ -319,7 +320,7 @@ public class SingleActivityItem extends BaseActivity {
                 } else if (eventType.equals("GistEvent")) {
                     html = NewsFeedHelpers.linkifyGistItem(mJson);
                 } else if (eventType.equals("PublicEvent")) {
-                	html = NewsFeedHelpers.linkifyPublicItem(mJson);
+                    html = NewsFeedHelpers.linkifyPublicItem(mJson);
                 } else {
                     html = NewsFeedHelpers.linkifyOtherItem(mJson);
                 }

@@ -43,13 +43,13 @@ public class BranchTreeListAdapter extends ArrayListAdapter<TreeEntry> {
             holder = (ViewHolder) convertView.getTag();
         }
         final TreeEntry entry = mData.get(index);
-		final String type = entry.getType();
-		if (type.equals("tree")) {
-		    holder.icon.setImageResource(R.drawable.folder);
-		} else if (type.equals("blob")) {
-		    holder.icon.setImageResource(R.drawable.file);
-		}
-		holder.name.setText(entry.getPath());
+        final String type = entry.getType();
+        if (type.equals("tree")) {
+            holder.icon.setImageResource(R.drawable.folder);
+        } else if (type.equals("blob")) {
+            holder.icon.setImageResource(R.drawable.file);
+        }
+        holder.name.setText(entry.getPath());
         return convertView;
     }
 }

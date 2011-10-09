@@ -8,14 +8,14 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public abstract class GravatarArrayListAdapter<E> extends ArrayListAdapter<E> {
     public class ViewHolder {
@@ -34,8 +34,8 @@ public abstract class GravatarArrayListAdapter<E> extends ArrayListAdapter<E> {
     public void loadData(final ArrayList<E> pArrayList) {
         super.loadData(pArrayList);
         /*
-         * Load gravatars after the ArrayList has loaded but before the LinkedList is
-         * populated
+         * Load gravatars after the ArrayList has loaded but before the
+         * LinkedList is populated
          */
         mGravatars = new HashMap<String, Bitmap>(mListData.size());
         loadGravatars();

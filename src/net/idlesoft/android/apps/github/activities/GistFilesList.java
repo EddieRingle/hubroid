@@ -8,9 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.IOException;
-import java.util.Map;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.GistFilesListAdapter;
 
@@ -26,6 +23,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import java.io.IOException;
+import java.util.Map;
 
 public class GistFilesList extends BaseActivity {
     private Map<String, GistFile> mFileMap;

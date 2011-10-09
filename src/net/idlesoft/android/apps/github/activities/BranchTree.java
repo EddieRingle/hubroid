@@ -8,9 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchTreeListAdapter;
 
@@ -27,28 +24,32 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class BranchTree extends BaseActivity {
-	private Tree mTree;
+    private Tree mTree;
 
     private static class LoadTreeTask extends AsyncTask<Void, Void, Void> {
         public BranchTree activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	final DataService ds = new DataService(activity.getGitHubClient());
-        	try {
-				activity.mTree = ds.getTree(RepositoryId.create(activity.mRepositoryOwner,
-						activity.mRepositoryName), activity.mBranchSha);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-        	if (activity.mTree == null) {
-        		activity.mTree = new Tree();
-        	}
-        	if (activity.mTree.getTree() == null) {
-        		activity.mTree.setTree(new ArrayList<TreeEntry>());
-        	}
-        	activity.mAdapter.loadData(new ArrayList<TreeEntry>(activity.mTree.getTree()));
+            final DataService ds = new DataService(activity.getGitHubClient());
+            try {
+                activity.mTree = ds.getTree(
+                        RepositoryId.create(activity.mRepositoryOwner, activity.mRepositoryName),
+                        activity.mBranchSha);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (activity.mTree == null) {
+                activity.mTree = new Tree();
+            }
+            if (activity.mTree.getTree() == null) {
+                activity.mTree.setTree(new ArrayList<TreeEntry>());
+            }
+            activity.mAdapter.loadData(new ArrayList<TreeEntry>(activity.mTree.getTree()));
             return null;
         }
 
@@ -78,21 +79,21 @@ public class BranchTree extends BaseActivity {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
             final TreeEntry treeItem = mTree.getTree().get(position);
-			if (treeItem.getType().equals("tree")) {
-			    final Intent i = new Intent(BranchTree.this, BranchTree.class);
-			    i.putExtra("repo_owner", mRepositoryOwner);
-			    i.putExtra("repo_name", mRepositoryName);
-			    i.putExtra("branch_name", mBranchName);
-			    i.putExtra("branch_sha", treeItem.getSha());
-			    startActivity(i);
-			} else if (treeItem.getType().equals("blob")) {
-			    final Intent i = new Intent(BranchTree.this, FileViewer.class);
-			    i.putExtra("repo_owner", mRepositoryOwner);
-			    i.putExtra("repo_name", mRepositoryName);
-			    i.putExtra("blob_name", treeItem.getPath());
-			    i.putExtra("blob_sha", treeItem.getSha());
-			    startActivity(i);
-			}
+            if (treeItem.getType().equals("tree")) {
+                final Intent i = new Intent(BranchTree.this, BranchTree.class);
+                i.putExtra("repo_owner", mRepositoryOwner);
+                i.putExtra("repo_name", mRepositoryName);
+                i.putExtra("branch_name", mBranchName);
+                i.putExtra("branch_sha", treeItem.getSha());
+                startActivity(i);
+            } else if (treeItem.getType().equals("blob")) {
+                final Intent i = new Intent(BranchTree.this, FileViewer.class);
+                i.putExtra("repo_owner", mRepositoryOwner);
+                i.putExtra("repo_name", mRepositoryName);
+                i.putExtra("blob_name", treeItem.getPath());
+                i.putExtra("blob_sha", treeItem.getSha());
+                startActivity(i);
+            }
         }
     };
 

@@ -8,12 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -37,6 +31,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 public class Dashboard extends BaseActivity {
     private static class GetLatestBlogPostTask extends AsyncTask<Void, Void, JSONObject> {
         public Dashboard activity;
@@ -44,7 +44,7 @@ public class Dashboard extends BaseActivity {
         @Override
         protected JSONObject doInBackground(final Void... params) {
             try {
-            	// TODO: Convert to use egit-github
+                // TODO: Convert to use egit-github
                 final Response response = new Response();
                 // Setup connection
                 HttpURLConnection conn = (HttpURLConnection) (new URL(
@@ -129,11 +129,17 @@ public class Dashboard extends BaseActivity {
     public GetLatestBlogPostTask mGetLatestBlogPostTask;
 
     public static final byte DEFAULT_ACTION_DASHBOARD = 0;
+
     public static final byte DEFAULT_ACTION_NEWSFEED = 1;
+
     public static final byte DEFAULT_ACTION_PROFILE = 2;
+
     public static final byte DEFAULT_ACTION_REPOS = 3;
+
     public static final byte DEFAULT_ACTION_USERS = 4;
+
     public static final byte DEFAULT_ACTION_ORGS = 5;
+
     public static final byte DEFAULT_ACTION_GISTS = 6;
 
     private void setDefaultAction(final byte action) {
@@ -149,34 +155,34 @@ public class Dashboard extends BaseActivity {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             if (extras.getBoolean("fresh", false)) {
-                final byte defaultAction = (byte)mPrefs.getInt("dashboardDefault", 0);
+                final byte defaultAction = (byte) mPrefs.getInt("dashboardDefault", 0);
                 switch (defaultAction) {
-                case DEFAULT_ACTION_DASHBOARD:
-                    break;
-                case DEFAULT_ACTION_NEWSFEED:
-                    startActivity(new Intent(Dashboard.this, NewsFeed.class));
-                    finish();
-                    break;
-                case DEFAULT_ACTION_PROFILE:
-                    startActivity(new Intent(Dashboard.this, Profile.class));
-                    finish();
-                    break;
-                case DEFAULT_ACTION_REPOS:
-                    startActivity(new Intent(Dashboard.this, Repositories.class));
-                    finish();
-                    break;
-                case DEFAULT_ACTION_USERS:
-                    startActivity(new Intent(Dashboard.this, Users.class));
-                    finish();
-                    break;
-                case DEFAULT_ACTION_ORGS:
-                	startActivity(new Intent(Dashboard.this, Organizations.class));
-                	finish();
-                	break;
-                case DEFAULT_ACTION_GISTS:
-                    startActivity(new Intent(Dashboard.this, Gists.class));
-                    finish();
-                    break;
+                    case DEFAULT_ACTION_DASHBOARD:
+                        break;
+                    case DEFAULT_ACTION_NEWSFEED:
+                        startActivity(new Intent(Dashboard.this, NewsFeed.class));
+                        finish();
+                        break;
+                    case DEFAULT_ACTION_PROFILE:
+                        startActivity(new Intent(Dashboard.this, Profile.class));
+                        finish();
+                        break;
+                    case DEFAULT_ACTION_REPOS:
+                        startActivity(new Intent(Dashboard.this, Repositories.class));
+                        finish();
+                        break;
+                    case DEFAULT_ACTION_USERS:
+                        startActivity(new Intent(Dashboard.this, Users.class));
+                        finish();
+                        break;
+                    case DEFAULT_ACTION_ORGS:
+                        startActivity(new Intent(Dashboard.this, Organizations.class));
+                        finish();
+                        break;
+                    case DEFAULT_ACTION_GISTS:
+                        startActivity(new Intent(Dashboard.this, Gists.class));
+                        finish();
+                        break;
                 }
             }
         }
@@ -207,27 +213,27 @@ public class Dashboard extends BaseActivity {
             @Override
             public boolean onLongClick(View v) {
                 switch (v.getId()) {
-                case R.id.btn_dashboard_newsfeed:
-                    setDefaultAction(DEFAULT_ACTION_NEWSFEED);
-                    break;
-                case R.id.btn_dashboard_myprofile:
-                    setDefaultAction(DEFAULT_ACTION_PROFILE);
-                    break;
-                case R.id.btn_dashboard_repositories:
-                    setDefaultAction(DEFAULT_ACTION_REPOS);
-                    break;
-                case R.id.btn_dashboard_users:
-                    setDefaultAction(DEFAULT_ACTION_USERS);
-                    break;
-                case R.id.btn_dashboard_organizations:
-                	setDefaultAction(DEFAULT_ACTION_ORGS);
-                	break;
-                case R.id.btn_dashboard_gists:
-                    setDefaultAction(DEFAULT_ACTION_GISTS);
-                    break;
-                default:
-                    setDefaultAction(DEFAULT_ACTION_DASHBOARD);
-                    break;
+                    case R.id.btn_dashboard_newsfeed:
+                        setDefaultAction(DEFAULT_ACTION_NEWSFEED);
+                        break;
+                    case R.id.btn_dashboard_myprofile:
+                        setDefaultAction(DEFAULT_ACTION_PROFILE);
+                        break;
+                    case R.id.btn_dashboard_repositories:
+                        setDefaultAction(DEFAULT_ACTION_REPOS);
+                        break;
+                    case R.id.btn_dashboard_users:
+                        setDefaultAction(DEFAULT_ACTION_USERS);
+                        break;
+                    case R.id.btn_dashboard_organizations:
+                        setDefaultAction(DEFAULT_ACTION_ORGS);
+                        break;
+                    case R.id.btn_dashboard_gists:
+                        setDefaultAction(DEFAULT_ACTION_GISTS);
+                        break;
+                    default:
+                        setDefaultAction(DEFAULT_ACTION_DASHBOARD);
+                        break;
                 }
                 return true;
             }
@@ -274,9 +280,9 @@ public class Dashboard extends BaseActivity {
         // Organizations
         final Button orgsBtn = (Button) findViewById(R.id.btn_dashboard_organizations);
         orgsBtn.setOnClickListener(new OnClickListener() {
-        	public void onClick(final View v) {
-        		startActivity(new Intent(Dashboard.this, Organizations.class));
-        	}
+            public void onClick(final View v) {
+                startActivity(new Intent(Dashboard.this, Organizations.class));
+            }
         });
         orgsBtn.setOnLongClickListener(onButtonLongClick);
 

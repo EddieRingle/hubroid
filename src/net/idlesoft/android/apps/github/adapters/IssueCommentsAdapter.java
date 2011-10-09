@@ -48,11 +48,11 @@ public class IssueCommentsAdapter extends GravatarArrayListAdapter<Comment> {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.meta.setText("Posted " + SingleIssue.getTimeSince(mData.get(index).getCreatedAt())
-        		+ " ago by " + mData.get(index).getUser().getLogin());
+                + " ago by " + mData.get(index).getUser().getLogin());
         holder.gravatar.setImageBitmap(mGravatars.get(mData.get(index).getUser().getLogin()));
         if (mData.get(index).getBody() != null) {
-        	holder.body.setText(mData.get(index).getBody().replaceAll("\r\n", "\n")
-        			.replaceAll("\r", "\n"));
+            holder.body.setText(mData.get(index).getBody().replaceAll("\r\n", "\n")
+                    .replaceAll("\r", "\n"));
         }
         return convertView;
     }
@@ -66,13 +66,13 @@ public class IssueCommentsAdapter extends GravatarArrayListAdapter<Comment> {
     @Override
     public void loadGravatars() {
         final int length = mListData.size();
-		for (int i = 0; i < length; i++) {
-		    final String actor = mData.get(i).getUser().getLogin();
-		    if (!mGravatars.containsKey(actor)) {
-		        mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-		                .getGravatarID(actor), 30.0f, mActivity.getResources()
-		                .getDisplayMetrics().density));
-		    }
-		}
+        for (int i = 0; i < length; i++) {
+            final String actor = mData.get(i).getUser().getLogin();
+            if (!mGravatars.containsKey(actor)) {
+                mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
+                        .getGravatarID(actor), 30.0f,
+                        mActivity.getResources().getDisplayMetrics().density));
+            }
+        }
     }
 }

@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.IOException;
-
 import net.idlesoft.android.apps.github.R;
 
 import org.eclipse.egit.github.core.Issue;
@@ -28,6 +26,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class CreateIssue extends BaseActivity {
     private static class CreateIssueTask extends AsyncTask<Void, Void, Integer> {
         public CreateIssue activity;
@@ -36,29 +36,30 @@ public class CreateIssue extends BaseActivity {
         protected Integer doInBackground(final Void... params) {
             final String title = ((TextView) activity.findViewById(R.id.et_create_issue_title))
                     .getText().toString();
-            String body = ((TextView) activity.findViewById(R.id.et_create_issue_body))
-                    .getText().toString();
+            String body = ((TextView) activity.findViewById(R.id.et_create_issue_body)).getText()
+                    .toString();
             if (!title.equals("") && !body.equals("")) {
-            	if (activity.mPrefs.getBoolean(activity.getString(R.string.preferences_key_issue_signature), true)) {
-            		body += "\n\n_Sent via Hubroid_";
-            	}
-            	final IssueService is = new IssueService(activity.getGitHubClient());
-            	final Issue newIssue = new Issue();
-            	newIssue.setTitle(title);
-            	newIssue.setBody(body);
-            	try {
-					Issue result = is.createIssue(activity.mRepositoryOwner,
-							activity.mRepositoryName, newIssue);
-					activity.mIssueJson = GsonUtils.toJson(result);
-					return 201;
-				} catch (IOException e) {
-					e.printStackTrace();
-					if (e instanceof RequestException) {
-						return ((RequestException) e).getStatus();
-					} else {
-						return -2;
-					}
-				}
+                if (activity.mPrefs.getBoolean(
+                        activity.getString(R.string.preferences_key_issue_signature), true)) {
+                    body += "\n\n_Sent via Hubroid_";
+                }
+                final IssueService is = new IssueService(activity.getGitHubClient());
+                final Issue newIssue = new Issue();
+                newIssue.setTitle(title);
+                newIssue.setBody(body);
+                try {
+                    Issue result = is.createIssue(activity.mRepositoryOwner,
+                            activity.mRepositoryName, newIssue);
+                    activity.mIssueJson = GsonUtils.toJson(result);
+                    return 201;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    if (e instanceof RequestException) {
+                        return ((RequestException) e).getStatus();
+                    } else {
+                        return -2;
+                    }
+                }
             } else {
                 return -1;
             }

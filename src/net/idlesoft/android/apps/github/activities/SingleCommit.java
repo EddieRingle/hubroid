@@ -8,10 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
@@ -34,6 +30,10 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class SingleCommit extends BaseActivity {
     private static class GetCommitTask extends AsyncTask<Void, Void, Void> {
         public SingleCommit activity;
@@ -41,7 +41,7 @@ public class SingleCommit extends BaseActivity {
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-            	// TODO: Convert to use egit-github
+                // TODO: Convert to use egit-github
                 final Response commitResponse = activity.mGApi.commits.commit(
                         activity.mRepositoryOwner, activity.mRepositoryName, activity.mCommitSha);
                 if (commitResponse.statusCode != 200) {
@@ -191,7 +191,8 @@ public class SingleCommit extends BaseActivity {
             if (mAuthorGravatar != null) {
                 authorImage.setImageBitmap(mAuthorGravatar);
             } else {
-                authorImage.setImageBitmap(SingleCommit.loadGravatarByLoginName(SingleCommit.this, mAuthor));
+                authorImage.setImageBitmap(SingleCommit.loadGravatarByLoginName(SingleCommit.this,
+                        mAuthor));
             }
 
             // Set the commit message
@@ -225,8 +226,8 @@ public class SingleCommit extends BaseActivity {
                 if (mCommitterGravatar != null) {
                     committerImage.setImageBitmap(mCommitterGravatar);
                 } else {
-                    committerImage.setImageBitmap(SingleCommit.loadGravatarByLoginName(SingleCommit.this,
-                            mCommitter));
+                    committerImage.setImageBitmap(SingleCommit.loadGravatarByLoginName(
+                            SingleCommit.this, mCommitter));
                 }
             }
 

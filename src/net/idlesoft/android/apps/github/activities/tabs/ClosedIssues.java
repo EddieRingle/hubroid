@@ -11,11 +11,6 @@ package net.idlesoft.android.apps.github.activities.tabs;
 import static org.eclipse.egit.github.core.service.IssueService.FILTER_STATE;
 import static org.eclipse.egit.github.core.service.IssueService.STATE_CLOSED;
 import static org.eclipse.egit.github.core.service.IssueService.STATE_OPEN;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Issues;
@@ -40,6 +35,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class ClosedIssues extends BaseActivity {
     private static final int TASK_LOAD_ISSUES = 1;
 
@@ -54,35 +53,35 @@ public class ClosedIssues extends BaseActivity {
 
         @Override
         protected Integer doInBackground(final Issue... params) {
-        	final IssueService is = new IssueService(activity.getGitHubClient());
+            final IssueService is = new IssueService(activity.getGitHubClient());
             switch (taskId) {
                 case TASK_LOAD_ISSUES:
-                	try {
-                		activity.mIssues = new ArrayList<Issue>(is.getIssues(
-                				activity.mRepositoryOwner, activity.mRepositoryName,
-                				Collections.singletonMap(FILTER_STATE, STATE_CLOSED)));
-                	} catch (IOException e) {
-                		e.printStackTrace();
-                		return ((RequestException) e).getStatus();
-                	}
-                	if (activity.mIssues == null) {
-                		activity.mIssues = new ArrayList<Issue>();
-                	}
-                	activity.mAdapter.loadData(activity.mIssues);
-                	return 200;
+                    try {
+                        activity.mIssues = new ArrayList<Issue>(is.getIssues(
+                                activity.mRepositoryOwner, activity.mRepositoryName,
+                                Collections.singletonMap(FILTER_STATE, STATE_CLOSED)));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return ((RequestException) e).getStatus();
+                    }
+                    if (activity.mIssues == null) {
+                        activity.mIssues = new ArrayList<Issue>();
+                    }
+                    activity.mAdapter.loadData(activity.mIssues);
+                    return 200;
                 case TASK_REOPEN_ISSUE:
-                	try {
-                		is.editIssue(activity.mRepositoryOwner, activity.mRepositoryName,
-                				params[0].setState(STATE_OPEN));
-                		return 200;
-                	} catch (IOException e) {
-                		e.printStackTrace();
-                		if (e instanceof RequestException) {
-                			return ((RequestException) e).getStatus();
-                		} else {
-                			return -1;
-                		}
-                	}
+                    try {
+                        is.editIssue(activity.mRepositoryOwner, activity.mRepositoryName,
+                                params[0].setState(STATE_OPEN));
+                        return 200;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        if (e instanceof RequestException) {
+                            return ((RequestException) e).getStatus();
+                        } else {
+                            return -1;
+                        }
+                    }
                 default:
                     return 0;
             }
@@ -104,10 +103,8 @@ public class ClosedIssues extends BaseActivity {
                         activity.startActivity(reloadIssuesIntent);
                         activity.finish();
                     } else {
-                        Toast.makeText(
-                                activity,
-                                "Error reopening issue: "
-                                        + result.intValue(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "Error reopening issue: " + result.intValue(),
+                                Toast.LENGTH_SHORT).show();
                     }
                     break;
                 default:

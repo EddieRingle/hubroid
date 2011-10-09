@@ -14,6 +14,7 @@ import net.idlesoft.android.apps.github.activities.tabs.Following;
 import net.idlesoft.android.apps.github.activities.tabs.Members;
 import net.idlesoft.android.apps.github.activities.tabs.Teams;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -64,23 +65,23 @@ public class Users extends BaseTabActivity {
         });
 
         if (mIsOrganization) {
-        	final Intent intent = new Intent(getApplicationContext(), Members.class);
-        	intent.putExtra("target", mTarget);
-        	mTabHost.addTab(mTabHost.newTabSpec(TAG_MEMBERS)
-        			.setIndicator(buildIndicator(R.string.members)).setContent(intent));
-        	intent.setClass(getApplicationContext(), Teams.class);
-        	intent.putExtra("target", mTarget);
-        	mTabHost.addTab(mTabHost.newTabSpec(TAG_TEAMS)
-        			.setIndicator(buildIndicator(R.string.teams)).setContent(intent));
+            final Intent intent = new Intent(getApplicationContext(), Members.class);
+            intent.putExtra("target", mTarget);
+            mTabHost.addTab(mTabHost.newTabSpec(TAG_MEMBERS)
+                    .setIndicator(buildIndicator(R.string.members)).setContent(intent));
+            intent.setClass(getApplicationContext(), Teams.class);
+            intent.putExtra("target", mTarget);
+            mTabHost.addTab(mTabHost.newTabSpec(TAG_TEAMS)
+                    .setIndicator(buildIndicator(R.string.teams)).setContent(intent));
         } else {
-        	final Intent intent = new Intent(getApplicationContext(), Followers.class);
-	        intent.putExtra("target", mTarget);
-	        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS)
-	                .setIndicator(buildIndicator(R.string.followers)).setContent(intent));
-	
-	        intent.setClass(getApplicationContext(), Following.class);
-	        mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING)
-	                .setIndicator(buildIndicator(R.string.following)).setContent(intent));
+            final Intent intent = new Intent(getApplicationContext(), Followers.class);
+            intent.putExtra("target", mTarget);
+            mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWERS)
+                    .setIndicator(buildIndicator(R.string.followers)).setContent(intent));
+
+            intent.setClass(getApplicationContext(), Following.class);
+            mTabHost.addTab(mTabHost.newTabSpec(TAG_FOLLOWING)
+                    .setIndicator(buildIndicator(R.string.following)).setContent(intent));
         }
     }
 }

@@ -19,16 +19,17 @@ import android.widget.AbsListView;
 import android.widget.TextView;
 
 public class TeamsListAdapter extends ArrayListAdapter<Team> {
-	public static class ViewHolder {
-		TextView name;
-		TextView other;
-	};
+    public static class ViewHolder {
+        TextView name;
 
-	public TeamsListAdapter(Activity pActivity, AbsListView pListView) {
-		super(pActivity, pListView);
-	}
+        TextView other;
+    };
 
-	@Override
+    public TeamsListAdapter(Activity pActivity, AbsListView pListView) {
+        super(pActivity, pListView);
+    }
+
+    @Override
     public View doGetView(final int index, View convertView, final ViewGroup parent) {
         ViewHolder holder;
         if (convertView == null) {

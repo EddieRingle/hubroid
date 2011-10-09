@@ -50,9 +50,10 @@ public class CommitListAdapter extends GravatarArrayListAdapter<PullRequestCommi
             holder = (ViewHolder) convertView.getTag();
         }
         holder.commit_date.setText(StringUtils.getTimeSince(mData.get(index).getCommit()
-        		.getCommitter().getDate()) + " ago");
-		holder.gravatar.setImageBitmap(mGravatars.get(mData.get(index).getAuthor().getLogin()));
-		holder.shortdesc.setText(mData.get(index).getCommit().getMessage().split("\n")[0]);
+                .getCommitter().getDate())
+                + " ago");
+        holder.gravatar.setImageBitmap(mGravatars.get(mData.get(index).getAuthor().getLogin()));
+        holder.shortdesc.setText(mData.get(index).getCommit().getMessage().split("\n")[0]);
         return convertView;
     }
 
@@ -63,11 +64,11 @@ public class CommitListAdapter extends GravatarArrayListAdapter<PullRequestCommi
         final int length = mData.size();
         for (int i = 0; i < length; i++) {
             final String login = mData.get(i).getAuthor().getLogin();
-			if (!mGravatars.containsKey(login)) {
-			    mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
-			            .getGravatarID(login), 30.0f, mActivity.getResources()
-			            .getDisplayMetrics().density));
-			}
+            if (!mGravatars.containsKey(login)) {
+                mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
+                        .getGravatarID(login), 30.0f,
+                        mActivity.getResources().getDisplayMetrics().density));
+            }
         }
     }
 }

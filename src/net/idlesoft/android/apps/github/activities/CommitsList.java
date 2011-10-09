@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.util.ArrayList;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.CommitListAdapter;
 
@@ -25,22 +23,24 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class CommitsList extends BaseActivity {
-	private ArrayList<PullRequestCommit> mCommits;
+    private ArrayList<PullRequestCommit> mCommits;
 
     private static class GatherCommitsTask extends AsyncTask<Void, Void, Void> {
         public CommitsList activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-			final RepositoryService rs = new RepositoryService(activity.getGitHubClient());
-			PageIterator<PullRequestCommit> itr = rs.pageCommits(activity.mRepoOwner,
-					activity.mRepoName, activity.mBranchName, null, 30);
-			if (itr.hasNext()) {
-				activity.mCommits = new ArrayList<PullRequestCommit>(itr.next());
-			}
+            final RepositoryService rs = new RepositoryService(activity.getGitHubClient());
+            PageIterator<PullRequestCommit> itr = rs.pageCommits(activity.mRepoOwner,
+                    activity.mRepoName, activity.mBranchName, null, 30);
+            if (itr.hasNext()) {
+                activity.mCommits = new ArrayList<PullRequestCommit>(itr.next());
+            }
             if (activity.mCommits == null) {
-            	activity.mCommits = new ArrayList<PullRequestCommit>();
+                activity.mCommits = new ArrayList<PullRequestCommit>();
             }
             activity.mCommitListAdapter.loadData(activity.mCommits);
             return null;
@@ -83,12 +83,12 @@ public class CommitsList extends BaseActivity {
         mCommitListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Intent i = new Intent(CommitsList.this, SingleCommit.class);
-				i.putExtra("committer", mCommits.get(position).getCommitter().getLogin());
-				i.putExtra("author", mCommits.get(position).getAuthor().getLogin());
-				i.putExtra("commit_sha", mCommits.get(position).getSha());
-				i.putExtra("repo_name", mRepoName);
-				i.putExtra("repo_owner", mRepoOwner);
-				CommitsList.this.startActivity(i);
+                i.putExtra("committer", mCommits.get(position).getCommitter().getLogin());
+                i.putExtra("author", mCommits.get(position).getAuthor().getLogin());
+                i.putExtra("commit_sha", mCommits.get(position).getSha());
+                i.putExtra("repo_name", mRepoName);
+                i.putExtra("repo_owner", mRepoOwner);
+                CommitsList.this.startActivity(i);
             }
         });
 

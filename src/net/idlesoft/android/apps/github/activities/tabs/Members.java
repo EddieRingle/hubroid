@@ -8,9 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities.tabs;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Profile;
@@ -27,23 +24,27 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class Members extends BaseActivity {
-	private ArrayList<User> mMembers;
+    private ArrayList<User> mMembers;
+
     private static class MembersTask extends AsyncTask<Void, Void, Void> {
         public Members activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	final OrganizationService os = new OrganizationService(activity.getGitHubClient());
-        	try {
-        		activity.mMembers = new ArrayList<User>(os.getMembers(activity.mTarget));
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        	}
-        	if (activity.mMembers == null) {
-        		activity.mMembers = new ArrayList<User>();
-        	}
-        	activity.mAdapter.loadData(activity.mMembers);
+            final OrganizationService os = new OrganizationService(activity.getGitHubClient());
+            try {
+                activity.mMembers = new ArrayList<User>(os.getMembers(activity.mTarget));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (activity.mMembers == null) {
+                activity.mMembers = new ArrayList<User>();
+            }
+            activity.mAdapter.loadData(activity.mMembers);
             return null;
         }
 

@@ -30,8 +30,7 @@ public class Hubroid extends BaseActivity {
         if (mUsername.equals("")) {
             startActivity(new Intent(Hubroid.this, Login.class));
         } else {
-            startActivity(new Intent(Hubroid.this, Dashboard.class)
-                        .putExtra("fresh", true));
+            startActivity(new Intent(Hubroid.this, Dashboard.class).putExtra("fresh", true));
         }
         finish();
     }

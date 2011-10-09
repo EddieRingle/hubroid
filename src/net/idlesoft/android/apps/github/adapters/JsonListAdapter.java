@@ -8,7 +8,7 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.util.LinkedList;
+import com.github.droidfu.adapters.ListAdapterWithProgress;
 
 import net.idlesoft.android.apps.github.R;
 
@@ -19,7 +19,7 @@ import android.app.Activity;
 import android.view.LayoutInflater;
 import android.widget.AbsListView;
 
-import com.github.droidfu.adapters.ListAdapterWithProgress;
+import java.util.LinkedList;
 
 public abstract class JsonListAdapter extends ListAdapterWithProgress<Object> {
 

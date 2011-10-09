@@ -40,9 +40,9 @@ public class InfoListAdapter extends JsonListAdapter {
             final String content = data.getString("content");
             holder.title.setText(title);
             if (content == null || content.equals("")) {
-            	holder.content.setVisibility(View.GONE);
+                holder.content.setVisibility(View.GONE);
             } else {
-            	holder.content.setText(content);
+                holder.content.setText(content);
             }
         } catch (JSONException e) {
             convertView.setVisibility(View.GONE);

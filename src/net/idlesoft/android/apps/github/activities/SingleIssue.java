@@ -10,11 +10,6 @@ package net.idlesoft.android.apps.github.activities;
 
 import static org.eclipse.egit.github.core.service.IssueService.STATE_CLOSED;
 import static org.eclipse.egit.github.core.service.IssueService.STATE_OPEN;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.IssueCommentsAdapter;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -40,36 +35,39 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SingleIssue extends BaseActivity {
-	private Issue mIssue;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 
-	private ArrayList<Comment> mComments;
+public class SingleIssue extends BaseActivity {
+    private Issue mIssue;
+
+    private ArrayList<Comment> mComments;
 
     private static class AddCommentTask extends AsyncTask<Void, Void, Integer> {
         public SingleIssue activity;
 
         @Override
         protected Integer doInBackground(final Void... params) {
-        	String commentBody = ((EditText) activity.mCommentArea
-                    .findViewById(R.id.et_issue_comment_area_body)).getText()
-                    .toString();
-        	if (activity.mPrefs.getBoolean(activity.getString(
-        			R.string.preferences_key_issue_comment_signature), true)) {
-        		commentBody += "\n\n_Sent via Hubroid_";
-        	}
-        	final IssueService is = new IssueService(activity.getGitHubClient());
-        	try {
-        		is.createComment(activity.mRepositoryOwner, activity.mRepositoryName,
-        				Integer.toString(activity.mIssue.getNumber()), commentBody);
-        		return 200;
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        		if (e instanceof RequestException) {
-        			return ((RequestException) e).getStatus();
-        		} else {
-        			return -1;
-        		}
-        	}
+            String commentBody = ((EditText) activity.mCommentArea
+                    .findViewById(R.id.et_issue_comment_area_body)).getText().toString();
+            if (activity.mPrefs.getBoolean(
+                    activity.getString(R.string.preferences_key_issue_comment_signature), true)) {
+                commentBody += "\n\n_Sent via Hubroid_";
+            }
+            final IssueService is = new IssueService(activity.getGitHubClient());
+            try {
+                is.createComment(activity.mRepositoryOwner, activity.mRepositoryName,
+                        Integer.toString(activity.mIssue.getNumber()), commentBody);
+                return 200;
+            } catch (IOException e) {
+                e.printStackTrace();
+                if (e instanceof RequestException) {
+                    return ((RequestException) e).getStatus();
+                } else {
+                    return -1;
+                }
+            }
         }
 
         @Override
@@ -95,19 +93,19 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected Integer doInBackground(final Void... params) {
-        	final IssueService is = new IssueService(activity.getGitHubClient());
-        	try {
-        		is.editIssue(activity.mRepositoryOwner, activity.mRepositoryName,
-        				activity.mIssue.setState(STATE_CLOSED));
-        		return 200;
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        		if (e instanceof RequestException) {
-        			return ((RequestException) e).getStatus();
-        		} else {
-        			return -1;
-        		}
-        	}
+            final IssueService is = new IssueService(activity.getGitHubClient());
+            try {
+                is.editIssue(activity.mRepositoryOwner, activity.mRepositoryName,
+                        activity.mIssue.setState(STATE_CLOSED));
+                return 200;
+            } catch (IOException e) {
+                e.printStackTrace();
+                if (e instanceof RequestException) {
+                    return ((RequestException) e).getStatus();
+                } else {
+                    return -1;
+                }
+            }
         }
 
         @Override
@@ -133,22 +131,22 @@ public class SingleIssue extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	final IssueService is = new IssueService(activity.getGitHubClient());
-        	try {
-        		activity.mIssue = is.getIssue(activity.mRepositoryOwner, activity.mRepositoryName,
-        				Integer.toString(activity.mIssue.getNumber()));
-        		if (activity.mIssue != null) {
-	        		activity.mComments = new ArrayList<Comment>(is.getComments(
-	        				activity.mRepositoryOwner, activity.mRepositoryName,
-	        				Integer.toString(activity.mIssue.getNumber())));
-        		}
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        	}
-        	if (activity.mComments == null) {
-        		activity.mComments = new ArrayList<Comment>();
-        	}
-        	activity.mAdapter.loadData(activity.mComments);
+            final IssueService is = new IssueService(activity.getGitHubClient());
+            try {
+                activity.mIssue = is.getIssue(activity.mRepositoryOwner, activity.mRepositoryName,
+                        Integer.toString(activity.mIssue.getNumber()));
+                if (activity.mIssue != null) {
+                    activity.mComments = new ArrayList<Comment>(is.getComments(
+                            activity.mRepositoryOwner, activity.mRepositoryName,
+                            Integer.toString(activity.mIssue.getNumber())));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (activity.mComments == null) {
+                activity.mComments = new ArrayList<Comment>();
+            }
+            activity.mAdapter.loadData(activity.mComments);
             return null;
         }
 
@@ -181,44 +179,44 @@ public class SingleIssue extends BaseActivity {
 
     public static String getTimeSince(final Date pTime) {
         final Date item_time = pTime;
-		final Date current_time = new Date();
-		final long ms = current_time.getTime() - item_time.getTime();
-		final long sec = ms / 1000;
-		final long min = sec / 60;
-		final long hour = min / 60;
-		final long day = hour / 24;
-		final long year = day / 365;
-		if (year > 0) {
-		    if (year == 1) {
-		        return year + " year";
-		    } else {
-		        return year + " years";
-		    }
-		} else if (day > 0) {
-		    if (day == 1) {
-		        return day + " day";
-		    } else {
-		        return day + " days";
-		    }
-		} else if (hour > 0) {
-		    if (hour == 1) {
-		        return hour + " hour";
-		    } else {
-		        return hour + " hours";
-		    }
-		} else if (min > 0) {
-		    if (min == 1) {
-		        return min + " minute";
-		    } else {
-		        return min + " minutes";
-		    }
-		} else {
-		    if (sec == 1) {
-		        return sec + " second";
-		    } else {
-		        return sec + " seconds";
-		    }
-		}
+        final Date current_time = new Date();
+        final long ms = current_time.getTime() - item_time.getTime();
+        final long sec = ms / 1000;
+        final long min = sec / 60;
+        final long hour = min / 60;
+        final long day = hour / 24;
+        final long year = day / 365;
+        if (year > 0) {
+            if (year == 1) {
+                return year + " year";
+            } else {
+                return year + " years";
+            }
+        } else if (day > 0) {
+            if (day == 1) {
+                return day + " day";
+            } else {
+                return day + " days";
+            }
+        } else if (hour > 0) {
+            if (hour == 1) {
+                return hour + " hour";
+            } else {
+                return hour + " hours";
+            }
+        } else if (min > 0) {
+            if (min == 1) {
+                return min + " minute";
+            } else {
+                return min + " minutes";
+            }
+        } else {
+            if (sec == 1) {
+                return sec + " second";
+            } else {
+                return sec + " seconds";
+            }
+        }
     }
 
     private IssueCommentsAdapter mAdapter;
@@ -268,14 +266,14 @@ public class SingleIssue extends BaseActivity {
         final TextView number = (TextView) mHeader.findViewById(R.id.tv_issue_list_item_number);
 
         try {
-        	date.setText("Updated " + getTimeSince(mIssue.getUpdatedAt()) + " ago");
-        	if (mIssue.getState().equalsIgnoreCase(STATE_OPEN)) {
+            date.setText("Updated " + getTimeSince(mIssue.getUpdatedAt()) + " ago");
+            if (mIssue.getState().equalsIgnoreCase(STATE_OPEN)) {
                 icon.setImageResource(R.drawable.issues_open);
             } else {
                 icon.setImageResource(R.drawable.issues_closed);
             }
-        	number.setText("#" + mIssue.getNumber());
-        	title.setText(mIssue.getTitle());
+            number.setText("#" + mIssue.getNumber());
+            title.setText(mIssue.getTitle());
             getActionBar().setTitle("Issue " + number.getText().toString());
         } catch (final Exception e) {
             e.printStackTrace();
@@ -297,22 +295,20 @@ public class SingleIssue extends BaseActivity {
     public void fillViewInfo() {
         loadIssueItemBox();
 
-		((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
-		        .setImageBitmap(GravatarCache.getDipGravatar(
-		                GravatarCache.getGravatarID(mIssue.getUser().getLogin()), 30.0f,
-		                getResources().getDisplayMetrics().density));
-		((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mIssue.getBody()
-				.replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
+        ((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
+                .setImageBitmap(GravatarCache.getDipGravatar(
+                        GravatarCache.getGravatarID(mIssue.getUser().getLogin()), 30.0f,
+                        getResources().getDisplayMetrics().density));
+        ((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mIssue.getBody()
+                .replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
 
-		((TextView) mHeader.findViewById(R.id.tv_single_issue_meta))
-		        .setText("Posted "
-		                + getTimeSince(mIssue.getCreatedAt()) + " by "
-		                        + mIssue.getUser().getLogin());
+        ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
+                + getTimeSince(mIssue.getCreatedAt()) + " by " + mIssue.getUser().getLogin());
 
-		if (mIssue.getState().equalsIgnoreCase(STATE_CLOSED)) {
-		    ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
-		            .setVisibility(View.GONE);
-		}
+        if (mIssue.getState().equalsIgnoreCase(STATE_CLOSED)) {
+            ((Button) mCommentArea.findViewById(R.id.btn_issue_comment_area_submit_and_close))
+                    .setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -328,25 +324,25 @@ public class SingleIssue extends BaseActivity {
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mRepositoryOwner = extras.getString("repo_owner");
-			mRepositoryName = extras.getString("repo_name");
-			if (extras.containsKey("json")) {
-				mIssue = GsonUtils.fromJson(extras.getString("json"), Issue.class);
-			} else if (extras.containsKey("number")) {
-			    mIssue = new Issue();
-			    mIssue.setNumber(extras.getInt("number"));
-			}
+            mRepositoryName = extras.getString("repo_name");
+            if (extras.containsKey("json")) {
+                mIssue = GsonUtils.fromJson(extras.getString("json"), Issue.class);
+            } else if (extras.containsKey("number")) {
+                mIssue = new Issue();
+                mIssue.setNumber(extras.getInt("number"));
+            }
 
-			loadView();
+            loadView();
 
-			mLoadIssueTask = (LoadIssueTask) getLastNonConfigurationInstance();
-			if (mLoadIssueTask == null) {
-			    mLoadIssueTask = new LoadIssueTask();
-			}
-			mLoadIssueTask.activity = SingleIssue.this;
+            mLoadIssueTask = (LoadIssueTask) getLastNonConfigurationInstance();
+            if (mLoadIssueTask == null) {
+                mLoadIssueTask = new LoadIssueTask();
+            }
+            mLoadIssueTask.activity = SingleIssue.this;
 
-			if ((mLoadIssueTask.getStatus() == AsyncTask.Status.PENDING)) {
-			    mLoadIssueTask.execute();
-			}
+            if ((mLoadIssueTask.getStatus() == AsyncTask.Status.PENDING)) {
+                mLoadIssueTask.execute();
+            }
         }
     }
 

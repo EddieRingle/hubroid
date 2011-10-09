@@ -54,9 +54,9 @@ public class NewsFeedHelpers {
         final String repoPath = repoJson.getString("owner") + "/" + repoName;
         String repoDesc;
         try {
-        	repoDesc = repoJson.getString("description");
+            repoDesc = repoJson.getString("description");
         } catch (JSONException e) {
-        	repoDesc = "N/A";
+            repoDesc = "N/A";
         }
 
         final String html = "<div>" + "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
@@ -92,7 +92,7 @@ public class NewsFeedHelpers {
     public static String linkifyForkItem(final JSONObject pNewsItem) throws JSONException {
         final JSONObject repository = pNewsItem.getJSONObject("repository");
         final String parentRepoPath = repository.getString("owner") + "/"
-        		+ repository.getString("name");
+                + repository.getString("name");
         final String forkedRepoPath = pNewsItem.getString("actor") + "/"
                 + repository.getString("name");
 
@@ -161,16 +161,14 @@ public class NewsFeedHelpers {
     }
 
     public static String linkifyPublicItem(final JSONObject pNewsItem) throws JSONException {
-    	final String repoPath = pNewsItem.getJSONObject("repository")
-    			.getString("owner") + "/"
-    			+ pNewsItem.getJSONObject("repository").getString("name");
-    	final String html = "<div>"
-    			+ "Check out the newly freed repository by "
-    			+ "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
-    			+ "clicking here" + "</a>!"
-    			+ "</div>";
-    	return html;
+        final String repoPath = pNewsItem.getJSONObject("repository").getString("owner") + "/"
+                + pNewsItem.getJSONObject("repository").getString("name");
+        final String html = "<div>" + "Check out the newly freed repository by "
+                + "<a href=\"hubroid://showRepo/" + repoPath + "/\">" + "clicking here" + "</a>!"
+                + "</div>";
+        return html;
     }
+
     public static String linkifyOtherItem(final JSONObject pNewsItem) throws JSONException {
         String repohtml;
         try {

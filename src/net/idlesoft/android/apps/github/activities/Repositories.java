@@ -13,6 +13,7 @@ import net.idlesoft.android.apps.github.activities.tabs.MyRepos;
 import net.idlesoft.android.apps.github.activities.tabs.PushableRepos;
 import net.idlesoft.android.apps.github.activities.tabs.WatchedRepos;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

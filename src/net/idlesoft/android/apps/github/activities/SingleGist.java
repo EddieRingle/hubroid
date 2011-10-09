@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.IOException;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.InfoListAdapter;
 
@@ -29,6 +27,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
 
 public class SingleGist extends BaseActivity {
     private String mGistId;
@@ -52,8 +52,7 @@ public class SingleGist extends BaseActivity {
         return new JSONObject().put("title", title).put("content", content);
     }
 
-    protected void buildUI()
-    {
+    protected void buildUI() {
         final JSONArray listItems = new JSONArray();
         try {
             if (!mGistOwner.equals(""))
@@ -78,11 +77,10 @@ public class SingleGist extends BaseActivity {
         infoList.setAdapter(adapter);
 
         infoList.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(final AdapterView<?> parent, final View v,
-                    final int position, final long id) {
+            public void onItemClick(final AdapterView<?> parent, final View v, final int position,
+                    final long id) {
                 try {
-                    final String title = ((JSONObject) listItems.get(position))
-                            .getString("title");
+                    final String title = ((JSONObject) listItems.get(position)).getString("title");
                     final String content = ((JSONObject) listItems.get(position))
                             .getString("content");
                     final Intent intent;
@@ -108,8 +106,7 @@ public class SingleGist extends BaseActivity {
         });
     }
 
-    private static class LoadGistTask extends AsyncTask<Void, Void, Boolean>
-    {
+    private static class LoadGistTask extends AsyncTask<Void, Void, Boolean> {
         public SingleGist activity;
 
         @Override
@@ -122,10 +119,11 @@ public class SingleGist extends BaseActivity {
             GistService gs = new GistService(activity.getGitHubClient());
 
             try {
-                Gist g = gs.getGist(activity.mGistId); 
+                Gist g = gs.getGist(activity.mGistId);
                 activity.mGistOwner = g.getUser().getLogin();
                 activity.mGistDescription = (g.getDescription() != null) ? g.getDescription() : "";
-                activity.mGistUpdatedDate = (g.getUpdatedAt() != null) ? g.getUpdatedAt().toString() : "";
+                activity.mGistUpdatedDate = (g.getUpdatedAt() != null) ? g.getUpdatedAt()
+                        .toString() : "";
                 activity.mGistCreatedDate = g.getCreatedAt().toString();
                 activity.mGistURL = g.getHtmlUrl();
                 activity.mGistFileCount = g.getFiles().size();

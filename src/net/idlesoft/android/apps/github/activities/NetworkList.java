@@ -30,8 +30,8 @@ public class NetworkList extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	// TODO: Convert to use egit-github
-        	final RepositoryService rs;
+            // TODO: Convert to use egit-github
+            final RepositoryService rs;
             try {
                 activity.mJson = new JSONObject(activity.mGApi.repo.network(
                         activity.mRepositoryOwner, activity.mRepositoryName).resp)

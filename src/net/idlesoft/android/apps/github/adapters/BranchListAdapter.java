@@ -24,12 +24,12 @@ public class BranchListAdapter extends ArrayListAdapter<Reference> {
     }
 
     public BranchListAdapter(final Activity pActivity, final AbsListView pListView) {
-    	super(pActivity, pListView);
+        super(pActivity, pListView);
     }
 
-	@Override
-	protected View doGetView(int position, View convertView, ViewGroup parent) {
-		ViewHolder holder;
+    @Override
+    protected View doGetView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
         if (convertView == null) {
             convertView = mInflater.inflate(R.layout.branch_list_item, null);
             holder = new ViewHolder();
@@ -40,5 +40,5 @@ public class BranchListAdapter extends ArrayListAdapter<Reference> {
         }
         holder.text.setText(mData.get(position).getRef().replace("refs/heads/", ""));
         return convertView;
-	}
+    }
 }

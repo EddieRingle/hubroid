@@ -8,11 +8,6 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -28,6 +23,11 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 
 public class ActivityFeedAdapter extends JsonListAdapter {
     public static class ViewHolder {
@@ -68,9 +68,9 @@ public class ActivityFeedAdapter extends JsonListAdapter {
             final JSONObject entry = (JSONObject) getData().get(index);
             final JSONObject payload;
             if (entry.has("payload")) {
-            	payload = entry.getJSONObject("payload");
+                payload = entry.getJSONObject("payload");
             } else {
-            	payload = new JSONObject();
+                payload = new JSONObject();
             }
             String end;
             final SimpleDateFormat dateFormat = new SimpleDateFormat(
@@ -157,7 +157,8 @@ public class ActivityFeedAdapter extends JsonListAdapter {
             } else if (eventType.contains("CreateEvent")) {
                 holder.icon.setImageResource(R.drawable.create);
                 if (payload.getString("ref_type").contains("repository")) {
-                    title = actor + " created repository " + entry.getJSONObject("repository").getString("name");
+                    title = actor + " created repository "
+                            + entry.getJSONObject("repository").getString("name");
                 } else if (payload.getString("ref_type").contains("branch")) {
                     title = actor + " created branch " + payload.getString("ref") + " at "
                             + entry.getJSONObject("repository").getString("owner") + "/"

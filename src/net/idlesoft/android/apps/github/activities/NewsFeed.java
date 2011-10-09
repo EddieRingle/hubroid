@@ -29,7 +29,7 @@ public class NewsFeed extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	// TODO: Convert to use egit-github
+            // TODO: Convert to use egit-github
             if (activity.mJson == null) {
                 try {
                     final Response resp;
@@ -112,9 +112,9 @@ public class NewsFeed extends BaseActivity {
         mListView.setAdapter(mActivityAdapter);
 
         if (mPrivate) {
-        	getActionBar().setTitle("News Feed");
+            getActionBar().setTitle("News Feed");
         } else {
-        	getActionBar().setTitle("Public Activity");
+            getActionBar().setTitle("Public Activity");
         }
 
         mLoadActivityTask = (LoadActivityFeedTask) getLastNonConfigurationInstance();

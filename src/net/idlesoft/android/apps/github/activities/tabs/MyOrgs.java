@@ -8,9 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities.tabs;
 
-import java.io.IOException;
-import java.util.ArrayList;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Profile;
@@ -27,6 +24,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 public class MyOrgs extends BaseActivity {
     private ArrayList<User> mOrganizations;
 
@@ -35,17 +35,18 @@ public class MyOrgs extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
-        	final OrganizationService os = new OrganizationService(activity.getGitHubClient());
-        	try {
-	        	if (activity.mTarget.equalsIgnoreCase(activity.mUsername)) {
-	        		activity.mOrganizations = new ArrayList<User>(os.getOrganizations());
-	        	} else {
-	        		activity.mOrganizations = new ArrayList<User>(os.getOrganizations(activity.mTarget));
-	        	}
-        	} catch (IOException e) {
-        		e.printStackTrace();
-        		activity.mOrganizations = null;
-        	}
+            final OrganizationService os = new OrganizationService(activity.getGitHubClient());
+            try {
+                if (activity.mTarget.equalsIgnoreCase(activity.mUsername)) {
+                    activity.mOrganizations = new ArrayList<User>(os.getOrganizations());
+                } else {
+                    activity.mOrganizations = new ArrayList<User>(
+                            os.getOrganizations(activity.mTarget));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                activity.mOrganizations = null;
+            }
             if (activity.mOrganizations == null) {
                 activity.mOrganizations = new ArrayList<User>();
             }

@@ -8,18 +8,6 @@
 
 package net.idlesoft.android.apps.github.utils;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
@@ -31,6 +19,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
 
 public class GravatarCache {
 
@@ -162,7 +162,7 @@ public class GravatarCache {
     }
 
     private static String getGravatarIdFromGithub(final String name) {
-    	// TODO: Convert to use egit-github
+        // TODO: Convert to use egit-github
         final GitHubAPI gapi = new GitHubAPI();
         try {
             return new JSONObject(gapi.user.info(name).resp).getJSONObject("user").getString(

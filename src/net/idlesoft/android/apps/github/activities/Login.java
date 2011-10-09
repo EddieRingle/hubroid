@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import java.io.IOException;
-
 import net.idlesoft.android.apps.github.R;
 
 import org.eclipse.egit.github.core.User;
@@ -26,6 +24,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.io.IOException;
+
 public class Login extends BaseActivity {
     static private class LoginTask extends AsyncTask<Void, Void, Integer> {
         public Login activity;
@@ -39,25 +39,26 @@ public class Login extends BaseActivity {
             if (user.equals("") || pass.equals("")) {
                 return 100;
             }
-            final UserService us = new UserService(activity.getGitHubClient().setCredentials(user, pass));
+            final UserService us = new UserService(activity.getGitHubClient().setCredentials(user,
+                    pass));
             try {
-            	User u = us.getUser();
+                User u = us.getUser();
 
-            	if (u != null) {
-            		activity.mPrefsEditor.putString("username", u.getLogin());
-            		activity.mPrefsEditor.putString("password", pass);
-            		activity.mPrefsEditor.commit();
-            		return 200;
-            	} else {
-            		return -1;
-            	}
+                if (u != null) {
+                    activity.mPrefsEditor.putString("username", u.getLogin());
+                    activity.mPrefsEditor.putString("password", pass);
+                    activity.mPrefsEditor.commit();
+                    return 200;
+                } else {
+                    return -1;
+                }
             } catch (IOException e) {
-            	if (e instanceof RequestException) {
-            		return ((RequestException) e).getStatus();
-            	} else {
-            		e.printStackTrace();
-            		return -2;
-            	}
+                if (e instanceof RequestException) {
+                    return ((RequestException) e).getStatus();
+                } else {
+                    e.printStackTrace();
+                    return -2;
+                }
             }
         }
 

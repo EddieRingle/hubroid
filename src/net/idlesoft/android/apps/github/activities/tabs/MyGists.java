@@ -8,8 +8,6 @@
 
 package net.idlesoft.android.apps.github.activities.tabs;
 
-import java.util.ArrayList;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.SingleGist;
@@ -27,8 +25,11 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class MyGists extends BaseActivity {
     private PageIterator<Gist> mGistPages;
+
     private ArrayList<Gist> mGists;
 
     private static class MyGistsTask extends AsyncTask<Void, Void, Void> {
