@@ -11,9 +11,9 @@ package net.idlesoft.android.apps.github.utils;
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
-import org.idlesoft.libraries.ghapi.GitHubAPI;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.service.UserService;
+
+import shade.org.apache.commons.codec.digest.DigestUtils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -162,14 +162,12 @@ public class GravatarCache {
     }
 
     private static String getGravatarIdFromGithub(final String name) {
-        // TODO: Convert to use egit-github
-        final GitHubAPI gapi = new GitHubAPI();
+        final UserService us = new UserService(HubroidApplication.getGitHubClientInstance());
         try {
-            return new JSONObject(gapi.user.info(name).resp).getJSONObject("user").getString(
-                    "gravatar_id");
+            return new String(DigestUtils.md5(us.getUser(name).getEmail()));
         } catch (final NullPointerException e) {
             return "";
-        } catch (final JSONException e) {
+        } catch (final IOException e) {
             e.printStackTrace();
             return "";
         }
