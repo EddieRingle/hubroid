@@ -10,8 +10,7 @@ package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.TreeEntry;
 
 import android.app.Activity;
 import android.view.View;
@@ -20,7 +19,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class BranchTreeListAdapter extends JsonListAdapter {
+public class BranchTreeListAdapter extends ArrayListAdapter<TreeEntry> {
     public static class ViewHolder {
         public ImageView icon;
 
@@ -43,20 +42,14 @@ public class BranchTreeListAdapter extends JsonListAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        try {
-            final JSONObject entry = mJson.getJSONObject(index);
-
-            final String type = entry.getString("type");
-            if (type.equals("tree")) {
-                holder.icon.setImageResource(R.drawable.folder);
-            } else if (type.equals("blob")) {
-                holder.icon.setImageResource(R.drawable.file);
-            }
-
-            holder.name.setText(entry.getString("name"));
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        }
+        final TreeEntry entry = mData.get(index);
+		final String type = entry.getType();
+		if (type.equals("tree")) {
+		    holder.icon.setImageResource(R.drawable.folder);
+		} else if (type.equals("blob")) {
+		    holder.icon.setImageResource(R.drawable.file);
+		}
+		holder.name.setText(entry.getPath());
         return convertView;
     }
 }

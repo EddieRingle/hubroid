@@ -1,9 +1,6 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.markupartist.android.widget.ActionBar;
-import com.markupartist.android.widget.ActionBar.Action;
-
 import net.idlesoft.android.apps.github.HubroidApplication;
 import net.idlesoft.android.apps.github.R;
 
@@ -20,6 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import com.markupartist.android.widget.ActionBar;
+import com.markupartist.android.widget.ActionBar.Action;
 
 public class BaseTabActivity extends TabActivity {
     protected SharedPreferences mPrefs;

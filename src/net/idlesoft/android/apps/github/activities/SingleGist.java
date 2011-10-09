@@ -8,11 +8,12 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.io.IOException;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.InfoListAdapter;
 
 import org.eclipse.egit.github.core.Gist;
-import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.GistService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,8 +29,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.io.IOException;
 
 public class SingleGist extends BaseActivity {
     private String mGistId;

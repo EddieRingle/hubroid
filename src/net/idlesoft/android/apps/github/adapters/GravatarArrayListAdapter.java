@@ -8,14 +8,14 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public abstract class GravatarArrayListAdapter<E> extends ArrayListAdapter<E> {
     public class ViewHolder {

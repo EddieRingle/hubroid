@@ -12,8 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 /**
  * NewsFeedHelpers Contains methods used to populate the WebView in
  * SingleActivityItem

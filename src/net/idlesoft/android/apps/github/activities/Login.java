@@ -10,11 +10,11 @@ package net.idlesoft.android.apps.github.activities;
 
 import java.io.IOException;
 
+import net.idlesoft.android.apps.github.R;
+
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.RequestException;
 import org.eclipse.egit.github.core.service.UserService;
-
-import net.idlesoft.android.apps.github.R;
 
 import android.app.ProgressDialog;
 import android.content.Intent;

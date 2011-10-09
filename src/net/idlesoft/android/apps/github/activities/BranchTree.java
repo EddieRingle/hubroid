@@ -8,13 +8,16 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.BranchTreeListAdapter;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.RepositoryId;
+import org.eclipse.egit.github.core.Tree;
+import org.eclipse.egit.github.core.TreeEntry;
+import org.eclipse.egit.github.core.service.DataService;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -23,24 +26,29 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class BranchTree extends BaseActivity {
+	private Tree mTree;
+
     private static class LoadTreeTask extends AsyncTask<Void, Void, Void> {
         public BranchTree activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            final Response r = activity.mGApi.object.tree(activity.mRepositoryOwner,
-                    activity.mRepositoryName, activity.mBranchSha);
-            if (r.statusCode == 200) {
-                try {
-                    activity.mJson = (new JSONObject(r.resp)).getJSONArray("tree");
-                    activity.mAdapter.loadData(activity.mJson);
-                } catch (final JSONException e) {
-                    e.printStackTrace();
-                }
-            }
+        	final DataService ds = new DataService(activity.getGitHubClient());
+        	try {
+				activity.mTree = ds.getTree(RepositoryId.create(activity.mRepositoryOwner,
+						activity.mRepositoryName), activity.mBranchSha);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        	if (activity.mTree == null) {
+        		activity.mTree = new Tree();
+        	}
+        	if (activity.mTree.getTree() == null) {
+        		activity.mTree.setTree(new ArrayList<TreeEntry>());
+        	}
+        	activity.mAdapter.loadData(new ArrayList<TreeEntry>(activity.mTree.getTree()));
             return null;
         }
 
@@ -62,10 +70,6 @@ public class BranchTree extends BaseActivity {
 
     private String mBranchSha;
 
-    public Intent mIntent;
-
-    public JSONArray mJson;
-
     private ListView mListView;
 
     private LoadTreeTask mLoadTreeTask;
@@ -73,27 +77,22 @@ public class BranchTree extends BaseActivity {
     private final OnItemClickListener mOnListItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> parent, final View v, final int position,
                 final long id) {
-            try {
-                final JSONObject treeItem = mJson.getJSONObject(position);
-                if (treeItem.getString("type").equals("tree")) {
-                    final Intent i = new Intent(BranchTree.this, BranchTree.class);
-                    i.putExtra("repo_owner", mRepositoryOwner);
-                    i.putExtra("repo_name", mRepositoryName);
-                    i.putExtra("branch_name", mBranchName);
-                    i.putExtra("branch_sha", treeItem.getString("sha"));
-                    startActivity(i);
-                } else if (treeItem.getString("type").equals("blob")) {
-                    final Intent i = new Intent(BranchTree.this, FileViewer.class);
-                    i.putExtra("repo_owner", mRepositoryOwner);
-                    i.putExtra("repo_name", mRepositoryName);
-                    i.putExtra("tree_sha", mBranchSha);
-                    i.putExtra("blob_path", treeItem.getString("name"));
-                    i.putExtra("blob_sha", treeItem.getString("sha"));
-                    startActivity(i);
-                }
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            final TreeEntry treeItem = mTree.getTree().get(position);
+			if (treeItem.getType().equals("tree")) {
+			    final Intent i = new Intent(BranchTree.this, BranchTree.class);
+			    i.putExtra("repo_owner", mRepositoryOwner);
+			    i.putExtra("repo_name", mRepositoryName);
+			    i.putExtra("branch_name", mBranchName);
+			    i.putExtra("branch_sha", treeItem.getSha());
+			    startActivity(i);
+			} else if (treeItem.getType().equals("blob")) {
+			    final Intent i = new Intent(BranchTree.this, FileViewer.class);
+			    i.putExtra("repo_owner", mRepositoryOwner);
+			    i.putExtra("repo_name", mRepositoryName);
+			    i.putExtra("blob_name", treeItem.getPath());
+			    i.putExtra("blob_sha", treeItem.getSha());
+			    startActivity(i);
+			}
         }
     };
 

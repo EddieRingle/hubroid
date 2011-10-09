@@ -9,11 +9,8 @@
 package net.idlesoft.android.apps.github.activities;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.activities.tabs.MyGists;
 import net.idlesoft.android.apps.github.activities.tabs.MyOrgs;
-import net.idlesoft.android.apps.github.activities.tabs.StarredGists;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

@@ -11,6 +11,7 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ForkListAdapter;
 
+import org.eclipse.egit.github.core.service.RepositoryService;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +23,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class NetworkList extends BaseActivity {
     private static class GetForksTask extends AsyncTask<Void, Void, Void> {
@@ -30,6 +30,8 @@ public class NetworkList extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
+        	// TODO: Convert to use egit-github
+        	final RepositoryService rs;
             try {
                 activity.mJson = new JSONObject(activity.mGApi.repo.network(
                         activity.mRepositoryOwner, activity.mRepositoryName).resp)

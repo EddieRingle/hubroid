@@ -39,6 +39,7 @@ public class SearchUsers extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
+        	// TODO: Convert to use egit-github
             try {
                 final Response resp = activity.mGApi.user.search(activity.mSearchTerm);
                 if (resp.statusCode != 200) {

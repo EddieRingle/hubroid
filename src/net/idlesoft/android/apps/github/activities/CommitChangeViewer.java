@@ -18,7 +18,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.webkit.WebView;
-import android.widget.TextView;
 
 public class CommitChangeViewer extends BaseActivity {
     public Intent mIntent;

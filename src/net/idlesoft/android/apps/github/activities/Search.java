@@ -11,7 +11,6 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.tabs.SearchRepos;
 import net.idlesoft.android.apps.github.activities.tabs.SearchUsers;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;

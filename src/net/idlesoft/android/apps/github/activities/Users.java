@@ -14,7 +14,6 @@ import net.idlesoft.android.apps.github.activities.tabs.Following;
 import net.idlesoft.android.apps.github.activities.tabs.Members;
 import net.idlesoft.android.apps.github.activities.tabs.Teams;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;

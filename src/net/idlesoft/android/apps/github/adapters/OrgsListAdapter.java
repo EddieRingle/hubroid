@@ -1,17 +1,12 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
-import java.util.Date;
-
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
 import org.eclipse.egit.github.core.User;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;

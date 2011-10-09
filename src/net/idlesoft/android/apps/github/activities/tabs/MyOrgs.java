@@ -8,32 +8,24 @@
 
 package net.idlesoft.android.apps.github.activities.tabs;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Profile;
-import net.idlesoft.android.apps.github.activities.SingleGist;
-import net.idlesoft.android.apps.github.adapters.GistListAdapter;
 import net.idlesoft.android.apps.github.adapters.OrgsListAdapter;
 
-import org.eclipse.egit.github.core.Gist;
 import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.PageIterator;
-import org.eclipse.egit.github.core.service.GistService;
 import org.eclipse.egit.github.core.service.OrganizationService;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.test.MoreAsserts;
-import android.util.Log;
 import android.view.View;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class MyOrgs extends BaseActivity {
     private ArrayList<User> mOrganizations;

@@ -8,8 +8,11 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.activities.tabs.MyGists;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 import net.idlesoft.android.apps.github.utils.NewsFeedHelpers;
 
@@ -25,10 +28,6 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class SingleActivityItem extends BaseActivity {
     public static final String CSS = "<style type=\"text/css\">" + "* {" + "margin: 0px;" + "}"
@@ -250,7 +249,7 @@ public class SingleActivityItem extends BaseActivity {
                             final String parts[] = url.substring(10).split("/");
                             if (parts[0].equals("showCommit")) {
                                 final Intent intent = new Intent(SingleActivityItem.this,
-                                        Commit.class);
+                                        SingleCommit.class);
                                 intent.putExtra("repo_owner", parts[1]);
                                 intent.putExtra("repo_name", parts[2]);
                                 intent.putExtra("commit_sha", parts[3]);

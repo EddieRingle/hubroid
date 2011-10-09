@@ -8,6 +8,9 @@
 
 package net.idlesoft.android.apps.github.activities.tabs;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.SingleGist;
@@ -26,9 +29,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 public class StarredGists extends BaseActivity {
     private ArrayList<Gist> mGists;

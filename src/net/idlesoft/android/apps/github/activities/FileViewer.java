@@ -8,87 +8,79 @@
 
 package net.idlesoft.android.apps.github.activities;
 
-import com.petebevin.markdown.MarkdownProcessor;
+import java.io.IOException;
 
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.utils.StringUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.apache.commons.codec.binary.Base64;
+import org.eclipse.egit.github.core.Blob;
+import org.eclipse.egit.github.core.RepositoryId;
+import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.service.DataService;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.webkit.MimeTypeMap;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.TextView;
 
 public class FileViewer extends BaseActivity {
+	private Blob mBlob = null;
+
+	private String mBlobName;
+
+	private String mMimeType;
+
     private static class LoadBlobTask extends AsyncTask<Void, Void, Void> {
         FileViewer activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
-                activity.mJson = new JSONObject(activity.mGApi.object.blob(
-                        activity.mRepositoryOwner, activity.mRepositoryName, activity.mTreeSha,
-                        activity.mBlobPath).resp).getJSONObject("blob");
-                /*
-                 * Prepare CSS for file
-                 */
-                activity.mHtml = "<style type=\"text/css\">" + "div {" + "margin-right: 100%25;"
-                        + "font-family: monospace;" + "white-space: nowrap;"
-                        + "display: inline-block; float: left; clear: both;" + "}" + ".filename {"
-                        + "background-color: #EAF2F5;" + "}" + "</style>";
+            	if (activity.mBlob == null) {
+            		final DataService ds = new DataService(activity.getGitHubClient());
+            		activity.mBlob = ds.getBlob(RepositoryId.create(activity.mRepositoryOwner,
+            				activity.mRepositoryName), activity.mBlobSha);
+            	}
+            	final String content = (activity.mBlob.getEncoding().equals("utf-8"))
+            			? activity.mBlob.getContent()
+            			: new String(Base64.decodeBase64(activity.mBlob.getContent().getBytes()));
 
-                activity.mHtml += "<div class=\"filename\">" + activity.mJson.getString("name")
-                        + "</div><br/>";
+            	activity.mMimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
+            			StringUtils.getExtension(activity.mBlobName));
+            	if (activity.mMimeType == null || !activity.mMimeType.startsWith("image")) {
+            		activity.mMimeType = "text/html";
+            	}
 
-                final String mimeType = activity.mJson.getString("mime_type");
-
-                if (mimeType.startsWith("text") || mimeType.startsWith("application")) {
-                    if (activity.mJson.getString("name").endsWith(".md")
-                            || activity.mJson.getString("name").endsWith(".markdown")
-                            || activity.mJson.getString("name").endsWith(".mdown")) {
-                        activity.mHtml += new MarkdownProcessor().markdown(activity.mJson
-                                .getString("data"));
-                    } else {
-                        final String[] splitFile = activity.mJson.getString("data").split("\n");
-                        for (int i = 0; i < splitFile.length; i++) {
-
-                            /* HTML Encode line to make it safe for viewing */
-                            splitFile[i] = TextUtils.htmlEncode(splitFile[i]);
-
-                            // Replace all tabs with four non-breaking spaces
-                            // (most
-                            // browsers truncate "\t+" to " ").
-                            splitFile[i] = splitFile[i]
-                                    .replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
-
-                            // Replace any sequence of two or more spaces with
-                            // &nbsps
-                            // (most browsers truncate " +" to " ").
-                            splitFile[i] = splitFile[i].replaceAll("(?<= ) ", "&nbsp;");
-
-                            activity.mHtml += "<div>" + splitFile[i] + "</div>";
-                        }
-                    }
-                } else if (mimeType.startsWith("image")) {
-                    activity.mHtml += "<img src=\"https://" + activity.mUsername + ":"
-                            + activity.mPassword + "@github.com/api/v2/json/blob/show/"
-                            + activity.mRepositoryOwner + "/" + activity.mRepositoryName + "/"
-                            + activity.mBlobSha + "\" alt=\"Image\" />";
-                }
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            	if (activity.mMimeType.startsWith("image")) {
+            		activity.mHtml = "<img src='data:" + activity.mMimeType + ";base64,"
+            				+ activity.mBlob.getContent() + "' />";
+            		activity.mMimeType = "text/html";
+            	} else {
+            		activity.mHtml = StringUtils.blobToHtml(content, activity.mBlobName);
+            	}
+            } catch (IOException e) {
+				e.printStackTrace();
+			}
             return null;
         }
 
         @Override
         protected void onPostExecute(final Void result) {
-            activity.mWebView.loadDataWithBaseURL("hubroid", activity.mHtml, "text/html", "UTF-8",
-                    "hubroid");
+        	final WebSettings ws = activity.mWebView.getSettings();
+        	ws.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NORMAL);
+        	ws.setBuiltInZoomControls(true);
+        	ws.setSupportZoom(true);
+        	ws.setJavaScriptEnabled(true);
+        	ws.setSupportMultipleWindows(true);
+        	ws.setUseWideViewPort(true);
+        	ws.setLoadsImagesAutomatically(true);
+
+            activity.mWebView.loadDataWithBaseURL("file:///android_asset/", activity.mHtml,
+            		activity.mMimeType, "UTF-8", "");
             activity.mProgressDialog.dismiss();
         }
 
@@ -99,13 +91,7 @@ public class FileViewer extends BaseActivity {
         }
     }
 
-    public String mBlobPath;
-
     private String mHtml;
-
-    public Intent mIntent;
-
-    public JSONObject mJson;
 
     private LoadBlobTask mLoadBlobTask;
 
@@ -114,8 +100,6 @@ public class FileViewer extends BaseActivity {
     public String mRepositoryName;
 
     public String mRepositoryOwner;
-
-    public String mTreeSha;
 
     private WebView mWebView;
 
@@ -135,9 +119,15 @@ public class FileViewer extends BaseActivity {
         if (extras != null) {
             mRepositoryName = extras.getString("repo_name");
             mRepositoryOwner = extras.getString("repo_owner");
-            mTreeSha = extras.getString("tree_sha");
-            mBlobPath = extras.getString("blob_path");
             mBlobSha = extras.getString("blob_sha");
+            mBlobName = extras.getString("blob_name");
+            if (extras.containsKey("blob")) {
+            	mBlob = GsonUtils.fromJson(extras.getString("blob"), Blob.class);
+            }
+
+            final TextView filename = (TextView)findViewById(R.id.tv_file_name);
+            filename.setText(mBlobName);
+            filename.requestFocus();
 
             mLoadBlobTask = (LoadBlobTask) getLastNonConfigurationInstance();
             if (mLoadBlobTask == null) {
@@ -161,29 +151,7 @@ public class FileViewer extends BaseActivity {
     }
 
     @Override
-    protected void onRestoreInstanceState(final Bundle savedInstanceState) {
-        mHtml = savedInstanceState.getString("html");
-
-        if (mHtml != null) {
-            ((WebView) findViewById(R.id.wv_fileView_contents)).loadData(mHtml, "text/html",
-                    "UTF-8");
-        }
-
-        if (mLoadBlobTask != null) {
-            mLoadBlobTask.activity = this;
-        }
-
-        super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
     public Object onRetainNonConfigurationInstance() {
         return mLoadBlobTask;
-    }
-
-    @Override
-    protected void onSaveInstanceState(final Bundle outState) {
-        outState.putString("html", mHtml);
-        super.onSaveInstanceState(outState);
     }
 }

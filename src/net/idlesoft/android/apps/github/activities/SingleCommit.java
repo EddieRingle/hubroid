@@ -8,6 +8,10 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
@@ -30,17 +34,14 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class Commit extends BaseActivity {
+public class SingleCommit extends BaseActivity {
     private static class GetCommitTask extends AsyncTask<Void, Void, Void> {
-        public Commit activity;
+        public SingleCommit activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
             try {
+            	// TODO: Convert to use egit-github
                 final Response commitResponse = activity.mGApi.commits.commit(
                         activity.mRepositoryOwner, activity.mRepositoryName, activity.mCommitSha);
                 if (commitResponse.statusCode != 200) {
@@ -71,9 +72,9 @@ public class Commit extends BaseActivity {
                 activity.mCommitterName = activity.mJson.getJSONObject("committer").getString(
                         "name");
 
-                activity.mAuthorGravatar = Commit.loadGravatarByLoginName(activity,
+                activity.mAuthorGravatar = SingleCommit.loadGravatarByLoginName(activity,
                         activity.mAuthor);
-                activity.mCommitterGravatar = Commit.loadGravatarByLoginName(activity,
+                activity.mCommitterGravatar = SingleCommit.loadGravatarByLoginName(activity,
                         activity.mCommitter);
             } catch (final JSONException e) {
                 e.printStackTrace();
@@ -190,7 +191,7 @@ public class Commit extends BaseActivity {
             if (mAuthorGravatar != null) {
                 authorImage.setImageBitmap(mAuthorGravatar);
             } else {
-                authorImage.setImageBitmap(Commit.loadGravatarByLoginName(Commit.this, mAuthor));
+                authorImage.setImageBitmap(SingleCommit.loadGravatarByLoginName(SingleCommit.this, mAuthor));
             }
 
             // Set the commit message
@@ -204,11 +205,11 @@ public class Commit extends BaseActivity {
             try {
                 commit_time = dateFormat.parse(mJson.getString("authored_date"));
                 current_time = new Date();
-                ((TextView) findViewById(R.id.commit_view_author_time)).setText(Commit
+                ((TextView) findViewById(R.id.commit_view_author_time)).setText(SingleCommit
                         .getHumanDate(current_time, commit_time));
 
                 commit_time = dateFormat.parse(mJson.getString("committed_date"));
-                authorDate = Commit.getHumanDate(current_time, commit_time);
+                authorDate = SingleCommit.getHumanDate(current_time, commit_time);
 
             } catch (final ParseException e) {
                 e.printStackTrace();
@@ -224,14 +225,14 @@ public class Commit extends BaseActivity {
                 if (mCommitterGravatar != null) {
                     committerImage.setImageBitmap(mCommitterGravatar);
                 } else {
-                    committerImage.setImageBitmap(Commit.loadGravatarByLoginName(Commit.this,
+                    committerImage.setImageBitmap(SingleCommit.loadGravatarByLoginName(SingleCommit.this,
                             mCommitter));
                 }
             }
 
             final OnClickListener onGravatarClick = new OnClickListener() {
                 public void onClick(final View v) {
-                    final Intent i = new Intent(Commit.this, Profile.class);
+                    final Intent i = new Intent(SingleCommit.this, Profile.class);
                     if (v.getId() == authorImage.getId()) {
                         i.putExtra("username", mAuthor);
                     } else if (v.getId() == committerImage.getId()) {
@@ -291,7 +292,7 @@ public class Commit extends BaseActivity {
 
             filesAddedButton.setOnClickListener(new OnClickListener() {
                 public void onClick(final View v) {
-                    final Intent i = new Intent(Commit.this, DiffFilesList.class);
+                    final Intent i = new Intent(SingleCommit.this, DiffFilesList.class);
                     i.putExtra("type", "added");
                     i.putExtra("json", mJson.toString());
                     i.putExtra("repo_owner", mRepositoryOwner);
@@ -301,7 +302,7 @@ public class Commit extends BaseActivity {
             });
             filesRemovedButton.setOnClickListener(new OnClickListener() {
                 public void onClick(final View v) {
-                    final Intent i = new Intent(Commit.this, DiffFilesList.class);
+                    final Intent i = new Intent(SingleCommit.this, DiffFilesList.class);
                     i.putExtra("type", "removed");
                     i.putExtra("json", mJson.toString());
                     i.putExtra("repo_owner", mRepositoryOwner);
@@ -311,7 +312,7 @@ public class Commit extends BaseActivity {
             });
             filesChangedButton.setOnClickListener(new OnClickListener() {
                 public void onClick(final View v) {
-                    final Intent i = new Intent(Commit.this, DiffFilesList.class);
+                    final Intent i = new Intent(SingleCommit.this, DiffFilesList.class);
                     i.putExtra("type", "modified");
                     i.putExtra("json", mJson.toString());
                     i.putExtra("repo_owner", mRepositoryOwner);
@@ -364,7 +365,7 @@ public class Commit extends BaseActivity {
         if (mGetCommitTask == null) {
             mGetCommitTask = new GetCommitTask();
         }
-        mGetCommitTask.activity = Commit.this;
+        mGetCommitTask.activity = SingleCommit.this;
         if ((mGetCommitTask.getStatus() == AsyncTask.Status.PENDING) && (mJson == null)) {
             mGetCommitTask.execute();
         } else {

@@ -9,11 +9,10 @@
 package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
+import net.idlesoft.android.apps.github.utils.StringUtils;
 
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.PullRequestCommit;
 
 import android.app.Activity;
 import android.view.View;
@@ -22,15 +21,11 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-public class CommitListAdapter extends GravatarArrayListAdapter<JSONObject> {
+public class CommitListAdapter extends GravatarArrayListAdapter<PullRequestCommit> {
     public static class ViewHolder {
         public TextView commit_date;
 
-        public TextView commit_shortdesc;
+        public TextView shortdesc;
 
         public ImageView gravatar;
     }
@@ -46,7 +41,7 @@ public class CommitListAdapter extends GravatarArrayListAdapter<JSONObject> {
             holder = new ViewHolder();
             holder.commit_date = (TextView) convertView
                     .findViewById(R.id.tv_commit_list_item_commit_date);
-            holder.commit_shortdesc = (TextView) convertView
+            holder.shortdesc = (TextView) convertView
                     .findViewById(R.id.tv_commit_list_item_shortdesc);
             holder.gravatar = (ImageView) convertView
                     .findViewById(R.id.iv_commit_list_item_gravatar);
@@ -54,55 +49,10 @@ public class CommitListAdapter extends GravatarArrayListAdapter<JSONObject> {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        try {
-            String end;
-            final SimpleDateFormat dateFormat = new SimpleDateFormat(Hubroid.GITHUB_TIME_FORMAT);
-            final Date commit_time = dateFormat.parse(((JSONObject)mData.get(index)).getString(
-                    "committed_date"));
-            final Date current_time = new Date();
-            final long ms = current_time.getTime() - commit_time.getTime();
-            final long sec = ms / 1000;
-            final long min = sec / 60;
-            final long hour = min / 60;
-            final long day = hour / 24;
-            if (day > 0) {
-                if (day == 1) {
-                    end = " day ago";
-                } else {
-                    end = " days ago";
-                }
-                holder.commit_date.setText(day + end);
-            } else if (hour > 0) {
-                if (hour == 1) {
-                    end = " hour ago";
-                } else {
-                    end = " hours ago";
-                }
-                holder.commit_date.setText(hour + end);
-            } else if (min > 0) {
-                if (min == 1) {
-                    end = " minute ago";
-                } else {
-                    end = " minutes ago";
-                }
-                holder.commit_date.setText(min + end);
-            } else {
-                if (sec == 1) {
-                    end = " second ago";
-                } else {
-                    end = " seconds ago";
-                }
-                holder.commit_date.setText(sec + end);
-            }
-            holder.gravatar.setImageBitmap(mGravatars.get(((JSONObject)mData.get(index))
-                    .getJSONObject("author").getString("login")));
-            holder.commit_shortdesc.setText(((JSONObject)mData.get(index)).getString("message")
-                    .split("\n")[0]);
-        } catch (final JSONException e) {
-            e.printStackTrace();
-        } catch (final ParseException e) {
-            e.printStackTrace();
-        }
+        holder.commit_date.setText(StringUtils.getTimeSince(mData.get(index).getCommit()
+        		.getCommitter().getDate()) + " ago");
+		holder.gravatar.setImageBitmap(mGravatars.get(mData.get(index).getAuthor().getLogin()));
+		holder.shortdesc.setText(mData.get(index).getCommit().getMessage().split("\n")[0]);
         return convertView;
     }
 
@@ -112,17 +62,12 @@ public class CommitListAdapter extends GravatarArrayListAdapter<JSONObject> {
     public void loadGravatars() {
         final int length = mData.size();
         for (int i = 0; i < length; i++) {
-            try {
-                final String login = ((JSONObject)mData.get(i)).getJSONObject("author")
-                        .getString("login");
-                if (!mGravatars.containsKey(login)) {
-                    mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
-                            .getGravatarID(login), 30.0f, mActivity.getResources()
-                            .getDisplayMetrics().density));
-                }
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            final String login = mData.get(i).getAuthor().getLogin();
+			if (!mGravatars.containsKey(login)) {
+			    mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
+			            .getGravatarID(login), 30.0f, mActivity.getResources()
+			            .getDisplayMetrics().density));
+			}
         }
     }
 }

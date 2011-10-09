@@ -22,7 +22,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class NewsFeed extends BaseActivity {
     private static class LoadActivityFeedTask extends AsyncTask<Void, Void, Void> {
@@ -30,6 +29,7 @@ public class NewsFeed extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
+        	// TODO: Convert to use egit-github
             if (activity.mJson == null) {
                 try {
                     final Response resp;

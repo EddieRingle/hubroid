@@ -8,6 +8,11 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.Hubroid;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
@@ -23,11 +28,6 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 
 public class ActivityFeedAdapter extends JsonListAdapter {
     public static class ViewHolder {

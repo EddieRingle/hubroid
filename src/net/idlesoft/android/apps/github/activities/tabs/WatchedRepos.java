@@ -32,6 +32,7 @@ public class WatchedRepos extends BaseActivity {
 
         @Override
         protected Void doInBackground(final Void... params) {
+        	// TODO: Convert to use egit-github
             if (activity.mJson == null) {
                 try {
                     final Response resp = activity.mGApi.user.watching(activity.mTarget);

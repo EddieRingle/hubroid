@@ -8,10 +8,15 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.io.IOException;
+import java.util.Map;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.GistFilesListAdapter;
 
+import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.GistFile;
+import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.GistService;
 import org.json.JSONObject;
 
@@ -21,10 +26,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
-
-import java.io.IOException;
-import java.util.Map;
 
 public class GistFilesList extends BaseActivity {
     private Map<String, GistFile> mFileMap;
@@ -85,12 +86,12 @@ public class GistFilesList extends BaseActivity {
                     long id) {
                 final String fileName = (String) mFileMap.keySet().toArray()[position];
                 final GistFile gistFile = mFileMap.get(fileName);
-                final Intent intent = new Intent(GistFilesList.this, GistFileViewer.class);
-                intent.putExtra("gistId", mGistId);
-                intent.putExtra("fileName", gistFile.getFilename());
-                intent.putExtra("fileContents", gistFile.getContent());
-                intent.putExtra("fileRawURL", gistFile.getRawUrl());
-                intent.putExtra("fileSize", gistFile.getSize());
+                final Blob gistBlob = new Blob();
+                gistBlob.setContent(gistFile.getContent());
+                gistBlob.setEncoding("utf-8");
+                final Intent intent = new Intent(GistFilesList.this, FileViewer.class);
+                intent.putExtra("blob_name", gistFile.getFilename());
+                intent.putExtra("blob", GsonUtils.toJson(gistBlob));
                 startActivity(intent);
             };
         });

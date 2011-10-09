@@ -9,8 +9,8 @@
 package net.idlesoft.android.apps.github.activities.tabs;
 
 import static org.eclipse.egit.github.core.service.IssueService.FILTER_STATE;
-import static org.eclipse.egit.github.core.service.IssueService.STATE_OPEN;
 import static org.eclipse.egit.github.core.service.IssueService.STATE_CLOSED;
+import static org.eclipse.egit.github.core.service.IssueService.STATE_OPEN;
 
 import java.io.IOException;
 import java.util.ArrayList;

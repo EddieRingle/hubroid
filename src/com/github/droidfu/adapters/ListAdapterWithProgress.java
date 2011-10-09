@@ -15,6 +15,9 @@
 
 package com.github.droidfu.adapters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ExpandableListActivity;
 import android.app.ListActivity;
@@ -22,9 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class ListAdapterWithProgress<T> extends BaseAdapter {
 

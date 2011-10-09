@@ -8,6 +8,12 @@
 
 package net.idlesoft.android.apps.github.activities;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 import net.idlesoft.android.apps.github.R;
 
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
@@ -31,12 +37,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
 public class Dashboard extends BaseActivity {
     private static class GetLatestBlogPostTask extends AsyncTask<Void, Void, JSONObject> {
         public Dashboard activity;
@@ -44,6 +44,7 @@ public class Dashboard extends BaseActivity {
         @Override
         protected JSONObject doInBackground(final Void... params) {
             try {
+            	// TODO: Convert to use egit-github
                 final Response response = new Response();
                 // Setup connection
                 HttpURLConnection conn = (HttpURLConnection) (new URL(

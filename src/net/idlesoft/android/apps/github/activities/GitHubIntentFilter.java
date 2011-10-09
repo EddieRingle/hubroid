@@ -2,7 +2,6 @@ package net.idlesoft.android.apps.github.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 
 public class GitHubIntentFilter extends BaseActivity {
 	@Override
@@ -62,7 +61,7 @@ public class GitHubIntentFilter extends BaseActivity {
 						}
 					} else if (parts[5].equalsIgnoreCase("commit")) {
 						if (parts.length > 6 && parts[6] != null) {
-							intent.setClass(getApplicationContext(), Commit.class);
+							intent.setClass(getApplicationContext(), SingleCommit.class);
 							intent.putExtra("repo_owner", parts[3]);
 							intent.putExtra("repo_name", parts[4]);
 							intent.putExtra("commit_sha", parts[6]);

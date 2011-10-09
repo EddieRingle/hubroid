@@ -29,7 +29,7 @@
         <activity android:name=".activities.Branch" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.BranchTree" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.CommitsList" android:configChanges="orientation|keyboard|keyboardHidden" />
-        <activity android:name=".activities.Commit" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.SingleCommit" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.DiffFilesList" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.Issues" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.tabs.OpenIssues" android:configChanges="orientation|keyboard|keyboardHidden" />

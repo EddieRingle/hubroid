@@ -1,6 +1,8 @@
 
 package net.idlesoft.android.apps.github.adapters;
 
+import java.util.Date;
+
 import net.idlesoft.android.apps.github.R;
 
 import org.eclipse.egit.github.core.Gist;
@@ -10,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.TextView;
-
-import java.util.Date;
 
 public class GistListAdapter extends ArrayListAdapter<Gist> {
     public static class ViewHolder {
