@@ -6,9 +6,9 @@
 	android:isScrollContainer="true">
 	<ImageView
 		android:id="@+id/hubroid_logo"
-		android:layout_width="225dip"
-		android:layout_height="225dip"
-		android:src="@drawable/hubroid_logo"
+		android:layout_width="256dip"
+		android:layout_height="256dip"
+		android:src="@drawable/hubroid_512"
 		android:scaleType="fitXY"
 		android:layout_centerInParent="true"/>
 	<TextView
