@@ -11,11 +11,12 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.StringUtils;
 
-import shade.org.apache.commons.codec.binary.Base64;
 import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.DataService;
+
+import shade.org.apache.commons.codec.binary.Base64;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;

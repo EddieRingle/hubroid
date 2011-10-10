@@ -35,8 +35,9 @@ public class CommitsList extends BaseActivity {
         @Override
         protected Void doInBackground(final Void... params) {
             final CommitService cs = new CommitService(activity.getGitHubClient());
-            PageIterator<RepositoryCommit> itr = cs.pageCommits(RepositoryId.create(
-                    activity.mRepoOwner, activity.mRepoName), activity.mBranchName, null, 30);
+            PageIterator<RepositoryCommit> itr = cs.pageCommits(
+                    RepositoryId.create(activity.mRepoOwner, activity.mRepoName),
+                    activity.mBranchName, null, 30);
             if (itr.hasNext()) {
                 activity.mCommits = new ArrayList<RepositoryCommit>(itr.next());
             }
