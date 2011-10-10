@@ -13,10 +13,9 @@ import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.activities.Profile;
 import net.idlesoft.android.apps.github.adapters.FollowersFollowingListAdapter;
 
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.PageIterator;
+import org.eclipse.egit.github.core.service.UserService;
 
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -26,26 +25,21 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class Following extends BaseActivity {
     private static class FollowingTask extends AsyncTask<Void, Void, Void> {
         public Following activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            // TODO: Convert to use egit-github
-            if (activity.mJson == null) {
-                try {
-                    final Response resp = activity.mGApi.user.following(activity.mTarget);
-                    if (resp.statusCode != 200) {
-                        /* Oh noez, something went wrong */
-                        return null;
-                    }
-                    activity.mJson = (new JSONObject(resp.resp)).getJSONArray("users");
-                } catch (final JSONException e) {
-                    e.printStackTrace();
-                }
-                activity.mAdapter.loadData(activity.mJson);
+            final UserService us = new UserService(activity.getGitHubClient());
+            final PageIterator<User> itr = us.pageFollowing(activity.mTarget, 30);
+            activity.mFollowing = new ArrayList<User>(itr.next());
+            if (activity.mFollowing == null) {
+                activity.mFollowing = new ArrayList<User>();
             }
+            activity.mAdapter.loadData(activity.mFollowing);
             return null;
         }
 
@@ -63,7 +57,7 @@ public class Following extends BaseActivity {
 
     private FollowersFollowingListAdapter mAdapter;
 
-    private JSONArray mJson;
+    private ArrayList<User> mFollowing;
 
     private ListView mListView;
 
@@ -71,11 +65,7 @@ public class Following extends BaseActivity {
         public void onItemClick(final AdapterView<?> parent, final View view, final int position,
                 final long id) {
             final Intent i = new Intent(getApplicationContext(), Profile.class);
-            try {
-                i.putExtra("username", mJson.getString(position));
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            i.putExtra("username", mFollowing.get(position).getLogin());
             startActivity(i);
             return;
         }
@@ -116,34 +106,7 @@ public class Following extends BaseActivity {
     }
 
     @Override
-    public void onRestoreInstanceState(final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        try {
-            if (savedInstanceState.containsKey("json")) {
-                mJson = new JSONArray(savedInstanceState.getString("json"));
-            } else {
-                return;
-            }
-        } catch (final Exception e) {
-            e.printStackTrace();
-            return;
-        }
-        if (mJson != null) {
-            mAdapter.loadData(mJson);
-            mAdapter.pushData();
-        }
-    }
-
-    @Override
     public Object onRetainNonConfigurationInstance() {
         return mTask;
-    }
-
-    @Override
-    public void onSaveInstanceState(final Bundle savedInstanceState) {
-        if (mJson != null) {
-            savedInstanceState.putString("json", mJson.toString());
-        }
-        super.onSaveInstanceState(savedInstanceState);
     }
 }

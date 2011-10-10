@@ -11,6 +11,8 @@ package net.idlesoft.android.apps.github.adapters;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 
+import org.eclipse.egit.github.core.User;
+
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,7 @@ import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class FollowersFollowingListAdapter extends GravatarJsonListAdapter {
+public class FollowersFollowingListAdapter extends GravatarArrayListAdapter<User> {
 
     public FollowersFollowingListAdapter(final Activity pActivity, final AbsListView pListView) {
         super(pActivity, pListView);
@@ -36,7 +38,7 @@ public class FollowersFollowingListAdapter extends GravatarJsonListAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
-        final String username = (String) getData().get(index);
+        final String username = mData.get(index).getLogin();
         holder.text.setText(username);
         holder.gravatar.setImageBitmap(mGravatars.get(username));
         return convertView;
