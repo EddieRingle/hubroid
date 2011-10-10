@@ -171,9 +171,8 @@ public class Profile extends BaseActivity {
                 } else {
                     activity.mUser = service.getUser(activity.mTarget);
                 }
-                activity.mGravatar = GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(activity.mTarget), 50.0f, activity.getResources()
-                        .getDisplayMetrics().density);
+                activity.mGravatar = GravatarCache.getDipGravatar(activity.mTarget, 50.0f, activity
+                        .getResources().getDisplayMetrics().density);
                 return true;
             } catch (IOException e) {
                 e.printStackTrace();

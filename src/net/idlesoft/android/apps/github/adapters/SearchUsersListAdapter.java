@@ -57,9 +57,8 @@ public class SearchUsersListAdapter extends GravatarJsonListAdapter {
             try {
                 final String username = ((JSONObject) mJson.get(i)).getString("username");
                 Log.d("hubroid", "Username found: " + username);
-                mGravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(username), 30.0f, mActivity.getResources()
-                        .getDisplayMetrics().density));
+                mGravatars.put(username, GravatarCache.getDipGravatar(username, 30.0f, mActivity
+                        .getResources().getDisplayMetrics().density));
             } catch (final JSONException e) {
                 e.printStackTrace();
             }

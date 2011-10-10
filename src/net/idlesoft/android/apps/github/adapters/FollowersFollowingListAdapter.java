@@ -44,13 +44,12 @@ public class FollowersFollowingListAdapter extends GravatarJsonListAdapter {
 
     @Override
     public void loadGravatars() {
-        final int length = mJson.length();
+        final int length = mData.size();
         for (int i = 0; i < length; i++) {
             try {
-                final String username = (String) mJson.get(i);
-                mGravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(username), 30.0f, mActivity.getResources()
-                        .getDisplayMetrics().density));
+                final String username = (String) mData.get(i).getLogin();
+                mGravatars.put(username, GravatarCache.getDipGravatar(username, 30.0f, mActivity
+                        .getResources().getDisplayMetrics().density));
             } catch (final Exception e) {
                 e.printStackTrace();
             }

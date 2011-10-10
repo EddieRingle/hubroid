@@ -296,8 +296,7 @@ public class SingleIssue extends BaseActivity {
         loadIssueItemBox();
 
         ((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
-                .setImageBitmap(GravatarCache.getDipGravatar(
-                        GravatarCache.getGravatarID(mIssue.getUser().getLogin()), 30.0f,
+                .setImageBitmap(GravatarCache.getDipGravatar(mIssue.getUser().getLogin(), 30.0f,
                         getResources().getDisplayMetrics().density));
         ((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mIssue.getBody()
                 .replaceAll("\r\n", "\n").replaceAll("\r", "\n"));

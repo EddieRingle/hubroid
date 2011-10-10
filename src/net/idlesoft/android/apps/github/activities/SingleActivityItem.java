@@ -96,9 +96,8 @@ public class SingleActivityItem extends BaseActivity {
             final String actor = entry.getString("actor");
             final String eventType = entry.getString("type");
             String title = actor + " did something...";
-            gravatar.setImageBitmap(GravatarCache.getDipGravatar(
-                    GravatarCache.getGravatarID(actor), 30.0f,
-                    getResources().getDisplayMetrics().density));
+            gravatar.setImageBitmap(GravatarCache.getDipGravatar(actor, 30.0f, getResources()
+                    .getDisplayMetrics().density));
 
             if (eventType.contains("PushEvent")) {
                 icon.setImageResource(R.drawable.push);

@@ -258,18 +258,16 @@ public class ActivityFeedAdapter extends JsonListAdapter {
             if (mIsSingleUser) {
                 // Load only the first gravatar
                 final String actor = mJson.getJSONObject(0).getString("actor");
-                mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(actor), 30.0f,
-                        mActivity.getResources().getDisplayMetrics().density));
+                mGravatars.put(actor, GravatarCache.getDipGravatar(actor, 30.0f, mActivity
+                        .getResources().getDisplayMetrics().density));
             } else {
                 // Load all of 'em
                 final int length = mJson.length();
                 for (int i = 0; i < length; i++) {
                     final String actor = mJson.getJSONObject(i).getString("actor");
                     if (!mGravatars.containsKey(actor)) {
-                        mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-                                .getGravatarID(actor), 30.0f, mActivity.getResources()
-                                .getDisplayMetrics().density));
+                        mGravatars.put(actor, GravatarCache.getDipGravatar(actor, 30.0f, mActivity
+                                .getResources().getDisplayMetrics().density));
                     }
                 }
             }

@@ -69,9 +69,8 @@ public class IssueCommentsAdapter extends GravatarArrayListAdapter<Comment> {
         for (int i = 0; i < length; i++) {
             final String actor = mData.get(i).getUser().getLogin();
             if (!mGravatars.containsKey(actor)) {
-                mGravatars.put(actor, GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(actor), 30.0f,
-                        mActivity.getResources().getDisplayMetrics().density));
+                mGravatars.put(actor, GravatarCache.getDipGravatar(actor, 30.0f, mActivity
+                        .getResources().getDisplayMetrics().density));
             }
         }
     }

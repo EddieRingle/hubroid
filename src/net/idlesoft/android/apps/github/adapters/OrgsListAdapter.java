@@ -43,9 +43,8 @@ public class OrgsListAdapter extends GravatarArrayListAdapter<User> {
         final int length = mListData.size();
         for (int i = 0; i < length; i++) {
             final String username = mData.get(i).getLogin();
-            mGravatars.put(username, GravatarCache.getDipGravatar(GravatarCache
-                    .getGravatarID(username), 30.0f,
-                    mActivity.getResources().getDisplayMetrics().density));
+            mGravatars.put(username, GravatarCache.getDipGravatar(username, 30.0f, mActivity
+                    .getResources().getDisplayMetrics().density));
         }
     }
 }

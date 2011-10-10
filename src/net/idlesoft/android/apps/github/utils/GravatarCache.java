@@ -13,37 +13,31 @@ import net.idlesoft.android.apps.github.R;
 
 import org.eclipse.egit.github.core.service.UserService;
 
-import shade.org.apache.commons.codec.digest.DigestUtils;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 
 public class GravatarCache {
 
     /* Root directory for gravatar storage on the SD card */
     private final static String ROOT_DIR = "hubroid/gravatars";
 
-    private static Bitmap downloadGravatar(final String id) throws IOException {
+    private static Bitmap downloadGravatar(final String login) throws IOException {
         final URL aURL;
-        if (id != null && !id.equals("")) {
-            aURL = new URL("http://www.gravatar.com/avatar/" + URLEncoder.encode(id)
-                    + "?size=100&d=404");
+        final UserService us = new UserService(HubroidApplication.getGitHubClientInstance());
+        if (login != null && !login.equals("")) {
+            aURL = new URL(us.getUser(login).getAvatarUrl());
         } else {
-            aURL = new URL("http://www.gravatar.com/avatar/?size=140&d=404");
+            aURL = new URL(
+                    "https://a248.e.akamai.net/assets.github.com%2Fimages%2Fgravatars%2Fgravatar-140.png");
         }
 
         final HttpURLConnection conn = (HttpURLConnection) aURL.openConnection();
@@ -86,37 +80,38 @@ public class GravatarCache {
 
     /**
      * Returns a density-independent Bitmap of the Gravatar associated with the
-     * provided ID. The image will be scaled to a variable pixel size dependent
-     * on the provided dip size.
+     * provided login. The image will be scaled to a variable pixel size
+     * dependent on the provided dip size.
      * 
-     * @param id
+     * @param login
      * @param size - Size in density-independent pixels (dip)
      * @param densityScale - Scale provided by
      *            android.util.DisplayMetrics.density
      */
-    public static Bitmap getDipGravatar(final String id, final float size, final float densityScale) {
-        return getGravatar(id, (int) (size * densityScale + 0.5f));
+    public static Bitmap getDipGravatar(final String login, final float size,
+            final float densityScale) {
+        return getGravatar(login, (int) (size * densityScale + 0.5f));
     }
 
     /**
-     * Returns a Bitmap of the Gravatar associated with the provided ID. This
+     * Returns a Bitmap of the Gravatar associated with the provided login. This
      * image will be scaled according to the provided size.
      * 
-     * @param id
+     * @param login
      * @param size
      * @return a scaled Bitmap
      */
-    public static Bitmap getGravatar(final String id, final int size) {
+    public static Bitmap getGravatar(final String login, final int size) {
         Bitmap bm = null;
         try {
             final File gravatars = ensure_directory(ROOT_DIR);
             /* Prevents the gravatars from showing up in the Gallery app */
             hideMediaFromGallery(gravatars);
 
-            final File image = new File(gravatars, id + ".png");
+            final File image = new File(gravatars, login + ".png");
             bm = BitmapFactory.decodeFile(image.getPath());
             if (bm == null) {
-                bm = downloadGravatar(id);
+                bm = downloadGravatar(login);
                 /* Compress to a 100x100px PNG */
                 bm.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(image));
             }
@@ -126,51 +121,6 @@ public class GravatarCache {
             e.printStackTrace();
         }
         return bm;
-    }
-
-    /**
-     * Returns a Gravatar ID associated with the provided name
-     * 
-     * @param name
-     * @return the gravatar ID associated with the name
-     */
-    public static String getGravatarID(final String name) {
-        String id = "";
-        try {
-            final File gravatars = ensure_directory(ROOT_DIR);
-            final File gravatar_id = new File(gravatars, name + ".id");
-
-            if (gravatar_id.isFile()) {
-                final FileReader fr = new FileReader(gravatar_id);
-                final BufferedReader in = new BufferedReader(fr);
-                id = in.readLine();
-                in.close();
-            } else {
-                id = getGravatarIdFromGithub(name);
-                if (!id.equals("")) {
-                    final FileWriter fw = new FileWriter(gravatar_id);
-                    final BufferedWriter bw = new BufferedWriter(fw);
-                    bw.write(id);
-                    bw.flush();
-                    bw.close();
-                }
-            }
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-        return id;
-    }
-
-    private static String getGravatarIdFromGithub(final String name) {
-        final UserService us = new UserService(HubroidApplication.getGitHubClientInstance());
-        try {
-            return new String(DigestUtils.md5(us.getUser(name).getEmail()));
-        } catch (final NullPointerException e) {
-            return "";
-        } catch (final IOException e) {
-            e.printStackTrace();
-            return "";
-        }
     }
 
     private static void hideMediaFromGallery(final File gravatars) throws IOException {

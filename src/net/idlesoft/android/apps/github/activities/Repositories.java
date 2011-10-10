@@ -46,8 +46,8 @@ public class Repositories extends BaseTabActivity {
 
         final ImageView gravatar = (ImageView) findViewById(R.id.iv_repositories_gravatar);
 
-        gravatar.setImageBitmap(GravatarCache.getDipGravatar(GravatarCache.getGravatarID(mTarget),
-                38.0f, getResources().getDisplayMetrics().density));
+        gravatar.setImageBitmap(GravatarCache.getDipGravatar(mTarget, 38.0f, getResources()
+                .getDisplayMetrics().density));
         ((TextView) findViewById(R.id.tv_page_title)).setText(mTarget);
 
         gravatar.setOnClickListener(new OnClickListener() {

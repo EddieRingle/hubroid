@@ -65,9 +65,8 @@ public class CommitListAdapter extends GravatarArrayListAdapter<RepositoryCommit
         for (int i = 0; i < length; i++) {
             final String login = mData.get(i).getAuthor().getLogin();
             if (!mGravatars.containsKey(login)) {
-                mGravatars.put(login, GravatarCache.getDipGravatar(GravatarCache
-                        .getGravatarID(login), 30.0f,
-                        mActivity.getResources().getDisplayMetrics().density));
+                mGravatars.put(login, GravatarCache.getDipGravatar(login, 30.0f, mActivity
+                        .getResources().getDisplayMetrics().density));
             }
         }
     }

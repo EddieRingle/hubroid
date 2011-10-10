@@ -142,8 +142,8 @@ public class SingleCommit extends BaseActivity {
      */
     public static Bitmap loadGravatarByLoginName(final Activity pActivity, final String pLogin) {
         if (pLogin != null && !pLogin.equals("")) {
-            return GravatarCache.getDipGravatar(GravatarCache.getGravatarID(pLogin), 30.0f,
-                    pActivity.getResources().getDisplayMetrics().density);
+            return GravatarCache.getDipGravatar(pLogin, 30.0f, pActivity.getResources()
+                    .getDisplayMetrics().density);
         } else {
             return null;
         }
