@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.KeyEvent;
 import android.webkit.WebView;
 
 public class CommitChangeViewer extends BaseActivity {
@@ -106,7 +107,7 @@ public class CommitChangeViewer extends BaseActivity {
         }
 
     }
-
+    
     @Override
     public void onCreate(final Bundle icicle) {
         super.onCreate(icicle, R.layout.commit_view);
@@ -162,6 +163,11 @@ public class CommitChangeViewer extends BaseActivity {
             mWebView.loadData(mHtml, "text/html", "UTF-8");
         }
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return volumeZoom(event, mWebView);
     }
 
 }

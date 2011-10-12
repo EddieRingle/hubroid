@@ -21,6 +21,7 @@ import shade.org.apache.commons.codec.binary.Base64;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.webkit.MimeTypeMap;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -154,5 +155,16 @@ public class FileViewer extends BaseActivity {
     @Override
     public Object onRetainNonConfigurationInstance() {
         return mLoadBlobTask;
+    }
+
+    @Override
+    protected void onSaveInstanceState(final Bundle outState) {
+        outState.putString("html", mHtml);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        return volumeZoom(event, mWebView);
     }
 }

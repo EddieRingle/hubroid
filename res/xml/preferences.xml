@@ -10,4 +10,7 @@
         <CheckBoxPreference android:summaryOff="@string/preferences_summary_off_issue_signature" android:summaryOn="@string/preferences_summary_on_issue_signature" android:title="@string/preferences_title_issue_signature" android:defaultValue="true" android:key="@string/preferences_key_issue_signature"></CheckBoxPreference><CheckBoxPreference android:title="@string/preferences_title_issues_comment_signature" android:key="@string/preferences_key_issue_comment_signature" android:defaultValue="true" android:summaryOff="@string/preferences_summary_off_issue_comment_signature" android:summaryOn="@string/preferences_summary_on_issue_comment_signature"></CheckBoxPreference>
         
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/preferences_category_file_viewing">
+        <CheckBoxPreference android:key="@string/preferences_key_files_volume_zoom" android:title="@string/preferences_title_files_volume_zoom" android:summaryOff="@string/preferences_summary_off_files_volume_zoom" android:summaryOn="@string/preferences_summary_on_files_volume_zoom" android:defaultValue="false"></CheckBoxPreference>
+    </PreferenceCategory>
 </PreferenceScreen>
