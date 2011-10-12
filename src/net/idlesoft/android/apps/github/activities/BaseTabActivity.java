@@ -30,6 +30,8 @@ public class BaseTabActivity extends TabActivity {
 
     protected String mPassword;
 
+    protected String mOAuthToken;
+
     protected GitHubAPI mGApi;
 
     protected TabHost mTabHost;
@@ -50,15 +52,26 @@ public class BaseTabActivity extends TabActivity {
 
         mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
+        mOAuthToken = mPrefs.getString("access_token", "");
 
         mGApi = new GitHubAPI();
-        mGApi.authenticate(mUsername, mPassword);
+        if (!mOAuthToken.equals("")) {
+            mGApi.authenticate(mUsername, mOAuthToken, true);
+        } else if (!mPassword.equals("")) {
+            mGApi.authenticate(mUsername, mPassword, false);
+        }
 
         mTabHost = getTabHost();
     }
 
     protected GitHubClient getGitHubClient() {
-        return HubroidApplication.getGitHubClientInstance().setCredentials(mUsername, mPassword);
+        if (!mOAuthToken.equals("")) {
+            return HubroidApplication.getGitHubClientInstance().setOAuth2Token(mOAuthToken);
+        } else if (!mPassword.equals("")) {
+            return HubroidApplication.getGitHubClientInstance().setCredentials(mUsername, mPassword);
+        } else {
+            return HubroidApplication.getGitHubClientInstance();
+        }
     }
 
     protected ActionBar getActionBar() {

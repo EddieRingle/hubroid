@@ -11,6 +11,8 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ActivityFeedAdapter;
 
+import org.eclipse.egit.github.core.client.GitHubClient;
+import org.eclipse.egit.github.core.service.UserService;
 import org.idlesoft.libraries.ghapi.APIAbstract.Response;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +20,7 @@ import org.json.JSONException;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -32,6 +35,7 @@ public class NewsFeed extends BaseActivity {
             // TODO: Convert to use egit-github
             if (activity.mJson == null) {
                 try {
+                    GitHubClient c = activity.getGitHubClient();
                     final Response resp;
                     if (mPrivate) {
                         resp = activity.mGApi.user.private_activity();
@@ -40,6 +44,7 @@ public class NewsFeed extends BaseActivity {
                     }
                     if (resp.statusCode != 200) {
                         /* Let the user know something went wrong */
+                        Log.d("hubroid", "Code: " + resp.statusCode);
                         return null;
                     }
                     activity.mJson = new JSONArray(resp.resp);

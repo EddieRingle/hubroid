@@ -10,7 +10,7 @@
 		android:layout_height="256dip"
 		android:src="@drawable/hubroid_512"
 		android:scaleType="fitXY"
-		android:layout_centerInParent="true"/>
+		android:layout_centerInParent="true" />
 	<TextView
 		android:id="@+id/tv_login_title"
 		android:text="@string/app_name"
@@ -40,55 +40,75 @@
 		android:layout_marginBottom="3dip"
 		android:textColor="#999"
 		android:text="@string/copyright" />
-	<RelativeLayout
+	<LinearLayout
+		android:orientation="horizontal"
 		android:layout_alignParentBottom="true"
 		android:layout_alignParentLeft="true"
 		android:layout_marginBottom="24dip"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
-		android:layout_centerHorizontal="true"
-		android:gravity="center"
 		android:id="@+id/rl_login_login_box"
+		android:gravity="center"
 		android:padding="15dip"
 		android:background="#C555">
-		<TextView
+		<LinearLayout
+			android:orientation="vertical"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/tv_login_username_label"
-			android:textColor="#DDD"
-			android:text="Username or Email:"
-			android:textSize="12.5dip" />
-		<EditText
-			android:layout_below="@id/tv_login_username_label"
-			android:id="@+id/et_login_username"
-			android:layout_width="132dip"
-			android:layout_height="wrap_content"
-			android:singleLine="true"
-			android:background="@android:drawable/editbox_background" />
-		<TextView
-			android:layout_below="@id/et_login_username"
+			android:layout_height="fill_parent">
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/tv_login_username_label"
+				android:textColor="#DDD"
+				android:text="Username or Email:"
+				android:textSize="12.5dip" />
+			<EditText
+				android:id="@+id/et_login_username"
+				android:layout_width="132dip"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:background="@android:drawable/editbox_background" />
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:id="@+id/tv_login_password_label"
+				android:text="Password:"
+				android:textColor="#DDD"
+				android:textSize="12.5dip" />
+			<EditText
+				android:id="@+id/et_login_password"
+				android:layout_width="132dip"
+				android:layout_height="wrap_content"
+				android:singleLine="true"
+				android:inputType="textPassword"
+				android:background="@android:drawable/editbox_background"
+				android:nextFocusDown="@+id/btn_login_login" />
+		</LinearLayout>
+		<LinearLayout
+			android:orientation="vertical"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:id="@+id/tv_login_password_label"
-			android:text="Password:"
-			android:textColor="#DDD"
-			android:textSize="12.5dip" />
-		<EditText
-			android:layout_below="@id/tv_login_password_label"
-			android:id="@+id/et_login_password"
-			android:layout_width="132dip"
-			android:layout_height="wrap_content"
-			android:singleLine="true"
-			android:inputType="textPassword"
-			android:background="@android:drawable/editbox_background"
-			android:nextFocusDown="@+id/btn_login_login" />
-		<Button
-			android:layout_marginLeft="20dip"
-		    android:layout_toRightOf="@id/tv_login_username_label"
-		    android:layout_centerVertical="true"
-			android:layout_width="125dip"
-			android:layout_height="wrap_content"
-			android:id="@+id/btn_login_login"
-			android:text="Login" />
-	</RelativeLayout>
+			android:layout_height="fill_parent"
+			android:paddingTop="4dip"
+			android:gravity="center">
+			<Button
+				android:layout_width="125dip"
+				android:layout_height="wrap_content"
+				android:id="@+id/btn_login_login"
+				android:text="Login"
+				android:layout_gravity="top" />
+			<TextView
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:layout_gravity="center"
+				android:layout_marginBottom="5dip"
+				android:textColor="#DDD"
+				android:text="or" />
+			<Button
+				android:layout_width="125dip"
+				android:layout_height="wrap_content"
+				android:layout_gravity="bottom"
+				android:id="@+id/btn_login_oauth"
+				android:text="OAuth" />
+		</LinearLayout>
+	</LinearLayout>
 </RelativeLayout>

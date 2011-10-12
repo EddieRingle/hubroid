@@ -29,6 +29,8 @@ public class BaseActivity extends Activity {
 
     protected String mPassword;
 
+    protected String mOAuthToken;
+
     protected GitHubAPI mGApi;
 
     protected void onCreate(final Bundle icicle, final int layout) {
@@ -42,13 +44,24 @@ public class BaseActivity extends Activity {
 
         mUsername = mPrefs.getString("username", "");
         mPassword = mPrefs.getString("password", "");
+        mOAuthToken = mPrefs.getString("access_token", "");
 
         mGApi = HubroidApplication.getGApiInstance();
-        mGApi.authenticate(mUsername, mPassword);
+        if (!mOAuthToken.equals("")) {
+            mGApi.authenticate(mUsername, mOAuthToken, true);
+        } else if (!mPassword.equals("")) {
+            mGApi.authenticate(mUsername, mPassword, false);
+        }
     }
 
     protected GitHubClient getGitHubClient() {
-        return HubroidApplication.getGitHubClientInstance().setCredentials(mUsername, mPassword);
+        if (!mOAuthToken.equals("")) {
+            return HubroidApplication.getGitHubClientInstance().setOAuth2Token(mOAuthToken);
+        } else if (!mPassword.equals("")) {
+            return HubroidApplication.getGitHubClientInstance().setCredentials(mUsername, mPassword);
+        } else {
+            return HubroidApplication.getGitHubClientInstance();
+        }
     }
 
     protected ActionBar getActionBar() {

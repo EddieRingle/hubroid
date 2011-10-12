@@ -50,6 +50,7 @@
         <activity android:name=".activities.tabs.MyOrgs" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.tabs.Members" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.tabs.Teams" android:configChanges="orientation|keyboard|keyboardHidden" />
+        <activity android:name=".activities.OAuthActivity" android:configChanges="orientation|keyboard|keyboardHidden" />
         <activity android:name=".activities.GitHubIntentFilter" android:configChanges="orientation|keyboard|keyboardHidden">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"></action>
@@ -57,6 +58,7 @@
                 <category android:name="android.intent.category.BROWSABLE"></category>
                 <data android:scheme="https" android:pathPattern="/.*" android:host="github.com"></data>
                 <data android:scheme="https" android:pathPattern="/.*" android:host="gist.github.com"></data>
+                <data android:scheme="hubroid" android:pathPattern="/.*" android:host="oauth"></data>
             </intent-filter>
         </activity>
     </application>
