@@ -42,7 +42,13 @@ public class GitHubIntentFilter extends BaseActivity {
                         intent.putExtra("repo_name", parts[4]);
                         if (parts.length > 6 && parts[6] != null) {
                             intent.setClass(getApplicationContext(), SingleIssue.class);
-                            intent.putExtra("number", Integer.parseInt(parts[6]));
+                            final int issueNumber;
+                            if (parts[6].contains("#")) {
+                                issueNumber = Integer.parseInt(parts[6].split("#")[0]);
+                            } else {
+                                issueNumber = Integer.parseInt(parts[6]);
+                            }
+                            intent.putExtra("number", issueNumber);
                         }
                         startActivity(intent);
                     } else if (parts[5].equalsIgnoreCase("network")) {
