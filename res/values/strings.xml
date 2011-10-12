@@ -60,6 +60,11 @@
 	<!-- Preferences -->
     <string name="preferences_category_issues">Issues</string>
     <string name="preferences_category_general">General</string>
+    <string name="preferences_category_file_viewing">File Viewing</string>
+    <string name="preferences_key_files_volume_zoom">files_volume_zoom</string>
+    <string name="preferences_title_files_volume_zoom">Volume Zoom</string>
+    <string name="preferences_summary_on_files_volume_zoom">File zoom using volume keys is enabled</string>
+    <string name="preferences_summary_off_files_volume_zoom">File zoom using volume keys is disabled</string>
     <string name="preferences_key_issue_comment_signature">issue_comment_signature</string>
     <string name="preferences_title_issues_comment_signature">Comment Signature</string>
     <string name="preferences_summary_on_issue_comment_signature">\"Sent via Hubroid\" will be appended to issue comments</string>

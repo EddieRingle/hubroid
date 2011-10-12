@@ -147,20 +147,25 @@ public class BaseActivity extends Activity {
     }
 
     public boolean volumeZoom(KeyEvent event, WebView view) {
-        int action = event.getAction();
-        int keyCode = event.getKeyCode();
-        switch (keyCode) {
-        case KeyEvent.KEYCODE_VOLUME_UP:
-            if (action == KeyEvent.ACTION_UP) {
-                view.zoomIn();
+        // Only enable volume zooming in files if it's set in preferences
+        if (mPrefs.getBoolean(getString(R.string.preferences_key_files_volume_zoom), false)) {
+            int action = event.getAction();
+            int keyCode = event.getKeyCode();
+            switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+                if (action == KeyEvent.ACTION_UP) {
+                    view.zoomIn();
+                }
+                return true;
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                if (action == KeyEvent.ACTION_UP) {
+                    view.zoomOut();
+                }
+                return true;
+            default:
+                return super.dispatchKeyEvent(event);
             }
-            return true;
-        case KeyEvent.KEYCODE_VOLUME_DOWN:
-            if (action == KeyEvent.ACTION_UP) {
-                view.zoomOut();
-            }
-            return true;
-        default:
+        } else {
             return super.dispatchKeyEvent(event);
         }
     }
