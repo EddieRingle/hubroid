@@ -28,6 +28,12 @@ public class Repositories extends BaseTabActivity {
 
     private static final String TAG_PUSHABLE_REPOS = "pushable_repos";
 
+    public static final int CONTEXT_MENU_DETAILS = 1;
+    public static final int CONTEXT_MENU_BRANCHES = 2;
+    public static final int CONTEXT_MENU_ISSUES = 3;
+    public static final int CONTEXT_MENU_FORKS = 4;
+    public static final int CONTEXT_MENU_OWNER = 5;
+
     private String mTarget;
 
     @Override

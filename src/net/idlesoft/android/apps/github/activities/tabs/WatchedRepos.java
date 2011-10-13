@@ -10,6 +10,11 @@ package net.idlesoft.android.apps.github.activities.tabs;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.activities.BaseActivity;
+import net.idlesoft.android.apps.github.activities.BranchesList;
+import net.idlesoft.android.apps.github.activities.Issues;
+import net.idlesoft.android.apps.github.activities.NetworkList;
+import net.idlesoft.android.apps.github.activities.Profile;
+import net.idlesoft.android.apps.github.activities.Repositories;
 import net.idlesoft.android.apps.github.activities.SingleRepository;
 import net.idlesoft.android.apps.github.adapters.RepositoriesListAdapter;
 
@@ -21,6 +26,9 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -94,6 +102,7 @@ public class WatchedRepos extends BaseActivity {
 
         mListView = (ListView) getLayoutInflater().inflate(R.layout.tab_listview, null);
         mListView.setOnItemClickListener(mOnListItemClick);
+        registerForContextMenu(mListView);
 
         setContentView(mListView);
 
@@ -148,5 +157,57 @@ public class WatchedRepos extends BaseActivity {
             savedInstanceState.putString("json", mJson.toString());
         }
         super.onSaveInstanceState(savedInstanceState);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+
+        if (!menu.hasVisibleItems()) {
+            menu.add(0, Repositories.CONTEXT_MENU_DETAILS, 0, "Details");
+            menu.add(0, Repositories.CONTEXT_MENU_BRANCHES, 1, "Branches");
+            menu.add(0, Repositories.CONTEXT_MENU_ISSUES, 2, "Issues");
+            menu.add(0, Repositories.CONTEXT_MENU_FORKS, 3, "Forks");
+            menu.add(0, Repositories.CONTEXT_MENU_OWNER, 4, "Owner's Profile");
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        final AdapterView.AdapterContextMenuInfo info = ((AdapterView.AdapterContextMenuInfo) item
+                .getMenuInfo());
+
+        final Intent intent = new Intent();
+        try {
+            intent.putExtra("repo_owner", mJson.getJSONObject(info.position).getString("owner"));
+            intent.putExtra("repo_name", mJson.getJSONObject(info.position).getString("name"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        switch (item.getItemId()) {
+            case Repositories.CONTEXT_MENU_DETAILS:
+                mListView.performItemClick(info.targetView, info.position, info.id);
+                break;
+            case Repositories.CONTEXT_MENU_BRANCHES:
+                intent.setClass(WatchedRepos.this, BranchesList.class);
+                startActivity(intent);
+                break;
+            case Repositories.CONTEXT_MENU_ISSUES:
+                intent.setClass(WatchedRepos.this, Issues.class);
+                startActivity(intent);
+                break;
+            case Repositories.CONTEXT_MENU_FORKS:
+                intent.setClass(WatchedRepos.this, NetworkList.class);
+                startActivity(intent);
+                break;
+            case Repositories.CONTEXT_MENU_OWNER:
+                intent.setClass(WatchedRepos.this, Profile.class);
+                intent.putExtra("username", intent.getStringExtra("repo_owner"));
+                startActivity(intent);
+                break;
+            default:
+                break;
+        }
+        return super.onContextItemSelected(item);
     }
 }
