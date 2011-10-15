@@ -24,6 +24,8 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.util.Linkify;
+import android.text.util.Linkify.TransformFilter;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -38,6 +40,8 @@ import android.widget.Toast;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SingleIssue extends BaseActivity {
     private Issue mIssue;
@@ -295,11 +299,41 @@ public class SingleIssue extends BaseActivity {
     public void fillViewInfo() {
         loadIssueItemBox();
 
-        ((ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar))
-                .setImageBitmap(GravatarCache.getDipGravatar(mIssue.getUser().getLogin(), 30.0f,
+        final ImageView gravatar = (ImageView) mHeader.findViewById(R.id.iv_single_issue_gravatar);
+        gravatar.setImageBitmap(GravatarCache.getDipGravatar(mIssue.getUser().getLogin(), 30.0f,
                         getResources().getDisplayMetrics().density));
-        ((TextView) mHeader.findViewById(R.id.tv_single_issue_body)).setText(mIssue.getBody()
+        // Open the issue creator's profile when his/her gravatar is clicked
+        gravatar.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
+                        final Intent i = new Intent(SingleIssue.this, Profile.class);
+                        i.putExtra("username", mIssue.getUser().getLogin());
+                        startActivity(i);
+                    }
+                });
+        final TextView body = (TextView) mHeader.findViewById(R.id.tv_single_issue_body);
+        body.setText(mIssue.getBody()
                 .replaceAll("\r\n", "\n").replaceAll("\r", "\n"));
+        // Link all URLs/Emails/Phone numbers/etc. in the issue body
+        Linkify.addLinks(body, Linkify.ALL);
+        // Pattern to match @username
+        Pattern usernameMatcher = Pattern.compile("\\B@([A-Za-z0-9_]+)\\b");
+        // Link all @username occurrences to https://github.com/username
+        Linkify.addLinks(body, usernameMatcher, "https://github.com/", null, new TransformFilter() {
+            public String transformUrl(Matcher match, String url) {
+                // Only return username, not @username
+                return match.group(1);
+            }
+        });
+        // Pattern to match issue #number
+        Pattern numberMatcher = Pattern.compile("\\B#([0-9]+)\\b");
+        // Link #number to https://github.com/repo_owner/repo_name/issues/number
+        Linkify.addLinks(body, numberMatcher, "https://github.com/" + mRepositoryOwner + "/"
+                + mRepositoryName + "/issues/", null, new TransformFilter() {
+                    public String transformUrl(Matcher match, String url) {
+                        // Only return the number, leaving out the hash sign
+                        return match.group(1);
+                    }
+                });
 
         ((TextView) mHeader.findViewById(R.id.tv_single_issue_meta)).setText("Posted "
                 + getTimeSince(mIssue.getCreatedAt()) + " by " + mIssue.getUser().getLogin());
