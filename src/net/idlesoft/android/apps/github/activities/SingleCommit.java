@@ -145,7 +145,8 @@ public class SingleCommit extends BaseActivity {
             return GravatarCache.getDipGravatar(pLogin, 30.0f, pActivity.getResources()
                     .getDisplayMetrics().density);
         } else {
-            return null;
+            return GravatarCache.getDipGravatar("octocat", 30.0f, pActivity.getResources()
+                    .getDisplayMetrics().density);
         }
     }
 

@@ -52,7 +52,11 @@ public class CommitListAdapter extends GravatarArrayListAdapter<RepositoryCommit
         holder.commit_date.setText(StringUtils.getTimeSince(mData.get(index).getCommit()
                 .getCommitter().getDate())
                 + " ago");
-        holder.gravatar.setImageBitmap(mGravatars.get(mData.get(index).getAuthor().getLogin()));
+        if (mData.get(index).getAuthor() != null) {
+            holder.gravatar.setImageBitmap(mGravatars.get(mData.get(index).getAuthor().getLogin()));
+        } else {
+            holder.gravatar.setImageBitmap(mGravatars.get("octocat"));
+        }
         holder.shortdesc.setText(mData.get(index).getCommit().getMessage().split("\n")[0]);
         return convertView;
     }
@@ -63,7 +67,12 @@ public class CommitListAdapter extends GravatarArrayListAdapter<RepositoryCommit
     public void loadGravatars() {
         final int length = mData.size();
         for (int i = 0; i < length; i++) {
-            final String login = mData.get(i).getAuthor().getLogin();
+            final String login;
+            if (mData.get(i).getAuthor() != null) {
+                login = mData.get(i).getAuthor().getLogin();
+            } else {
+                login = "octocat";
+            }
             if (!mGravatars.containsKey(login)) {
                 mGravatars.put(login, GravatarCache.getDipGravatar(login, 30.0f, mActivity
                         .getResources().getDisplayMetrics().density));

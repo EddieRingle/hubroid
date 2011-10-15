@@ -85,8 +85,16 @@ public class CommitsList extends BaseActivity {
         mCommitListView.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
                 final Intent i = new Intent(CommitsList.this, SingleCommit.class);
-                i.putExtra("committer", mCommits.get(position).getCommitter().getLogin());
-                i.putExtra("author", mCommits.get(position).getAuthor().getLogin());
+                if (mCommits.get(position).getCommitter() != null) {
+                    i.putExtra("committer", mCommits.get(position).getCommitter().getLogin());
+                } else {
+                    i.putExtra("committer", (String)null);
+                }
+                if (mCommits.get(position).getAuthor() != null) {
+                    i.putExtra("author", mCommits.get(position).getAuthor().getLogin());
+                } else {
+                    i.putExtra("author", (String)null);
+                }
                 i.putExtra("commit_sha", mCommits.get(position).getSha());
                 i.putExtra("repo_name", mRepoName);
                 i.putExtra("repo_owner", mRepoOwner);
