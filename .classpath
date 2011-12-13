@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="com_markupartist_android_widget_actionbar_src"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="lib" path="libs/ghapi.jar"/>
-	<classpathentry kind="lib" path="libs/org.eclipse.egit.github.core-1.1.0-SNAPSHOT.jar" sourcepath="libs/org.eclipse.egit.github.core-1.1.0-SNAPSHOT-sources.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/hubroid/libs/org.eclipse.egit.github.core-1.1.0-SNAPSHOT-javadoc.jar!/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry combineaccessrules="false" kind="src" path="/com_markupartist_android_widget_actionbar"/>
+	<classpathentry kind="lib" path="libs/org.eclipse.egit.github.core-1.2.1-20111213.jar"/>
+	<classpathentry kind="lib" path="libs/com.google.gson_1.6.0.v201101131530.jar"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="src" path="com_markupartist_android_widget_actionbar_src"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com_markupartist_android_widget_actionbar"/>
+	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

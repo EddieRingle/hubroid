@@ -15,8 +15,7 @@ import org.eclipse.egit.github.core.Blob;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.DataService;
-
-import shade.org.apache.commons.codec.binary.Base64;
+import org.eclipse.egit.github.core.util.EncodingUtils;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -48,8 +47,7 @@ public class FileViewer extends BaseActivity {
                             activity.mRepositoryName), activity.mBlobSha);
                 }
                 final String content = (activity.mBlob.getEncoding().equals("utf-8")) ? activity.mBlob
-                        .getContent() : new String(Base64.decodeBase64(activity.mBlob.getContent()
-                        .getBytes()));
+                        .getContent() : new String(EncodingUtils.fromBase64(activity.mBlob.getContent()));
 
                 activity.mMimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(
                         StringUtils.getExtension(activity.mBlobName));
