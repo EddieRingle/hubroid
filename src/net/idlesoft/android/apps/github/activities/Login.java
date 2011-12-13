@@ -27,26 +27,38 @@ import android.widget.Toast;
 import java.io.IOException;
 
 public class Login extends BaseActivity {
-    static private class LoginTask extends AsyncTask<Void, Void, Integer> {
+    static private class LoginTask extends AsyncTask<Boolean, Void, Integer> {
         public Login activity;
 
         @Override
-        protected Integer doInBackground(final Void... params) {
-            final String user = ((EditText) activity.findViewById(R.id.et_login_username))
-                    .getText().toString();
-            final String pass = ((EditText) activity.findViewById(R.id.et_login_password))
-                    .getText().toString();
-            if (user.equals("") || pass.equals("")) {
-                return 100;
+        protected Integer doInBackground(final Boolean... params) {
+            final UserService us;
+            String pass = "";
+            if (!params[0]) {
+                final String user = ((EditText) activity.findViewById(R.id.et_login_username))
+                        .getText().toString();
+                pass = ((EditText) activity.findViewById(R.id.et_login_password))
+                        .getText().toString();
+                if (user.equals("") || pass.equals("")) {
+                    return 100;
+                }
+                us = new UserService(activity.getGitHubClient().setCredentials(user,
+                        pass));
+            } else {
+                final String token = activity.mPrefs.getString("access_token", "");
+                if (token == null) {
+                    return 101;
+                }
+                us = new UserService(activity.getGitHubClient().setOAuth2Token(token));
             }
-            final UserService us = new UserService(activity.getGitHubClient().setCredentials(user,
-                    pass));
             try {
                 User u = us.getUser();
 
                 if (u != null) {
                     activity.mPrefsEditor.putString("username", u.getLogin());
-                    activity.mPrefsEditor.putString("password", pass);
+                    if (!params[0]) {
+                        activity.mPrefsEditor.putString("password", pass);
+                    }
                     activity.mPrefsEditor.commit();
                     return 200;
                 } else {
@@ -98,6 +110,9 @@ public class Login extends BaseActivity {
         mProgressDialog = new ProgressDialog(this);
 
         mLoginTask = (LoginTask) getLastNonConfigurationInstance();
+        if (mLoginTask == null) {
+            mLoginTask = new LoginTask();
+        }
         if (mLoginTask != null) {
             mLoginTask.activity = this;
             if ((mLoginTask.getStatus() == AsyncTask.Status.RUNNING)
@@ -105,13 +120,30 @@ public class Login extends BaseActivity {
                 mProgressDialog = ProgressDialog.show(this, null, "Logging in...");
             }
         }
+
+        final Bundle b = getIntent().getExtras();
+        if (b != null) {
+            if (b.getBoolean("tryingOAuth", false)
+                    && mLoginTask.getStatus() == AsyncTask.Status.PENDING) {
+                mLoginTask.execute(true);
+            }
+        }
+
         ((Button) findViewById(R.id.btn_login_login)).setOnClickListener(new OnClickListener() {
             public void onClick(final View v) {
                 if ((mLoginTask == null) || (mLoginTask.getStatus() == AsyncTask.Status.FINISHED)) {
                     mLoginTask = new LoginTask();
                 }
                 mLoginTask.activity = Login.this;
-                mLoginTask.execute();
+                mLoginTask.execute(false);
+            }
+        });
+        ((Button) findViewById(R.id.btn_login_oauth)).setOnClickListener(new OnClickListener() {
+            public void onClick(final View v) {
+                final Intent i = new Intent(Login.this, OAuthActivity.class);
+                i.putExtra("stage", 1);
+                startActivity(i);
+                finish();
             }
         });
     }

@@ -86,6 +86,13 @@ public class GitHubIntentFilter extends BaseActivity {
                 intent.putExtra("gistId", parts[3]);
                 startActivity(intent);
             }
+        } else if (parts[2].equalsIgnoreCase("oauth")) {
+            intent.setClass(GitHubIntentFilter.this, OAuthActivity.class);
+            if (getIntent().getData().getQueryParameter("code") != null) {
+                intent.putExtra("stage", 2);
+                intent.putExtra("code", getIntent().getData().getQueryParameter("code"));
+            }
+            startActivity(intent);
         }
         finish();
     }
