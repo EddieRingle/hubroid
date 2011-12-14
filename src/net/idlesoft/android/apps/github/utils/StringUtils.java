@@ -14,6 +14,8 @@ import android.text.TextUtils;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StringUtils {
     /**
@@ -117,5 +119,21 @@ public class StringUtils {
             html.append("</pre>");
         }
         return new String(html);
+    }
+
+    /**
+     * Returns a map from a HTTP query string
+     *
+     * @param query
+     * @return Map of query parameters
+     */
+    public static Map<String, String> mapQueryString(String query) {
+        String[] params = query.split("&");
+        Map<String, String> map = new HashMap<String, String>();
+        for (String param : params) {
+            String[] split = param.split("=");
+            map.put(split[0], split[1]);
+        }
+        return map;
     }
 }

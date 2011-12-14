@@ -1,18 +1,8 @@
 package net.idlesoft.android.apps.github.activities;
 
-import org.apache.http.util.EncodingUtils;
+import net.idlesoft.android.apps.github.utils.StringUtils;
 
-import shade.org.apache.http.HttpEntity;
-import shade.org.apache.http.HttpResponse;
-import shade.org.apache.http.NameValuePair;
-import shade.org.apache.http.client.ClientProtocolException;
-import shade.org.apache.http.client.HttpClient;
-import shade.org.apache.http.client.entity.UrlEncodedFormEntity;
-import shade.org.apache.http.client.methods.HttpPost;
-import shade.org.apache.http.client.utils.URLEncodedUtils;
-import shade.org.apache.http.impl.client.DefaultHttpClient;
-import shade.org.apache.http.message.BasicNameValuePair;
-import shade.org.apache.http.util.EntityUtils;
+import org.apache.http.client.ClientProtocolException;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -25,10 +15,16 @@ import android.webkit.SslErrorHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.URL;
+import java.util.HashMap;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class OAuthActivity extends BaseActivity {
     private ProgressDialog mProgressDialog;
@@ -42,30 +38,35 @@ public class OAuthActivity extends BaseActivity {
         }
 
         protected Void doInBackground(String... params) {
-            HttpClient client = new DefaultHttpClient();
-            HttpPost post = new HttpPost("https://github.com/login/oauth/access_token");
             try {
-                List<NameValuePair> pairs = new ArrayList<NameValuePair>(3);
-                pairs.add(new BasicNameValuePair("client_id", "1b068a84673859c1eff5"));
-                pairs.add(new BasicNameValuePair("client_secret", "00b95b144476f32c33483cb79f1a9ed90b1ecbce"));
-                pairs.add(new BasicNameValuePair("code", params[0]));
-                post.setEntity(new UrlEncodedFormEntity(pairs));
-                HttpResponse response = client.execute(post);
-                HttpEntity resEntities = response.getEntity();
-                if (resEntities != null) {
-                    List<NameValuePair> results = URLEncodedUtils.parse(resEntities);
-                    for (int i = 0; i < results.size(); i++) {
-                        if (results.get(i) != null && results.get(i).getName().equalsIgnoreCase("access_token")) {
-                            if (activity.mPrefsEditor == null) {
-                                Log.d("hubroid", "GASP!");
-                            }
-                            activity.mPrefsEditor.putString("access_token", results.get(i).getValue());
-                            activity.mPrefsEditor.commit();
-                            return null;
-                        } else {
-                            continue;
-                        }
-                    }
+                URL url = new URL("https://github.com/login/oauth/access_token");
+                HttpsURLConnection conn = (HttpsURLConnection)url.openConnection();
+
+                conn.setRequestMethod("POST");
+                conn.setUseCaches(false);
+                conn.setDoInput(true);
+                conn.setDoOutput(true);
+
+                DataOutputStream wr = new DataOutputStream(conn.getOutputStream());
+                wr.writeBytes("client_id=1b068a84673859c1eff5"
+                        + "&client_secret=00b95b144476f32c33483cb79f1a9ed90b1ecbce"
+                        + "&code=" + params[0]);
+                wr.flush();
+                wr.close();
+
+                InputStream is = conn.getInputStream();
+                BufferedReader rd = new BufferedReader(new InputStreamReader(is));
+                String line;
+                StringBuffer resp = new StringBuffer();
+                while((line = rd.readLine()) != null) {
+                    resp.append(line);
+                }
+
+                HashMap<String, String> query = new HashMap<String, String>(StringUtils.mapQueryString(resp.toString()));
+                String access_token = query.get("access_token");
+                if (access_token != null) {
+                    activity.mPrefsEditor.putString("access_token", access_token);
+                    activity.mPrefsEditor.commit();
                 }
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();

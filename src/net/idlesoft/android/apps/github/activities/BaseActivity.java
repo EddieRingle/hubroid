@@ -91,12 +91,12 @@ public class BaseActivity extends Activity {
             final Action createAction = (Action) actionBar.findAction(R.id.actionbar_item_create);
             final Action searchAction = (Action) actionBar.findAction(R.id.actionbar_item_search);
 
-            if (pShowCreate) {
+            if (pShowCreate && createAction != null) {
                 createAction.setEnabled(true);
                 createAction.setVisible(true);
             }
 
-            if (pShowSearch) {
+            if (pShowSearch && searchAction != null) {
                 searchAction.setEnabled(true);
                 searchAction.setVisible(true);
             }

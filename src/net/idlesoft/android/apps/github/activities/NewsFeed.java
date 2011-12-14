@@ -11,50 +11,42 @@ package net.idlesoft.android.apps.github.activities;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.adapters.ActivityFeedAdapter;
 
-import org.eclipse.egit.github.core.client.GitHubClient;
-import org.eclipse.egit.github.core.service.UserService;
-import org.idlesoft.libraries.ghapi.APIAbstract.Response;
-import org.json.JSONArray;
-import org.json.JSONException;
+import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.client.PageIterator;
+import org.eclipse.egit.github.core.event.Event;
+import org.eclipse.egit.github.core.service.EventService;
 
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import java.util.ArrayList;
+
 public class NewsFeed extends BaseActivity {
+    private ArrayList<Event> mEvents;
+
     private static class LoadActivityFeedTask extends AsyncTask<Void, Void, Void> {
         public NewsFeed activity;
 
         @Override
         protected Void doInBackground(final Void... params) {
-            // TODO: Convert to use egit-github
-            if (activity.mJson == null) {
-                try {
-                    GitHubClient c = activity.getGitHubClient();
-                    final Response resp;
-                    if (mPrivate) {
-                        resp = activity.mGApi.user.private_activity();
-                    } else {
-                        resp = activity.mGApi.user.activity(mTargetUser);
-                    }
-                    if (resp.statusCode != 200) {
-                        /* Let the user know something went wrong */
-                        Log.d("hubroid", "Code: " + resp.statusCode);
-                        return null;
-                    }
-                    activity.mJson = new JSONArray(resp.resp);
-                } catch (final JSONException e) {
-                    e.printStackTrace();
-                }
+            final EventService es = new EventService(activity.getGitHubClient());
+            final PageIterator<Event> itr;
+            if (mPrivate) {
+                itr = es.pageUserReceivedEvents(mTargetUser, false, 30);
+            } else {
+                itr = es.pageUserEvents(mTargetUser, true, 30);
             }
-            if (activity.mJson != null) {
-                activity.mActivityAdapter.loadData(activity.mJson);
+            if (itr.hasNext()) {
+                activity.mEvents = new ArrayList<Event>(itr.next());
+            } else {
+                activity.mEvents = new ArrayList<Event>();
             }
+            activity.mActivityAdapter.loadData(activity.mEvents);
             return null;
         }
 
@@ -76,8 +68,6 @@ public class NewsFeed extends BaseActivity {
 
     private ActivityFeedAdapter mActivityAdapter;
 
-    public JSONArray mJson;
-
     private ListView mListView;
 
     private LoadActivityFeedTask mLoadActivityTask;
@@ -85,13 +75,9 @@ public class NewsFeed extends BaseActivity {
     private final OnItemClickListener onActivityItemClick = new OnItemClickListener() {
         public void onItemClick(final AdapterView<?> arg0, final View arg1, final int arg2,
                 final long arg3) {
-            try {
-                final Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
-                intent.putExtra("item_json", mJson.getJSONObject(arg2).toString());
-                startActivity(intent);
-            } catch (final JSONException e) {
-                e.printStackTrace();
-            }
+            final Intent intent = new Intent(getApplicationContext(), SingleActivityItem.class);
+            intent.putExtra("item_json", GsonUtils.toJson(mEvents.get(arg2)));
+            startActivity(intent);
         }
     };
 
@@ -133,35 +119,7 @@ public class NewsFeed extends BaseActivity {
     }
 
     @Override
-    public void onRestoreInstanceState(final Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        boolean keepGoing = true;
-        try {
-            if (savedInstanceState.containsKey("json")) {
-                mJson = new JSONArray(savedInstanceState.getString("json"));
-            } else {
-                keepGoing = false;
-            }
-        } catch (final JSONException e) {
-            keepGoing = false;
-        }
-
-        if (keepGoing == true) {
-            mActivityAdapter.loadData(mJson);
-            mActivityAdapter.pushData();
-        }
-    }
-
-    @Override
     public Object onRetainNonConfigurationInstance() {
         return mLoadActivityTask;
-    }
-
-    @Override
-    public void onSaveInstanceState(final Bundle savedInstanceState) {
-        if (mJson != null) {
-            savedInstanceState.putString("json", mJson.toString());
-        }
-        super.onSaveInstanceState(savedInstanceState);
     }
 }
