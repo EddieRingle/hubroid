@@ -122,32 +122,32 @@ public class SingleActivityItem extends BaseActivity {
             String html = "";
             final String eventType = mEvent.getType();
             if (eventType.equals("PushEvent")) {
-                html = NewsFeedHelpers.linkifyPushItem(mEvent);
+                html = NewsFeedHelpers.linkifyPushItem(this, mEvent);
             } else if (eventType.equals("CreateEvent")) {
                 final String object = ((CreatePayload)mEvent.getPayload()).getRefType();
                 if (object.equals("branch")) {
-                    html = NewsFeedHelpers.linkifyCreateBranchItem(mEvent);
+                    html = NewsFeedHelpers.linkifyCreateBranchItem(this, mEvent);
                 } else if (object.equals("repository")) {
-                    html = NewsFeedHelpers.linkifyCreateRepoItem(mEvent);
+                    html = NewsFeedHelpers.linkifyCreateRepoItem(this, mEvent);
                 } else {
-                    html = NewsFeedHelpers.linkifyOtherItem(mEvent);
+                    html = NewsFeedHelpers.linkifyOtherItem(this, mEvent);
                 }
             } else if (eventType.equals("CommitCommentEvent")) {
-                html = NewsFeedHelpers.linkifyCommitCommentItem(mEvent);
+                html = NewsFeedHelpers.linkifyCommitCommentItem(this, mEvent);
             } else if (eventType.equals("FollowEvent")) {
-                html = NewsFeedHelpers.linkifyFollowItem(mEvent);
+                html = NewsFeedHelpers.linkifyFollowItem(this, mEvent);
             } else if (eventType.equals("ForkEvent")) {
-                html = NewsFeedHelpers.linkifyForkItem(mEvent);
+                html = NewsFeedHelpers.linkifyForkItem(this, mEvent);
             } else if (eventType.equals("IssuesEvent")) {
-                html = NewsFeedHelpers.linkifyIssueItem(mEvent);
+                html = NewsFeedHelpers.linkifyIssueItem(this, mEvent);
             } else if (eventType.equals("WatchEvent")) {
-                html = NewsFeedHelpers.linkifyWatchItem(mEvent);
+                html = NewsFeedHelpers.linkifyWatchItem(this, mEvent);
             } else if (eventType.equals("GistEvent")) {
-                html = NewsFeedHelpers.linkifyGistItem(mEvent);
+                html = NewsFeedHelpers.linkifyGistItem(this, mEvent);
             } else if (eventType.equals("PublicEvent")) {
-                html = NewsFeedHelpers.linkifyPublicItem(mEvent);
+                html = NewsFeedHelpers.linkifyPublicItem(this, mEvent);
             } else {
-                html = NewsFeedHelpers.linkifyOtherItem(mEvent);
+                html = NewsFeedHelpers.linkifyOtherItem(this, mEvent);
             }
             final String out = CSS + html;
             content.loadDataWithBaseURL("hubroid", out, "text/html", "UTF-8", "hubroid");

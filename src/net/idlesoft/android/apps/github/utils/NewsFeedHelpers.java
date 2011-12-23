@@ -9,9 +9,11 @@
 package net.idlesoft.android.apps.github.utils;
 
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.adapters.ActivityFeedAdapter.ViewHolder;
 
 import org.eclipse.egit.github.core.Commit;
+import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.event.CommitCommentPayload;
 import org.eclipse.egit.github.core.event.CreatePayload;
 import org.eclipse.egit.github.core.event.DeletePayload;
@@ -25,7 +27,6 @@ import org.eclipse.egit.github.core.event.PullRequestPayload;
 import org.eclipse.egit.github.core.event.PushPayload;
 import org.eclipse.egit.github.core.event.WatchPayload;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
 /**
@@ -34,7 +35,7 @@ import android.graphics.Bitmap;
  */
 public class NewsFeedHelpers {
 
-    public static void buildEventEntry(Context context, ViewHolder holder, Event entry, Bitmap avatar) {
+    public static void buildEventEntry(BaseActivity context, ViewHolder holder, Event entry, Bitmap avatar) {
         holder.date.setText(StringUtils.getTimeSince(entry.getCreatedAt()) + " ago");
 
         final String actor = entry.getActor().getLogin();
@@ -154,7 +155,8 @@ public class NewsFeedHelpers {
         holder.title.setText(title);
     }
 
-    public static String linkifyCommitCommentItem(final Event pNewsItem) {
+    public static String linkifyCommitCommentItem(final BaseActivity context,
+            final Event pNewsItem) {
         final String repoOwner = pNewsItem.getRepo().getName().split("/")[0];
         final String repoName = pNewsItem.getRepo().getName().split("/")[1];
         final String actor = pNewsItem.getActor().getLogin();
@@ -169,7 +171,8 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyCreateBranchItem(final Event pNewsItem) {
+    public static String linkifyCreateBranchItem(final BaseActivity context,
+            final Event pNewsItem) {
         final String repoOwner = pNewsItem.getRepo().getName().split("/")[0];
         final String repoName = pNewsItem.getRepo().getName().split("/")[1];
         final String actor = pNewsItem.getActor().getLogin();
@@ -184,12 +187,16 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyCreateRepoItem(final Event pNewsItem) {
+    public static String linkifyCreateRepoItem(final BaseActivity context,
+            final Event pNewsItem) {
         final String repoPath = pNewsItem.getRepo().getName();
+        final String repoOwner = repoPath.split("/")[0];
         final String repoName = repoPath.split("/")[1];
-        String repoDesc = pNewsItem.getRepo().getDescription();
-        if (repoDesc == null || repoDesc.equals("")) {
-            repoDesc = "N/A";
+        String repoDesc = "N/A";
+        final Repository repo = RequestCache.getRepository(context, repoOwner, repoName);
+        if (repo != null) {
+            if (!repo.getDescription().isEmpty())
+                repoDesc = repo.getDescription();
         }
 
         final String html = "<div>" + "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
@@ -198,7 +205,8 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyFollowItem(final Event pNewsItem) {
+    public static String linkifyFollowItem(final BaseActivity context,
+            final Event pNewsItem) {
         final FollowPayload payload = (FollowPayload) pNewsItem.getPayload();
         final String targetLogin = payload.getTarget().getLogin();
         final int targetRepoCount = payload.getTarget().getPublicRepos();
@@ -222,7 +230,8 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyForkItem(final Event pNewsItem) {
+    public static String linkifyForkItem(final BaseActivity context,
+            final Event pNewsItem) {
         final String parentRepoPath = pNewsItem.getRepo().getName();
         final String forkedRepoPath = pNewsItem.getActor().getLogin() + "/"
                 + parentRepoPath.split("/")[1];
@@ -234,7 +243,8 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyIssueItem(final Event pNewsItem) {
+    public static String linkifyIssueItem(final BaseActivity context,
+            final Event pNewsItem) {
         final IssuesPayload payload = (IssuesPayload) pNewsItem.getPayload();
         final String repoPath = pNewsItem.getRepo().getName();
         final int issueNumber = payload.getIssue().getNumber();
@@ -247,7 +257,8 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyPushItem(final Event pNewsItem) {
+    public static String linkifyPushItem(final BaseActivity context,
+            final Event pNewsItem) {
         final String repoOwner = pNewsItem.getRepo().getName().split("/")[0];
         final String repoName = pNewsItem.getRepo().getName().split("/")[1];
         final PushPayload payload = (PushPayload) pNewsItem.getPayload();
@@ -268,15 +279,26 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyWatchItem(final Event pNewsItem) {
+    public static String linkifyWatchItem(final BaseActivity context,
+            final Event pNewsItem) {
         final String repoPath = pNewsItem.getRepo().getName();
+        final String repoOwner = repoPath.split("/")[0];
+        final String repoName = repoPath.split("/")[1];
+        final Repository repo = RequestCache.getRepository(context, repoOwner, repoName);
+        String repoDesc = "N/A";
+        if (repo != null) {
+            if (!repo.getDescription().isEmpty())
+                repoDesc = repo.getDescription();
+        }
 
-        final String html = "<div>" + "Visit <a href=\"hubroid://showRepo/" + repoPath + "/\">"
-                + repoPath.split("/")[1] + "</a> in Hubroid.</div>";
+        final String html = "<div>" + "<a href=\"hubroid://showRepo/" + repoPath + "/\">"
+                + repoName + "</a>'s description: <br/><br/>"
+                + "<span class=\"repo-desc\">" + repoDesc + "</span>" + "</div>";
         return html;
     }
 
-    public static String linkifyGistItem(final Event pNewsItem) {
+    public static String linkifyGistItem(final BaseActivity context,
+            final Event pNewsItem) {
         final GistPayload payload = (GistPayload) pNewsItem.getPayload();
         final int id = Integer.parseInt(payload.getGist().getId());
         final String html = "<div>" + "<h2>gist " + id + "</h2><br/>"
@@ -286,7 +308,8 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyPublicItem(final Event pNewsItem) {
+    public static String linkifyPublicItem(final BaseActivity context,
+            final Event pNewsItem) {
         final String repoPath = pNewsItem.getRepo().getName();
         final String html = "<div>" + "Check out the newly freed repository by "
                 + "<a href=\"hubroid://showRepo/" + repoPath + "/\">" + "clicking here" + "</a>!"
@@ -294,7 +317,8 @@ public class NewsFeedHelpers {
         return html;
     }
 
-    public static String linkifyOtherItem(final Event pNewsItem) {
+    public static String linkifyOtherItem(final BaseActivity context,
+            final Event pNewsItem) {
         String repohtml;
         if (pNewsItem.getRepo() != null) {
             final String repoPath = pNewsItem.getRepo().getName();

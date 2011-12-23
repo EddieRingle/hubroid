@@ -56,7 +56,7 @@ public class BaseActivity extends Activity {
         }
     }
 
-    protected GitHubClient getGitHubClient() {
+    public GitHubClient getGitHubClient() {
         if (!mOAuthToken.equals("")) {
             return HubroidApplication.getGitHubClientInstance().setOAuth2Token(mOAuthToken);
         } else if (!mPassword.equals("")) {

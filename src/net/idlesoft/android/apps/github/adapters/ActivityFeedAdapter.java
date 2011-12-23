@@ -9,6 +9,7 @@
 package net.idlesoft.android.apps.github.adapters;
 
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.activities.BaseActivity;
 import net.idlesoft.android.apps.github.utils.GravatarCache;
 import net.idlesoft.android.apps.github.utils.NewsFeedHelpers;
 
@@ -61,7 +62,7 @@ public class ActivityFeedAdapter extends GravatarArrayListAdapter<Event> {
         }
         final Event entry = (Event) getData().get(index);
 
-        NewsFeedHelpers.buildEventEntry(mActivity, holder, entry, mGravatars.get(entry.getActor().getLogin()));
+        NewsFeedHelpers.buildEventEntry((BaseActivity)mActivity, holder, entry, mGravatars.get(entry.getActor().getLogin()));
 
         return convertView;
     }
