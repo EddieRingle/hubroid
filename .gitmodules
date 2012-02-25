@@ -1,3 +1,0 @@
-[submodule "contrib/android-actionbar"]
-	path = contrib/android-actionbar
-	url = git://github.com/johannilsson/android-actionbar.git
