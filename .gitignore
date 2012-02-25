@@ -7,4 +7,4 @@ local.properties
 .classpath
 *.iml
 *.idea
-.out/
+out/
