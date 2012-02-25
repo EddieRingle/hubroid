@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <style name="Theme.Hubroid" parent="@style/Theme.Sherlock.Light">
+        <item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
+        <item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+    </style>
+    <style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar.Solid">
+        <item name="android:background">@color/abs__background_holo_light</item>
+    </style>
+</resources>

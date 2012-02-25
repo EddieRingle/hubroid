@@ -1,9 +1,10 @@
-package net.idlesoft.android.apps.github;
+package net.idlesoft.android.apps.github.ui.activities;
 
-import android.app.Activity;
 import android.os.Bundle;
+import com.actionbarsherlock.app.SherlockActivity;
+import net.idlesoft.android.apps.github.R;
 
-public class Main extends Activity
+public class Main extends SherlockActivity
 {
     /** Called when the activity is first created. */
     @Override
