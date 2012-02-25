@@ -3,3 +3,5 @@ gen/
 build.properties
 local.properties
 .settings/
+.project
+.classpath
