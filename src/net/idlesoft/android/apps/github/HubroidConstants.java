@@ -28,20 +28,9 @@
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github.ui.activities;
-
-import android.os.Bundle;
-import net.idlesoft.android.apps.github.R;
+package net.idlesoft.android.apps.github;
 
 public
-class Main extends BaseActivity
+class HubroidConstants
 {
-	/** Called when the activity is first created. */
-	@Override
-	public
-	void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-	}
 }

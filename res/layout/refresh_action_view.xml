@@ -19,12 +19,9 @@
   ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<style name="Theme.Hubroid" parent="@style/Theme.Sherlock.Light">
-		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
-		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
-	</style>
-	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar.Solid">
-		<item name="android:background">@color/abs__background_holo_light</item>
-	</style>
-</resources>
+<net.idlesoft.android.apps.github.ui.widgets.RefreshActionView
+		xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_menu_refresh"
+		style="@style/Widget.Sherlock.Light.ActionButton" />

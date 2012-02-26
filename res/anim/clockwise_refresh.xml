@@ -19,12 +19,10 @@
   ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<style name="Theme.Hubroid" parent="@style/Theme.Sherlock.Light">
-		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
-		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
-	</style>
-	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar.Solid">
-		<item name="android:background">@color/abs__background_holo_light</item>
-	</style>
-</resources>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+		android:fromDegrees="0"
+		android:toDegrees="360"
+		android:pivotX="50%"
+		android:pivotY="50%"
+		android:duration="1000"
+		android:interpolator="@android:anim/linear_interpolator" />
