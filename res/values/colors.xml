@@ -19,17 +19,15 @@
   ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/actionbar_action_add_account"
-		  android:title="@string/actionbar_action_add_account"
-		  android:showAsAction="ifRoom|withText"
-		  android:visible="false" />
-	<item android:id="@+id/actionbar_action_refresh"
-		  android:icon="@drawable/ic_menu_refresh"
-		  android:title="@string/actionbar_action_refresh"
-		  android:showAsAction="ifRoom|withText"
-		  android:visible="false" />
-	<item android:id="@+id/actionbar_action_select_account"
-		  android:title="@string/actionbar_action_select_account"
-		  android:visible="false" />
-</menu>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- Text colors -->
+	<color name="text_color">#ff111111</color>
+
+	<!-- Button colors -->
+	<color name="button_normal_fill">#F4F4F4</color>
+	<color name="button_normal_stroke">#D4D4D4</color>
+	<color name="button_focused_fill">#599bdc</color>
+	<color name="button_focused_stroke">#2a65a0</color>
+	<color name="button_pressed_fill">#3399dd</color>
+	<color name="button_pressed_stroke">#2a65a0</color>
+</resources>

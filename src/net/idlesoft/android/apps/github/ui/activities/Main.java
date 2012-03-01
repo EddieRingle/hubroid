@@ -30,8 +30,14 @@
 
 package net.idlesoft.android.apps.github.ui.activities;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.app.Dialog;
+import android.content.Intent;
 import android.os.Bundle;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.authenticator.AccountSelect;
+import net.idlesoft.android.apps.github.authenticator.AuthConstants;
 
 public
 class Main extends BaseActivity
@@ -42,6 +48,32 @@ class Main extends BaseActivity
 	void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
+
+		if (mPrefs.getBoolean(PREF_FIRST_RUN, true)) {
+			mPrefsEditor.putBoolean(PREF_FIRST_RUN, false);
+			mPrefsEditor.apply();
+
+			/* Show the Account Selection screen first, then start the Dashboard */
+			startActivityForResult(new Intent(this, AccountSelect.class), 0);
+		} else {
+			final String current_user_login = mPrefs.getString(PREF_CURRENT_USER_LOGIN, null);
+			if (current_user_login != null) {
+				mCurrentUser = new Account(current_user_login, AuthConstants.GITHUB_ACCOUNT_TYPE);
+			} else {
+				mCurrentUser = null;
+			}
+			startActivity(Dashboard.class);
+			finish();
+		}
+	}
+
+	@Override
+	protected
+	void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		/* Account selection is done, restart */
+		startActivity(Main.class);
+		finish();
+		super.onActivityResult(requestCode, resultCode, data);
 	}
 }

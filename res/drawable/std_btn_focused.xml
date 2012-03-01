@@ -19,14 +19,10 @@
   ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:orientation="vertical"
-			  android:layout_width="fill_parent"
-			  android:layout_height="fill_parent">
-	<TextView
-			android:layout_width="fill_parent"
-			android:layout_height="wrap_content"
-			android:text="Hello World, Main"
-			/>
-</LinearLayout>
 
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+		android:shape="rectangle">
+	<corners android:radius="3dip" />
+	<solid android:color="@color/button_focused_fill" />
+	<stroke android:color="@color/button_focused_stroke" android:width="1dip" />
+</shape>

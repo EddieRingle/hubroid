@@ -33,4 +33,5 @@ package net.idlesoft.android.apps.github;
 public
 class HubroidConstants
 {
+	public final static String USER_AGENT_STRING = "Hubroid/3.0";
 }
