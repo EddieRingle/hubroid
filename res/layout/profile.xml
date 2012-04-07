@@ -23,12 +23,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_gravity="center"
 		android:gravity="center"
 		android:orientation="vertical">
 	<ProgressBar android:id="@+id/progress"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
+			android:layout_gravity="center"
 			android:indeterminate="true"
 			android:visibility="gone" />
 	<LinearLayout android:id="@+id/content"
@@ -41,26 +41,27 @@
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
 				android:layout_marginBottom="10dip"
-				android:padding="15dip"
+				android:paddingRight="15dp"
 				android:orientation="horizontal">
 			<net.idlesoft.android.apps.github.ui.widgets.GravatarView android:id="@+id/gravatar"
-					android:layout_width="42dip"
-					android:layout_height="42dip"
-					android:padding="2dip"
-					android:background="@drawable/gravatar_border" />
+					android:layout_width="70dp"
+					android:layout_height="70dp" />
 			<LinearLayout
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_marginLeft="10dip"
+					android:layout_gravity="center_vertical"
 					android:orientation="vertical">
 				<TextView android:id="@+id/tv_user_login"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:textColor="@color/text_color" />
+						android:textColor="@color/text_color"
+						android:textSize="30dp" />
 				<TextView android:id="@+id/tv_user_fullname"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
-						android:textColor="@color/light_text_color" />
+						android:textColor="@color/light_text_color"
+						android:textSize="20dp" />
 			</LinearLayout>
 		</LinearLayout>
 		<net.idlesoft.android.apps.github.ui.widgets.IdleList android:id="@+id/lv_user_info"

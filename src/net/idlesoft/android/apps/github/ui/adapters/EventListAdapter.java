@@ -74,7 +74,7 @@ class EventListAdapter extends BaseListAdapter<Event>
 		final String login = e.getActor().getLogin();
 		final String type = e.getType();
 
-		holder.gravatar.setDefaultResource(R.drawable.ic_dash_profile_normal);
+		holder.gravatar.setDefaultResource(R.drawable.gravatar);
 		holder.title.setText(login + " did a " + type);
 		holder.date.setText(e.getCreatedAt().toString());
 

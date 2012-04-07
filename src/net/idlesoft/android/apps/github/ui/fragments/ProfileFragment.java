@@ -262,7 +262,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		if (user != null) {
 			mDataFragment.targetUser = user;
 
-			mGravatarView.setDefaultResource(R.drawable.ic_dash_profile);
+			mGravatarView.setDefaultResource(R.drawable.gravatar);
 			if (mDataFragment.gravatarBitmap != null)
 				mGravatarView.getImageView().setImageBitmap(mDataFragment.gravatarBitmap);
 
