@@ -150,6 +150,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.events);
+				list.getListAdapter().notifyDataSetChanged();
 			} else {
 				holder = new ListHolder();
 				holder.type = LIST_RECEIVED;
@@ -174,7 +175,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 							PageIterator<Event> itr =
 									es.pageUserReceivedEvents(mDataFragment.targetUser.getLogin());
 							holder.events.addAll(itr.next());
-							list.getListAdapter().fillWithItems(holder.events);
 						} catch (IOException e) {
 							e.printStackTrace();
 						} catch (AccountsException e) {
@@ -206,8 +206,9 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 					void onTaskComplete()
 					{
 						list.setListShown(false);
-						list.getProgressBar().setVisibility(View.GONE);
+						list.getListAdapter().fillWithItems(holder.events);
 						list.getListAdapter().notifyDataSetChanged();
+						list.getProgressBar().setVisibility(View.GONE);
 						list.setListShown(true);
 					}
 				};
@@ -232,6 +233,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.events);
+				list.getListAdapter().notifyDataSetChanged();
 			} else {
 				holder = new ListHolder();
 				holder.type = LIST_PUBLIC;
@@ -255,7 +257,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 									PageIterator<Event> itr =
 											es.pageUserEvents(mDataFragment.targetUser.getLogin());
 									holder.events.addAll(itr.next());
-									list.getListAdapter().fillWithItems(holder.events);
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
@@ -288,6 +289,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 							{
 								list.setListShown(false);
 								list.getProgressBar().setVisibility(View.GONE);
+								list.getListAdapter().fillWithItems(holder.events);
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
@@ -313,6 +315,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.events);
+				list.getListAdapter().notifyDataSetChanged();
 			} else {
 				holder = new ListHolder();
 				holder.type = LIST_TIMELINE;
@@ -335,7 +338,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 									PageIterator<Event> itr =
 											es.pagePublicEvents(30);
 									holder.events.addAll(itr.next());
-									list.getListAdapter().fillWithItems(holder.events);
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
@@ -368,6 +370,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 							{
 								list.setListShown(false);
 								list.getProgressBar().setVisibility(View.GONE);
+								list.getListAdapter().fillWithItems(holder.events);
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}

@@ -128,6 +128,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 
 		if (mDataFragment.isRecreated() && mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
+			mListView.getListAdapter().notifyDataSetChanged();
 			buildUI(mDataFragment.targetUser);
 		} else {
 			final DataFragment.DataTask.DataTaskRunnable profileRunnable =
@@ -141,7 +142,6 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 						final UserService us = new UserService(getBaseActivity().getGHClient());
 						mDataFragment.targetUser = us.getUser(mDataFragment.targetUser.getLogin());
 						buildHolders(mDataFragment.targetUser);
-						mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 					} catch (AccountsException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -171,6 +171,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				public
 				void onTaskComplete()
 				{
+					mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 					mListView.getListAdapter().notifyDataSetChanged();
 					buildUI(mDataFragment.targetUser);
 					mProgress.setVisibility(View.GONE);

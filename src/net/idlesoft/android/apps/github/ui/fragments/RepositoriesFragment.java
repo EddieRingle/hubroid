@@ -146,6 +146,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.repositories);
+				list.getListAdapter().notifyDataSetChanged();
 			} else {
 				holder = new ListHolder();
 				holder.type = LIST_YOURS;
@@ -168,7 +169,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 									holder.request = rs.pageRepositories(
 											mDataFragment.targetUser.getLogin());
 									holder.repositories.addAll(holder.request.next());
-									list.getListAdapter().fillWithItems(holder.repositories);
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
@@ -201,6 +201,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							{
 								list.setListShown(false);
 								list.getProgressBar().setVisibility(View.GONE);
+								list.getListAdapter().fillWithItems(holder.repositories);
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
@@ -226,6 +227,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.repositories);
+				list.getListAdapter().notifyDataSetChanged();
 			} else {
 				holder = new ListHolder();
 				holder.type = LIST_WATCHED;
@@ -248,7 +250,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 									holder.request = ws.pageWatched(
 											mDataFragment.targetUser.getLogin());
 									holder.repositories.addAll(holder.request.next());
-									list.getListAdapter().fillWithItems(holder.repositories);
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
@@ -281,6 +282,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							{
 								list.setListShown(false);
 								list.getProgressBar().setVisibility(View.GONE);
+								list.getListAdapter().fillWithItems(holder.repositories);
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
