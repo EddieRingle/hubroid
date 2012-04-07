@@ -3,7 +3,7 @@
 			  android:layout_width="100dp"
 			  android:layout_height="fill_parent"
 			  android:orientation="vertical"
-			  android:background="@drawable/abs__ab_solid_dark_holo"
+			  android:background="@color/dashboard_background"
 			  android:gravity="center_horizontal">
 	<Button android:id="@+id/btn_dash_events"
 			android:layout_width="match_parent"
