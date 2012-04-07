@@ -20,8 +20,15 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<!-- Generic colors -->
+	<color name="orange1">#FFFF6600</color>
+	<color name="orange2">#FFFF9900</color>
+
+	<color name="github_blue">#FF4183C4</color>
+
 	<!-- Text colors -->
 	<color name="text_color">#ff111111</color>
+	<color name="light_text_color">#99111111</color>
 
 	<!-- Button colors -->
 	<color name="button_normal_fill">#F4F4F4</color>
@@ -30,4 +37,14 @@
 	<color name="button_focused_stroke">#2a65a0</color>
 	<color name="button_pressed_fill">#3399dd</color>
 	<color name="button_pressed_stroke">#2a65a0</color>
+
+	<!-- Gravatar colors -->
+	<color name="gravatar_border">#FFD8D8D8</color>
+
+	<!-- State colors for the tablet-mode Dashboard fragment -->
+	<color name="dashboard_button_normal">#00FFFFFF</color>
+	<color name="dashboard_button_highlighted">#88000000</color>
+
+	<color name="sidebar_shadow_dark">#66000000</color>
+	<color name="centerfold_shadow_dark">#55000000</color>
 </resources>

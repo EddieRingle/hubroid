@@ -19,25 +19,63 @@
  * USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github.ui.activities;
+package net.idlesoft.android.apps.github.ui.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import com.actionbarsherlock.app.ActionBar;
-import net.idlesoft.android.apps.github.R;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
-public
-class Dashboard extends BaseActivity
+public abstract
+class UIFragment<D extends DataFragment> extends BaseFragment
 {
-	/** Called when the activity is first created. */
+	private
+	String mDataFragmentTag;
+
+	protected
+	D mDataFragment;
+
+	public
+	UIFragment(Class<D> clazz)
+	{
+		mDataFragmentTag = clazz.getName();
+	}
+
 	@Override
 	public
-	void onCreate(Bundle savedInstanceState)
+	void onAttach(Activity activity)
 	{
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.dashboard);
+		super.onAttach(activity);
 
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(false);
-		actionBar.setHomeButtonEnabled(false);
+		if (mDataFragmentTag == null) {
+			throw new IllegalStateException("A Logic fragment tag must be set in the constructor.");
+		}
+	}
+
+	@Override
+	public
+	void setRetainInstance(boolean retain)
+	{
+		throw new IllegalStateException("UIFragments may not be retained. Use a DataFragment instead.");
+	}
+
+	@Override
+	public
+	void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+
+		if (!mDataFragmentTag.equals("")) {
+			FragmentManager fm = getFragmentManager();
+			mDataFragment = (D) fm.findFragmentByTag(mDataFragmentTag);
+			if (mDataFragment == null)
+				mDataFragment = (D) D.instantiate(getContext(), mDataFragmentTag);
+
+			mDataFragment.setTargetFragment(this, 0);
+			getFragmentManager().beginTransaction().add(mDataFragment, mDataFragmentTag).commit();
+		}
+
+		mDataFragment.onUIFragmentReady();
 	}
 }

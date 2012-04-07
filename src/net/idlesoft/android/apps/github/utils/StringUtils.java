@@ -126,4 +126,10 @@ class StringUtils
 		}
 		return map;
 	}
+
+	public static
+	boolean isStringEmpty(final String str)
+	{
+		return str == null || str.equals("");
+	}
 }

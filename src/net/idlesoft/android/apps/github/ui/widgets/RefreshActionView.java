@@ -42,7 +42,7 @@ public
 class RefreshActionView extends ImageView
 {
 	protected Animation mAnimation = null;
-	protected MenuItem  mItem      = null;
+	protected MenuItem mItem      = null;
 
 	public
 	RefreshActionView(Context context)

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2012 Eddie Ringle
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+  ~ following conditions are met:
+  ~
+  ~ Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+  ~ disclaimer.
+  ~ Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+  ~ disclaimer in the documentation and/or other materials provided with the distribution.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  ~ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+  ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+  ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"
+		android:padding="10dp"
+		android:orientation="horizontal">
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_weight="1"
+			android:layout_gravity="left"
+			android:paddingRight="5dp"
+			android:orientation="vertical">
+		<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:orientation="horizontal">
+			<TextView android:id="@+id/tv_repository_owner"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textSize="12sp" />
+			<TextView
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingLeft="5dp"
+					android:paddingRight="5dp"
+					android:textSize="13.5sp"
+					android:text="/" />
+			<TextView android:id="@+id/tv_repository_name"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:textStyle="bold"
+					android:textSize="15sp"
+					android:textColor="@color/github_blue" />
+		</LinearLayout>
+		<TextView android:id="@+id/tv_repository_description"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:maxLines="2"
+				android:ellipsize="end"
+				android:textSize="11.5sp" />
+	</LinearLayout>
+	<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_gravity="center_vertical"
+			android:orientation="vertical">
+		<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:gravity="right|center_vertical"
+				android:orientation="horizontal">
+			<TextView android:id="@+id/tv_repository_forks"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingRight="5dp" />
+			<ImageView
+					android:layout_width="16dp"
+					android:layout_height="16dp"
+					android:layout_gravity="bottom"
+					android:src="@drawable/fork" />
+		</LinearLayout>
+		<LinearLayout
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:gravity="right|center_vertical"
+				android:orientation="horizontal">
+			<TextView android:id="@+id/tv_repository_watchers"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:paddingRight="5dp" />
+			<ImageView
+					android:layout_width="16dp"
+					android:layout_height="16dp"
+					android:layout_gravity="bottom"
+					android:src="@drawable/watcher" />
+		</LinearLayout>
+	</LinearLayout>
+</LinearLayout>

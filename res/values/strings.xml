@@ -31,6 +31,14 @@
 	<string name="actionbar_action_refresh">Refresh</string>
 	<string name="actionbar_action_select_account">Select Account</string>
 
+	<!-- Dashboard -->
+	<string name="dash_events">Events</string>
+	<string name="dash_repos">Repos</string>
+	<string name="dash_profile">Profile</string>
+	<string name="dash_users">Users</string>
+	<string name="dash_gists">Gists</string>
+	<string name="dash_orgs">Orgs</string>
+
 	<!-- User selection dialog -->
 	<string name="userselect_title">Accounts</string>
 	<string name="userselect_signout">Sign out</string>
@@ -51,4 +59,12 @@
 	<string name="auth_message_auth_failed_new_account">
 		Please enter a valid login &amp; password
 	</string>
+
+	<!-- Events -->
+	<string name="events_timeline">Timeline</string>
+	<string name="events_received">Private Feed</string>
+	<string name="events_public">Your Activity</string>
+
+	<!-- Repositories -->
+	<string name="repositories_watched">Watched</string>
 </resources>

@@ -34,4 +34,11 @@ public
 class HubroidConstants
 {
 	public final static String USER_AGENT_STRING = "Hubroid/3.0";
+
+	public final static String ARG_TARGET_REPO = "target_repo";
+	public final static String ARG_TARGET_USER = "target_user";
+	public final static String ARG_HANDLED_LISTS = "handled_lists";
+
+	public final static String DEFAULT_USER = "eddieringle";
+	public final static String DEFAULT_REPO = "hubroid";
 }

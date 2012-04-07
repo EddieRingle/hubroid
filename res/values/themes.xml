@@ -20,9 +20,11 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
+	<!--
 	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar.Solid">
 		<item name="android:background">@color/abs__background_holo_light</item>
 	</style>
+	-->
 	<style name="stdLinearLayout">
 		<item name="android:orientation">vertical</item>
 		<item name="android:paddingTop">10dip</item>
@@ -37,10 +39,23 @@
 		<item name="android:paddingBottom">10dip</item>
 		<item name="android:paddingLeft">15dip</item>
 	</style>
+	<style name="CustomTitlePageIndicator">
+		<item name="android:background">@android:color/transparent</item>
+		<item name="footerColor">#FF242424</item>
+		<item name="footerLineHeight">1dip</item>
+		<item name="footerIndicatorHeight">3dip</item>
+		<item name="footerIndicatorStyle">underline</item>
+		<item name="android:textColor">#AA242424</item>
+		<item name="selectedColor">#FF242424</item>
+		<item name="selectedBold">true</item>
+	</style>
 	<style name="Theme.Hubroid" parent="@style/Theme.Sherlock.Light">
+		<!--
 		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
 		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
+		-->
 		<item name="android:buttonStyle">@style/stdButton</item>
 		<item name="android:textColor">@color/text_color</item>
+		<item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
 	</style>
 </resources>

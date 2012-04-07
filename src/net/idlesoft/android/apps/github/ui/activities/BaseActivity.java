@@ -35,14 +35,15 @@ import android.accounts.AccountsException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
-import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.internal.widget.ActionBarView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -50,17 +51,17 @@ import com.google.inject.Inject;
 import net.idlesoft.android.apps.github.GitHubClientProvider;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
-import net.idlesoft.android.apps.github.ui.widgets.RefreshActionView;
+import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
-import java.util.Timer;
-import java.util.TimerTask;
+
+import static com.actionbarsherlock.app.ActionBar.DISPLAY_HOME_AS_UP;
 
 public
-class BaseActivity extends RoboSherlockActivity
+class BaseActivity extends RoboSherlockFragmentActivity
 {
 	protected static final int NO_LAYOUT = -1;
 
@@ -84,13 +85,18 @@ class BaseActivity extends RoboSherlockActivity
 
 	protected static GitHubClient mGitHubClient;
 
+	private Class<?> mUpActivity = MainActivity.class;
+
+	protected
+	Configuration mConfiguration;
+
 	@Inject
 	private
 	GitHubClientProvider mGitHubClientProvider;
 
 	private boolean mAnonymous;
 
-	protected
+	public
 	Context getContext()
 	{
 		return getApplicationContext();
@@ -100,10 +106,15 @@ class BaseActivity extends RoboSherlockActivity
 	void onCreate(final Bundle icicle, final int layout)
 	{
 		super.onCreate(icicle);
+		Log.d("beef", "homemade");
 		if (layout != NO_LAYOUT) setContentView(layout);
+
+		mConfiguration = getResources().getConfiguration();
 
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 		mPrefsEditor = mPrefs.edit();
+
+		getApplicationContext().setTheme(R.style.Theme_Hubroid);
 
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
@@ -114,6 +125,12 @@ class BaseActivity extends RoboSherlockActivity
 	void onCreate(final Bundle icicle)
 	{
 		onCreate(icicle, NO_LAYOUT);
+	}
+
+	public
+	boolean isMultiPane()
+	{
+		return getResources().getBoolean(R.bool.multi_paned);
 	}
 
 	public
@@ -131,9 +148,75 @@ class BaseActivity extends RoboSherlockActivity
 	}
 
 	public
+	Account getCurrentUserAccount()
+	{
+		return mCurrentUser;
+	}
+
+	/**
+	 * Does network I/O. Do not run on UI thread.
+	 */
+	public
+	User getCurrentUser() throws IOException, AccountsException
+	{
+		return new UserService(getGHClient()).getUser();
+	}
+
+	public
+	String getCurrentUserLogin()
+	{
+		return mPrefs.getString(PREF_CURRENT_USER_LOGIN, "");
+	}
+
+	public
 	void startActivity(Class<?> targetActivity)
 	{
 		startActivity(new Intent(this, targetActivity));
+	}
+
+	public
+	void startFragment(Class pFragmentClass, int pContainer, String pTag, boolean pAddToBackStack)
+	{
+		if (BaseFragment.class.isAssignableFrom(pFragmentClass)) {
+			FragmentManager fm = getSupportFragmentManager();
+			FragmentTransaction ft = fm.beginTransaction();
+			Fragment fragment;
+
+			/* Try to create an instance of the fragment being started */
+			try {
+				fragment = (Fragment) pFragmentClass.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+				fragment = new Fragment();
+			}
+
+			/* Add the fragment */
+			ft.replace(pContainer, fragment, pTag);
+
+			/* Add to back stack if specified and commit changes */
+			if (pAddToBackStack)
+				ft.addToBackStack(null);
+
+			ft.commit();
+		}
+	}
+
+	public
+	void startFragment(Class pFragmentClass)
+	{
+		startFragment(pFragmentClass, R.id.fragment_container);
+	}
+
+	public
+	void startFragment(Class pFragmentClass, int pContainer)
+	{
+		startFragment(pFragmentClass, pContainer, null, true);
+	}
+
+	public
+	void startFragment(Class pFragmentClass, int pContainer, String pTag)
+	{
+		startFragment(pFragmentClass, pContainer, pTag, true);
 	}
 
 	@Override
@@ -156,16 +239,45 @@ class BaseActivity extends RoboSherlockActivity
 	{
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			Intent intent = new Intent(getContext(), Dashboard.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			if (this instanceof Dashboard) {
-				startActivity(intent);
+			final Intent intent = new Intent();
+			if ((theActionBar().getDisplayOptions() & DISPLAY_HOME_AS_UP)
+					== DISPLAY_HOME_AS_UP
+					&& mUpActivity != null) {
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+				intent.setClass(getApplicationContext(), mUpActivity);
+			} else {
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+				intent.setClass(getApplicationContext(), MainActivity.class);
 			}
+			startActivity(intent);
+
 			return true;
 		case R.id.actionbar_action_select_account:
 			startActivity(AccountSelect.class);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
+	}
+
+	@Override
+	public
+	void onBackPressed()
+	{
+		if (mUpActivity == MainActivity.class && !(this instanceof MainActivity)) {
+			final Intent intent = new Intent(getContext(), mUpActivity);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(intent);
+			finish();
+		}
+
+		super.onBackPressed();
+	}
+
+	/* Shorter-named getter method because I'm lazy */
+	public
+	ActionBar theActionBar()
+	{
+		return getSherlock().getActionBar();
 	}
 }

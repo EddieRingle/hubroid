@@ -31,30 +31,37 @@
 package net.idlesoft.android.apps.github.ui.activities;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
 import net.idlesoft.android.apps.github.authenticator.AuthConstants;
+import net.idlesoft.android.apps.github.ui.fragments.DashboardFragment;
 
 public
-class Main extends BaseActivity
+class MainActivity extends BaseActivity
 {
+	private boolean mFirstRun;
+
 	/** Called when the activity is first created. */
 	@Override
 	public
 	void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		setContentView(R.layout.main);
 
-		if (mPrefs.getBoolean(PREF_FIRST_RUN, true)) {
+		mFirstRun = mPrefs.getBoolean(PREF_FIRST_RUN, true);
+
+		if (mFirstRun) {
 			mPrefsEditor.putBoolean(PREF_FIRST_RUN, false);
-			mPrefsEditor.apply();
+			mPrefsEditor.commit();
 
-			/* Show the Account Selection screen first, then start the Dashboard */
+			/* Show the Account Selection screen first, then start the show */
 			startActivityForResult(new Intent(this, AccountSelect.class), 0);
+			finish();
 		} else {
 			final String current_user_login = mPrefs.getString(PREF_CURRENT_USER_LOGIN, null);
 			if (current_user_login != null) {
@@ -62,8 +69,28 @@ class Main extends BaseActivity
 			} else {
 				mCurrentUser = null;
 			}
-			startActivity(Dashboard.class);
-			finish();
+		}
+	}
+
+	@Override
+	protected
+	void onResume()
+	{
+		super.onResume();
+
+		if (!mFirstRun) {
+			FragmentManager fm = getSupportFragmentManager();
+			FragmentTransaction ft = fm.beginTransaction();
+			DashboardFragment fragment = (DashboardFragment) fm.findFragmentByTag("dashboard");
+			if (fragment != null) {
+				return;
+			} else {
+				fragment = new DashboardFragment();
+			}
+
+			ft.replace(R.id.fragment_navigation, fragment, "dashboard");
+
+			ft.commit();
 		}
 	}
 
@@ -71,9 +98,13 @@ class Main extends BaseActivity
 	protected
 	void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		/* Account selection is done, restart */
-		startActivity(Main.class);
-		finish();
+		/*
+		if (requestCode == 0) {
+			/* Account selection is done, restart
+			startActivity(MainActivity.class);
+			finish();
+		}
+		*/
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 }

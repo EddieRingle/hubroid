@@ -25,6 +25,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
@@ -32,6 +33,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import net.idlesoft.android.apps.github.ui.activities.MainActivity;
 import roboguice.util.RoboAsyncTask;
 import roboguice.util.SafeAsyncTask;
 
@@ -92,8 +94,11 @@ class AccountSelect extends BaseActivity
 				void onItemClick(AdapterView<?> parent, View view, int position, long id)
 				{
 					mPrefsEditor.putString(PREF_CURRENT_USER_LOGIN, accounts[position].name);
-					mPrefsEditor.apply();
+					mPrefsEditor.commit();
 					mGitHubClient = null;
+					final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(intent);
 					finish();
 				}
 			});
@@ -107,7 +112,10 @@ class AccountSelect extends BaseActivity
 				void onClick(View v)
 				{
 					mPrefsEditor.remove(PREF_CURRENT_USER_LOGIN);
-					mPrefsEditor.apply();
+					mPrefsEditor.commit();
+					final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
+					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+					startActivity(intent);
 					finish();
 				}
 			});
@@ -148,5 +156,12 @@ class AccountSelect extends BaseActivity
 			 }, null);
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	@Override
+	public
+	void onBackPressed()
+	{
+		finish();
 	}
 }

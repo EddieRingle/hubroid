@@ -17,13 +17,12 @@
             android:theme="@style/Theme.Hubroid">
 
 		<!-- Activities -->
-        <activity android:name=".ui.activities.Main">
+        <activity android:name=".ui.activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-		<activity android:name=".ui.activities.Dashboard" />
 		<activity android:name=".ui.activities.GitHubIntentFilter">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW"></action>
@@ -34,6 +33,11 @@
 				<data android:scheme="hubroid" android:pathPattern="/.*" android:host="oauth"></data>
 			</intent-filter>
 		</activity>
+
+		<!-- Shell Activities (Have fragment counterparts) -->
+		<activity android:name=".ui.activities.EventsActivity" />
+		<activity android:name=".ui.activities.RepositoriesActivity" />
+		<activity android:name=".ui.activities.ProfileActivity" />
 
 		<!-- Services -->
 		<service android:name=".authenticator.AccountAuthenticatorService" android:process=":auth">
