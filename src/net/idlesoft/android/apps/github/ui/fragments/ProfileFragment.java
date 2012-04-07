@@ -245,6 +245,16 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		holder.secondary =
 				"Owns " + Integer.toString(user.getOwnedPrivateRepos() + user.getPublicRepos());
 
+		holder.onClick = new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public
+			void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+
+			}
+		};
+
 		mDataFragment.holders.add(holder);
 
 		holder = new InfoListAdapter.InfoHolder();

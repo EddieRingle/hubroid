@@ -175,7 +175,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	}
 
 	public
-	void startFragment(Class pFragmentClass, int pContainer, String pTag, boolean pAddToBackStack)
+	void startFragment(Class pFragmentClass, int pContainer, String pTag, Bundle pArguments, boolean pAddToBackStack)
 	{
 		if (BaseFragment.class.isAssignableFrom(pFragmentClass)) {
 			FragmentManager fm = getSupportFragmentManager();
@@ -189,6 +189,9 @@ class BaseActivity extends RoboSherlockFragmentActivity
 				e.printStackTrace();
 				fragment = new Fragment();
 			}
+
+			if (pArguments != null)
+				fragment.setArguments(pArguments);
 
 			/* Add the fragment */
 			ft.replace(pContainer, fragment, pTag);
@@ -210,13 +213,19 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	void startFragment(Class pFragmentClass, int pContainer)
 	{
-		startFragment(pFragmentClass, pContainer, null, true);
+		startFragment(pFragmentClass, pContainer, null, null, true);
 	}
 
 	public
 	void startFragment(Class pFragmentClass, int pContainer, String pTag)
 	{
-		startFragment(pFragmentClass, pContainer, pTag, true);
+		startFragment(pFragmentClass, pContainer, pTag, null, true);
+	}
+
+	public
+	void startFragment(Class pFragmentClass, int pContainer, String pTag, Bundle pArguments)
+	{
+		startFragment(pFragmentClass, pContainer, pTag, pArguments, true);
 	}
 
 	@Override

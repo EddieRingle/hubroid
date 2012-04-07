@@ -111,7 +111,7 @@ class DashboardFragment extends BaseFragment
 		case ACTIVE_BUTTON_EVENTS:
 			if (isMultiPane()) {
 				getBaseActivity().startFragment(EventsFragment.class, R.id.fragment_container,
-						getString(R.string.dash_events), false);
+						getString(R.string.dash_events), null, false);
 				getFragmentContainer().setVisibility(View.VISIBLE);
 			} else {
 				getBaseActivity().startActivity(EventsActivity.class);
@@ -120,7 +120,7 @@ class DashboardFragment extends BaseFragment
 		case ACTIVE_BUTTON_REPOS:
 			if (isMultiPane()) {
 				getBaseActivity().startFragment(RepositoriesFragment.class, R.id.fragment_container,
-						getString(R.string.dash_repos), false);
+						getString(R.string.dash_repos), null, false);
 				getFragmentContainer().setVisibility(View.VISIBLE);
 			} else {
 				getBaseActivity().startActivity(RepositoriesActivity.class);
@@ -129,7 +129,7 @@ class DashboardFragment extends BaseFragment
 		case ACTIVE_BUTTON_PROFILE:
 			if (isMultiPane()) {
 				getBaseActivity().startFragment(ProfileFragment.class, R.id.fragment_container,
-												getString(R.string.dash_profile), false);
+												getString(R.string.dash_profile), null, false);
 				getFragmentContainer().setVisibility(View.VISIBLE);
 			} else {
 				getBaseActivity().startActivity(ProfileActivity.class);
