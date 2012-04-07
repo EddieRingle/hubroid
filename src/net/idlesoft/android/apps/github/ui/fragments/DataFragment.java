@@ -178,9 +178,9 @@ class DataFragment extends BaseFragment
 
 	@Override
 	public
-	void onDetach()
+	void onPause()
 	{
-		super.onDetach();
+		super.onPause();
 
 		mRecreated = true;
 	}
