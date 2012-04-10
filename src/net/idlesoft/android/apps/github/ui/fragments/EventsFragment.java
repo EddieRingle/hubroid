@@ -22,15 +22,18 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.ProfileActivity;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
@@ -42,6 +45,8 @@ import org.eclipse.egit.github.core.service.EventService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public
 class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
@@ -119,7 +124,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		final Bundle args = getArguments();
 		final String userJson;
 		if (args != null) {
-			userJson = args.getString(HubroidConstants.ARG_TARGET_USER, null);
+			userJson = args.getString(ARG_TARGET_USER, null);
 			if (userJson != null) {
 				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
 			}
@@ -216,6 +221,27 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				mDataFragment.executeNewTask(receivedRunnable, receivedCallbacks);
 			}
 
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Event e = holder.events.get(position);
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
+					if (isMultiPane()) {
+						getBaseActivity().startFragment(ProfileFragment.class,
+														R.id.fragment_container_more,
+														ProfileFragment.class.getName(), args);
+					} else {
+						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
+						i.putExtras(args);
+						getBaseActivity().startActivity(i);
+					}
+				}
+			});
+
 			adapter.addList(list);
 		}
 
@@ -298,6 +324,27 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
 			}
 
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Event e = holder.events.get(position);
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
+					if (isMultiPane()) {
+						getBaseActivity().startFragment(ProfileFragment.class,
+														R.id.fragment_container_more,
+														ProfileFragment.class.getName(), args);
+					} else {
+						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
+						i.putExtras(args);
+						getBaseActivity().startActivity(i);
+					}
+				}
+			});
+
 			adapter.addList(list);
 		}
 
@@ -378,6 +425,27 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
 			}
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Event e = holder.events.get(position);
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
+					if (isMultiPane()) {
+						getBaseActivity().startFragment(ProfileFragment.class,
+														R.id.fragment_container_more,
+														ProfileFragment.class.getName(), args);
+					} else {
+						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
+						i.putExtras(args);
+						getBaseActivity().startActivity(i);
+					}
+				}
+			});
 
 			adapter.addList(list);
 		}
