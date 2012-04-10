@@ -22,7 +22,6 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.app.Activity;
-import android.support.v4.app.ListFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;

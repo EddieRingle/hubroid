@@ -22,19 +22,12 @@
 package net.idlesoft.android.apps.github.ui.adapters;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import org.eclipse.egit.github.core.event.Event;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 
 public
 class EventListAdapter extends BaseListAdapter<Event>

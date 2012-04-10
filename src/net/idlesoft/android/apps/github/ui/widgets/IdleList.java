@@ -23,15 +23,12 @@ package net.idlesoft.android.apps.github.ui.widgets;
 
 import android.R;
 import android.content.Context;
-import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
 import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
-
-import java.util.List;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;

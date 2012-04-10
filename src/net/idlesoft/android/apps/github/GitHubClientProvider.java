@@ -28,9 +28,9 @@ import com.google.inject.Inject;
 import net.idlesoft.android.apps.github.authenticator.OAuthUserProvider;
 import org.eclipse.egit.github.core.client.GitHubClient;
 
-import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
-
 import java.io.IOException;
+
+import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
 
 public
 class GitHubClientProvider

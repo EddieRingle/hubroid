@@ -30,7 +30,6 @@
 
 package net.idlesoft.android.apps.github.ui.activities;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import net.idlesoft.android.apps.github.R;

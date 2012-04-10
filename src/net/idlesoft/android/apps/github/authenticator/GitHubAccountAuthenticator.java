@@ -16,22 +16,11 @@
 
 package net.idlesoft.android.apps.github.authenticator;
 
-import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
-import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
-import static android.accounts.AccountManager.KEY_AUTHTOKEN;
-import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
-import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHUB_ACCOUNT_TYPE;
-import static net.idlesoft.android.apps.github.authenticator.GitHubAuthenticatorActivity.PARAM_AUTHTOKEN_TYPE;
-import android.accounts.AbstractAccountAuthenticator;
-import android.accounts.Account;
-import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.AccountManager;
-import android.accounts.NetworkErrorException;
+import android.accounts.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import org.eclipse.egit.github.core.Application;
 import org.eclipse.egit.github.core.Authorization;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.OAuthService;
@@ -39,6 +28,12 @@ import org.eclipse.egit.github.core.service.OAuthService;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.accounts.AccountManager.*;
+import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
+import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHUB_ACCOUNT_TYPE;
+import static net.idlesoft.android.apps.github.authenticator.GitHubAuthenticatorActivity
+		.PARAM_AUTHTOKEN_TYPE;
 
 class GitHubAccountAuthenticator extends AbstractAccountAuthenticator {
 

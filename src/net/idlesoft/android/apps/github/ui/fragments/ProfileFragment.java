@@ -22,20 +22,18 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
-import net.idlesoft.android.apps.github.HubroidConstants;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.AsyncLoader;
-import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
@@ -47,7 +45,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
-import static net.idlesoft.android.apps.github.HubroidConstants.DEFAULT_USER;
 import static net.idlesoft.android.apps.github.utils.StringUtils.isStringEmpty;
 
 public

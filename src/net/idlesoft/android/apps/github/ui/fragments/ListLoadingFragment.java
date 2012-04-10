@@ -16,19 +16,19 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
-import static net.idlesoft.android.apps.github.utils.ToastUtil.toastOnUiThread;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.Loader;
 import android.widget.Toast;
-
-import java.util.List;
-
 import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.widgets.RefreshActionView;
+
+import java.util.List;
+
+import static net.idlesoft.android.apps.github.utils.ToastUtil.toastOnUiThread;
 
 /**
  * List loading fragment for a specific type

@@ -16,26 +16,16 @@
 
 package net.idlesoft.android.apps.github.ui.activities;
 
+import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.google.inject.Inject;
 import roboguice.RoboGuice;
-import roboguice.activity.event.OnActivityResultEvent;
-import roboguice.activity.event.OnConfigurationChangedEvent;
-import roboguice.activity.event.OnContentChangedEvent;
-import roboguice.activity.event.OnCreateEvent;
-import roboguice.activity.event.OnDestroyEvent;
-import roboguice.activity.event.OnNewIntentEvent;
-import roboguice.activity.event.OnPauseEvent;
-import roboguice.activity.event.OnRestartEvent;
-import roboguice.activity.event.OnResumeEvent;
-import roboguice.activity.event.OnStartEvent;
-import roboguice.activity.event.OnStopEvent;
+import roboguice.activity.event.*;
 import roboguice.event.EventManager;
 import roboguice.inject.ContentViewListener;
 import roboguice.inject.RoboInjector;
-import android.content.Intent;
-import android.content.res.Configuration;
-import com.google.inject.Inject;
 
 /**
  * An example of how to make your own Robo-enabled Sherlock activity. Feel free

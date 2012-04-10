@@ -16,11 +16,12 @@
 
 package net.idlesoft.android.apps.github.utils;
 
-import static android.widget.Toast.LENGTH_LONG;
 import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
+
+import static android.widget.Toast.LENGTH_LONG;
 
 /**
  * Utilities for displaying toast notifications

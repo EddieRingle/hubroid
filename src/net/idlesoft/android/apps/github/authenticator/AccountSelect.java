@@ -34,7 +34,6 @@ import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.activities.MainActivity;
-import roboguice.util.RoboAsyncTask;
 import roboguice.util.SafeAsyncTask;
 
 public

@@ -25,7 +25,8 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public
 class DataFragment extends BaseFragment

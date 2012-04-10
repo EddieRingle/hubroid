@@ -21,21 +21,20 @@
 
 package net.idlesoft.android.apps.github.authenticator;
 
-import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
-import static android.accounts.AccountManager.KEY_AUTHTOKEN;
-import static net.idlesoft.android.apps.github.authenticator.AuthConstants.AUTHTOKEN_TYPE;
-import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHUB_ACCOUNT_TYPE;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AccountsException;
 import android.app.Activity;
 import android.os.Bundle;
-
 import com.google.inject.Inject;
 
 import java.io.IOException;
+
+import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
+import static android.accounts.AccountManager.KEY_AUTHTOKEN;
+import static net.idlesoft.android.apps.github.authenticator.AuthConstants.AUTHTOKEN_TYPE;
+import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHUB_ACCOUNT_TYPE;
 
 /**
  * Bridge class that obtains a GitHub OAuth code for the currently configured account

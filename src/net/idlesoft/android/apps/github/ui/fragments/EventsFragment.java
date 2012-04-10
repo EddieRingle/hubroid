@@ -31,7 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import com.viewpagerindicator.TitlePageIndicator;
-import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.ProfileActivity;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;

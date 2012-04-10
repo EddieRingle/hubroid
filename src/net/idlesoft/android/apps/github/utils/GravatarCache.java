@@ -21,11 +21,6 @@
 
 package net.idlesoft.android.apps.github.utils;
 
-import net.idlesoft.android.apps.github.R;
-
-import net.idlesoft.android.apps.github.ui.HubroidApplication;
-import org.eclipse.egit.github.core.service.UserService;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Environment;
