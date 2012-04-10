@@ -261,8 +261,6 @@ class DashboardFragment extends BaseFragment
 	public
 	void onResume()
 	{
-		Log.d("hubroid", "Dashboard: onResume() called. mActiveButton = " + mActiveButton);
-
 		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(false);
 
@@ -298,7 +296,6 @@ class DashboardFragment extends BaseFragment
 	{
 		super.onSaveInstanceState(outState);
 
-		Log.d("hubroid", "Leaving activeButton as " + mActiveButton);
 		outState.putInt("activeButton", mActiveButton);
 	}
 }

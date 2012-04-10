@@ -106,7 +106,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	void onCreate(final Bundle icicle, final int layout)
 	{
 		super.onCreate(icicle);
-		Log.d("beef", "homemade");
 		if (layout != NO_LAYOUT) setContentView(layout);
 
 		mConfiguration = getResources().getConfiguration();
