@@ -22,13 +22,16 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.RepositoryActivity;
 import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
@@ -41,6 +44,8 @@ import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 
 public
 class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesDataFragment>
@@ -210,6 +215,28 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				mDataFragment.executeNewTask(yoursRunnable, yoursCallbacks);
 			}
 
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Repository target = holder.repositories.get(position);
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					if (isMultiPane()) {
+						getBaseActivity().startFragment(RepositoryFragment.class,
+														R.id.fragment_container_more,
+														RepositoryFragment.class.getName(),
+														args);
+					} else {
+						final Intent i = new Intent(getBaseActivity(), RepositoryActivity.class);
+						i.putExtras(args);
+						getBaseActivity().startActivity(i);
+					}
+				}
+			});
+
 			adapter.addList(list);
 		}
 
@@ -290,6 +317,28 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 
 				mDataFragment.executeNewTask(watchedRunnable, watchedCallbacks);
 			}
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Repository target = holder.repositories.get(position);
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					if (isMultiPane()) {
+						getBaseActivity().startFragment(RepositoryFragment.class,
+														R.id.fragment_container_more,
+														RepositoryFragment.class.getName(),
+														args);
+					} else {
+						final Intent i = new Intent(getBaseActivity(), RepositoryActivity.class);
+						i.putExtras(args);
+						getBaseActivity().startActivity(i);
+					}
+				}
+			});
 
 			adapter.addList(list);
 		}

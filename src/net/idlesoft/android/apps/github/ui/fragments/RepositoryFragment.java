@@ -34,44 +34,45 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.RepositoriesActivity;
+import net.idlesoft.android.apps.github.ui.activities.ProfileActivity;
+import net.idlesoft.android.apps.github.ui.activities.RepositoryActivity;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
+import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 import static net.idlesoft.android.apps.github.utils.StringUtils.isStringEmpty;
 
 public
-class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
+class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFragment>
 {
 	public static
-	class ProfileDataFragment extends DataFragment
+	class RepositoryDataFragment extends DataFragment
 	{
 		ArrayList<InfoListAdapter.InfoHolder> holders;
-		User targetUser;
-		Bitmap gravatarBitmap;
+		Repository targetRepo;
 	}
 
 	private
 	ProgressBar mProgress;
-	private
-	GravatarView mGravatarView;
 	private
 	LinearLayout mContent;
 	private
 	IdleList<InfoListAdapter.InfoHolder> mListView;
 
 	public
-	ProfileFragment()
+	RepositoryFragment()
 	{
-		super(ProfileDataFragment.class);
+		super(RepositoryDataFragment.class);
 	}
 
 	@Override
@@ -81,23 +82,13 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		if (container == null)
 			getBaseActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
 
-		View v = inflater.inflate(R.layout.profile, container, false);
+		View v = inflater.inflate(R.layout.repository, container, false);
 
 		if (v != null) {
 			mProgress = (ProgressBar) v.findViewById(R.id.progress);
 			mContent = (LinearLayout) v.findViewById(R.id.content);
-			mListView = (IdleList<InfoListAdapter.InfoHolder>) v.findViewById(R.id.lv_user_info);
-			mGravatarView = (GravatarView) v.findViewById(R.id.gravatar);
-			mGravatarView.setGravatarViewCallback(new GravatarView.GravatarViewCallback()
-			{
-				@Override
-				public
-				void OnGravatarFinishedLoading(Bitmap sourceBitmap)
-				{
-					mDataFragment.gravatarBitmap = sourceBitmap;
-					mGravatarView.getImageView().setImageBitmap(sourceBitmap);
-				}
-			});
+			mListView =
+					(IdleList<InfoListAdapter.InfoHolder>) v.findViewById(R.id.lv_repository_info);
 		}
 
 		return v;
@@ -110,16 +101,15 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		super.onActivityCreated(savedInstanceState);
 
 		final Bundle args = getArguments();
-		final String userJson;
+		final String repositoryJson;
 		if (args != null) {
-			userJson = args.getString(ARG_TARGET_USER, null);
-			if (userJson != null) {
-				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
+			repositoryJson = args.getString(ARG_TARGET_REPO, null);
+			if (repositoryJson != null) {
+				mDataFragment.targetRepo = GsonUtils.fromJson(repositoryJson, Repository.class);
 			}
 		}
-		if (mDataFragment.targetUser == null) {
-			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
+		if (mDataFragment.targetRepo == null) {
+			/* uh-oh. */
 		}
 
 		mListView.setAdapter(new InfoListAdapter(getContext()));
@@ -127,9 +117,9 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		if (mDataFragment.isRecreated() && mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
-			buildUI(mDataFragment.targetUser);
+			buildUI(mDataFragment.targetRepo);
 		} else {
-			final DataFragment.DataTask.DataTaskRunnable profileRunnable =
+			final DataFragment.DataTask.DataTaskRunnable repositoryRunnable =
 					new DataFragment.DataTask.DataTaskRunnable()
 			{
 				@Override
@@ -137,9 +127,12 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				void runTask() throws InterruptedException
 				{
 					try {
-						final UserService us = new UserService(getBaseActivity().getGHClient());
-						mDataFragment.targetUser = us.getUser(mDataFragment.targetUser.getLogin());
-						buildHolders(mDataFragment.targetUser);
+						final RepositoryService rs =
+								new RepositoryService(getBaseActivity().getGHClient());
+						mDataFragment.targetRepo =
+								rs.getRepository(mDataFragment.targetRepo.getOwner().getLogin(),
+												 mDataFragment.targetRepo.getName());
+						buildHolders(mDataFragment.targetRepo);
 					} catch (AccountsException e) {
 						e.printStackTrace();
 					} catch (IOException e) {
@@ -148,7 +141,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				}
 			};
 
-			final DataFragment.DataTask.DataTaskCallbacks profileCallbacks =
+			final DataFragment.DataTask.DataTaskCallbacks repositoryCallbacks =
 					new DataFragment.DataTask.DataTaskCallbacks()
 			{
 				@Override
@@ -171,27 +164,27 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				{
 					mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 					mListView.getListAdapter().notifyDataSetChanged();
-					buildUI(mDataFragment.targetUser);
+					buildUI(mDataFragment.targetRepo);
 					mProgress.setVisibility(View.GONE);
 					mContent.setVisibility(View.VISIBLE);
 				}
 			};
 
-			mDataFragment.executeNewTask(profileRunnable, profileCallbacks);
+			mDataFragment.executeNewTask(repositoryRunnable, repositoryCallbacks);
 		}
 	}
 
 	public
-	void buildHolders(final User user)
+	void buildHolders(final Repository repository)
 	{
 		mDataFragment.holders = new ArrayList<InfoListAdapter.InfoHolder>();
 
 		InfoListAdapter.InfoHolder holder;
 
-		if (!isStringEmpty(user.getEmail())) {
+		if (!isStringEmpty(repository.getOwner().getLogin())) {
 			holder = new InfoListAdapter.InfoHolder();
-			holder.primary = "Email";
-			holder.secondary = user.getEmail();
+			holder.primary = "Owner";
+			holder.secondary = repository.getOwner().getLogin();
 
 			holder.onClick = new AdapterView.OnItemClickListener()
 			{
@@ -199,21 +192,36 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				public
 				void onItemClick(AdapterView<?> parent, View view, int position, long id)
 				{
-					final Intent intent = new Intent(Intent.ACTION_SEND);
-					intent.setType("message/rfc822");
-					intent.putExtra(Intent.EXTRA_EMAIL, new String[] {mDataFragment.holders.get(position).secondary});
-					getBaseActivity().startActivity(
-							Intent.createChooser(intent, "Send mail..."));
+					final User u = mDataFragment.targetRepo.getOwner();
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_USER, GsonUtils.toJson(u));
+					if (isMultiPane()) {
+						getBaseActivity().startFragment(ProfileFragment.class,
+														R.id.fragment_container_more,
+														ProfileFragment.class.getName(),
+														args);
+					} else {
+						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
+						i.putExtras(args);
+						getBaseActivity().startActivity(i);
+					}
 				}
 			};
 
 			mDataFragment.holders.add(holder);
 		}
 
-		if (!isStringEmpty(user.getBlog())) {
+		if (!isStringEmpty(repository.getDescription())) {
 			holder = new InfoListAdapter.InfoHolder();
-			holder.primary = "Blog";
-			holder.secondary = user.getBlog();
+			holder.primary = "Description";
+			holder.secondary = repository.getDescription();
+			mDataFragment.holders.add(holder);
+		}
+
+		if (!isStringEmpty(repository.getHomepage())) {
+			holder = new InfoListAdapter.InfoHolder();
+			holder.primary = "Homepage";
+			holder.secondary = repository.getHomepage();
 
 			holder.onClick = new AdapterView.OnItemClickListener()
 			{
@@ -222,7 +230,10 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				void onItemClick(AdapterView<?> parent, View view, int position, long id)
 				{
 					final Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse(mDataFragment.holders.get(position).secondary));
+					String target = mDataFragment.holders.get(position).secondary;
+					if (target.indexOf("://") == -1)
+						target = "http://" + target;
+					intent.setData(Uri.parse(target));
 					getBaseActivity().startActivity(intent);
 				}
 			};
@@ -230,69 +241,71 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			mDataFragment.holders.add(holder);
 		}
 
-		if (!isStringEmpty(user.getCompany())) {
+		if (repository.isFork() && repository.getParent() != null) {
 			holder = new InfoListAdapter.InfoHolder();
-			holder.primary = "Company";
-			holder.secondary = user.getCompany();
+			holder.primary = "Forked From";
+			holder.secondary =
+					repository.getParent().getOwner().getLogin() +
+					"/" +
+					repository.getParent().getName();
+
+			holder.onClick = new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Repository target = repository.getParent();
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					if (isMultiPane()) {
+						getBaseActivity().startFragment(RepositoryFragment.class,
+														R.id.fragment_container_more,
+														RepositoryFragment.class.getName(),
+														args);
+					} else {
+						final Intent i = new Intent(getBaseActivity(), RepositoryActivity.class);
+						i.putExtras(args);
+						getBaseActivity().startActivity(i);
+					}
+				}
+			};
 
 			mDataFragment.holders.add(holder);
 		}
 
+		if (repository.isHasIssues()) {
+			holder = new InfoListAdapter.InfoHolder();
+			holder.primary = "Issues";
+			holder.secondary = Integer.toString(repository.getOpenIssues()) + " open issues";
+			mDataFragment.holders.add(holder);
+		}
+
 		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Repositories";
-		holder.secondary =
-				"Owns " + Integer.toString(user.getOwnedPrivateRepos() + user.getPublicRepos());
-
-		holder.onClick = new AdapterView.OnItemClickListener()
-		{
-			@Override
-			public
-			void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				final Bundle args = new Bundle();
-				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
-				if (isMultiPane()) {
-					getBaseActivity().startFragment(RepositoriesFragment.class,
-													R.id.fragment_container_more,
-													RepositoriesFragment.class.getName(),
-													args);
-				} else {
-					final Intent i = new Intent(getBaseActivity(), RepositoriesActivity.class);
-					i.putExtras(args);
-					getBaseActivity().startActivity(i);
-				}
-			}
-		};
-
+		holder.primary = "Forks";
+		holder.secondary = Integer.toString(repository.getForks());
 		mDataFragment.holders.add(holder);
 
 		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Followers/Following";
-		holder.secondary =
-				"Followers: " + user.getFollowers() + ", " +
-						"Following: " + user.getFollowing();
-
+		holder.primary = "Watchers";
+		holder.secondary = Integer.toString(repository.getWatchers());
 		mDataFragment.holders.add(holder);
 	}
 
 	public
-	void buildUI(final User user)
+	void buildUI(final Repository repository)
 	{
-		if (user != null) {
-			mDataFragment.targetUser = user;
+		if (repository != null) {
+			mDataFragment.targetRepo = repository;
 
-			mGravatarView.setDefaultResource(R.drawable.gravatar);
-			if (mDataFragment.gravatarBitmap != null)
-				mGravatarView.getImageView().setImageBitmap(mDataFragment.gravatarBitmap);
+			final TextView tvName = (TextView) mContent.findViewById(R.id.tv_repository_name);
+			tvName.setText(repository.getName());
 
-			final TextView tvLogin = (TextView) mContent.findViewById(R.id.tv_user_login);
-			tvLogin.setText(user.getLogin());
-
-			final TextView tvFullName = (TextView) mContent.findViewById(R.id.tv_user_fullname);
-			if (!isStringEmpty(user.getName())) {
-				tvFullName.setText(user.getName());
+			final TextView tvDescription = (TextView) mContent.findViewById(R.id.tv_repository_description);
+			if (!isStringEmpty(repository.getDescription())) {
+				tvDescription.setText(repository.getDescription());
 			} else {
-				tvFullName.setVisibility(View.GONE);
+				tvDescription.setVisibility(View.GONE);
 			}
 		}
 
