@@ -267,11 +267,13 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		mDataFragment.holders.add(holder);
 
 		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Followers/Following";
-		holder.secondary =
-				"Followers: " + user.getFollowers() + ", " +
-						"Following: " + user.getFollowing();
+		holder.primary = "Following";
+		holder.secondary = Integer.toString(user.getFollowing());
+		mDataFragment.holders.add(holder);
 
+		holder = new InfoListAdapter.InfoHolder();
+		holder.primary = "Followers";
+		holder.secondary = Integer.toString(user.getFollowers());
 		mDataFragment.holders.add(holder);
 	}
 
