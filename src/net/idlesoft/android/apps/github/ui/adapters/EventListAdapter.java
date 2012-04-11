@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
+import net.idlesoft.android.apps.github.utils.StringUtils;
 import org.eclipse.egit.github.core.event.Event;
 
 public
@@ -69,7 +70,7 @@ class EventListAdapter extends BaseListAdapter<Event>
 
 		holder.gravatar.setDefaultResource(R.drawable.gravatar);
 		holder.title.setText(login + " did a " + type);
-		holder.date.setText(e.getCreatedAt().toString());
+		holder.date.setText(StringUtils.getTimeSince(e.getCreatedAt()) + " ago");
 
 		return convertView;
 	}
