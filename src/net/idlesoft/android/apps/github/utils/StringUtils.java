@@ -54,12 +54,19 @@ class StringUtils
 		final long min = sec / 60;
 		final long hour = min / 60;
 		final long day = hour / 24;
+		final long month = day / 30;
 		final long year = day / 365;
 		if (year > 0) {
 			if (year == 1) {
 				return year + " year";
 			} else {
 				return year + " years";
+			}
+		} else if (month > 0) {
+			if (month == 1) {
+				return month + " month";
+			} else {
+				return month + " months";
 			}
 		} else if (day > 0) {
 			if (day == 1) {
