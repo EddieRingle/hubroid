@@ -83,7 +83,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 
 	protected static GitHubClient mGitHubClient;
 
-	private Class<?> mUpActivity = MainActivity.class;
+	protected Class<?> mUpActivity = MainActivity.class;
 
 	protected
 	Configuration mConfiguration;
