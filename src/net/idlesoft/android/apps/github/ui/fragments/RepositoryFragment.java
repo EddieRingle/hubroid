@@ -263,6 +263,11 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 			mDataFragment.holders.add(holder);
 		}
 
+		holder = new InfoListAdapter.InfoHolder();
+		holder.primary = "Branches";
+		holder.secondary = "Default branch is " + repository.getMasterBranch();
+		mDataFragment.holders.add(holder);
+
 		if (repository.isHasIssues()) {
 			holder = new InfoListAdapter.InfoHolder();
 			holder.primary = "Issues";
