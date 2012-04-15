@@ -32,6 +32,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
+import net.idlesoft.android.apps.github.utils.EventUtil;
 import net.idlesoft.android.apps.github.utils.StringUtils;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.event.Event;
@@ -42,9 +43,12 @@ class EventListAdapter extends BaseListAdapter<Event>
 	public static
 	class ViewHolder
 	{
+		public
 		GravatarView gravatar;
+		public
 		TextView title;
-		TextView date;
+		public
+		TextView extra;
 	}
 
 	public
@@ -63,16 +67,14 @@ class EventListAdapter extends BaseListAdapter<Event>
 			holder = new ViewHolder();
 			holder.gravatar = (GravatarView) convertView.findViewById(R.id.iv_event_gravatar);
 			holder.title = (TextView) convertView.findViewById(R.id.tv_event_title);
-			holder.date = (TextView) convertView.findViewById(R.id.tv_event_date);
+			holder.extra = (TextView) convertView.findViewById(R.id.tv_event_extra);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
 		final Event e = getItem(position);
-
-		final String login = e.getActor().getLogin();
-		final String type = e.getType();
+		EventUtil.fillHolderWithEvent(holder, e);
 
 		holder.gravatar.setOnClickListener(new View.OnClickListener()
 		{
@@ -88,10 +90,6 @@ class EventListAdapter extends BaseListAdapter<Event>
 				getContext().finishFragmentTransaction();
 			}
 		});
-
-		holder.gravatar.setDefaultResource(R.drawable.gravatar);
-		holder.title.setText(login + " did a " + type);
-		holder.date.setText(StringUtils.getTimeSince(e.getCreatedAt()) + " ago");
 
 		return convertView;
 	}
