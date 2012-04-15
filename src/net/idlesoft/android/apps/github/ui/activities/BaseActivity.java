@@ -205,6 +205,8 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		}
 		if (arguments != null)
 			fragment.setArguments(arguments);
+		if (!isMultiPane() && container != R.id.fragment_container)
+			container = R.id.fragment_container;
 		mFragmentTransaction.replace(container, fragment, fragmentClass.getName());
 	}
 
