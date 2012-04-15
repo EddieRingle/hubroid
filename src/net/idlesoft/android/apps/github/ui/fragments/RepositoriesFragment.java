@@ -22,7 +22,6 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,6 @@ import android.widget.AdapterView;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.RepositoryActivity;
 import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
@@ -224,16 +222,11 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 					final Repository target = holder.repositories.get(position);
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
-					if (isMultiPane()) {
-						getBaseActivity().startFragment(RepositoryFragment.class,
-														R.id.fragment_container_more,
-														RepositoryFragment.class.getName(),
-														args);
-					} else {
-						final Intent i = new Intent(getBaseActivity(), RepositoryActivity.class);
-						i.putExtras(args);
-						getBaseActivity().startActivity(i);
-					}
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction();
 				}
 			});
 
@@ -327,16 +320,11 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 					final Repository target = holder.repositories.get(position);
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
-					if (isMultiPane()) {
-						getBaseActivity().startFragment(RepositoryFragment.class,
-														R.id.fragment_container_more,
-														RepositoryFragment.class.getName(),
-														args);
-					} else {
-						final Intent i = new Intent(getBaseActivity(), RepositoryActivity.class);
-						i.putExtras(args);
-						getBaseActivity().startActivity(i);
-					}
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction();
 				}
 			});
 

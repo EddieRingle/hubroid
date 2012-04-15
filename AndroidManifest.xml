@@ -34,12 +34,6 @@
 			</intent-filter>
 		</activity>
 
-		<!-- Shell Activities (Have fragment counterparts) -->
-		<activity android:name=".ui.activities.EventsActivity" />
-		<activity android:name=".ui.activities.RepositoriesActivity" />
-		<activity android:name=".ui.activities.ProfileActivity" />
-		<activity android:name=".ui.activities.RepositoryActivity" />
-
 		<!-- Services -->
 		<service android:name=".authenticator.AccountAuthenticatorService" android:process=":auth">
 			<intent-filter>

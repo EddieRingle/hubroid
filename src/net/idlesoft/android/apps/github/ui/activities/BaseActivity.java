@@ -41,6 +41,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -50,6 +51,7 @@ import net.idlesoft.android.apps.github.GitHubClientProvider;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
+import net.idlesoft.android.apps.github.ui.fragments.EventsFragment;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.UserService;
@@ -91,6 +93,8 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	@Inject
 	private
 	GitHubClientProvider mGitHubClientProvider;
+
+	private FragmentTransaction mFragmentTransaction;
 
 	private boolean mAnonymous;
 
@@ -169,6 +173,55 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	void startActivity(Class<?> targetActivity)
 	{
 		startActivity(new Intent(this, targetActivity));
+	}
+
+	public
+	void startFragmentTransaction()
+	{
+		Log.d("hubroid", "Starting Fragment Transaction.");
+		if (mFragmentTransaction != null)
+			throw new IllegalStateException("Fragment transaction already started. End the existing one before starting a new instance.");
+
+		mFragmentTransaction = getSupportFragmentManager().beginTransaction();
+	}
+
+	public
+	void addFragmentToTransaction(Class<? extends BaseFragment> fragmentClass, int container, Bundle arguments)
+	{
+		Log.d("hubroid", "Adding to Fragment Transaction.");
+		if (mFragmentTransaction == null)
+			throw new IllegalStateException("BaseActivity Fragment transaction is null, start a new one with startFragmentTransaction().");
+		BaseFragment fragment;
+		try {
+			fragment = (BaseFragment) fragmentClass.newInstance();
+		} catch (Exception e) {
+			e.printStackTrace();
+			fragment = new BaseFragment();
+		}
+		if (arguments != null)
+			fragment.setArguments(arguments);
+		mFragmentTransaction.replace(container, fragment, fragmentClass.getName());
+	}
+
+	public
+	void finishFragmentTransaction(boolean backstack)
+	{
+		Log.d("hubroid", "Finishing Fragment Transaction.");
+		if (mFragmentTransaction == null)
+			throw new IllegalStateException("There is no Fragment transaction to finish (it is null).");
+
+		if (backstack)
+			mFragmentTransaction.addToBackStack(null);
+
+		mFragmentTransaction.commit();
+		/* Set the activity's transaction to null so a new one can be created */
+		mFragmentTransaction = null;
+	}
+
+	public
+	void finishFragmentTransaction()
+	{
+		finishFragmentTransaction(true);
 	}
 
 	public
