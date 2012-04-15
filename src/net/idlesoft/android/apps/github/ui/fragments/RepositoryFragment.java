@@ -32,6 +32,9 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
@@ -109,7 +112,12 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 		}
 
 		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));
+		fetchData(false);
+	}
 
+	public
+	void fetchData(final boolean freshen)
+	{
 		if (mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
@@ -117,48 +125,49 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 		} else {
 			final DataFragment.DataTask.DataTaskRunnable repositoryRunnable =
 					new DataFragment.DataTask.DataTaskRunnable()
-			{
-				@Override
-				public
-				void runTask() throws InterruptedException
-				{
-					mDataFragment.targetRepo =
-							RequestCache.getRepository(getBaseActivity(),
-													   mDataFragment.targetRepo.getOwner()
-																	.getLogin(),
-													   mDataFragment.targetRepo.getName());
-					buildHolders(mDataFragment.targetRepo);
-				}
-			};
+					{
+						@Override
+						public
+						void runTask() throws InterruptedException
+						{
+							mDataFragment.targetRepo =
+									RequestCache.getRepository(getBaseActivity(),
+															   mDataFragment.targetRepo.getOwner()
+																			.getLogin(),
+															   mDataFragment.targetRepo.getName(),
+															   freshen);
+							buildHolders(mDataFragment.targetRepo);
+						}
+					};
 
 			final DataFragment.DataTask.DataTaskCallbacks repositoryCallbacks =
 					new DataFragment.DataTask.DataTaskCallbacks()
-			{
-				@Override
-				public
-				void onTaskStart()
-				{
-					mContent.setVisibility(View.GONE);
-					mProgress.setVisibility(View.VISIBLE);
-				}
+					{
+						@Override
+						public
+						void onTaskStart()
+						{
+							mContent.setVisibility(View.GONE);
+							mProgress.setVisibility(View.VISIBLE);
+						}
 
-				@Override
-				public
-				void onTaskCancelled()
-				{
-				}
+						@Override
+						public
+						void onTaskCancelled()
+						{
+						}
 
-				@Override
-				public
-				void onTaskComplete()
-				{
-					mListView.getListAdapter().fillWithItems(mDataFragment.holders);
-					mListView.getListAdapter().notifyDataSetChanged();
-					buildUI(mDataFragment.targetRepo);
-					mProgress.setVisibility(View.GONE);
-					mContent.setVisibility(View.VISIBLE);
-				}
-			};
+						@Override
+						public
+						void onTaskComplete()
+						{
+							mListView.getListAdapter().fillWithItems(mDataFragment.holders);
+							mListView.getListAdapter().notifyDataSetChanged();
+							buildUI(mDataFragment.targetRepo);
+							mProgress.setVisibility(View.GONE);
+							mContent.setVisibility(View.VISIBLE);
+						}
+					};
 
 			mDataFragment.executeNewTask(repositoryRunnable, repositoryCallbacks);
 		}
@@ -317,5 +326,28 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				return false;
 			}
 		});
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+	}
+
+	@Override
+	public
+	boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+			case R.id.actionbar_action_refresh:
+				mDataFragment.holders = null;
+				fetchData(true);
+				return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }

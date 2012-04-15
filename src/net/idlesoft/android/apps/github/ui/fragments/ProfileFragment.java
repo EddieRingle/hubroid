@@ -33,6 +33,9 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
@@ -124,6 +127,12 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 
 		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));
 
+		fetchData(false);
+	}
+
+	public
+	void fetchData(final boolean freshen)
+	{
 		if (mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
@@ -131,46 +140,47 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		} else {
 			final DataFragment.DataTask.DataTaskRunnable profileRunnable =
 					new DataFragment.DataTask.DataTaskRunnable()
-			{
-				@Override
-				public
-				void runTask() throws InterruptedException
-				{
-					mDataFragment.targetUser =
-							RequestCache.getUser(getBaseActivity(),
-												 mDataFragment.targetUser.getLogin());
-					buildHolders(mDataFragment.targetUser);
-				}
-			};
+					{
+						@Override
+						public
+						void runTask() throws InterruptedException
+						{
+							mDataFragment.targetUser =
+									RequestCache.getUser(getBaseActivity(),
+														 mDataFragment.targetUser.getLogin(),
+														 freshen);
+							buildHolders(mDataFragment.targetUser);
+						}
+					};
 
 			final DataFragment.DataTask.DataTaskCallbacks profileCallbacks =
 					new DataFragment.DataTask.DataTaskCallbacks()
-			{
-				@Override
-				public
-				void onTaskStart()
-				{
-					mContent.setVisibility(View.GONE);
-					mProgress.setVisibility(View.VISIBLE);
-				}
+					{
+						@Override
+						public
+						void onTaskStart()
+						{
+							mContent.setVisibility(View.GONE);
+							mProgress.setVisibility(View.VISIBLE);
+						}
 
-				@Override
-				public
-				void onTaskCancelled()
-				{
-				}
+						@Override
+						public
+						void onTaskCancelled()
+						{
+						}
 
-				@Override
-				public
-				void onTaskComplete()
-				{
-					mListView.getListAdapter().fillWithItems(mDataFragment.holders);
-					mListView.getListAdapter().notifyDataSetChanged();
-					buildUI(mDataFragment.targetUser);
-					mProgress.setVisibility(View.GONE);
-					mContent.setVisibility(View.VISIBLE);
-				}
-			};
+						@Override
+						public
+						void onTaskComplete()
+						{
+							mListView.getListAdapter().fillWithItems(mDataFragment.holders);
+							mListView.getListAdapter().notifyDataSetChanged();
+							buildUI(mDataFragment.targetUser);
+							mProgress.setVisibility(View.GONE);
+							mContent.setVisibility(View.VISIBLE);
+						}
+					};
 
 			mDataFragment.executeNewTask(profileRunnable, profileCallbacks);
 		}
@@ -326,5 +336,28 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				return false;
 			}
 		});
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+	}
+
+	@Override
+	public
+	boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		case R.id.actionbar_action_refresh:
+			mDataFragment.holders = null;
+			fetchData(true);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }
