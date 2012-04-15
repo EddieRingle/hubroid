@@ -35,6 +35,7 @@ import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
+import net.idlesoft.android.apps.github.utils.RequestCache;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
@@ -121,18 +122,12 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				public
 				void runTask() throws InterruptedException
 				{
-					try {
-						final RepositoryService rs =
-								new RepositoryService(getBaseActivity().getGHClient());
-						mDataFragment.targetRepo =
-								rs.getRepository(mDataFragment.targetRepo.getOwner().getLogin(),
-												 mDataFragment.targetRepo.getName());
-						buildHolders(mDataFragment.targetRepo);
-					} catch (AccountsException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					mDataFragment.targetRepo =
+							RequestCache.getRepository(getBaseActivity(),
+													   mDataFragment.targetRepo.getOwner()
+																	.getLogin(),
+													   mDataFragment.targetRepo.getName());
+					buildHolders(mDataFragment.targetRepo);
 				}
 			};
 

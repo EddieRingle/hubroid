@@ -37,6 +37,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
+import net.idlesoft.android.apps.github.utils.RequestCache;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.UserService;
@@ -135,15 +136,10 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				public
 				void runTask() throws InterruptedException
 				{
-					try {
-						final UserService us = new UserService(getBaseActivity().getGHClient());
-						mDataFragment.targetUser = us.getUser(mDataFragment.targetUser.getLogin());
-						buildHolders(mDataFragment.targetUser);
-					} catch (AccountsException e) {
-						e.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					mDataFragment.targetUser =
+							RequestCache.getUser(getBaseActivity(),
+												 mDataFragment.targetUser.getLogin());
+					buildHolders(mDataFragment.targetUser);
 				}
 			};
 
