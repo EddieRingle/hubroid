@@ -184,6 +184,7 @@ class DataFragment extends BaseFragment
 		super.onPause();
 
 		mRecreated = true;
+		setTargetFragment(null, 0);
 	}
 
 	public
