@@ -305,17 +305,16 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	{
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			final Intent intent = new Intent();
 			if ((theActionBar().getDisplayOptions() & DISPLAY_HOME_AS_UP)
 					== DISPLAY_HOME_AS_UP
 					&& mUpActivity != null) {
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-				intent.setClass(getApplicationContext(), mUpActivity);
+				onBackPressed();
 			} else {
+				final Intent intent = new Intent();
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.setClass(getApplicationContext(), MainActivity.class);
+				startActivity(intent);
 			}
-			startActivity(intent);
 
 			return true;
 		case R.id.actionbar_action_select_account:
