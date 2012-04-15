@@ -67,9 +67,10 @@ class UIFragment<D extends DataFragment> extends BaseFragment
 		if (!mDataFragmentTag.equals("")) {
 			FragmentManager fm = getFragmentManager();
 			mDataFragment = (D) fm.findFragmentByTag(mDataFragmentTag);
-			if (mDataFragment == null)
+			if (mDataFragment == null || (mDataFragment.getArguments() != getArguments())) {
 				mDataFragment = (D) D.instantiate(getContext(), mDataFragmentTag);
-
+				mDataFragment.setArguments(getArguments());
+			}
 			mDataFragment.setTargetFragment(this, 0);
 			getFragmentManager().beginTransaction().add(mDataFragment, mDataFragmentTag).commit();
 		}
