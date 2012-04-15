@@ -69,7 +69,8 @@
 	<string name="repositories_watched">Watched</string>
 	<string name="forks">Forks</string>
 
-	<!-- Followers/Following -->
+	<!-- Users -->
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>
+	<string name="watchers">Watchers</string>
 </resources>

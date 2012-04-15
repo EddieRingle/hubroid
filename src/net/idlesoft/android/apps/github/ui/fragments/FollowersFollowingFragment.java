@@ -30,22 +30,17 @@ import android.widget.AdapterView;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.adapters.FollowersFollowingListAdapter;
-import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
+import net.idlesoft.android.apps.github.ui.adapters.UserListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
-import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.client.PageIterator;
-import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
-import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public
@@ -144,7 +139,7 @@ class FollowersFollowingFragment
 			final IdleList<User> list = new IdleList<User>(getContext());
 			final ListHolder holder;
 
-			list.setAdapter(new FollowersFollowingListAdapter(getBaseActivity()));
+			list.setAdapter(new UserListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWERS);
 
@@ -242,7 +237,7 @@ class FollowersFollowingFragment
 			final IdleList<User> list = new IdleList<User>(getContext());
 			final ListHolder holder;
 
-			list.setAdapter(new FollowersFollowingListAdapter(getBaseActivity()));
+			list.setAdapter(new UserListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWING);
 

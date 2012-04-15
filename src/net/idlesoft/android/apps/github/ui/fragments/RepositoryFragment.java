@@ -293,6 +293,21 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 		holder = new InfoListAdapter.InfoHolder();
 		holder.primary = "Watchers";
 		holder.secondary = Integer.toString(repository.getWatchers());
+		holder.onClick = new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public
+			void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				final Bundle args = new Bundle();
+				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(repository));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(WatchersFragment.class,
+														   R.id.fragment_container_more,
+														   args);
+				getBaseActivity().finishFragmentTransaction();
+			}
+		};
 		mDataFragment.holders.add(holder);
 	}
 

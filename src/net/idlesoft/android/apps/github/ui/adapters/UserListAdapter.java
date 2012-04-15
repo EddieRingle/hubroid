@@ -36,7 +36,7 @@ import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.event.Event;
 
 public
-class FollowersFollowingListAdapter extends BaseListAdapter<User>
+class UserListAdapter extends BaseListAdapter<User>
 {
 	public static
 	class ViewHolder
@@ -46,7 +46,7 @@ class FollowersFollowingListAdapter extends BaseListAdapter<User>
 	}
 
 	public
-	FollowersFollowingListAdapter(BaseActivity context)
+	UserListAdapter(BaseActivity context)
 	{
 		super(context);
 	}
