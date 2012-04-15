@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import org.eclipse.egit.github.core.Repository;
 
 public
@@ -42,9 +43,9 @@ class RepositoryListAdapter extends BaseListAdapter<Repository>
 	}
 
 	public
-	RepositoryListAdapter(Context pContext)
+	RepositoryListAdapter(BaseActivity context)
 	{
-		super(pContext);
+		super(context);
 	}
 
 	@Override

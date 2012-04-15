@@ -27,6 +27,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
 public
 class InfoListAdapter extends BaseListAdapter<InfoListAdapter.InfoHolder>
@@ -53,7 +54,7 @@ class InfoListAdapter extends BaseListAdapter<InfoListAdapter.InfoHolder>
 	}
 
 	public
-	InfoListAdapter(Context context)
+	InfoListAdapter(BaseActivity context)
 	{
 		super(context);
 	}

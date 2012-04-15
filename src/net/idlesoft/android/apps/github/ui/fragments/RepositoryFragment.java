@@ -107,7 +107,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 			/* uh-oh. */
 		}
 
-		mListView.setAdapter(new InfoListAdapter(getContext()));
+		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));
 
 		if (mDataFragment.isRecreated() && mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);

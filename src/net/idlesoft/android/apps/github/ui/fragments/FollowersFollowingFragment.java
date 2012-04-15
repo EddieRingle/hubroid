@@ -30,6 +30,7 @@ import android.widget.AdapterView;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.adapters.FollowersFollowingListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
@@ -38,33 +39,36 @@ import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.client.PageIterator;
 import org.eclipse.egit.github.core.service.RepositoryService;
+import org.eclipse.egit.github.core.service.UserService;
 import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public
-class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesDataFragment>
+class FollowersFollowingFragment
+		extends UIFragment<FollowersFollowingFragment.FollowersFollowingDataFragment>
 {
-	public static final int LIST_YOURS = 1;
-	public static final int LIST_WATCHED = 2;
+	public static final int LIST_FOLLOWERS = 1;
+	public static final int LIST_FOLLOWING = 2;
 
 	protected
 	class ListHolder
 	{
-		ArrayList<Repository> repositories;
+		ArrayList<User> users;
 		CharSequence title;
 
 		int type;
-		PageIterator<Repository> request;
+		PageIterator<User> request;
 	}
 
 	public static
-	class RepositoriesDataFragment extends DataFragment
+	class FollowersFollowingDataFragment extends DataFragment
 	{
-		ArrayList<ListHolder> repositoryLists;
+		ArrayList<ListHolder> userLists;
 		User targetUser;
 		int currentItem;
 		int currentItemScroll;
@@ -72,11 +76,11 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		public
 		int findListIndexByType(int listType)
 		{
-			if (repositoryLists == null) return -1;
+			if (userLists == null) return -1;
 
-			for (ListHolder holder : repositoryLists) {
+			for (ListHolder holder : userLists) {
 				if (holder.type == listType)
-					return repositoryLists.indexOf(holder);
+					return userLists.indexOf(holder);
 			}
 
 			return -1;
@@ -88,9 +92,9 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 	int mCurrentPage;
 
 	public
-	RepositoriesFragment()
+	FollowersFollowingFragment()
 	{
-		super(RepositoriesDataFragment.class);
+		super(FollowersFollowingDataFragment.class);
 	}
 
 	@Override
@@ -129,37 +133,37 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
 		}
 
-		if (mDataFragment.repositoryLists == null)
-			mDataFragment.repositoryLists = new ArrayList<ListHolder>();
+		if (mDataFragment.userLists == null)
+			mDataFragment.userLists = new ArrayList<ListHolder>();
 
 		ListViewPager.MultiListPagerAdapter adapter =
 				new ListViewPager.MultiListPagerAdapter(getContext());
 
 		if (!mDataFragment.targetUser.getLogin().equals("")) {
-			/* Display a user's repositories */
-			final IdleList<Repository> list = new IdleList<Repository>(getContext());
+			/* Display a user's followers */
+			final IdleList<User> list = new IdleList<User>(getContext());
 			final ListHolder holder;
 
-			list.setAdapter(new RepositoryListAdapter(getBaseActivity()));
+			list.setAdapter(new FollowersFollowingListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_YOURS);
+			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWERS);
 
 			if (mDataFragment.isRecreated() && index >= 0) {
-				holder = mDataFragment.repositoryLists.get(index);
+				holder = mDataFragment.userLists.get(index);
 
 				list.setTitle(holder.title);
-				list.getListAdapter().fillWithItems(holder.repositories);
+				list.getListAdapter().fillWithItems(holder.users);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
 				holder = new ListHolder();
-				holder.type = LIST_YOURS;
-				holder.title = mDataFragment.targetUser.getLogin();
+				holder.type = LIST_FOLLOWERS;
+				holder.title = getString(R.string.followers);
 				list.setTitle(holder.title);
-				holder.repositories = new ArrayList<Repository>();
+				holder.users = new ArrayList<User>();
 
-				mDataFragment.repositoryLists.add(holder);
+				mDataFragment.userLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable yoursRunnable =
+				final DataFragment.DataTask.DataTaskRunnable followersRunnable =
 						new DataFragment.DataTask.DataTaskRunnable()
 						{
 							@Override
@@ -167,11 +171,11 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							void runTask() throws InterruptedException
 							{
 								try {
-									final RepositoryService rs =
-											new RepositoryService(getBaseActivity().getGHClient());
-									holder.request = rs.pageRepositories(
+									final UserService us =
+											new UserService(getBaseActivity().getGHClient());
+									holder.request = us.pageFollowers(
 											mDataFragment.targetUser.getLogin());
-									holder.repositories.addAll(holder.request.next());
+									holder.users.addAll(holder.request.next());
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
@@ -180,7 +184,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							}
 						};
 
-				final DataFragment.DataTask.DataTaskCallbacks yoursCallbacks =
+				final DataFragment.DataTask.DataTaskCallbacks followersCallbacks =
 						new DataFragment.DataTask.DataTaskCallbacks()
 						{
 							@Override
@@ -204,13 +208,13 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							{
 								list.setListShown(false);
 								list.getProgressBar().setVisibility(View.GONE);
-								list.getListAdapter().fillWithItems(holder.repositories);
+								list.getListAdapter().fillWithItems(holder.users);
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
 						};
 
-				mDataFragment.executeNewTask(yoursRunnable, yoursCallbacks);
+				mDataFragment.executeNewTask(followersRunnable, followersCallbacks);
 			}
 
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -219,11 +223,11 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				public
 				void onItemClick(AdapterView<?> parent, View view, int position, long id)
 				{
-					final Repository target = holder.repositories.get(position);
+					final User target = holder.users.get(position);
 					final Bundle args = new Bundle();
-					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					args.putString(ARG_TARGET_USER, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
-					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
 															   R.id.fragment_container_more,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
@@ -234,30 +238,30 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		}
 
 		if (!mDataFragment.targetUser.getLogin().equals("")) {
-			/* Display a user's watched repositories */
-			final IdleList<Repository> list = new IdleList<Repository>(getContext());
+			/* Display a user's following */
+			final IdleList<User> list = new IdleList<User>(getContext());
 			final ListHolder holder;
 
-			list.setAdapter(new RepositoryListAdapter(getBaseActivity()));
+			list.setAdapter(new FollowersFollowingListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_WATCHED);
+			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWING);
 
 			if (mDataFragment.isRecreated() && index >= 0) {
-				holder = mDataFragment.repositoryLists.get(index);
+				holder = mDataFragment.userLists.get(index);
 
 				list.setTitle(holder.title);
-				list.getListAdapter().fillWithItems(holder.repositories);
+				list.getListAdapter().fillWithItems(holder.users);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
 				holder = new ListHolder();
-				holder.type = LIST_WATCHED;
-				holder.title = getString(R.string.repositories_watched);
+				holder.type = LIST_FOLLOWING;
+				holder.title = getString(R.string.following);
 				list.setTitle(holder.title);
-				holder.repositories = new ArrayList<Repository>();
+				holder.users = new ArrayList<User>();
 
-				mDataFragment.repositoryLists.add(holder);
+				mDataFragment.userLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable watchedRunnable =
+				final DataFragment.DataTask.DataTaskRunnable followingRunnable =
 						new DataFragment.DataTask.DataTaskRunnable()
 						{
 							@Override
@@ -265,11 +269,11 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							void runTask() throws InterruptedException
 							{
 								try {
-									final WatcherService ws =
-											new WatcherService(getBaseActivity().getGHClient());
-									holder.request = ws.pageWatched(
+									final UserService us =
+											new UserService(getBaseActivity().getGHClient());
+									holder.request = us.pageFollowing(
 											mDataFragment.targetUser.getLogin());
-									holder.repositories.addAll(holder.request.next());
+									holder.users.addAll(holder.request.next());
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
@@ -278,7 +282,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							}
 						};
 
-				final DataFragment.DataTask.DataTaskCallbacks watchedCallbacks =
+				final DataFragment.DataTask.DataTaskCallbacks followingCallbacks =
 						new DataFragment.DataTask.DataTaskCallbacks()
 						{
 							@Override
@@ -302,13 +306,13 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 							{
 								list.setListShown(false);
 								list.getProgressBar().setVisibility(View.GONE);
-								list.getListAdapter().fillWithItems(holder.repositories);
+								list.getListAdapter().fillWithItems(holder.users);
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
 						};
 
-				mDataFragment.executeNewTask(watchedRunnable, watchedCallbacks);
+				mDataFragment.executeNewTask(followingRunnable, followingCallbacks);
 			}
 
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -317,11 +321,11 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				public
 				void onItemClick(AdapterView<?> parent, View view, int position, long id)
 				{
-					final Repository target = holder.repositories.get(position);
+					final User target = holder.users.get(position);
 					final Bundle args = new Bundle();
-					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					args.putString(ARG_TARGET_USER, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
-					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
 															   R.id.fragment_container_more,
 															   args);
 					getBaseActivity().finishFragmentTransaction();

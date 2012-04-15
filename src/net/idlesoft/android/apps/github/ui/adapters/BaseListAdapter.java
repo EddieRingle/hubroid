@@ -24,6 +24,7 @@ package net.idlesoft.android.apps.github.ui.adapters;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,13 +42,23 @@ class BaseListAdapter<T> extends BaseAdapter
 	private
 	boolean mNotifyOnChange;
 
+	private
+	BaseActivity mContext;
+
 	public
-	BaseListAdapter(Context context)
+	BaseListAdapter(BaseActivity context)
 	{
 		super();
 
-		mInflater = LayoutInflater.from(context);
+		mContext = context;
+		mInflater = LayoutInflater.from(context.getContext());
 		mData = new ArrayList<T>();
+	}
+
+	public
+	BaseActivity getContext()
+	{
+		return mContext;
 	}
 
 	public

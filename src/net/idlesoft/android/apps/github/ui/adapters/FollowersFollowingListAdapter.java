@@ -21,9 +21,7 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -33,22 +31,22 @@ import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.utils.StringUtils;
+import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.event.Event;
 
 public
-class EventListAdapter extends BaseListAdapter<Event>
+class FollowersFollowingListAdapter extends BaseListAdapter<User>
 {
 	public static
 	class ViewHolder
 	{
 		GravatarView gravatar;
-		TextView title;
-		TextView date;
+		TextView login;
 	}
 
 	public
-	EventListAdapter(BaseActivity context)
+	FollowersFollowingListAdapter(BaseActivity context)
 	{
 		super(context);
 	}
@@ -59,24 +57,22 @@ class EventListAdapter extends BaseListAdapter<Event>
 	{
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.event_list_item, null);
+			convertView = mInflater.inflate(R.layout.user_list_item, null);
 			holder = new ViewHolder();
-			holder.gravatar = (GravatarView) convertView.findViewById(R.id.iv_event_gravatar);
-			holder.title = (TextView) convertView.findViewById(R.id.tv_event_title);
-			holder.date = (TextView) convertView.findViewById(R.id.tv_event_date);
+			holder.gravatar = (GravatarView) convertView.findViewById(R.id.iv_user_gravatar);
+			holder.login = (TextView) convertView.findViewById(R.id.tv_user_login);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		final Event e = getItem(position);
+		final User user = getItem(position);
 
-		final String login = e.getActor().getLogin();
-		final String type = e.getType();
+		final String login = user.getLogin();
+		final String type = user.getType();
 
 		holder.gravatar.setDefaultResource(R.drawable.gravatar);
-		holder.title.setText(login + " did a " + type);
-		holder.date.setText(StringUtils.getTimeSince(e.getCreatedAt()) + " ago");
+		holder.login.setText(login);
 
 		return convertView;
 	}

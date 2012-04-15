@@ -67,4 +67,8 @@
 
 	<!-- Repositories -->
 	<string name="repositories_watched">Watched</string>
+
+	<!-- Followers/Following -->
+	<string name="followers">Followers</string>
+	<string name="following">Following</string>
 </resources>

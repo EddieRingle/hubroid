@@ -143,7 +143,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final IdleList<Event> list = new IdleList<Event>(getContext());
 			final ListHolder holder;
 
-			list.setAdapter(new EventListAdapter(getContext()));
+			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_RECEIVED);
 
@@ -243,7 +243,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final IdleList<Event> list = new IdleList<Event>(getContext());
 			final ListHolder holder;
 
-			list.setAdapter(new EventListAdapter(getContext()));
+			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_PUBLIC);
 
@@ -342,7 +342,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final IdleList<Event> list = new IdleList<Event>(getContext());
 			final ListHolder holder;
 
-			list.setAdapter(new EventListAdapter(getContext()));
+			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_TIMELINE);
 

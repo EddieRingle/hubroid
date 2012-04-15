@@ -121,7 +121,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
 		}
 
-		mListView.setAdapter(new InfoListAdapter(getContext()));
+		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));
 
 		if (mDataFragment.isRecreated() && mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
@@ -261,13 +261,23 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		mDataFragment.holders.add(holder);
 
 		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Following";
+		holder.primary = "Followers/Following";
 		holder.secondary = Integer.toString(user.getFollowing());
-		mDataFragment.holders.add(holder);
-
-		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Followers";
-		holder.secondary = Integer.toString(user.getFollowers());
+		holder.onClick = new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public
+			void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				final Bundle args = new Bundle();
+				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(FollowersFollowingFragment.class,
+														   R.id.fragment_container_more,
+														   args);
+				getBaseActivity().finishFragmentTransaction();
+			}
+		};
 		mDataFragment.holders.add(holder);
 	}
 
