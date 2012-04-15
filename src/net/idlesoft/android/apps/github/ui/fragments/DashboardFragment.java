@@ -117,6 +117,10 @@ class DashboardFragment extends BaseFragment
 			getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
 													   R.id.fragment_container, null);
 			break;
+		case ACTIVE_BUTTON_USERS:
+			getBaseActivity().addFragmentToTransaction(FollowersFollowingFragment.class,
+													   R.id.fragment_container, null);
+			break;
 		}
 		getBaseActivity().finishFragmentTransaction(!isMultiPane());
 	}
@@ -189,7 +193,10 @@ class DashboardFragment extends BaseFragment
 				public
 				void onClick(View v)
 				{
-					setActiveButton(R.id.btn_dash_users);
+					if (mActiveButton != ACTIVE_BUTTON_USERS || !isMultiPane()) {
+						setActiveButton(R.id.btn_dash_users);
+						showFragments();
+					}
 				}
 			});
 		}
