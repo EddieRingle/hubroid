@@ -22,8 +22,11 @@
 package net.idlesoft.android.apps.github.ui.adapters;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.Spannable;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -31,11 +34,18 @@ import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
+import net.idlesoft.android.apps.github.ui.fragments.RepositoryFragment;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.utils.EventUtil;
 import net.idlesoft.android.apps.github.utils.StringUtils;
+import org.eclipse.egit.github.core.Commit;
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.event.Event;
+import org.eclipse.egit.github.core.event.*;
+
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public
 class EventListAdapter extends BaseListAdapter<Event>
@@ -73,8 +83,9 @@ class EventListAdapter extends BaseListAdapter<Event>
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		final Event e = getItem(position);
-		EventUtil.fillHolderWithEvent(holder, e);
+		final Event event = getItem(position);
+		final String type = event.getType();
+		EventUtil.fillHolderWithEvent(holder, event);
 
 		holder.gravatar.setOnClickListener(new View.OnClickListener()
 		{
@@ -83,11 +94,99 @@ class EventListAdapter extends BaseListAdapter<Event>
 			void onClick(View v)
 			{
 				final Bundle args = new Bundle();
-				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
+				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(event.getActor()));
 				getContext().startFragmentTransaction();
 				getContext().addFragmentToTransaction(ProfileFragment.class,
 													  R.id.fragment_container_more, args);
 				getContext().finishFragmentTransaction();
+			}
+		});
+
+		convertView.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public
+			void onClick(View v)
+			{
+				final Bundle args = new Bundle();
+				if (type.equals(Event.TYPE_COMMIT_COMMENT)) {
+					final CommitCommentPayload p = (CommitCommentPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_CREATE)) {
+					final CreatePayload p = (CreatePayload) event.getPayload();
+					if (p.getRefType().equals("repository")) {
+						final Repository target = new Repository();
+						target.setOwner(new User().setLogin(
+								event.getRepo().getName().split("/")[0]));
+						target.setName(event.getRepo().getName().split("/")[1]);
+						args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+						getContext().startFragmentTransaction();
+						getContext().addFragmentToTransaction(RepositoryFragment.class,
+															  R.id.fragment_container_more, args);
+						getContext().finishFragmentTransaction();
+					} else {
+					}
+				} else if (type.equals(Event.TYPE_DELETE)) {
+					final DeletePayload p = (DeletePayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_DOWNLOAD)) {
+					final DownloadPayload p = (DownloadPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_FOLLOW)) {
+					final FollowPayload p = (FollowPayload) event.getPayload();
+					args.putString(ARG_TARGET_USER, GsonUtils.toJson(p.getTarget()));
+					getContext().startFragmentTransaction();
+					getContext().addFragmentToTransaction(ProfileFragment.class,
+														  R.id.fragment_container_more, args);
+					getContext().finishFragmentTransaction();
+				} else if (type.equals(Event.TYPE_FORK)) {
+					final ForkPayload p = (ForkPayload) event.getPayload();
+					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(p.getForkee()));
+					getContext().startFragmentTransaction();
+					getContext().addFragmentToTransaction(RepositoryFragment.class,
+														  R.id.fragment_container_more, args);
+					getContext().finishFragmentTransaction();
+				} else if (type.equals(Event.TYPE_FORK_APPLY)) {
+					final ForkApplyPayload p = (ForkApplyPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_GIST)) {
+					final GistPayload p = (GistPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_GOLLUM)) {
+					final GollumPayload p = (GollumPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_ISSUE_COMMENT)) {
+					final IssueCommentPayload p = (IssueCommentPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_ISSUES)) {
+					final IssuesPayload p = (IssuesPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_MEMBER)) {
+					final MemberPayload p = (MemberPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_PUBLIC)) {
+					final PublicPayload p = (PublicPayload) event.getPayload();
+					final Repository target = new Repository();
+					target.setOwner(new User().setLogin(
+							event.getRepo().getName().split("/")[0]));
+					target.setName(event.getRepo().getName().split("/")[1]);
+					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					getContext().startFragmentTransaction();
+					getContext().addFragmentToTransaction(RepositoryFragment.class,
+														  R.id.fragment_container_more, args);
+					getContext().finishFragmentTransaction();
+				} else if (type.equals(Event.TYPE_PULL_REQUEST)) {
+					final PullRequestPayload p = (PullRequestPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_PULL_REQUEST_REVIEW_COMMENT)) {
+					final PullRequestReviewCommentPayload p =
+							(PullRequestReviewCommentPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_PUSH)) {
+					final PushPayload p = (PushPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_TEAM_ADD)) {
+					final TeamAddPayload p = (TeamAddPayload) event.getPayload();
+				} else if (type.equals(Event.TYPE_WATCH)) {
+					final WatchPayload p = (WatchPayload) event.getPayload();
+					final Repository target = new Repository();
+					target.setOwner(new User().setLogin(
+							event.getRepo().getName().split("/")[0]));
+					target.setName(event.getRepo().getName().split("/")[1]);
+					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					getContext().startFragmentTransaction();
+					getContext().addFragmentToTransaction(RepositoryFragment.class,
+														  R.id.fragment_container_more, args);
+					getContext().finishFragmentTransaction();
+				}
 			}
 		});
 

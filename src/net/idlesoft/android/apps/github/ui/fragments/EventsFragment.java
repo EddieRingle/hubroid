@@ -218,23 +218,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				mDataFragment.executeNewTask(receivedRunnable, receivedCallbacks);
 			}
 
-			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
-			{
-				@Override
-				public
-				void onItemClick(AdapterView<?> parent, View view, int position, long id)
-				{
-					final Event e = holder.events.get(position);
-					final Bundle args = new Bundle();
-					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
-					getBaseActivity().startFragmentTransaction();
-					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
-															   R.id.fragment_container_more,
-															   args);
-					getBaseActivity().finishFragmentTransaction();
-				}
-			});
-
 			adapter.addList(list);
 		}
 
@@ -317,23 +300,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
 			}
 
-			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
-			{
-				@Override
-				public
-				void onItemClick(AdapterView<?> parent, View view, int position, long id)
-				{
-					final Event e = holder.events.get(position);
-					final Bundle args = new Bundle();
-					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
-					getBaseActivity().startFragmentTransaction();
-					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
-															   R.id.fragment_container_more,
-															   args);
-					getBaseActivity().finishFragmentTransaction();
-				}
-			});
-
 			adapter.addList(list);
 		}
 
@@ -414,23 +380,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
 			}
-
-			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
-			{
-				@Override
-				public
-				void onItemClick(AdapterView<?> parent, View view, int position, long id)
-				{
-					final Event e = holder.events.get(position);
-					final Bundle args = new Bundle();
-					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
-					getBaseActivity().startFragmentTransaction();
-					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
-															   R.id.fragment_container_more,
-															   args);
-					getBaseActivity().finishFragmentTransaction();
-				}
-			});
 
 			adapter.addList(list);
 		}
