@@ -74,6 +74,21 @@ class EventListAdapter extends BaseListAdapter<Event>
 		final String login = e.getActor().getLogin();
 		final String type = e.getType();
 
+		holder.gravatar.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public
+			void onClick(View v)
+			{
+				final Bundle args = new Bundle();
+				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
+				getContext().startFragmentTransaction();
+				getContext().addFragmentToTransaction(ProfileFragment.class,
+													  R.id.fragment_container_more, args);
+				getContext().finishFragmentTransaction();
+			}
+		});
+
 		holder.gravatar.setDefaultResource(R.drawable.gravatar);
 		holder.title.setText(login + " did a " + type);
 		holder.date.setText(StringUtils.getTimeSince(e.getCreatedAt()) + " ago");
