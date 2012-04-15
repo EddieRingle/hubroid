@@ -44,6 +44,15 @@ class BaseFragment extends SherlockFragment
 		mConfiguration = getResources().getConfiguration();
 	}
 
+	@Override
+	public
+	void onResume()
+	{
+		super.onResume();
+
+		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(true);
+	}
 
 	public
 	BaseActivity getBaseActivity()

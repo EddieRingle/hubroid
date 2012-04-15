@@ -243,6 +243,8 @@ class DashboardFragment extends BaseFragment
 	public
 	void onResume()
 	{
+		super.onResume();
+
 		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(false);
 
@@ -267,9 +269,8 @@ class DashboardFragment extends BaseFragment
 				break;
 		}
 
-		showFragments();
-
-		super.onResume();
+		if (isMultiPane())
+			showFragments();
 	}
 
 	@Override
