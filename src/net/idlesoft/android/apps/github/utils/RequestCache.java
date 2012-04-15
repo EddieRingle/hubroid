@@ -134,9 +134,10 @@ public class RequestCache {
 		}
 		final File f = new File(dir, login + ".json");
 		if (!forceUpdate && f.exists()) {
-			/* Check if the cached JSON is really old (>15 days) */
+			/* Check if the cached JSON is really old (>1 day) */
 			final Date d = new Date();
-			final long elderCheck = d.getTime() - (15 * 24 * 60 * 60000);
+			/* TODO: The amount of time to keep cache should be a preference, really */
+			final long elderCheck = d.getTime() - (24 * 60 * 60000);
 			if (f.lastModified() < elderCheck) {
 				shouldRefresh = true;
 			} else {
