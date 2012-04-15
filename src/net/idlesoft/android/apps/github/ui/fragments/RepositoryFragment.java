@@ -23,7 +23,6 @@ package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -34,16 +33,12 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.ProfileActivity;
-import net.idlesoft.android.apps.github.ui.activities.RepositoryActivity;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
-import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.RepositoryService;
-import org.eclipse.egit.github.core.service.UserService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -195,16 +190,11 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 					final User u = mDataFragment.targetRepo.getOwner();
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(u));
-					if (isMultiPane()) {
-						getBaseActivity().startFragment(ProfileFragment.class,
-														R.id.fragment_container_more,
-														ProfileFragment.class.getName(),
-														args);
-					} else {
-						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
-						i.putExtras(args);
-						getBaseActivity().startActivity(i);
-					}
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction();
 				}
 			};
 
@@ -258,16 +248,11 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 					final Repository target = repository.getParent();
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
-					if (isMultiPane()) {
-						getBaseActivity().startFragment(RepositoryFragment.class,
-														R.id.fragment_container_more,
-														RepositoryFragment.class.getName(),
-														args);
-					} else {
-						final Intent i = new Intent(getBaseActivity(), RepositoryActivity.class);
-						i.putExtras(args);
-						getBaseActivity().startActivity(i);
-					}
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction();
 				}
 			};
 

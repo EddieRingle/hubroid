@@ -27,9 +27,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.EventsActivity;
-import net.idlesoft.android.apps.github.ui.activities.ProfileActivity;
-import net.idlesoft.android.apps.github.ui.activities.RepositoriesActivity;
 
 import static android.view.View.OnClickListener;
 
@@ -106,36 +103,22 @@ class DashboardFragment extends BaseFragment
 	protected
 	void showFragments()
 	{
+		getBaseActivity().startFragmentTransaction();
 		switch (mActiveButton) {
 		case ACTIVE_BUTTON_EVENTS:
-			if (isMultiPane()) {
-				getBaseActivity().startFragment(EventsFragment.class, R.id.fragment_container,
-						getString(R.string.dash_events), null, false);
-				getFragmentContainer().setVisibility(View.VISIBLE);
-			} else {
-				getBaseActivity().startActivity(EventsActivity.class);
-			}
+			getBaseActivity().addFragmentToTransaction(EventsFragment.class,
+													   R.id.fragment_container, null);
 			break;
 		case ACTIVE_BUTTON_REPOS:
-			if (isMultiPane()) {
-				getBaseActivity().startFragment(RepositoriesFragment.class, R.id.fragment_container,
-						getString(R.string.dash_repos), null, false);
-				getFragmentContainer().setVisibility(View.VISIBLE);
-			} else {
-				getBaseActivity().startActivity(RepositoriesActivity.class);
-			}
+			getBaseActivity().addFragmentToTransaction(RepositoriesFragment.class,
+													   R.id.fragment_container, null);
 			break;
 		case ACTIVE_BUTTON_PROFILE:
-			if (isMultiPane()) {
-				getBaseActivity().startFragment(ProfileFragment.class, R.id.fragment_container,
-												getString(R.string.dash_profile), null, false);
-				getFragmentContainer().setVisibility(View.VISIBLE);
-			} else {
-				getBaseActivity().startActivity(ProfileActivity.class);
-			}
-		default:
-			return;
+			getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
+													   R.id.fragment_container, null);
+			break;
 		}
+		getBaseActivity().finishFragmentTransaction(!isMultiPane());
 	}
 
 	@Override

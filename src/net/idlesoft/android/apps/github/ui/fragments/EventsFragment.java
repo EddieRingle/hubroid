@@ -22,7 +22,6 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +31,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.ProfileActivity;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
@@ -229,15 +227,11 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 					final Event e = holder.events.get(position);
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
-					if (isMultiPane()) {
-						getBaseActivity().startFragment(ProfileFragment.class,
-														R.id.fragment_container_more,
-														ProfileFragment.class.getName(), args);
-					} else {
-						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
-						i.putExtras(args);
-						getBaseActivity().startActivity(i);
-					}
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction();
 				}
 			});
 
@@ -332,15 +326,11 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 					final Event e = holder.events.get(position);
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
-					if (isMultiPane()) {
-						getBaseActivity().startFragment(ProfileFragment.class,
-														R.id.fragment_container_more,
-														ProfileFragment.class.getName(), args);
-					} else {
-						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
-						i.putExtras(args);
-						getBaseActivity().startActivity(i);
-					}
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction();
 				}
 			});
 
@@ -434,15 +424,11 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 					final Event e = holder.events.get(position);
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(e.getActor()));
-					if (isMultiPane()) {
-						getBaseActivity().startFragment(ProfileFragment.class,
-														R.id.fragment_container_more,
-														ProfileFragment.class.getName(), args);
-					} else {
-						final Intent i = new Intent(getBaseActivity(), ProfileActivity.class);
-						i.putExtras(args);
-						getBaseActivity().startActivity(i);
-					}
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction();
 				}
 			});
 

@@ -81,14 +81,18 @@ class MainActivity extends BaseActivity
 		if (!mFirstRun) {
 			FragmentManager fm = getSupportFragmentManager();
 			FragmentTransaction ft = fm.beginTransaction();
-			DashboardFragment fragment = (DashboardFragment) fm.findFragmentByTag("dashboard");
+			DashboardFragment fragment =
+					(DashboardFragment) fm.findFragmentByTag(DashboardFragment.class.getName());
 			if (fragment != null) {
 				return;
 			} else {
 				fragment = new DashboardFragment();
 			}
 
-			ft.replace(R.id.fragment_navigation, fragment, "dashboard");
+			if (isMultiPane())
+				ft.replace(R.id.fragment_navigation, fragment, DashboardFragment.class.getName());
+			else
+				ft.replace(R.id.fragment_container, fragment, DashboardFragment.class.getName());
 
 			ft.commit();
 		}

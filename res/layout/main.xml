@@ -26,19 +26,17 @@
 		android:background="@android:color/white"
 		android:gravity="center">
 	<FrameLayout android:id="@+id/fragment_navigation"
-				 android:layout_width="wrap_content"
-				 android:layout_height="match_parent">
-	</FrameLayout>
-	<FrameLayout android:id="@+id/fragment_container"
-			android:layout_width="0dip"
-			android:layout_height="fill_parent"
-			android:layout_weight="1"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
 			android:visibility="gone">
 	</FrameLayout>
+	<FrameLayout android:id="@+id/fragment_container"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent">
+	</FrameLayout>
 	<FrameLayout android:id="@+id/fragment_container_more"
-			android:layout_width="0dip"
-			android:layout_height="fill_parent"
-			android:layout_weight="2"
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
 			android:visibility="gone">
 	</FrameLayout>
 </RelativeLayout>

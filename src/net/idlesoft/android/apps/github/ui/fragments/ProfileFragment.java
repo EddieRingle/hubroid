@@ -34,7 +34,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.RepositoriesActivity;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
@@ -251,16 +250,11 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			{
 				final Bundle args = new Bundle();
 				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
-				if (isMultiPane()) {
-					getBaseActivity().startFragment(RepositoriesFragment.class,
-													R.id.fragment_container_more,
-													RepositoriesFragment.class.getName(),
-													args);
-				} else {
-					final Intent i = new Intent(getBaseActivity(), RepositoriesActivity.class);
-					i.putExtras(args);
-					getBaseActivity().startActivity(i);
-				}
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(RepositoriesFragment.class,
+														   R.id.fragment_container_more,
+														   args);
+				getBaseActivity().finishFragmentTransaction();
 			}
 		};
 
