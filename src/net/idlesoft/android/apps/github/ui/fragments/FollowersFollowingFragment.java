@@ -127,7 +127,7 @@ class FollowersFollowingFragment
 			mDataFragment.targetUser = new User();
 			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
 		}
-
+		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetUser.getLogin());
 		if (mDataFragment.userLists == null)
 			mDataFragment.userLists = new ArrayList<ListHolder>();
 

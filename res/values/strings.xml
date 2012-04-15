@@ -66,6 +66,7 @@
 	<string name="events_public">Your Activity</string>
 
 	<!-- Repositories -->
+	<string name="repositories">Repositories</string>
 	<string name="repositories_watched">Watched</string>
 	<string name="forks">Forks</string>
 

@@ -132,6 +132,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		if (mDataFragment.repositoryLists == null)
 			mDataFragment.repositoryLists = new ArrayList<ListHolder>();
 
+		getBaseActivity().getSupportActionBar().setTitle(R.string.repositories);
 		ListViewPager.MultiListPagerAdapter adapter =
 				new ListViewPager.MultiListPagerAdapter(getContext());
 

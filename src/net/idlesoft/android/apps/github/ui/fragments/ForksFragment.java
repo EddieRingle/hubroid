@@ -122,6 +122,7 @@ class ForksFragment extends UIFragment<ForksFragment.ForksDataFragment>
 																	Repository.class);
 			}
 		}
+		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetRepository.getName());
 		if (mDataFragment.repositoryLists == null)
 			mDataFragment.repositoryLists = new ArrayList<ListHolder>();
 		ListViewPager.MultiListPagerAdapter adapter =

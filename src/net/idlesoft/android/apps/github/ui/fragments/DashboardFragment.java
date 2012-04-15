@@ -252,6 +252,7 @@ class DashboardFragment extends BaseFragment
 	{
 		super.onResume();
 
+		getBaseActivity().getSupportActionBar().setTitle(R.string.app_name);
 		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(false);
 

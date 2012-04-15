@@ -126,7 +126,7 @@ class WatchersFragment
 																	Repository.class);
 			}
 		}
-
+		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetRepository.getName());
 		if (mDataFragment.userLists == null)
 			mDataFragment.userLists = new ArrayList<ListHolder>();
 
