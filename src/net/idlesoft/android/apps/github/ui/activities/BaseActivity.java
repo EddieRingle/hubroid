@@ -231,60 +231,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		finishFragmentTransaction(true);
 	}
 
-	public
-	void startFragment(Class pFragmentClass, int pContainer, String pTag, Bundle pArguments, boolean pAddToBackStack)
-	{
-		if (BaseFragment.class.isAssignableFrom(pFragmentClass)) {
-			FragmentManager fm = getSupportFragmentManager();
-			FragmentTransaction ft = fm.beginTransaction();
-			Fragment fragment;
-
-			/* Try to create an instance of the fragment being started */
-			try {
-				fragment = (Fragment) pFragmentClass.newInstance();
-			} catch (Exception e) {
-				e.printStackTrace();
-				fragment = new Fragment();
-			}
-
-			if (pArguments != null)
-				fragment.setArguments(pArguments);
-
-			/* Add the fragment */
-			ft.replace(pContainer, fragment, pTag);
-
-			/* Add to back stack if specified and commit changes */
-			if (pAddToBackStack)
-				ft.addToBackStack(null);
-
-			ft.commit();
-		}
-	}
-
-	public
-	void startFragment(Class pFragmentClass)
-	{
-		startFragment(pFragmentClass, R.id.fragment_container);
-	}
-
-	public
-	void startFragment(Class pFragmentClass, int pContainer)
-	{
-		startFragment(pFragmentClass, pContainer, null, null, true);
-	}
-
-	public
-	void startFragment(Class pFragmentClass, int pContainer, String pTag)
-	{
-		startFragment(pFragmentClass, pContainer, pTag, null, true);
-	}
-
-	public
-	void startFragment(Class pFragmentClass, int pContainer, String pTag, Bundle pArguments)
-	{
-		startFragment(pFragmentClass, pContainer, pTag, pArguments, true);
-	}
-
 	@Override
 	public
 	boolean onCreateOptionsMenu(Menu menu)
