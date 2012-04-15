@@ -196,12 +196,15 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		Log.d("hubroid", "Adding to Fragment Transaction.");
 		if (mFragmentTransaction == null)
 			throw new IllegalStateException("BaseActivity Fragment transaction is null, start a new one with startFragmentTransaction().");
-		BaseFragment fragment;
-		try {
-			fragment = (BaseFragment) fragmentClass.newInstance();
-		} catch (Exception e) {
-			e.printStackTrace();
-			fragment = new BaseFragment();
+		BaseFragment fragment = (BaseFragment) getSupportFragmentManager()
+				.findFragmentByTag(fragmentClass.getName());
+		if (fragment == null) {
+			try {
+				fragment = (BaseFragment) fragmentClass.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+				fragment = new BaseFragment();
+			}
 		}
 		if (arguments != null)
 			fragment.setArguments(arguments);

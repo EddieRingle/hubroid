@@ -144,7 +144,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 
 			final int index = mDataFragment.findListIndexByType(LIST_YOURS);
 
-			if (mDataFragment.isRecreated() && index >= 0) {
+			if (index >= 0) {
 				holder = mDataFragment.repositoryLists.get(index);
 
 				list.setTitle(holder.title);
@@ -242,7 +242,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 
 			final int index = mDataFragment.findListIndexByType(LIST_WATCHED);
 
-			if (mDataFragment.isRecreated() && index >= 0) {
+			if (index >= 0) {
 				holder = mDataFragment.repositoryLists.get(index);
 
 				list.setTitle(holder.title);

@@ -147,7 +147,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 			final int index = mDataFragment.findListIndexByType(LIST_RECEIVED);
 
-			if (mDataFragment.isRecreated() && index >= 0) {
+			if (index >= 0) {
 				holder = mDataFragment.eventLists.get(index);
 
 				list.setTitle(holder.title);
@@ -247,7 +247,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 			final int index = mDataFragment.findListIndexByType(LIST_PUBLIC);
 
-			if (mDataFragment.isRecreated() && index >= 0) {
+			if (index >= 0) {
 				holder = mDataFragment.eventLists.get(index);
 
 				list.setTitle(holder.title);
@@ -346,7 +346,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 			final int index = mDataFragment.findListIndexByType(LIST_TIMELINE);
 
-			if (mDataFragment.isRecreated() && index >= 0) {
+			if (index >= 0) {
 				holder = mDataFragment.eventLists.get(index);
 
 				list.setTitle(holder.title);

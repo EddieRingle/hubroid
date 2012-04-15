@@ -148,7 +148,7 @@ class FollowersFollowingFragment
 
 			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWERS);
 
-			if (mDataFragment.isRecreated() && index >= 0) {
+			if (index >= 0) {
 				holder = mDataFragment.userLists.get(index);
 
 				list.setTitle(holder.title);
@@ -246,7 +246,7 @@ class FollowersFollowingFragment
 
 			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWING);
 
-			if (mDataFragment.isRecreated() && index >= 0) {
+			if (index >= 0) {
 				holder = mDataFragment.userLists.get(index);
 
 				list.setTitle(holder.title);

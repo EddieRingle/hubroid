@@ -123,7 +123,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 
 		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));
 
-		if (mDataFragment.isRecreated() && mDataFragment.holders != null) {
+		if (mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
 			buildUI(mDataFragment.targetUser);
