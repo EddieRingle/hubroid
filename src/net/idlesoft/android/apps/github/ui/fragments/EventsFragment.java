@@ -337,7 +337,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			adapter.addList(list);
 		}
 
-		{ /* This bit causes some weird issue with egit-github at the moment, disabling */
+		{
 			/* Display timeline events */
 			final IdleList<Event> list = new IdleList<Event>(getContext());
 			final ListHolder holder;
