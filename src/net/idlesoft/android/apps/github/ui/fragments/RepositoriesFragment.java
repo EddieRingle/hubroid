@@ -42,6 +42,8 @@ import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 
@@ -171,8 +173,15 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 								try {
 									final RepositoryService rs =
 											new RepositoryService(getBaseActivity().getGHClient());
-									holder.request = rs.pageRepositories(
-											mDataFragment.targetUser.getLogin());
+									if (!mDataFragment.targetUser.getLogin().equals(
+											getBaseActivity().getCurrentUserLogin())) {
+										holder.request = rs.pageRepositories(
+												mDataFragment.targetUser.getLogin());
+									} else {
+										Map<String, String> filter = new HashMap<String, String>();
+										filter.put("type", "owner");
+										holder.request = rs.pageRepositories(filter);
+									}
 									holder.repositories.addAll(holder.request.next());
 								} catch (IOException e) {
 									e.printStackTrace();
