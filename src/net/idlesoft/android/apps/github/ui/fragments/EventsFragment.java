@@ -484,8 +484,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 		mViewPager.setAdapter(adapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
-
-		mViewPager.setCurrentItem(mDataFragment.currentItem);
 	}
 
 	@Override
