@@ -1,10 +1,17 @@
+# output directories
 bin/
 gen/
+out/
+
+# local configuration
 build.properties
 local.properties
+
+# Eclipse project files
 .settings/
 .project
 .classpath
+
+# IDEA project files
 *.iml
 *.idea
-out/
