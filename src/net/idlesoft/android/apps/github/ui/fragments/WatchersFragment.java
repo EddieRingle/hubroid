@@ -69,6 +69,7 @@ class WatchersFragment
 		Repository targetRepository;
 		int currentItem;
 		int currentItemScroll;
+		int currentItemScrollTop;
 
 		public
 		int findListIndexByType(int listType)
@@ -137,8 +138,6 @@ class WatchersFragment
 		mTitlePageIndicator.setViewPager(mViewPager);
 
 		fetchData(false);
-
-		mViewPager.setCurrentItem(mDataFragment.currentItem);
 	}
 
 	public
@@ -246,10 +245,28 @@ class WatchersFragment
 
 	@Override
 	public
-	void onDestroy()
+	void onPause()
 	{
-		super.onDestroy();
+		super.onPause();
 
 		mDataFragment.currentItem = mViewPager.getCurrentItem();
+
+		mDataFragment.currentItemScroll = mViewPager.getAdapter().getList(mDataFragment.currentItem)
+													.getFirstVisiblePosition();
+		mDataFragment.currentItemScrollTop = mViewPager.getAdapter()
+													   .getList(mDataFragment.currentItem)
+													   .getChildAt(0).getTop();
+	}
+
+	@Override
+	public
+	void onResume()
+	{
+		super.onResume();
+
+		mViewPager.setCurrentItem(mDataFragment.currentItem);
+		mViewPager.getAdapter().getList(mDataFragment.currentItem)
+				  .setSelectionFromTop(mDataFragment.currentItemScroll,
+									   mDataFragment.currentItemScrollTop);
 	}
 }

@@ -68,6 +68,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		User targetUser;
 		int currentItem;
 		int currentItemScroll;
+		int currentItemScrollTop;
 
 		public
 		int findListIndexByType(int listType)
@@ -334,16 +335,32 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 
 		mViewPager.setAdapter(adapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
-
-		mViewPager.setCurrentItem(mDataFragment.currentItem);
 	}
 
 	@Override
 	public
-	void onDestroy()
+	void onPause()
 	{
-		super.onDestroy();
+		super.onPause();
 
 		mDataFragment.currentItem = mViewPager.getCurrentItem();
+
+		mDataFragment.currentItemScroll = mViewPager.getAdapter().getList(mDataFragment.currentItem)
+													.getFirstVisiblePosition();
+		mDataFragment.currentItemScrollTop = mViewPager.getAdapter()
+													   .getList(mDataFragment.currentItem)
+													   .getChildAt(0).getTop();
+	}
+
+	@Override
+	public
+	void onResume()
+	{
+		super.onResume();
+
+		mViewPager.setCurrentItem(mDataFragment.currentItem);
+		mViewPager.getAdapter().getList(mDataFragment.currentItem)
+				  .setSelectionFromTop(mDataFragment.currentItemScroll,
+									   mDataFragment.currentItemScrollTop);
 	}
 }
