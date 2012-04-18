@@ -183,7 +183,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	void startFragmentTransaction()
 	{
-		Log.d("hubroid", "Starting Fragment Transaction.");
 		if (mFragmentTransaction != null)
 			throw new IllegalStateException("Fragment transaction already started. End the existing one before starting a new instance.");
 
@@ -193,7 +192,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	void addFragmentToTransaction(Class<? extends BaseFragment> fragmentClass, int container, Bundle arguments)
 	{
-		Log.d("hubroid", "Adding to Fragment Transaction.");
 		if (mFragmentTransaction == null)
 			throw new IllegalStateException("BaseActivity Fragment transaction is null, start a new one with startFragmentTransaction().");
 		BaseFragment fragment;
@@ -213,7 +211,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	void finishFragmentTransaction(boolean backstack)
 	{
-		Log.d("hubroid", "Finishing Fragment Transaction.");
 		if (mFragmentTransaction == null)
 			throw new IllegalStateException("There is no Fragment transaction to finish (it is null).");
 
