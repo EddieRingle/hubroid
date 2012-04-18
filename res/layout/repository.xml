@@ -60,6 +60,11 @@
 						android:textSize="14dp"
 						android:ellipsize="end" />
 			</LinearLayout>
+			<ImageView android:id="@+id/iv_repository_privacy"
+					 android:layout_width="16dp"
+					 android:layout_height="16dp"
+					 android:layout_gravity="center_vertical|right"
+					 android:layout_marginLeft="5dp" />
 		</LinearLayout>
 		<net.idlesoft.android.apps.github.ui.widgets.IdleList android:id="@+id/lv_repository_info"
 				android:layout_width="match_parent"

@@ -28,10 +28,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -331,6 +328,12 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 			} else {
 				tvDescription.setVisibility(View.GONE);
 			}
+
+			final ImageView ivPrivacy = (ImageView) mContent.findViewById(R.id.iv_repository_privacy);
+			if (repository.isPrivate())
+				ivPrivacy.setImageResource(R.drawable.lock);
+			else
+				ivPrivacy.setImageResource(R.drawable.open_lock);
 		}
 
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
