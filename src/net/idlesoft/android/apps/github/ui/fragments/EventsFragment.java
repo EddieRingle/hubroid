@@ -34,15 +34,17 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
+import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.client.PageIterator;
-import org.eclipse.egit.github.core.event.Event;
+import org.eclipse.egit.github.core.event.*;
 import org.eclipse.egit.github.core.service.EventService;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public
@@ -82,6 +84,98 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			}
 
 			return -1;
+		}
+	}
+
+	public
+	class OnEventListItemClickListener implements AdapterView.OnItemClickListener
+	{
+
+		@Override
+		public
+		void onItemClick(AdapterView<?> parent, View view, int position, long id)
+		{
+			final Event event = mDataFragment.eventLists.get(mCurrentPage).events.get(position);
+			final String type = event.getType();
+			final Bundle args = new Bundle();
+			if (type.equals(Event.TYPE_COMMIT_COMMENT)) {
+				final CommitCommentPayload p = (CommitCommentPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_CREATE)) {
+				final CreatePayload p = (CreatePayload) event.getPayload();
+				if (p.getRefType().equals("repository")) {
+					final Repository target = new Repository();
+					target.setOwner(new User().setLogin(
+							event.getRepo().getName().split("/")[0]));
+					target.setName(event.getRepo().getName().split("/")[1]);
+					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+															   R.id.fragment_container_more, args);
+					getBaseActivity().finishFragmentTransaction();
+				} else {
+				}
+			} else if (type.equals(Event.TYPE_DELETE)) {
+				final DeletePayload p = (DeletePayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_DOWNLOAD)) {
+				final DownloadPayload p = (DownloadPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_FOLLOW)) {
+				final FollowPayload p = (FollowPayload) event.getPayload();
+				args.putString(ARG_TARGET_USER, GsonUtils.toJson(p.getTarget()));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
+														   R.id.fragment_container_more, args);
+				getBaseActivity().finishFragmentTransaction();
+			} else if (type.equals(Event.TYPE_FORK)) {
+				final ForkPayload p = (ForkPayload) event.getPayload();
+				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(p.getForkee()));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+														   R.id.fragment_container_more, args);
+				getBaseActivity().finishFragmentTransaction();
+			} else if (type.equals(Event.TYPE_FORK_APPLY)) {
+				final ForkApplyPayload p = (ForkApplyPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_GIST)) {
+				final GistPayload p = (GistPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_GOLLUM)) {
+				final GollumPayload p = (GollumPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_ISSUE_COMMENT)) {
+				final IssueCommentPayload p = (IssueCommentPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_ISSUES)) {
+				final IssuesPayload p = (IssuesPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_MEMBER)) {
+				final MemberPayload p = (MemberPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_PUBLIC)) {
+				final PublicPayload p = (PublicPayload) event.getPayload();
+				final Repository target = new Repository();
+				target.setOwner(new User().setLogin(
+						event.getRepo().getName().split("/")[0]));
+				target.setName(event.getRepo().getName().split("/")[1]);
+				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+														   R.id.fragment_container_more, args);
+				getBaseActivity().finishFragmentTransaction();
+			} else if (type.equals(Event.TYPE_PULL_REQUEST)) {
+				final PullRequestPayload p = (PullRequestPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_PULL_REQUEST_REVIEW_COMMENT)) {
+				final PullRequestReviewCommentPayload p =
+						(PullRequestReviewCommentPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_PUSH)) {
+				final PushPayload p = (PushPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_TEAM_ADD)) {
+				final TeamAddPayload p = (TeamAddPayload) event.getPayload();
+			} else if (type.equals(Event.TYPE_WATCH)) {
+				final WatchPayload p = (WatchPayload) event.getPayload();
+				final Repository target = new Repository();
+				target.setOwner(new User().setLogin(
+						event.getRepo().getName().split("/")[0]));
+				target.setName(event.getRepo().getName().split("/")[1]);
+				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
+														   R.id.fragment_container_more, args);
+				getBaseActivity().finishFragmentTransaction();
+			}
 		}
 	}
 
@@ -143,6 +237,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final IdleList<Event> list = new IdleList<Event>(getContext());
 			final ListHolder holder;
 
+			list.setOnItemClickListener(new OnEventListItemClickListener());
 			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_RECEIVED);
@@ -226,6 +321,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final IdleList<Event> list = new IdleList<Event>(getContext());
 			final ListHolder holder;
 
+			list.setOnItemClickListener(new OnEventListItemClickListener());
 			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_PUBLIC);
@@ -308,6 +404,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final IdleList<Event> list = new IdleList<Event>(getContext());
 			final ListHolder holder;
 
+			list.setOnItemClickListener(new OnEventListItemClickListener());
 			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
 			final int index = mDataFragment.findListIndexByType(LIST_TIMELINE);

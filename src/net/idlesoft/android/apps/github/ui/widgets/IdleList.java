@@ -101,6 +101,8 @@ class IdleList<T> extends ListView
 		setFooterDividersEnabled(true);
 		addFooterView(mFooterView, null, false);
 
+		setItemsCanFocus(true);
+
 		/* A tiny hack to get the ProgressBar to show */
 		mListShown = true;
 		setListShown(true);
