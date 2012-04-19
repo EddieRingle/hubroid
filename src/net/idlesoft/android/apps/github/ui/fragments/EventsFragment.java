@@ -96,7 +96,8 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		public
 		void onItemClick(AdapterView<?> parent, View view, int position, long id)
 		{
-			final Event event = mDataFragment.eventLists.get(mCurrentPage).events.get(position);
+			final Event event = mDataFragment.eventLists.get(mViewPager.getCurrentItem())
+					.events.get(position);
 			final String type = event.getType();
 			final Bundle args = new Bundle();
 			if (type.equals(Event.TYPE_COMMIT_COMMENT)) {
