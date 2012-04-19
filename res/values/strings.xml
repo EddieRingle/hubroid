@@ -70,6 +70,14 @@
 	<string name="repositories_watched">Watched</string>
 	<string name="forks">Forks</string>
 
+	<!-- Issues -->
+	<string name="issues">Issues</string>
+	<string name="issues_filters">Filters</string>
+	<string name="issues_open">Open</string>
+	<string name="issues_closed">Closed</string>
+	<string name="issues_assigned">Assigned To You</string>
+	<string name="issues_mentioned">Mentioning You</string>
+
 	<!-- Users -->
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>
