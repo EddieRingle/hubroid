@@ -19,7 +19,8 @@
   ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<resources>
+<resources
+		xmlns:android="http://schemas.android.com/apk/res/net.idlesoft.android.apps.github">
 	<!-- Application -->
 	<string name="app_name">Hubroid</string>
 	<string name="github">GitHub</string>
@@ -28,6 +29,7 @@
 
 	<!-- Action Bar -->
 	<string name="actionbar_action_add_account">New Account</string>
+	<string name="actionbar_action_filters">Filters</string>
 	<string name="actionbar_action_refresh">Refresh</string>
 	<string name="actionbar_action_select_account">Select Account</string>
 
@@ -69,6 +71,14 @@
 	<string name="repositories">Repositories</string>
 	<string name="repositories_watched">Watched</string>
 	<string name="forks">Forks</string>
+
+	<!-- Issues -->
+	<string name="issues">Issues</string>
+	<string name="issues_filters">Filters</string>
+	<string name="issues_open">Open</string>
+	<string name="issues_closed">Closed</string>
+	<string name="issues_assigned">Assigned To You</string>
+	<string name="issues_mentioned">Mentioning You</string>
 
 	<!-- Users -->
 	<string name="followers">Followers</string>

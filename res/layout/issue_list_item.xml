@@ -19,22 +19,40 @@
   ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:id="@+id/actionbar_action_add_account"
-		  android:title="@string/actionbar_action_add_account"
-		  android:showAsAction="ifRoom|withText"
-		  android:visible="false" />
-	<item android:id="@+id/actionbar_action_tags"
-		  android:icon="@drawable/tags"
-		  android:title="@string/actionbar_action_filters"
-		  android:showAsAction="ifRoom|withText"
-		  android:visible="false" />
-	<item android:id="@+id/actionbar_action_refresh"
-		  android:icon="@drawable/ic_menu_refresh"
-		  android:title="@string/actionbar_action_refresh"
-		  android:showAsAction="ifRoom|withText"
-		  android:visible="false" />
-	<item android:id="@+id/actionbar_action_select_account"
-		  android:title="@string/actionbar_action_select_account"
-		  android:visible="false" />
-</menu>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="10dp"
+		android:orientation="horizontal">
+	<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="match_parent"
+			android:layout_marginRight="5dp"
+			android:gravity="center_horizontal"
+			android:orientation="vertical">
+		<TextView android:id="@+id/tv_issue_number"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+		<net.idlesoft.android.apps.github.ui.widgets.GravatarView
+				android:id="@+id/iv_issue_gravatar"
+				android:layout_height="32dp"
+				android:layout_width="32dp"
+				android:padding="2dp"
+				android:background="@drawable/gravatar_border" />
+	</LinearLayout>
+	<LinearLayout
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+		<TextView android:id="@+id/tv_issue_meta"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:textColor="@color/light_text_color" />
+		<TextView android:id="@+id/tv_issue_title"
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:maxLines="2"
+				android:ellipsize="end" />
+	</LinearLayout>
+</LinearLayout>
