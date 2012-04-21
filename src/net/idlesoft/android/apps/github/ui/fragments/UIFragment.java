@@ -80,7 +80,7 @@ class UIFragment<D extends DataFragment> extends BaseFragment
 				mDataFragment = (D) D.instantiate(getContext(), mDataFragmentTag);
 				mDataFragment.setArguments(getArguments());
 			}
-			mDataFragment.setTargetFragment(this, 0);
+			mDataFragment.setUIFragment(this);
 			getFragmentManager().beginTransaction().add(mDataFragment, mDataFragmentTag).commit();
 		}
 

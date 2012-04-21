@@ -154,6 +154,9 @@ class DataFragment extends BaseFragment
 	private
 	boolean mRecreated;
 
+	private
+	UIFragment<? extends DataFragment> mUIFragment;
+
 	@Override
 	public
 	void onCreate(Bundle savedInstanceState)
@@ -184,7 +187,7 @@ class DataFragment extends BaseFragment
 		super.onPause();
 
 		mRecreated = true;
-		setTargetFragment(null, 0);
+		mUIFragment = null;
 	}
 
 	public
@@ -194,9 +197,15 @@ class DataFragment extends BaseFragment
 	}
 
 	public
-	UIFragment<DataFragment> getUIFragment()
+	UIFragment<? extends DataFragment> getUIFragment()
 	{
-		return (UIFragment<DataFragment>) getTargetFragment();
+		return mUIFragment;
+	}
+
+	public
+	void setUIFragment(UIFragment<? extends DataFragment> fragment)
+	{
+		mUIFragment = fragment;
 	}
 
 	public
