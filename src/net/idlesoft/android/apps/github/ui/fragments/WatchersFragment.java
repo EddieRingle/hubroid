@@ -121,7 +121,7 @@ class WatchersFragment
 		final Bundle args = getArguments();
 		final String repositoryJson;
 		if (args != null) {
-			repositoryJson = args.getString(ARG_TARGET_REPO, null);
+			repositoryJson = args.getString(ARG_TARGET_REPO);
 			if (repositoryJson != null) {
 				mDataFragment.targetRepository = GsonUtils.fromJson(repositoryJson,
 																	Repository.class);

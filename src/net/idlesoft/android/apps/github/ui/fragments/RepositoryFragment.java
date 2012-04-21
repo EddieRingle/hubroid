@@ -99,7 +99,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 		final Bundle args = getArguments();
 		final String repositoryJson;
 		if (args != null) {
-			repositoryJson = args.getString(ARG_TARGET_REPO, null);
+			repositoryJson = args.getString(ARG_TARGET_REPO);
 			if (repositoryJson != null) {
 				mDataFragment.targetRepo = GsonUtils.fromJson(repositoryJson, Repository.class);
 			}

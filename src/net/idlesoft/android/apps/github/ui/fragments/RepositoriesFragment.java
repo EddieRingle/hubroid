@@ -122,7 +122,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		final Bundle args = getArguments();
 		final String userJson;
 		if (args != null) {
-			userJson = args.getString(HubroidConstants.ARG_TARGET_USER, null);
+			userJson = args.getString(HubroidConstants.ARG_TARGET_USER);
 			if (userJson != null) {
 				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
 			}
