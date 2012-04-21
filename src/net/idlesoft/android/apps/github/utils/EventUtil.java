@@ -158,6 +158,16 @@ class EventUtil
 			extraBuilder.append(p.getIssue().getTitle());
 		} else if (type.equals(Event.TYPE_MEMBER)) {
 			final MemberPayload p = (MemberPayload) event.getPayload();
+			titleBuilder.append(p.getAction() + " " + p.getMember().getLogin());
+			titleBuilder.append(" to " + event.getRepo().getName());
+			int index = titleBuilder.toString().indexOf(event.getRepo().getName());
+			titleBuilder.setSpan(new ForegroundColorSpan(Color.parseColor("#4183C4")),
+								 index, index + event.getRepo().getName().length(),
+								 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+			index = titleBuilder.toString().indexOf(p.getMember().getLogin());
+			titleBuilder.setSpan(new ForegroundColorSpan(Color.parseColor("#4183C4")),
+								 index, index + p.getMember().getLogin().length(),
+								 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 		} else if (type.equals(Event.TYPE_PUBLIC)) {
 			final PublicPayload p = (PublicPayload) event.getPayload();
 			titleBuilder.append("open sourced " + event.getRepo().getName());
