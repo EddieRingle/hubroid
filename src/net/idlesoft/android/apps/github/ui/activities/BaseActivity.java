@@ -121,10 +121,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
-
-		/* Force portrait orientation on small screens */
-		if (!isMultiPane())
-			setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 	}
 
 	protected
