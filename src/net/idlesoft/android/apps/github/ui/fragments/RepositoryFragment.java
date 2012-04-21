@@ -118,6 +118,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 		if (mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
+			buildHolders(mDataFragment.targetRepo);
 			buildUI(mDataFragment.targetRepo);
 		} else {
 			final DataFragment.DataTask.DataTaskRunnable repositoryRunnable =

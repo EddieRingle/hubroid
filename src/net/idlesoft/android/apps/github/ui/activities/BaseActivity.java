@@ -213,7 +213,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		if (backstack)
 			mFragmentTransaction.addToBackStack(null);
 
-		mFragmentTransaction.commit();
+		mFragmentTransaction.commitAllowingStateLoss();
 		/* Set the activity's transaction to null so a new one can be created */
 		mFragmentTransaction = null;
 	}

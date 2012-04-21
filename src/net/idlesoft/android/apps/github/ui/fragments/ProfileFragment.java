@@ -136,6 +136,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		if (mDataFragment.holders != null) {
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
+			buildHolders(mDataFragment.targetUser);
 			buildUI(mDataFragment.targetUser);
 		} else {
 			final DataFragment.DataTask.DataTaskRunnable profileRunnable =
