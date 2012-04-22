@@ -20,7 +20,6 @@ import android.accounts.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import org.eclipse.egit.github.core.Authorization;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.OAuthService;
@@ -80,7 +79,6 @@ class GitHubAccountAuthenticator extends AbstractAccountAuthenticator {
 	@Override
 	public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType,
 							   Bundle options) throws NetworkErrorException {
-		Log.d(TAG, "getAuthToken() called : authTokenType=" + authTokenType);
 		String password = AccountManager.get(mContext).getPassword(account);
 		Authorization auth = null;
 		try {
@@ -108,7 +106,6 @@ class GitHubAccountAuthenticator extends AbstractAccountAuthenticator {
 			throw new NetworkErrorException(e);
 		}
 		String oauthToken = auth.getToken();
-		Log.d(TAG, "getAuthToken() called : oauthToken=" + oauthToken);
 		Bundle bundle = new Bundle();
 		bundle.putString(KEY_ACCOUNT_NAME, account.name);
 		bundle.putString(KEY_ACCOUNT_TYPE, GITHUB_ACCOUNT_TYPE);

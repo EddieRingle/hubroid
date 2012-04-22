@@ -24,7 +24,6 @@ package net.idlesoft.android.apps.github.ui.fragments;
 import android.accounts.AccountsException;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -268,7 +267,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 					void runTask() throws InterruptedException
 					{
 						try {
-							Log.d("hubroid", "RECEIVED TASK");
 							final EventService es =
 									new EventService(getBaseActivity().getGHClient());
 							PageIterator<Event> itr =
@@ -350,7 +348,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 							public
 							void runTask() throws InterruptedException
 							{
-								Log.d("hubroid", "PUBLIC TASKS");
 								try {
 									final EventService es =
 											new EventService(getBaseActivity().getGHClient());
