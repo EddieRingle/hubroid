@@ -95,8 +95,14 @@ class ListViewPager extends ViewPager
 			IdleList list = mLists.get(position);
 
 			/* Add the list to the container */
-			if (container.indexOfChild(list) < 0)
+			if (container.indexOfChild(list) < 0) {
+				/* Remove list from its current parent if it has one */
+				final ViewGroup existingParent = (ViewGroup) list.getParent();
+				if (existingParent != null && existingParent.indexOfChild(list) >= 0)
+					existingParent.removeView(list);
+				/* Add list to the new container */
 				container.addView(list);
+			}
 
 			return list;
 		}
