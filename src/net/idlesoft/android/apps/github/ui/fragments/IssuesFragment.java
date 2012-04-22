@@ -27,6 +27,9 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
@@ -69,6 +72,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 	class IssuesDataFragment extends DataFragment
 	{
 		ArrayList<ListHolder> issuesLists;
+		ListViewPager.MultiListPagerAdapter pagerAdapter;
 		Repository targetRepository;
 		int currentItem;
 		int currentItemScroll;
@@ -120,17 +124,19 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 	{
 		{
 			/* Display open issues */
-			final IdleList<Issue> list = new IdleList<Issue>(getContext());
+			final IdleList<Issue> list;
 			final ListHolder holder;
-
-			/*list.setOnItemClickListener(new OnEventListItemClickListener());*/
-			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
-
 			final int index = mDataFragment.findListIndexByType(LIST_OPEN);
 
-			if (index >= 0) {
-				holder = mDataFragment.issuesLists.get(index);
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Issue>(getContext());
 
+			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
+
+			if (index >= 0 && !freshen) {
+				holder = mDataFragment.issuesLists.get(index);
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
@@ -141,7 +147,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.issues = new ArrayList<Issue>();
-
 				mDataFragment.issuesLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable openRunnable =
@@ -198,24 +203,26 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 						};
 
 				mDataFragment.executeNewTask(openRunnable, openCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
-
-			mViewPager.getAdapter().addList(list);
 		}
 
 		{
 			/* Display closed issues */
-			final IdleList<Issue> list = new IdleList<Issue>(getContext());
+			final IdleList<Issue> list;
 			final ListHolder holder;
-
-			/*list.setOnItemClickListener(new OnEventListItemClickListener());*/
-			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
-
 			final int index = mDataFragment.findListIndexByType(LIST_CLOSED);
 
-			if (index >= 0) {
-				holder = mDataFragment.issuesLists.get(index);
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Issue>(getContext());
 
+			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
+
+			if (index >= 0 && !freshen) {
+				holder = mDataFragment.issuesLists.get(index);
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
@@ -286,24 +293,26 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 						};
 
 				mDataFragment.executeNewTask(closedRunnable, closedCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
-
-			mViewPager.getAdapter().addList(list);
 		}
 
 		if (!getBaseActivity().getCurrentUserLogin().equals("")) {
 			/* Display issues assigned to current user */
-			final IdleList<Issue> list = new IdleList<Issue>(getContext());
+			final IdleList<Issue> list;
 			final ListHolder holder;
-
-			/*list.setOnItemClickListener(new OnEventListItemClickListener());*/
-			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
-
 			final int index = mDataFragment.findListIndexByType(LIST_ASSIGNED);
 
-			if (index >= 0) {
-				holder = mDataFragment.issuesLists.get(index);
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Issue>(getContext());
 
+			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
+
+			if (index >= 0 && !freshen) {
+				holder = mDataFragment.issuesLists.get(index);
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
@@ -374,24 +383,26 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 						};
 
 				mDataFragment.executeNewTask(assignedRunnable, assignedCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
-
-			mViewPager.getAdapter().addList(list);
 		}
 
 		if (!getBaseActivity().getCurrentUserLogin().equals("")) {
 			/* Display issues mentioning the current user */
-			final IdleList<Issue> list = new IdleList<Issue>(getContext());
+			final IdleList<Issue> list;
 			final ListHolder holder;
-
-			/*list.setOnItemClickListener(new OnEventListItemClickListener());*/
-			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
-
 			final int index = mDataFragment.findListIndexByType(LIST_MENTIONED);
 
-			if (index >= 0) {
-				holder = mDataFragment.issuesLists.get(index);
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Issue>(getContext());
 
+			list.setAdapter(new IssuesListAdapter(getBaseActivity()));
+
+			if (index >= 0 && !freshen) {
+				holder = mDataFragment.issuesLists.get(index);
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
@@ -462,9 +473,9 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 						};
 
 				mDataFragment.executeNewTask(mentionedRunnable, mentionedCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
-
-			mViewPager.getAdapter().addList(list);
 		}
 	}
 
@@ -486,10 +497,10 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		if (mDataFragment.issuesLists == null)
 			mDataFragment.issuesLists = new ArrayList<ListHolder>();
 
-		ListViewPager.MultiListPagerAdapter adapter =
-				new ListViewPager.MultiListPagerAdapter(getContext());
+		if (mDataFragment.pagerAdapter == null)
+			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
 
-		mViewPager.setAdapter(adapter);
+		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
 
 		fetchData(false);
@@ -502,12 +513,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		super.onPause();
 
 		mDataFragment.currentItem = mViewPager.getCurrentItem();
-
-		mDataFragment.currentItemScroll = mViewPager.getAdapter().getList(mDataFragment.currentItem)
-													.getFirstVisiblePosition();
-		mDataFragment.currentItemScrollTop = mViewPager.getAdapter()
-													   .getList(mDataFragment.currentItem)
-													   .getChildAt(0).getTop();
 	}
 
 	@Override
@@ -517,8 +522,27 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
-		mViewPager.getAdapter().getList(mDataFragment.currentItem)
-				  .setSelectionFromTop(mDataFragment.currentItemScroll,
-									   mDataFragment.currentItemScrollTop);
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+	}
+
+	@Override
+	public
+	boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		case R.id.actionbar_action_refresh:
+			fetchData(true);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }
