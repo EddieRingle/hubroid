@@ -75,8 +75,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		ListViewPager.MultiListPagerAdapter pagerAdapter;
 		Repository targetRepository;
 		int currentItem;
-		int currentItemScroll;
-		int currentItemScrollTop;
 
 		public
 		int findListIndexByType(int listType)
@@ -94,7 +92,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 
 	ListViewPager mViewPager;
 	TitlePageIndicator mTitlePageIndicator;
-	int mCurrentPage;
 
 	public
 	IssuesFragment()
@@ -233,7 +230,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.issues = new ArrayList<Issue>();
-
 				mDataFragment.issuesLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable closedRunnable =
@@ -323,7 +319,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.issues = new ArrayList<Issue>();
-
 				mDataFragment.issuesLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable assignedRunnable =

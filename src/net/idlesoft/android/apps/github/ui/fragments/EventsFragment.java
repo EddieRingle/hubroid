@@ -28,6 +28,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
@@ -68,10 +71,9 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 	class EventsDataFragment extends DataFragment
 	{
 		ArrayList<ListHolder> eventLists;
+		ListViewPager.MultiListPagerAdapter pagerAdapter;
 		User targetUser;
 		int currentItem;
-		int currentItemScroll;
-		int currentItemScrollTop;
 
 		public
 		int findListIndexByType(int listType)
@@ -182,7 +184,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 
 	ListViewPager mViewPager;
 	TitlePageIndicator mTitlePageIndicator;
-	int mCurrentPage;
 
 	public
 	EventsFragment()
@@ -207,45 +208,26 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		return v;
 	}
 
-	@Override
 	public
-	void onActivityCreated(Bundle savedInstanceState)
+	void fetchData(final boolean freshen)
 	{
-		super.onActivityCreated(savedInstanceState);
-
-		final Bundle args = getArguments();
-		final String userJson;
-		if (args != null) {
-			userJson = args.getString(ARG_TARGET_USER, null);
-			if (userJson != null) {
-				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
-			}
-		}
-		if (mDataFragment.targetUser == null) {
-			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
-		}
-
-		if (mDataFragment.eventLists == null)
-			mDataFragment.eventLists = new ArrayList<ListHolder>();
-
-		ListViewPager.MultiListPagerAdapter adapter =
-				new ListViewPager.MultiListPagerAdapter(getContext());
-
 		if (mDataFragment.targetUser.getLogin().equals(getBaseActivity().getCurrentUserLogin())
 				&& !mDataFragment.targetUser.getLogin().equals("")) {
 			/* Display received events */
-			final IdleList<Event> list = new IdleList<Event>(getContext());
+			final IdleList<Event> list;
 			final ListHolder holder;
+			final int index = mDataFragment.findListIndexByType(LIST_RECEIVED);
+
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Event>(getContext());
 
 			list.setOnItemClickListener(new OnEventListItemClickListener());
 			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_RECEIVED);
-
-			if (index >= 0) {
+			if (index >= 0 && !freshen) {
 				holder = mDataFragment.eventLists.get(index);
-
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.events);
 				list.getListAdapter().notifyDataSetChanged();
@@ -256,79 +238,81 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.events = new ArrayList<Event>();
-
 				mDataFragment.eventLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable receivedRunnable =
 						new DataFragment.DataTask.DataTaskRunnable()
-				{
-					@Override
-					public
-					void runTask() throws InterruptedException
-					{
-						try {
-							final EventService es =
-									new EventService(getBaseActivity().getGHClient());
-							PageIterator<Event> itr =
-									es.pageUserReceivedEvents(mDataFragment.targetUser.getLogin());
-							holder.events.addAll(itr.next());
-						} catch (IOException e) {
-							e.printStackTrace();
-						} catch (AccountsException e) {
-							e.printStackTrace();
-						}
-					}
-				};
+						{
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final EventService es =
+											new EventService(getBaseActivity().getGHClient());
+									PageIterator<Event> itr =
+											es.pageUserReceivedEvents(mDataFragment.targetUser.getLogin());
+									holder.events.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
+						};
 
 				final DataFragment.DataTask.DataTaskCallbacks receivedCallbacks =
 						new DataFragment.DataTask.DataTaskCallbacks()
-				{
-					@Override
-					public
-					void onTaskStart()
-					{
-						list.getProgressBar().setVisibility(View.VISIBLE);
-						list.setFooterShown(true);
-						list.setListShown(true);
-					}
+						{
+							@Override
+							public
+							void onTaskStart()
+							{
+								list.getProgressBar().setVisibility(View.VISIBLE);
+								list.setFooterShown(true);
+								list.setListShown(true);
+							}
 
-					@Override
-					public
-					void onTaskCancelled()
-					{
-					}
+							@Override
+							public
+							void onTaskCancelled()
+							{
+							}
 
-					@Override
-					public
-					void onTaskComplete()
-					{
-						list.setListShown(false);
-						list.getListAdapter().fillWithItems(holder.events);
-						list.getListAdapter().notifyDataSetChanged();
-						list.getProgressBar().setVisibility(View.GONE);
-						list.setListShown(true);
-					}
-				};
+							@Override
+							public
+							void onTaskComplete()
+							{
+								list.setListShown(false);
+								list.getListAdapter().fillWithItems(holder.events);
+								list.getListAdapter().notifyDataSetChanged();
+								list.getProgressBar().setVisibility(View.GONE);
+								list.setListShown(true);
+							}
+						};
 
 				mDataFragment.executeNewTask(receivedRunnable, receivedCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
-
-			adapter.addList(list);
 		}
 
 		if (!mDataFragment.targetUser.getLogin().equals("")) {
 			/* Display a user's public events */
-			final IdleList<Event> list = new IdleList<Event>(getContext());
+			final IdleList<Event> list;
 			final ListHolder holder;
+			final int index = mDataFragment.findListIndexByType(LIST_PUBLIC);
+
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Event>(getContext());
 
 			list.setOnItemClickListener(new OnEventListItemClickListener());
 			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_PUBLIC);
-
-			if (index >= 0) {
+			if (index >= 0 && !freshen) {
 				holder = mDataFragment.eventLists.get(index);
-
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.events);
 				list.getListAdapter().notifyDataSetChanged();
@@ -338,7 +322,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				holder.title = getString(R.string.events_public);
 				list.setTitle(holder.title);
 				holder.events = new ArrayList<Event>();
-
 				mDataFragment.eventLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable publicRunnable =
@@ -393,24 +376,27 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 						};
 
 				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
-
-			adapter.addList(list);
 		}
 
 		{
 			/* Display timeline events */
-			final IdleList<Event> list = new IdleList<Event>(getContext());
+			final IdleList<Event> list;
 			final ListHolder holder;
+			final int index = mDataFragment.findListIndexByType(LIST_TIMELINE);
+
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Event>(getContext());
 
 			list.setOnItemClickListener(new OnEventListItemClickListener());
 			list.setAdapter(new EventListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_TIMELINE);
-
-			if (index >= 0) {
+			if (index >= 0 && !freshen) {
 				holder = mDataFragment.eventLists.get(index);
-
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.events);
 				list.getListAdapter().notifyDataSetChanged();
@@ -420,7 +406,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				holder.title = getString(R.string.events_timeline);
 				list.setTitle(holder.title);
 				holder.events = new ArrayList<Event>();
-
 				mDataFragment.eventLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable publicRunnable =
@@ -475,13 +460,41 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 						};
 
 				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
+		}
+	}
 
-			adapter.addList(list);
+	@Override
+	public
+	void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+
+		final Bundle args = getArguments();
+		final String userJson;
+		if (args != null) {
+			userJson = args.getString(ARG_TARGET_USER, null);
+			if (userJson != null) {
+				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
+			}
+		}
+		if (mDataFragment.targetUser == null) {
+			mDataFragment.targetUser = new User();
+			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
 		}
 
-		mViewPager.setAdapter(adapter);
+		if (mDataFragment.eventLists == null)
+			mDataFragment.eventLists = new ArrayList<ListHolder>();
+
+		if (mDataFragment.pagerAdapter == null)
+			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
+
+		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
+
+		fetchData(false);
 	}
 
 	@Override
@@ -491,12 +504,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		super.onPause();
 
 		mDataFragment.currentItem = mViewPager.getCurrentItem();
-
-		mDataFragment.currentItemScroll = mViewPager.getAdapter().getList(mDataFragment.currentItem)
-													.getFirstVisiblePosition();
-		mDataFragment.currentItemScrollTop = mViewPager.getAdapter()
-													   .getList(mDataFragment.currentItem)
-													   .getChildAt(0).getTop();
 	}
 
 	@Override
@@ -506,8 +513,27 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
-		mViewPager.getAdapter().getList(mDataFragment.currentItem)
-				  .setSelectionFromTop(mDataFragment.currentItemScroll,
-									   mDataFragment.currentItemScrollTop);
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+	}
+
+	@Override
+	public
+	boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		case R.id.actionbar_action_refresh:
+			fetchData(true);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }

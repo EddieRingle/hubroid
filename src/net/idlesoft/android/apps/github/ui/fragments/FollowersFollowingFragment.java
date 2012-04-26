@@ -27,6 +27,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
@@ -64,10 +67,9 @@ class FollowersFollowingFragment
 	class FollowersFollowingDataFragment extends DataFragment
 	{
 		ArrayList<ListHolder> userLists;
+		ListViewPager.MultiListPagerAdapter pagerAdapter;
 		User targetUser;
 		int currentItem;
-		int currentItemScroll;
-		int currentItemScrollTop;
 
 		public
 		int findListIndexByType(int listType)
@@ -85,7 +87,6 @@ class FollowersFollowingFragment
 
 	ListViewPager mViewPager;
 	TitlePageIndicator mTitlePageIndicator;
-	int mCurrentPage;
 
 	public
 	FollowersFollowingFragment()
@@ -110,43 +111,24 @@ class FollowersFollowingFragment
 		return v;
 	}
 
-	@Override
 	public
-	void onActivityCreated(Bundle savedInstanceState)
+	void fetchData(final boolean freshen)
 	{
-		super.onActivityCreated(savedInstanceState);
-
-		final Bundle args = getArguments();
-		final String userJson;
-		if (args != null) {
-			userJson = args.getString(HubroidConstants.ARG_TARGET_USER);
-			if (userJson != null) {
-				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
-			}
-		}
-		if (mDataFragment.targetUser == null) {
-			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
-		}
-		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetUser.getLogin());
-		if (mDataFragment.userLists == null)
-			mDataFragment.userLists = new ArrayList<ListHolder>();
-
-		ListViewPager.MultiListPagerAdapter adapter =
-				new ListViewPager.MultiListPagerAdapter(getContext());
-
 		if (!mDataFragment.targetUser.getLogin().equals("")) {
 			/* Display a user's followers */
-			final IdleList<User> list = new IdleList<User>(getContext());
+			final IdleList<User> list;
 			final ListHolder holder;
+			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWERS);
+
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<User>(getContext());
 
 			list.setAdapter(new UserListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWERS);
-
 			if (index >= 0) {
 				holder = mDataFragment.userLists.get(index);
-
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.users);
 				list.getListAdapter().notifyDataSetChanged();
@@ -156,7 +138,6 @@ class FollowersFollowingFragment
 				holder.title = getString(R.string.followers);
 				list.setTitle(holder.title);
 				holder.users = new ArrayList<User>();
-
 				mDataFragment.userLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable followersRunnable =
@@ -211,6 +192,8 @@ class FollowersFollowingFragment
 						};
 
 				mDataFragment.executeNewTask(followersRunnable, followersCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
 
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -229,22 +212,23 @@ class FollowersFollowingFragment
 					getBaseActivity().finishFragmentTransaction();
 				}
 			});
-
-			adapter.addList(list);
 		}
 
 		if (!mDataFragment.targetUser.getLogin().equals("")) {
 			/* Display a user's following */
-			final IdleList<User> list = new IdleList<User>(getContext());
+			final IdleList<User> list;
 			final ListHolder holder;
+			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWING);
+
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<User>(getContext());
 
 			list.setAdapter(new UserListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWING);
-
 			if (index >= 0) {
 				holder = mDataFragment.userLists.get(index);
-
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.users);
 				list.getListAdapter().notifyDataSetChanged();
@@ -254,7 +238,6 @@ class FollowersFollowingFragment
 				holder.title = getString(R.string.following);
 				list.setTitle(holder.title);
 				holder.users = new ArrayList<User>();
-
 				mDataFragment.userLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable followingRunnable =
@@ -309,6 +292,8 @@ class FollowersFollowingFragment
 						};
 
 				mDataFragment.executeNewTask(followingRunnable, followingCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
 
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -327,12 +312,38 @@ class FollowersFollowingFragment
 					getBaseActivity().finishFragmentTransaction();
 				}
 			});
-
-			adapter.addList(list);
 		}
+	}
 
-		mViewPager.setAdapter(adapter);
+	@Override
+	public
+	void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+
+		final Bundle args = getArguments();
+		final String userJson;
+		if (args != null) {
+			userJson = args.getString(HubroidConstants.ARG_TARGET_USER);
+			if (userJson != null) {
+				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
+			}
+		}
+		if (mDataFragment.targetUser == null) {
+			mDataFragment.targetUser = new User();
+			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
+		}
+		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetUser.getLogin());
+		if (mDataFragment.userLists == null)
+			mDataFragment.userLists = new ArrayList<ListHolder>();
+
+		if (mDataFragment.pagerAdapter == null)
+			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
+
+		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
+
+		fetchData(false);
 	}
 
 	@Override
@@ -342,12 +353,6 @@ class FollowersFollowingFragment
 		super.onPause();
 
 		mDataFragment.currentItem = mViewPager.getCurrentItem();
-
-		mDataFragment.currentItemScroll = mViewPager.getAdapter().getList(mDataFragment.currentItem)
-													.getFirstVisiblePosition();
-		mDataFragment.currentItemScrollTop = mViewPager.getAdapter()
-													   .getList(mDataFragment.currentItem)
-													   .getChildAt(0).getTop();
 	}
 
 	@Override
@@ -357,8 +362,27 @@ class FollowersFollowingFragment
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
-		mViewPager.getAdapter().getList(mDataFragment.currentItem)
-				  .setSelectionFromTop(mDataFragment.currentItemScroll,
-									   mDataFragment.currentItemScrollTop);
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+	}
+
+	@Override
+	public
+	boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		case R.id.actionbar_action_refresh:
+			fetchData(true);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }

@@ -27,6 +27,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
@@ -67,10 +70,9 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 	class RepositoriesDataFragment extends DataFragment
 	{
 		ArrayList<ListHolder> repositoryLists;
+		ListViewPager.MultiListPagerAdapter pagerAdapter;
 		User targetUser;
 		int currentItem;
-		int currentItemScroll;
-		int currentItemScrollTop;
 
 		public
 		int findListIndexByType(int listType)
@@ -88,7 +90,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 
 	ListViewPager mViewPager;
 	TitlePageIndicator mTitlePageIndicator;
-	int mCurrentPage;
 
 	public
 	RepositoriesFragment()
@@ -113,44 +114,24 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		return v;
 	}
 
-	@Override
 	public
-	void onActivityCreated(Bundle savedInstanceState)
+	void fetchData(final boolean freshen)
 	{
-		super.onActivityCreated(savedInstanceState);
-
-		final Bundle args = getArguments();
-		final String userJson;
-		if (args != null) {
-			userJson = args.getString(HubroidConstants.ARG_TARGET_USER);
-			if (userJson != null) {
-				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
-			}
-		}
-		if (mDataFragment.targetUser == null) {
-			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
-		}
-
-		if (mDataFragment.repositoryLists == null)
-			mDataFragment.repositoryLists = new ArrayList<ListHolder>();
-
-		getBaseActivity().getSupportActionBar().setTitle(R.string.repositories);
-		ListViewPager.MultiListPagerAdapter adapter =
-				new ListViewPager.MultiListPagerAdapter(getContext());
-
 		if (!mDataFragment.targetUser.getLogin().equals("")) {
 			/* Display a user's repositories */
-			final IdleList<Repository> list = new IdleList<Repository>(getContext());
+			final IdleList<Repository> list;
 			final ListHolder holder;
+			final int index = mDataFragment.findListIndexByType(LIST_YOURS);
+
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Repository>(getContext());
 
 			list.setAdapter(new RepositoryListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_YOURS);
-
 			if (index >= 0) {
 				holder = mDataFragment.repositoryLists.get(index);
-
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.repositories);
 				list.getListAdapter().notifyDataSetChanged();
@@ -160,7 +141,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				holder.title = mDataFragment.targetUser.getLogin();
 				list.setTitle(holder.title);
 				holder.repositories = new ArrayList<Repository>();
-
 				mDataFragment.repositoryLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable yoursRunnable =
@@ -222,6 +202,8 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 						};
 
 				mDataFragment.executeNewTask(yoursRunnable, yoursCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
 
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -240,22 +222,23 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 					getBaseActivity().finishFragmentTransaction();
 				}
 			});
-
-			adapter.addList(list);
 		}
 
 		if (!mDataFragment.targetUser.getLogin().equals("")) {
 			/* Display a user's watched repositories */
-			final IdleList<Repository> list = new IdleList<Repository>(getContext());
+			final IdleList<Repository> list;
 			final ListHolder holder;
+			final int index = mDataFragment.findListIndexByType(LIST_WATCHED);
+
+			if (freshen && index >= 0)
+				list = mViewPager.getAdapter().getList(index);
+			else
+				list = new IdleList<Repository>(getContext());
 
 			list.setAdapter(new RepositoryListAdapter(getBaseActivity()));
 
-			final int index = mDataFragment.findListIndexByType(LIST_WATCHED);
-
 			if (index >= 0) {
 				holder = mDataFragment.repositoryLists.get(index);
-
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.repositories);
 				list.getListAdapter().notifyDataSetChanged();
@@ -265,7 +248,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				holder.title = getString(R.string.repositories_watched);
 				list.setTitle(holder.title);
 				holder.repositories = new ArrayList<Repository>();
-
 				mDataFragment.repositoryLists.add(holder);
 
 				final DataFragment.DataTask.DataTaskRunnable watchedRunnable =
@@ -320,6 +302,8 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 						};
 
 				mDataFragment.executeNewTask(watchedRunnable, watchedCallbacks);
+				if (index < 0)
+					mViewPager.getAdapter().addList(list);
 			}
 
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -338,12 +322,40 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 					getBaseActivity().finishFragmentTransaction();
 				}
 			});
+		}
+	}
 
-			adapter.addList(list);
+	@Override
+	public
+	void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+
+		final Bundle args = getArguments();
+		final String userJson;
+		if (args != null) {
+			userJson = args.getString(HubroidConstants.ARG_TARGET_USER);
+			if (userJson != null) {
+				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
+			}
+		}
+		if (mDataFragment.targetUser == null) {
+			mDataFragment.targetUser = new User();
+			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
 		}
 
-		mViewPager.setAdapter(adapter);
+		if (mDataFragment.repositoryLists == null)
+			mDataFragment.repositoryLists = new ArrayList<ListHolder>();
+
+		getBaseActivity().getSupportActionBar().setTitle(R.string.repositories);
+
+		if (mDataFragment.pagerAdapter == null)
+			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
+
+		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
+
+		fetchData(false);
 	}
 
 	@Override
@@ -353,12 +365,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		super.onPause();
 
 		mDataFragment.currentItem = mViewPager.getCurrentItem();
-
-		mDataFragment.currentItemScroll = mViewPager.getAdapter().getList(mDataFragment.currentItem)
-													.getFirstVisiblePosition();
-		mDataFragment.currentItemScrollTop = mViewPager.getAdapter()
-													   .getList(mDataFragment.currentItem)
-													   .getChildAt(0).getTop();
 	}
 
 	@Override
@@ -368,8 +374,27 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
-		mViewPager.getAdapter().getList(mDataFragment.currentItem)
-				  .setSelectionFromTop(mDataFragment.currentItemScroll,
-									   mDataFragment.currentItemScrollTop);
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+	}
+
+	@Override
+	public
+	boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		case R.id.actionbar_action_refresh:
+			fetchData(true);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }

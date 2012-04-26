@@ -27,6 +27,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.UserListAdapter;
@@ -66,10 +69,9 @@ class WatchersFragment
 	class WatchersDataFragment extends DataFragment
 	{
 		ArrayList<ListHolder> userLists;
+		ListViewPager.MultiListPagerAdapter pagerAdapter;
 		Repository targetRepository;
 		int currentItem;
-		int currentItemScroll;
-		int currentItemScrollTop;
 
 		public
 		int findListIndexByType(int listType)
@@ -87,7 +89,6 @@ class WatchersFragment
 
 	ListViewPager mViewPager;
 	TitlePageIndicator mTitlePageIndicator;
-	int mCurrentPage;
 
 	public
 	WatchersFragment()
@@ -112,48 +113,23 @@ class WatchersFragment
 		return v;
 	}
 
-	@Override
-	public
-	void onActivityCreated(Bundle savedInstanceState)
-	{
-		super.onActivityCreated(savedInstanceState);
-
-		final Bundle args = getArguments();
-		final String repositoryJson;
-		if (args != null) {
-			repositoryJson = args.getString(ARG_TARGET_REPO);
-			if (repositoryJson != null) {
-				mDataFragment.targetRepository = GsonUtils.fromJson(repositoryJson,
-																	Repository.class);
-			}
-		}
-		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetRepository.getName());
-		if (mDataFragment.userLists == null)
-			mDataFragment.userLists = new ArrayList<ListHolder>();
-
-		ListViewPager.MultiListPagerAdapter adapter =
-				new ListViewPager.MultiListPagerAdapter(getContext());
-
-		mViewPager.setAdapter(adapter);
-		mTitlePageIndicator.setViewPager(mViewPager);
-
-		fetchData(false);
-	}
-
 	public
 	void fetchData(final boolean freshen)
 	{
 		/* Display a user's followers */
-		final IdleList<User> list = new IdleList<User>(getContext());
+		final IdleList<User> list;
 		final ListHolder holder;
+		final int index = mDataFragment.findListIndexByType(LIST_WATCHERS);
+
+		if (freshen && index >= 0)
+			list = mViewPager.getAdapter().getList(index);
+		else
+			list = new IdleList<User>(getContext());
 
 		list.setAdapter(new UserListAdapter(getBaseActivity()));
 
-		final int index = mDataFragment.findListIndexByType(LIST_WATCHERS);
-
 		if (index >= 0) {
 			holder = mDataFragment.userLists.get(index);
-
 			list.setTitle(holder.title);
 			list.getListAdapter().fillWithItems(holder.users);
 			list.getListAdapter().notifyDataSetChanged();
@@ -163,7 +139,6 @@ class WatchersFragment
 			holder.title = getString(R.string.watchers);
 			list.setTitle(holder.title);
 			holder.users = new ArrayList<User>();
-
 			mDataFragment.userLists.add(holder);
 
 			final DataFragment.DataTask.DataTaskRunnable watchersRunnable =
@@ -221,6 +196,8 @@ class WatchersFragment
 					};
 
 			mDataFragment.executeNewTask(watchersRunnable, followersCallbacks);
+			if (index < 0)
+				mViewPager.getAdapter().addList(list);
 		}
 
 		list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -239,8 +216,34 @@ class WatchersFragment
 				getBaseActivity().finishFragmentTransaction();
 			}
 		});
+	}
 
-		mViewPager.getAdapter().addList(list);
+	@Override
+	public
+	void onActivityCreated(Bundle savedInstanceState)
+	{
+		super.onActivityCreated(savedInstanceState);
+
+		final Bundle args = getArguments();
+		final String repositoryJson;
+		if (args != null) {
+			repositoryJson = args.getString(ARG_TARGET_REPO);
+			if (repositoryJson != null) {
+				mDataFragment.targetRepository = GsonUtils.fromJson(repositoryJson,
+																	Repository.class);
+			}
+		}
+		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetRepository.getName());
+		if (mDataFragment.userLists == null)
+			mDataFragment.userLists = new ArrayList<ListHolder>();
+
+		if (mDataFragment.pagerAdapter == null)
+			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
+
+		mViewPager.setAdapter(mDataFragment.pagerAdapter);
+		mTitlePageIndicator.setViewPager(mViewPager);
+
+		fetchData(false);
 	}
 
 	@Override
@@ -250,12 +253,6 @@ class WatchersFragment
 		super.onPause();
 
 		mDataFragment.currentItem = mViewPager.getCurrentItem();
-
-		mDataFragment.currentItemScroll = mViewPager.getAdapter().getList(mDataFragment.currentItem)
-													.getFirstVisiblePosition();
-		mDataFragment.currentItemScrollTop = mViewPager.getAdapter()
-													   .getList(mDataFragment.currentItem)
-													   .getChildAt(0).getTop();
 	}
 
 	@Override
@@ -265,8 +262,27 @@ class WatchersFragment
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
-		mViewPager.getAdapter().getList(mDataFragment.currentItem)
-				  .setSelectionFromTop(mDataFragment.currentItemScroll,
-									   mDataFragment.currentItemScrollTop);
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+	}
+
+	@Override
+	public
+	boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId()) {
+		case R.id.actionbar_action_refresh:
+			fetchData(true);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 }
