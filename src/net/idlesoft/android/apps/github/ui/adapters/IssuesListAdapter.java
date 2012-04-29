@@ -21,21 +21,26 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import android.graphics.Color;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
-import net.idlesoft.android.apps.github.utils.EventUtil;
-import net.idlesoft.android.apps.github.utils.StringUtils;
 import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.event.Event;
 
+import java.util.ArrayList;
+
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 import static net.idlesoft.android.apps.github.utils.StringUtils.getTimeSince;
 
 public
@@ -52,6 +57,8 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 		TextView meta;
 		public
 		TextView title;
+		public
+		LinearLayout labels;
 	}
 
 	public
@@ -72,6 +79,7 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 			holder.gravatar = (GravatarView) convertView.findViewById(R.id.iv_issue_gravatar);
 			holder.meta = (TextView) convertView.findViewById(R.id.tv_issue_meta);
 			holder.title = (TextView) convertView.findViewById(R.id.tv_issue_title);
+			holder.labels = (LinearLayout) convertView.findViewById(R.id.ll_issue_labels);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -99,6 +107,38 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 				getContext().finishFragmentTransaction();
 			}
 		});
+
+		/* Make sure labels layout is empty */
+		holder.labels.removeAllViews();
+
+		final float[] roundedValues = {2,2, 2,2, 2,2, 2,2};
+		ArrayList<Label> labels = new ArrayList<Label>(issue.getLabels());
+		for (Label l : labels) {
+			final TextView label = new TextView(getContext());
+			final LinearLayout.LayoutParams params =
+					new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+			final ShapeDrawable sd = new ShapeDrawable(new RoundRectShape(roundedValues, null, null));
+			final int color = Color.parseColor("#" + l.getColor());
+			final int r = Color.red(color);
+			final int g = Color.green(color);
+			final int b = Color.blue(color);
+			/* Set background color to label color */
+			sd.getPaint().setColor(color);
+			label.setBackgroundDrawable(sd);
+			/* Set label text */
+			label.setText(l.getName());
+			/* Calculate YIQ color contrast */
+			if ((((r*299)+(g*587)+(b*114))/1000) >= 128)
+				label.setTextColor(Color.BLACK);
+			else
+				label.setTextColor(Color.WHITE);
+			label.setTextSize(10.0f);
+			if (labels.indexOf(label) != labels.size() - 1)
+				params.setMargins(0, 0, 5, 0);
+			label.setPadding(5, 2, 5, 2);
+			label.setLayoutParams(params);
+			holder.labels.addView(label);
+		}
 
 		return convertView;
 	}
