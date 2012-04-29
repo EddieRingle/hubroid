@@ -127,6 +127,12 @@ class EventUtil
 			final ForkApplyPayload p = (ForkApplyPayload) event.getPayload();
 		} else if (type.equals(Event.TYPE_GIST)) {
 			final GistPayload p = (GistPayload) event.getPayload();
+			titleBuilder.append(p.getAction() + "d gist: " + p.getGist().getId());
+			int index = titleBuilder.toString().indexOf("gist: ");
+			titleBuilder.setSpan(new ForegroundColorSpan(Color.parseColor("#4183C4")),
+								 index, index + ("gist: " + p.getGist().getId()).length(),
+								 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+			extraBuilder.append(p.getGist().getDescription());
 		} else if (type.equals(Event.TYPE_GOLLUM)) {
 			final GollumPayload p = (GollumPayload) event.getPayload();
 			titleBuilder.append("edited the " + event.getRepo().getName() + " wiki");
