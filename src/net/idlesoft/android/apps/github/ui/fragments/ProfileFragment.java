@@ -315,10 +315,14 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			public
 			void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				final InfoListAdapter.InfoHolder holder = mDataFragment.holders.get(position);
-
-				if (holder.onClick != null) {
-					holder.onClick.onItemClick(parent, view, position, id);
+				final InfoListAdapter.InfoHolder holder;
+				try {
+					holder = mDataFragment.holders.get(position);
+					if (holder.onClick != null) {
+						holder.onClick.onItemClick(parent, view, position, id);
+					}
+				} catch (IndexOutOfBoundsException e) {
+					e.printStackTrace();
 				}
 			}
 		});
@@ -328,12 +332,15 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			public
 			boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				final InfoListAdapter.InfoHolder holder = mDataFragment.holders.get(position);
-
-				if (holder.onLongClick != null) {
-					return holder.onLongClick.onItemLongClick(parent, view, position, id);
+				final InfoListAdapter.InfoHolder holder;
+				try {
+					holder = mDataFragment.holders.get(position);
+					if (holder.onLongClick != null) {
+						holder.onLongClick.onItemLongClick(parent, view, position, id);
+					}
+				} catch (IndexOutOfBoundsException e) {
+					e.printStackTrace();
 				}
-
 				return false;
 			}
 		});
