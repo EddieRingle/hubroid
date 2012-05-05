@@ -29,7 +29,6 @@
 			android:id="@+id/tpi_header"
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content" />
-
 	<net.idlesoft.android.apps.github.ui.widgets.ListViewPager
 			android:id="@+id/vp_pages"
 			android:layout_width="fill_parent"

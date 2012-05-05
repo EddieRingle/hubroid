@@ -24,7 +24,11 @@
 	<color name="orange1">#FFFF6600</color>
 	<color name="orange2">#FFFF9900</color>
 
+	<color name="focused_hubroid">#884183c4</color>
+	<color name="pressed_hubroid">#CC4183c4</color>
+
 	<color name="github_blue">#FF4183C4</color>
+	<color name="github_orange">#FFD26911</color>
 
 	<!-- Text colors -->
 	<color name="text_color">#ff111111</color>
