@@ -35,14 +35,11 @@ import android.accounts.AccountsException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -52,7 +49,7 @@ import net.idlesoft.android.apps.github.GitHubClientProvider;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
-import net.idlesoft.android.apps.github.ui.fragments.EventsFragment;
+import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.UserService;
@@ -121,6 +118,13 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
+
+		final OcticonView ov =
+				new OcticonView(getContext())
+						.setGlyphColor(Color.parseColor(getString(R.color.github_blue)))
+						.setOcticon(OcticonView.IC_INVERTOCAT)
+						.setGlyphSize(32.0f);
+		actionBar.setLogo(ov.toDrawable());
 	}
 
 	protected

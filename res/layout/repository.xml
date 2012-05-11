@@ -42,6 +42,14 @@
 				android:layout_height="wrap_content"
 				android:layout_margin="10dp"
 				android:orientation="horizontal">
+			<net.idlesoft.android.apps.github.ui.widgets.OcticonView
+					android:id="@+id/ov_repository_privacy"
+					android:layout_width="wrap_content"
+					android:layout_height="wrap_content"
+					android:layout_gravity="center_vertical|left"
+					android:textColor="@color/light_text_color"
+					android:textSize="24dp"
+					android:layout_marginRight="5dp" />
 			<LinearLayout
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -60,11 +68,6 @@
 						android:textSize="14dp"
 						android:ellipsize="end" />
 			</LinearLayout>
-			<ImageView android:id="@+id/iv_repository_privacy"
-					 android:layout_width="16dp"
-					 android:layout_height="16dp"
-					 android:layout_gravity="center_vertical|right"
-					 android:layout_marginLeft="5dp" />
 		</LinearLayout>
 		<net.idlesoft.android.apps.github.ui.widgets.IdleList android:id="@+id/lv_repository_info"
 				android:layout_width="match_parent"
