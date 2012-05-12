@@ -35,11 +35,11 @@
 
 	<!-- Dashboard -->
 	<string name="dash_events">Events</string>
-	<string name="dash_repos">Repos</string>
+	<string name="dash_repos">Repositories</string>
 	<string name="dash_profile">Profile</string>
 	<string name="dash_users">Users</string>
 	<string name="dash_gists">Gists</string>
-	<string name="dash_orgs">Orgs</string>
+	<string name="dash_orgs">Organizations</string>
 
 	<!-- User selection dialog -->
 	<string name="userselect_title">Accounts</string>

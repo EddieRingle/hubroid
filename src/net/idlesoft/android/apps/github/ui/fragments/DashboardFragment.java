@@ -25,99 +25,50 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.*;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
+import net.idlesoft.android.apps.github.ui.adapters.DashboardListAdapter;
+
+import java.util.ArrayList;
 
 import static android.view.View.OnClickListener;
 
 public
 class DashboardFragment extends BaseFragment
 {
-	private int mActiveButton = 0;
-
 	private static int instanceCount = 0;
 
-	public static final int ACTIVE_BUTTON_EVENTS = 0x0001;
+	public static final int CHOICE_EVENTS = 0x0001;
 
-	public static final int ACTIVE_BUTTON_REPOS = 0x0002;
+	public static final int CHOICE_REPOS = 0x0002;
 
-	public static final int ACTIVE_BUTTON_PROFILE = 0x0003;
+	public static final int CHOICE_PROFILE = 0x0003;
 
-	public static final int ACTIVE_BUTTON_USERS = 0x0004;
+	public static final int CHOICE_USERS = 0x0004;
 
-	public static final int ACTIVE_BUTTON_GISTS = 0x0005;
+	public static final int CHOICE_GISTS = 0x0005;
 
-	public static final int ACTIVE_BUTTON_ORGS = 0x0006;
-
-	public
-	void setActiveButton(int pButtonId)
-	{
-		final View v = getView();
-
-		if (pButtonId != mActiveButton) {
-			switch (pButtonId) {
-			case R.id.btn_dash_events:
-				mActiveButton = ACTIVE_BUTTON_EVENTS;
-				break;
-			case R.id.btn_dash_gists:
-				mActiveButton = ACTIVE_BUTTON_GISTS;
-				break;
-			case R.id.btn_dash_orgs:
-				mActiveButton = ACTIVE_BUTTON_ORGS;
-				break;
-			case R.id.btn_dash_profile:
-				mActiveButton = ACTIVE_BUTTON_PROFILE;
-				break;
-			case R.id.btn_dash_repos:
-				mActiveButton = ACTIVE_BUTTON_REPOS;
-				break;
-			case R.id.btn_dash_users:
-				mActiveButton = ACTIVE_BUTTON_USERS;
-				break;
-			}
-		}
-
-		/* Don't do anything else if we're not multi-paned */
-		if (!isMultiPane()) return;
-
-		/* First, reset all the buttons to be un-highlighted */
-		((Button) v.findViewById(R.id.btn_dash_events))
-				.setBackgroundResource(R.color.dashboard_button_normal);
-		((Button) v.findViewById(R.id.btn_dash_repos))
-				.setBackgroundResource(R.color.dashboard_button_normal);
-		((Button) v.findViewById(R.id.btn_dash_profile))
-				.setBackgroundResource(R.color.dashboard_button_normal);
-		((Button) v.findViewById(R.id.btn_dash_users))
-				.setBackgroundResource(R.color.dashboard_button_normal);
-		((Button) v.findViewById(R.id.btn_dash_gists))
-				.setBackgroundResource(R.color.dashboard_button_normal);
-		((Button) v.findViewById(R.id.btn_dash_orgs))
-				.setBackgroundResource(R.color.dashboard_button_normal);
-
-		/* Now highlight the specified button */
-		if (mActiveButton != 0)
-			((Button) v.findViewById(pButtonId))
-					.setBackgroundResource(R.color.dashboard_button_highlighted);
-	}
+	public static final int CHOICE_ORGS = 0x0006;
 
 	protected
-	void showFragments()
+	void showFragment(final int selection)
 	{
 		getBaseActivity().startFragmentTransaction();
-		switch (mActiveButton) {
-		case ACTIVE_BUTTON_EVENTS:
+		switch (selection) {
+		case CHOICE_EVENTS:
 			getBaseActivity().addFragmentToTransaction(EventsFragment.class,
 													   R.id.fragment_container, null);
 			break;
-		case ACTIVE_BUTTON_REPOS:
+		case CHOICE_REPOS:
 			getBaseActivity().addFragmentToTransaction(RepositoriesFragment.class,
 													   R.id.fragment_container, null);
 			break;
-		case ACTIVE_BUTTON_PROFILE:
+		case CHOICE_PROFILE:
 			getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
 													   R.id.fragment_container, null);
 			break;
-		case ACTIVE_BUTTON_USERS:
+		case CHOICE_USERS:
 			getBaseActivity().addFragmentToTransaction(FollowersFollowingFragment.class,
 													   R.id.fragment_container, null);
 			break;
@@ -133,98 +84,65 @@ class DashboardFragment extends BaseFragment
 
 		boolean isAnon = getBaseActivity().getCurrentUserLogin().equals("");
 
-		Button feedsBtn = (Button) v.findViewById(R.id.btn_dash_events);
-		feedsBtn.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public
-			void onClick(View v)
-			{
-				if (mActiveButton != ACTIVE_BUTTON_EVENTS || !isMultiPane()) {
-					setActiveButton(R.id.btn_dash_events);
-					showFragments();
-				}
+		if (!isMultiPane()) {
+			final ListView dashboardList = (ListView) v.findViewById(R.id.lv_dashboard);
+			final DashboardListAdapter adapter = new DashboardListAdapter(getBaseActivity());
+			final ArrayList<DashboardListAdapter.DashboardEntry> entries = new ArrayList
+					<DashboardListAdapter.DashboardEntry>();
+			DashboardListAdapter.DashboardEntry entry = new DashboardListAdapter.DashboardEntry();
+
+			/* Events */
+			entry.icon = getResources().getDrawable(R.drawable.ic_dash_events);
+			entry.label = getString(R.string.dash_events);
+			entries.add(entry);
+
+			if (!isAnon) {
+				/* Repositories */
+				entry = new DashboardListAdapter.DashboardEntry();
+				entry.icon = getResources().getDrawable(R.drawable.ic_dash_repos);
+				entry.label = getString(R.string.dash_repos);
+				entries.add(entry);
 			}
-		});
 
-		Button reposBtn = (Button) v.findViewById(R.id.btn_dash_repos);
-		if (isAnon) {
-			reposBtn.setVisibility(View.GONE);
-		} else {
-			reposBtn.setOnClickListener(new OnClickListener()
-			{
-				@Override
-				public
-				void onClick(View v)
-				{
-					if (mActiveButton != ACTIVE_BUTTON_REPOS || !isMultiPane()) {
-						setActiveButton(R.id.btn_dash_repos);
-						showFragments();
-					}
-				}
-			});
-		}
-
-		Button profileBtn = (Button) v.findViewById(R.id.btn_dash_profile);
-		if (isAnon) {
-			profileBtn.setVisibility(View.GONE);
-		} else {
-			profileBtn.setOnClickListener(new OnClickListener()
-			{
-				@Override
-				public
-				void onClick(View v)
-				{
-					if (mActiveButton != ACTIVE_BUTTON_PROFILE || !isMultiPane()) {
-						setActiveButton(R.id.btn_dash_profile);
-						showFragments();
-					}
-				}
-			});
-		}
-
-		Button usersBtn = (Button) v.findViewById(R.id.btn_dash_users);
-		if (isAnon) {
-			usersBtn.setVisibility(View.GONE);
-		} else {
-			usersBtn.setOnClickListener(new OnClickListener()
-			{
-				@Override
-				public
-				void onClick(View v)
-				{
-					if (mActiveButton != ACTIVE_BUTTON_USERS || !isMultiPane()) {
-						setActiveButton(R.id.btn_dash_users);
-						showFragments();
-					}
-				}
-			});
-		}
-
-		Button gistsBtn = (Button) v.findViewById(R.id.btn_dash_gists);
-		gistsBtn.setOnClickListener(new OnClickListener()
-		{
-			@Override
-			public
-			void onClick(View v)
-			{
-				setActiveButton(R.id.btn_dash_gists);
+			if (!isAnon) {
+				/* Profile */
+				entry = new DashboardListAdapter.DashboardEntry();
+				entry.icon = getResources().getDrawable(R.drawable.ic_dash_profile);
+				entry.label = getString(R.string.dash_profile);
+				entries.add(entry);
 			}
-		});
 
-		Button orgsBtn = (Button) v.findViewById(R.id.btn_dash_orgs);
-		if (isAnon) {
-			orgsBtn.setVisibility(View.GONE);
-		} else {
-			orgsBtn.setOnClickListener(new OnClickListener()
+			if (!isAnon) {
+				/* Users */
+				entry = new DashboardListAdapter.DashboardEntry();
+				entry.icon = getResources().getDrawable(R.drawable.ic_dash_users);
+				entry.label = getString(R.string.dash_users);
+				entries.add(entry);
+			}
+
+			adapter.addAll(entries);
+
+			dashboardList.setAdapter(adapter);
+
+			dashboardList.setOnItemClickListener(new AdapterView.OnItemClickListener()
 			{
 				@Override
 				public
-				void onClick(View v)
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
 				{
-					setActiveButton(R.id.btn_dash_orgs);
+					final DashboardListAdapter.DashboardEntry entry = entries.get(position);
+					if (entry.label.equals(getString(R.string.dash_events)))
+						showFragment(CHOICE_EVENTS);
+					else if (entry.label.equals(getString(R.string.dash_repos)))
+						showFragment(CHOICE_REPOS);
+					else if (entry.label.equals(getString(R.string.dash_profile)))
+						showFragment(CHOICE_PROFILE);
+					else if (entry.label.equals(getString(R.string.dash_users)))
+						showFragment(CHOICE_USERS);
 				}
 			});
+		} else {
+
 		}
 
 		return v;
@@ -235,10 +153,6 @@ class DashboardFragment extends BaseFragment
 	void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-
-		if (savedInstanceState != null) {
-			mActiveButton = savedInstanceState.getInt("activeButton", 0);
-		}
 
 		if (isMultiPane()) {
 			getBigFragmentContainer().setVisibility(View.INVISIBLE);
@@ -255,38 +169,5 @@ class DashboardFragment extends BaseFragment
 		getBaseActivity().getSupportActionBar().setTitle(R.string.app_name);
 		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(false);
-
-		switch (mActiveButton) {
-			case ACTIVE_BUTTON_EVENTS:
-				setActiveButton(R.id.btn_dash_events);
-				break;
-			case ACTIVE_BUTTON_GISTS:
-				setActiveButton(R.id.btn_dash_gists);
-				break;
-			case ACTIVE_BUTTON_ORGS:
-				setActiveButton(R.id.btn_dash_orgs);
-				break;
-			case ACTIVE_BUTTON_PROFILE:
-				setActiveButton(R.id.btn_dash_profile);
-				break;
-			case ACTIVE_BUTTON_REPOS:
-				setActiveButton(R.id.btn_dash_repos);
-				break;
-			case ACTIVE_BUTTON_USERS:
-				setActiveButton(R.id.btn_dash_users);
-				break;
-		}
-
-		if (isMultiPane())
-			showFragments();
-	}
-
-	@Override
-	public
-	void onSaveInstanceState(Bundle outState)
-	{
-		super.onSaveInstanceState(outState);
-
-		outState.putInt("activeButton", mActiveButton);
 	}
 }
