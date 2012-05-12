@@ -42,7 +42,7 @@
 	<style name="CustomTitlePageIndicator">
 		<item name="android:background">@android:color/transparent</item>
 		<!--<item name="footerColor">#FFCACACA</item>-->
-		<item name="footerColor">@color/github_orange</item>
+		<item name="footerColor">@color/github_blue</item>
 		<item name="footerLineHeight">1dp</item>
 		<item name="footerIndicatorHeight">3dp</item>
 		<item name="footerIndicatorStyle">underline</item>
