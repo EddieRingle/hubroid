@@ -36,7 +36,7 @@
 		android:layout_height="wrap_content"
 		android:paddingTop="5dp"
 		android:orientation="horizontal">
-		<net.idlesoft.android.apps.github.ui.widgets.GravatarView android:id="@+id/iv_event_gravatar"
+		<ImageView android:id="@+id/iv_event_gravatar"
 				android:layout_height="32dp"
 				android:layout_width="32dp"
 				android:layout_marginRight="5dp"

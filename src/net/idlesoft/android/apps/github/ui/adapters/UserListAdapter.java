@@ -24,7 +24,10 @@ package net.idlesoft.android.apps.github.ui.adapters;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.androidquery.AQuery;
+import com.androidquery.util.AQUtility;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
@@ -41,7 +44,7 @@ class UserListAdapter extends BaseListAdapter<User>
 	public static
 	class ViewHolder
 	{
-		GravatarView gravatar;
+		ImageView gravatar;
 		TextView login;
 	}
 
@@ -59,7 +62,7 @@ class UserListAdapter extends BaseListAdapter<User>
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.user_list_item, null);
 			holder = new ViewHolder();
-			holder.gravatar = (GravatarView) convertView.findViewById(R.id.iv_user_gravatar);
+			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_user_gravatar);
 			holder.login = (TextView) convertView.findViewById(R.id.tv_user_login);
 			convertView.setTag(holder);
 		} else {
@@ -71,7 +74,8 @@ class UserListAdapter extends BaseListAdapter<User>
 		final String login = user.getLogin();
 		final String type = user.getType();
 
-		holder.gravatar.setDefaultResource(R.drawable.gravatar);
+		final AQuery aq = new AQuery(convertView);
+		aq.id(holder.gravatar).image(user.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
 		holder.login.setText(login);
 
 		return convertView;

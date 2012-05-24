@@ -29,13 +29,11 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.androidquery.AQuery;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
@@ -65,7 +63,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 	private
 	ProgressBar mProgress;
 	private
-	GravatarView mGravatarView;
+	ImageView mGravatarView;
 	private
 	LinearLayout mContent;
 	private
@@ -90,17 +88,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			mProgress = (ProgressBar) v.findViewById(R.id.progress);
 			mContent = (LinearLayout) v.findViewById(R.id.content);
 			mListView = (IdleList<InfoListAdapter.InfoHolder>) v.findViewById(R.id.lv_user_info);
-			mGravatarView = (GravatarView) v.findViewById(R.id.gravatar);
-			mGravatarView.setGravatarViewCallback(new GravatarView.GravatarViewCallback()
-			{
-				@Override
-				public
-				void OnGravatarFinishedLoading(Bitmap sourceBitmap)
-				{
-					mDataFragment.gravatarBitmap = sourceBitmap;
-					mGravatarView.getImageView().setImageBitmap(sourceBitmap);
-				}
-			});
+			mGravatarView = (ImageView) v.findViewById(R.id.gravatar);
 		}
 
 		return v;
@@ -294,9 +282,8 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		if (user != null) {
 			mDataFragment.targetUser = user;
 
-			mGravatarView.setDefaultResource(R.drawable.gravatar);
-			if (mDataFragment.gravatarBitmap != null)
-				mGravatarView.getImageView().setImageBitmap(mDataFragment.gravatarBitmap);
+			final AQuery aq = new AQuery(getBaseActivity());
+			aq.id(mGravatarView).image(mDataFragment.targetUser.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
 
 			final TextView tvLogin = (TextView) mContent.findViewById(R.id.tv_user_login);
 			tvLogin.setText(user.getLogin());

@@ -53,8 +53,6 @@ class EventUtil
 		final String login = event.getActor().getLogin();
 		final String type = event.getType();
 
-		holder.gravatar.setDefaultResource(R.drawable.gravatar);
-
 		SpannableStringBuilder titleBuilder = new SpannableStringBuilder();
 		titleBuilder.append(login + " ");
 		titleBuilder.setSpan(new ForegroundColorSpan(Color.parseColor("#4183C4")),

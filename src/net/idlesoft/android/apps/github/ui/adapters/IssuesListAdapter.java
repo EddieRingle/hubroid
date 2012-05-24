@@ -27,8 +27,10 @@ import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import com.androidquery.AQuery;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
@@ -52,7 +54,7 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 		public
 		TextView number;
 		public
-		GravatarView gravatar;
+		ImageView gravatar;
 		public
 		TextView meta;
 		public
@@ -76,7 +78,7 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 			convertView = mInflater.inflate(R.layout.issue_list_item, null);
 			holder = new ViewHolder();
 			holder.number = (TextView) convertView.findViewById(R.id.tv_issue_number);
-			holder.gravatar = (GravatarView) convertView.findViewById(R.id.iv_issue_gravatar);
+			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_issue_gravatar);
 			holder.meta = (TextView) convertView.findViewById(R.id.tv_issue_meta);
 			holder.title = (TextView) convertView.findViewById(R.id.tv_issue_title);
 			holder.labels = (LinearLayout) convertView.findViewById(R.id.ll_issue_labels);
@@ -90,8 +92,10 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 		holder.number.setText("#" + Integer.toString(issue.getNumber()));
 		holder.meta.setText("By " + issue.getUser().getLogin() + " " +
 									getTimeSince(issue.getCreatedAt()) + " ago");
-		holder.gravatar.setDefaultResource(R.drawable.gravatar);
 		holder.title.setText(issue.getTitle());
+
+		final AQuery aq = new AQuery(convertView);
+		aq.id(holder.gravatar).image(issue.getUser().getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
 
 		holder.gravatar.setOnClickListener(new View.OnClickListener()
 		{

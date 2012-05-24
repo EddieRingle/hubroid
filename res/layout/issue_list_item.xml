@@ -34,7 +34,7 @@
 		<TextView android:id="@+id/tv_issue_number"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content" />
-		<net.idlesoft.android.apps.github.ui.widgets.GravatarView
+		<ImageView
 				android:id="@+id/iv_issue_gravatar"
 				android:layout_height="32dp"
 				android:layout_width="32dp"

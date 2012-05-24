@@ -25,10 +25,11 @@
 		android:layout_height="wrap_content"
 		android:padding="10dip"
 		android:orientation="horizontal">
-	<net.idlesoft.android.apps.github.ui.widgets.GravatarView android:id="@+id/iv_user_gravatar"
-			android:layout_height="34dip"
-			android:layout_width="34dip"
+	<ImageView android:id="@+id/iv_user_gravatar"
+			android:layout_height="32dip"
+			android:layout_width="32dip"
 			android:layout_gravity="center_vertical"
+			android:padding="2dip"
 			android:background="@drawable/gravatar_border" />
 	<LinearLayout
 		android:layout_width="fill_parent"

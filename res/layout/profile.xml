@@ -43,7 +43,7 @@
 				android:layout_marginBottom="10dip"
 				android:paddingRight="15dp"
 				android:orientation="horizontal">
-			<net.idlesoft.android.apps.github.ui.widgets.GravatarView android:id="@+id/gravatar"
+			<ImageView android:id="@+id/gravatar"
 					android:layout_width="70dp"
 					android:layout_height="70dp" />
 			<LinearLayout

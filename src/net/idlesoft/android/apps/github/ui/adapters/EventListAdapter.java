@@ -29,7 +29,9 @@ import android.text.Spannable;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+import com.androidquery.AQuery;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
@@ -54,7 +56,7 @@ class EventListAdapter extends BaseListAdapter<Event>
 	class ViewHolder
 	{
 		public
-		GravatarView gravatar;
+		ImageView gravatar;
 		public
 		TextView title;
 		public
@@ -75,7 +77,7 @@ class EventListAdapter extends BaseListAdapter<Event>
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.event_list_item, null);
 			holder = new ViewHolder();
-			holder.gravatar = (GravatarView) convertView.findViewById(R.id.iv_event_gravatar);
+			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_event_gravatar);
 			holder.title = (TextView) convertView.findViewById(R.id.tv_event_title);
 			holder.extra = (TextView) convertView.findViewById(R.id.tv_event_extra);
 			convertView.setTag(holder);
@@ -86,6 +88,9 @@ class EventListAdapter extends BaseListAdapter<Event>
 		final Event event = getItem(position);
 		final String type = event.getType();
 		EventUtil.fillHolderWithEvent(holder, event);
+
+		final AQuery aq = new AQuery(convertView);
+		aq.id(holder.gravatar).image(event.getActor().getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
 
 		holder.gravatar.setOnClickListener(new View.OnClickListener()
 		{
