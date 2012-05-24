@@ -35,6 +35,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import com.bugsense.trace.BugSenseHandler;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
 import net.idlesoft.android.apps.github.authenticator.AuthConstants;
@@ -52,6 +53,9 @@ class MainActivity extends BaseActivity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		/* BugSense setup */
+		BugSenseHandler.setup(this, "40e35a51");
 
 		mFirstRun = mPrefs.getBoolean(PREF_FIRST_RUN, true);
 
