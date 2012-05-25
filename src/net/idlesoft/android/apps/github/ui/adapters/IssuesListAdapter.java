@@ -137,10 +137,13 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 			/* Set label text */
 			label.setText(l.getName());
 			/* Calculate YIQ color contrast */
-			if ((((r*299)+(g*587)+(b*114))/1000) >= 128)
+			if ((((r*299)+(g*587)+(b*114))/1000) >= 128) {
 				label.setTextColor(Color.BLACK);
-			else
+				label.getPaint().setShadowLayer(1.0f, -1, -1, Color.WHITE);
+			} else {
 				label.setTextColor(Color.WHITE);
+				label.getPaint().setShadowLayer(1.0f, 1, 1, Color.BLACK);
+			}
 			label.setTextSize(10.0f);
 			if (labels.indexOf(label) != labels.size() - 1)
 				params.setMargins(0, 0, 5, 0);
