@@ -33,7 +33,10 @@
 			android:orientation="vertical">
 		<TextView android:id="@+id/tv_issue_number"
 				android:layout_width="wrap_content"
-				android:layout_height="wrap_content" />
+				android:layout_height="wrap_content"
+				android:layout_marginBottom="5dp"
+				android:textColor="@color/light_text_color"
+				android:textSize="12sp" />
 		<ImageView
 				android:id="@+id/iv_issue_gravatar"
 				android:layout_height="32dp"
@@ -48,7 +51,9 @@
 		<TextView android:id="@+id/tv_issue_meta"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:textColor="@color/light_text_color" />
+				android:layout_marginBottom="5dp"
+				android:textColor="@color/light_text_color"
+				android:textSize="12sp"/>
 		<TextView android:id="@+id/tv_issue_title"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
