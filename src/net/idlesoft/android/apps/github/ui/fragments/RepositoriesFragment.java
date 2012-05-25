@@ -44,9 +44,7 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 
@@ -163,6 +161,16 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 										holder.request = rs.pageRepositories(filter);
 									}
 									holder.repositories.addAll(holder.request.next());
+									Collections.sort(holder.repositories,
+													 new Comparator<Repository>()
+									{
+										@Override
+										public
+										int compare(Repository lhs, Repository rhs)
+										{
+											return rhs.getPushedAt().compareTo(lhs.getPushedAt());
+										}
+									});
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
