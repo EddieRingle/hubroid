@@ -118,13 +118,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayHomeAsUpEnabled(true);
 		actionBar.setHomeButtonEnabled(true);
-
-		final OcticonView ov =
-				new OcticonView(getContext())
-						.setGlyphColor(Color.parseColor(getString(R.color.github_blue)))
-						.setOcticon(OcticonView.IC_INVERTOCAT)
-						.setGlyphSize(32.0f);
-		actionBar.setLogo(ov.toDrawable());
 	}
 
 	protected
