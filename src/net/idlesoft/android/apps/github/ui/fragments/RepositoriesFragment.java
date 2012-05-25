@@ -156,21 +156,12 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 										holder.request = rs.pageRepositories(
 												mDataFragment.targetUser.getLogin());
 									} else {
-										Map<String, String> filter = new HashMap<String, String>();
+										final Map<String, String> filter = new HashMap<String, String>();
 										filter.put("type", "owner");
+										filter.put("sort", "pushed");
 										holder.request = rs.pageRepositories(filter);
 									}
 									holder.repositories.addAll(holder.request.next());
-									Collections.sort(holder.repositories,
-													 new Comparator<Repository>()
-									{
-										@Override
-										public
-										int compare(Repository lhs, Repository rhs)
-										{
-											return rhs.getPushedAt().compareTo(lhs.getPushedAt());
-										}
-									});
 								} catch (IOException e) {
 									e.printStackTrace();
 								} catch (AccountsException e) {
