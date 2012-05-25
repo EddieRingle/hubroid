@@ -42,7 +42,7 @@
 	<color name="button_normal_stroke">#D4D4D4</color>
 	<color name="button_focused_fill">#599bdc</color>
 	<color name="button_focused_stroke">#2a65a0</color>
-	<color name="button_pressed_fill">#3399dd</color>
+	<color name="button_pressed_fill">@color/github_blue</color>
 	<color name="button_pressed_stroke">#2a65a0</color>
 
 	<!-- Gravatar colors -->
