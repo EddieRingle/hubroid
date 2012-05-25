@@ -21,6 +21,7 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +30,7 @@ import android.widget.*;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.DashboardListAdapter;
+import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 
 import java.util.ArrayList;
 
@@ -92,14 +94,20 @@ class DashboardFragment extends BaseFragment
 			DashboardListAdapter.DashboardEntry entry = new DashboardListAdapter.DashboardEntry();
 
 			/* Events */
-			entry.icon = getResources().getDrawable(R.drawable.ic_dash_events);
+			entry.icon = new OcticonView(getContext()).setOcticon(OcticonView.IC_FEED)
+														   .setGlyphColor(Color.DKGRAY)
+														   .setGlyphSize(72.0f)
+														   .toDrawable();
 			entry.label = getString(R.string.dash_events);
 			entries.add(entry);
 
 			if (!isAnon) {
 				/* Repositories */
 				entry = new DashboardListAdapter.DashboardEntry();
-				entry.icon = getResources().getDrawable(R.drawable.ic_dash_repos);
+				entry.icon = new OcticonView(getContext()).setOcticon(OcticonView.IC_PUBLIC_REPO)
+														  .setGlyphColor(Color.DKGRAY)
+														  .setGlyphSize(72.0f)
+														  .toDrawable();
 				entry.label = getString(R.string.dash_repos);
 				entries.add(entry);
 			}
@@ -107,7 +115,10 @@ class DashboardFragment extends BaseFragment
 			if (!isAnon) {
 				/* Profile */
 				entry = new DashboardListAdapter.DashboardEntry();
-				entry.icon = getResources().getDrawable(R.drawable.ic_dash_profile);
+				entry.icon = new OcticonView(getContext()).setOcticon(OcticonView.IC_PERSON)
+														  .setGlyphColor(Color.DKGRAY)
+														  .setGlyphSize(72.0f)
+														  .toDrawable();
 				entry.label = getString(R.string.dash_profile);
 				entries.add(entry);
 			}
@@ -115,7 +126,10 @@ class DashboardFragment extends BaseFragment
 			if (!isAnon) {
 				/* Users */
 				entry = new DashboardListAdapter.DashboardEntry();
-				entry.icon = getResources().getDrawable(R.drawable.ic_dash_users);
+				entry.icon = new OcticonView(getContext()).setOcticon(OcticonView.IC_TEAM)
+														  .setGlyphColor(Color.DKGRAY)
+														  .setGlyphSize(72.0f)
+														  .toDrawable();
 				entry.label = getString(R.string.dash_users);
 				entries.add(entry);
 			}
