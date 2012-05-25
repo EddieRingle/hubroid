@@ -23,6 +23,7 @@ package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
+import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 import net.idlesoft.android.apps.github.utils.RequestCache;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
@@ -345,11 +347,21 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				tvDescription.setVisibility(View.GONE);
 			}
 
-			final ImageView ivPrivacy = (ImageView) mContent.findViewById(R.id.iv_repository_privacy);
-			if (repository.isPrivate())
-				ivPrivacy.setImageResource(R.drawable.lock);
-			else
-				ivPrivacy.setImageResource(R.drawable.open_lock);
+			final OcticonView ovPrivacy = (OcticonView) mContent.findViewById(R.id.ov_repository_privacy);
+			final boolean isFork = repository.isFork();
+			final boolean isPrivate = repository.isPrivate();
+			if (isPrivate) {
+				if (isFork)
+					ovPrivacy.setOcticon(OcticonView.IC_PRIVATE_FORK);
+				else
+					ovPrivacy.setOcticon(OcticonView.IC_PRIVATE_REPO);
+			} else {
+				if (isFork)
+					ovPrivacy.setOcticon(OcticonView.IC_PUBLIC_FORK);
+				else
+					ovPrivacy.setOcticon(OcticonView.IC_PUBLIC_REPO);
+			}
+
 		}
 
 		mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
