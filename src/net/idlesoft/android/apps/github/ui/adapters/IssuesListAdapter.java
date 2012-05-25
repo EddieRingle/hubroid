@@ -36,6 +36,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
+import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.client.GsonUtils;
@@ -61,6 +62,8 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 		TextView title;
 		public
 		LinearLayout labels;
+		public
+		OcticonView status;
 	}
 
 	public
@@ -82,6 +85,7 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 			holder.meta = (TextView) convertView.findViewById(R.id.tv_issue_meta);
 			holder.title = (TextView) convertView.findViewById(R.id.tv_issue_title);
 			holder.labels = (LinearLayout) convertView.findViewById(R.id.ll_issue_labels);
+			holder.status = (OcticonView) convertView.findViewById(R.id.ov_issue_status);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -104,7 +108,8 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 			void onClick(View v)
 			{
 				final Bundle args = new Bundle();
-				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(issue.getUser()));
+				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(issue.getUser
+						()));
 				getContext().startFragmentTransaction();
 				getContext().addFragmentToTransaction(ProfileFragment.class,
 													  R.id.fragment_container_more, args);
@@ -142,6 +147,15 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 			label.setPadding(5, 2, 5, 2);
 			label.setLayoutParams(params);
 			holder.labels.addView(label);
+		}
+
+		/* Set issue status Octicon */
+		if (issue.getState().equals("open")) {
+			holder.status.setOcticon(OcticonView.IC_ISSUE_OPENED);
+			holder.status.setGlyphColor(Color.parseColor(getContext().getString(R.color.issue_green)));
+		} else {
+			holder.status.setOcticon(OcticonView.IC_ISSUE_CLOSED);
+			holder.status.setGlyphColor(Color.parseColor(getContext().getString(R.color.issue_red)));
 		}
 
 		return convertView;

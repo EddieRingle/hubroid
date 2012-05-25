@@ -30,6 +30,9 @@
 	<color name="github_blue">#FF4183C4</color>
 	<color name="github_orange">#FFFF8811</color>
 
+	<color name="issue_green">#3CBF5E</color>
+	<color name="issue_red">#BF3C4A</color>
+
 	<!-- Text colors -->
 	<color name="text_color">#ff111111</color>
 	<color name="light_text_color">#99111111</color>

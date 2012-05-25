@@ -31,18 +31,23 @@
 			android:layout_marginRight="5dp"
 			android:gravity="center_horizontal"
 			android:orientation="vertical">
-		<TextView android:id="@+id/tv_issue_number"
+		<net.idlesoft.android.apps.github.ui.widgets.OcticonView android:id="@+id/ov_issue_status"
 				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_marginBottom="5dp"
-				android:textColor="@color/light_text_color"
-				android:textSize="12sp" />
+				android:textSize="8dp" />
 		<ImageView
 				android:id="@+id/iv_issue_gravatar"
 				android:layout_height="32dp"
 				android:layout_width="32dp"
+				android:layout_marginTop="5dp"
+				android:layout_marginBottom="5dp"
 				android:padding="2dp"
 				android:background="@drawable/gravatar_border" />
+		<TextView android:id="@+id/tv_issue_number"
+				  android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:textColor="@color/light_text_color"
+				  android:textSize="12sp" />
 	</LinearLayout>
 	<LinearLayout
 			android:layout_width="match_parent"
@@ -61,7 +66,8 @@
 				android:ellipsize="end" />
 		<LinearLayout android:id="@+id/ll_issue_labels"
 				android:layout_width="match_parent"
-				android:layout_height="match_parent">
+				android:layout_height="match_parent"
+				android:layout_marginTop="5dp">
 		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>
