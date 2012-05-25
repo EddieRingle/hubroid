@@ -361,6 +361,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				else
 					ovPrivacy.setOcticon(OcticonView.IC_PUBLIC_REPO);
 			}
+			ovPrivacy.setVisibility(View.VISIBLE);
 
 		}
 
