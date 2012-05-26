@@ -149,6 +149,10 @@ class OcticonView extends RelativeLayout
 	public static final int IC_ARR_RIGHT_MINI	= 0x0071;
 	public static final int IC_JUMP_DOWN		= 0x0072;
 	public static final int IC_JUMP_UP			= 0x0073;
+	public static final int IC_REFERENCE		= 0x0074;
+	public static final int IC_MILESTONE		= 0x0075;
+	public static final int IC_SAVE_DOCUMENT	= 0x0076;
+	public static final int IC_MEGAPHONE		= 0x0077;
 
 	private
 	PaintDrawable mPaintDrawable;
@@ -442,6 +446,9 @@ class OcticonView extends RelativeLayout
 		case R.id.octicon_mail_status:
 			setOcticon(IC_MAIL_STATUS);
 			break;
+		case R.id.octicon_megaphone:
+			setOcticon(IC_MEGAPHONE);
+			break;
 		case R.id.octicon_member_added:
 			setOcticon(IC_MEMBER_ADDED);
 			break;
@@ -450,6 +457,9 @@ class OcticonView extends RelativeLayout
 			break;
 		case R.id.octicon_merge:
 			setOcticon(IC_MERGE);
+			break;
+		case R.id.octicon_milestone:
+			setOcticon(IC_MILESTONE);
 			break;
 		case R.id.octicon_modified:
 			setOcticon(IC_MODIFIED);
@@ -514,6 +524,9 @@ class OcticonView extends RelativeLayout
 		case R.id.octicon_readme:
 			setOcticon(IC_README);
 			break;
+		case R.id.octicon_reference:
+			setOcticon(IC_REFERENCE);
+			break;
 		case R.id.octicon_remove_close:
 			setOcticon(IC_REMOVE_CLOSE);
 			break;
@@ -531,6 +544,9 @@ class OcticonView extends RelativeLayout
 			break;
 		case R.id.octicon_ruby:
 			setOcticon(IC_RUBY);
+			break;
+		case R.id.octicon_save_document:
+			setOcticon(IC_SAVE_DOCUMENT);
 			break;
 		case R.id.octicon_search_input:
 			setOcticon(IC_SEARCH_INPUT);

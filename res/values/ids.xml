@@ -142,4 +142,8 @@
 	<item type="id" name="octicon_arr_right_mini"/>
 	<item type="id" name="octicon_jump_down"/>
 	<item type="id" name="octicon_jump_up"/>
+	<item type="id" name="octicon_reference"/>
+	<item type="id" name="octicon_milestone"/>
+	<item type="id" name="octicon_save_document"/>
+	<item type="id" name="octicon_megaphone"/>
 </resources>
