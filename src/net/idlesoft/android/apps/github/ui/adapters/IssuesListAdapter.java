@@ -22,6 +22,7 @@
 package net.idlesoft.android.apps.github.ui.adapters;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
@@ -35,7 +36,7 @@ import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
-import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
+import net.idlesoft.android.apps.github.ui.widgets.FlowLayout;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Label;
@@ -53,17 +54,21 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 	class ViewHolder
 	{
 		public
-		TextView number;
-		public
 		ImageView gravatar;
 		public
 		TextView meta;
 		public
 		TextView title;
 		public
-		LinearLayout labels;
-		public
 		OcticonView status;
+		public
+		TextView comment_count;
+		public
+		LinearLayout extras;
+		public
+		FlowLayout labels;
+		public
+		TextView milestone;
 	}
 
 	public
@@ -80,12 +85,14 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 		if (convertView == null) {
 			convertView = mInflater.inflate(R.layout.issue_list_item, null);
 			holder = new ViewHolder();
-			holder.number = (TextView) convertView.findViewById(R.id.tv_issue_number);
 			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_issue_gravatar);
 			holder.meta = (TextView) convertView.findViewById(R.id.tv_issue_meta);
 			holder.title = (TextView) convertView.findViewById(R.id.tv_issue_title);
-			holder.labels = (LinearLayout) convertView.findViewById(R.id.ll_issue_labels);
 			holder.status = (OcticonView) convertView.findViewById(R.id.ov_issue_status);
+			holder.comment_count = (TextView) convertView.findViewById(R.id.tv_issue_comment_count);
+			holder.extras = (LinearLayout) convertView.findViewById(R.id.ll_issue_extras_area);
+			holder.labels = (FlowLayout) convertView.findViewById(R.id.ll_issue_labels);
+			holder.milestone = (TextView) convertView.findViewById(R.id.tv_issue_milestone);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -93,8 +100,8 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 
 		final Issue issue = getItem(position);
 
-		holder.number.setText("#" + Integer.toString(issue.getNumber()));
-		holder.meta.setText("By " + issue.getUser().getLogin() + " " +
+		holder.meta.setText("#" + Integer.toString(issue.getNumber()) + " opened by " +
+									issue.getUser().getLogin() + " " +
 									getTimeSince(issue.getCreatedAt()) + " ago");
 		holder.title.setText(issue.getTitle());
 
@@ -122,10 +129,18 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 
 		final float[] roundedValues = {2,2, 2,2, 2,2, 2,2};
 		ArrayList<Label> labels = new ArrayList<Label>(issue.getLabels());
+		final TextView labelLabel = new TextView(getContext());
+		labelLabel.setText("Labels:");
+		labelLabel.setTextColor(Color.parseColor(getContext().getString(R.color
+
+																				.light_text_color)));
+		labelLabel.setTypeface(Typeface.DEFAULT_BOLD, Typeface.BOLD);
+		labelLabel.setTextSize(10.0f);
+		labelLabel.setPadding(0, 2, 0, 2);
+
+		holder.labels.addView(labelLabel, new FlowLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
 		for (Label l : labels) {
 			final TextView label = new TextView(getContext());
-			final LinearLayout.LayoutParams params =
-					new LinearLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
 			final ShapeDrawable sd = new ShapeDrawable(new RoundRectShape(roundedValues, null, null));
 			final int color = Color.parseColor("#" + l.getColor());
 			final int r = Color.red(color);
@@ -145,12 +160,27 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 				label.getPaint().setShadowLayer(1.0f, 1, 1, Color.BLACK);
 			}
 			label.setTextSize(10.0f);
-			if (labels.indexOf(label) != labels.size() - 1)
-				params.setMargins(0, 0, 5, 0);
 			label.setPadding(5, 2, 5, 2);
-			label.setLayoutParams(params);
-			holder.labels.addView(label);
+			holder.labels.addView(label, new FlowLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
 		}
+		if (!labels.isEmpty()) {
+			holder.labels.setVisibility(View.VISIBLE);
+			holder.extras.setVisibility(View.VISIBLE);
+		}
+
+		/* We're not going to show Milestones just yet
+		if (issue.getMilestone() != null) {
+			SpannableStringBuilder milestoneBuilder = new SpannableStringBuilder();
+			milestoneBuilder.append("Milestone: " + issue.getMilestone().getTitle());
+			milestoneBuilder.setSpan(new StyleSpan(Typeface.BOLD), 0, 10, Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+			holder.milestone.setText(milestoneBuilder);
+			holder.milestone.setVisibility(View.VISIBLE);
+			holder.extras.setVisibility(View.VISIBLE);
+		}
+		*/
+
+		/* Set comment count */
+		holder.comment_count.setText(Integer.toString(issue.getComments()));
 
 		/* Set issue status Octicon */
 		if (issue.getState().equals("open")) {
