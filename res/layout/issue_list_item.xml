@@ -95,7 +95,7 @@
 				android:layout_width="match_parent"
 				android:layout_height="1dp"
 				android:layout_marginBottom="5dp"
-				android:background="#E5E5E5" />
+				android:background="@android:color/transparent" />
 		<net.idlesoft.android.apps.github.ui.widgets.FlowLayout android:id="@+id/ll_issue_labels"
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
