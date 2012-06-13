@@ -218,7 +218,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_RECEIVED);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Event>(getContext());
@@ -303,7 +303,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_PUBLIC);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Event>(getContext());
@@ -387,7 +387,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_TIMELINE);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Event>(getContext());

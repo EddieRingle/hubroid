@@ -120,14 +120,14 @@ class FollowersFollowingFragment
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWERS);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<User>(getContext());
 
 			list.setAdapter(new UserListAdapter(getBaseActivity()));
 
-			if (index >= 0) {
+			if (index >= 0 && !freshen) {
 				holder = mDataFragment.userLists.get(index);
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.users);
@@ -220,14 +220,14 @@ class FollowersFollowingFragment
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_FOLLOWING);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<User>(getContext());
 
 			list.setAdapter(new UserListAdapter(getBaseActivity()));
 
-			if (index >= 0) {
+			if (index >= 0 && !freshen) {
 				holder = mDataFragment.userLists.get(index);
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.users);

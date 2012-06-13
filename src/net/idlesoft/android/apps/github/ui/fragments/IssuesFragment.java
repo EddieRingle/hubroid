@@ -125,7 +125,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_OPEN);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Issue>(getContext());
@@ -211,7 +211,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_CLOSED);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Issue>(getContext());
@@ -300,7 +300,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_ASSIGNED);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Issue>(getContext());
@@ -389,7 +389,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_MENTIONED);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Issue>(getContext());

@@ -121,14 +121,14 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 			final ListHolder holder;
 			final int index = mDataFragment.findListIndexByType(LIST_YOURS);
 
-			if (freshen && index >= 0)
+			if (index >= 0)
 				list = mViewPager.getAdapter().getList(index);
 			else
 				list = new IdleList<Repository>(getContext());
 
 			list.setAdapter(new RepositoryListAdapter(getBaseActivity()));
 
-			if (index >= 0) {
+			if (index >= 0 && !freshen) {
 				holder = mDataFragment.repositoryLists.get(index);
 				list.setTitle(holder.title);
 				list.getListAdapter().fillWithItems(holder.repositories);

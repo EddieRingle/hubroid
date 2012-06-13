@@ -116,19 +116,19 @@ class WatchersFragment
 	public
 	void fetchData(final boolean freshen)
 	{
-		/* Display a user's followers */
+		/* Display a repository's watchers */
 		final IdleList<User> list;
 		final ListHolder holder;
 		final int index = mDataFragment.findListIndexByType(LIST_WATCHERS);
 
-		if (freshen && index >= 0)
+		if (index >= 0)
 			list = mViewPager.getAdapter().getList(index);
 		else
 			list = new IdleList<User>(getContext());
 
 		list.setAdapter(new UserListAdapter(getBaseActivity()));
 
-		if (index >= 0) {
+		if (index >= 0 && !freshen) {
 			holder = mDataFragment.userLists.get(index);
 			list.setTitle(holder.title);
 			list.getListAdapter().fillWithItems(holder.users);
