@@ -85,12 +85,6 @@ class BaseFragment extends SherlockFragment
 	}
 
 	protected
-	View getFragmentContainerDivider()
-	{
-		return getBaseActivity().findViewById(R.id.fragment_container_shadow);
-	}
-
-	protected
 	boolean isMultiPane()
 	{
 		return getBaseActivity().isMultiPane();

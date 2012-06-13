@@ -170,7 +170,6 @@ class DashboardFragment extends BaseFragment
 
 		if (isMultiPane()) {
 			getBigFragmentContainer().setVisibility(View.INVISIBLE);
-			getFragmentContainerDivider().setVisibility(View.INVISIBLE);
 		}
 	}
 
