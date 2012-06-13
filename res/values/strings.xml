@@ -80,6 +80,8 @@
 	<string name="issues_assigned">Assigned To You</string>
 	<string name="issues_mentioned">Mentioning You</string>
 
+	<string name="issue_empty_description">No description given.</string>
+
 	<!-- Users -->
 	<string name="followers">Followers</string>
 	<string name="following">Following</string>

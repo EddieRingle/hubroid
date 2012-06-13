@@ -21,17 +21,21 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.androidquery.AQuery;
+import com.petebevin.markdown.MarkdownFilter;
+import com.petebevin.markdown.MarkdownProcessor;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
@@ -39,17 +43,13 @@ import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.widgets.FlowLayout;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 import net.idlesoft.android.apps.github.utils.IssueUtils;
+import net.idlesoft.android.apps.github.utils.StringUtils;
+import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.Label;
 import org.eclipse.egit.github.core.client.GsonUtils;
 
-import java.util.ArrayList;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static net.idlesoft.android.apps.github.utils.StringUtils.getTimeSince;
-
 public
-class IssuesListAdapter extends BaseListAdapter<Issue>
+class IssueCommentListAdapter extends BaseListAdapter<Comment>
 {
 	public static
 	class ViewHolder
@@ -57,23 +57,15 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 		public
 		ImageView gravatar;
 		public
+		TextView author;
+		public
 		TextView meta;
 		public
-		TextView title;
-		public
-		OcticonView status;
-		public
-		TextView comment_count;
-		public
-		LinearLayout extras;
-		public
-		FlowLayout labels;
-		public
-		TextView milestone;
+		TextView content;
 	}
 
 	public
-	IssuesListAdapter(BaseActivity context)
+	IssueCommentListAdapter(BaseActivity context)
 	{
 		super(context);
 	}
@@ -82,27 +74,48 @@ class IssuesListAdapter extends BaseListAdapter<Issue>
 	public
 	View getView(int position, View convertView, ViewGroup parent)
 	{
-		final Issue issue = getItem(position);
+		final Comment comment = getItem(position);
 		ViewHolder holder;
 
 		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.issue_list_item, null);
+			convertView = mInflater.inflate(R.layout.issue_comment_list_item, null);
 			holder = new ViewHolder();
-			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_issue_gravatar);
-			holder.meta = (TextView) convertView.findViewById(R.id.tv_issue_meta);
-			holder.title = (TextView) convertView.findViewById(R.id.tv_issue_title);
-			holder.status = (OcticonView) convertView.findViewById(R.id.ov_issue_status);
-			holder.comment_count = (TextView) convertView.findViewById(R.id.tv_issue_comment_count);
-			holder.extras = (LinearLayout) convertView.findViewById(R.id.ll_issue_extras_area);
-			holder.labels = (FlowLayout) convertView.findViewById(R.id.ll_issue_labels);
-			holder.milestone = (TextView) convertView.findViewById(R.id.tv_issue_milestone);
+			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_issue_comment_gravatar);
+			holder.author = (TextView) convertView.findViewById(R.id.tv_issue_comment_author);
+			holder.meta = (TextView) convertView.findViewById(R.id.tv_issue_comment_meta);
+			holder.content = (TextView) convertView.findViewById(R.id.tv_issue_comment);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		/* Fill the holder with data from the issue */
-		holder = IssueUtils.fillHolder(getContext(), holder, issue);
+		final AQuery aq = new AQuery(convertView);
+		aq.id(holder.gravatar).image(comment.getUser().getAvatarUrl(), true, true, 200,
+									 R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
+
+		holder.gravatar.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public
+			void onClick(View v)
+			{
+				final Bundle args = new Bundle();
+				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(comment.getUser()));
+				getContext().startFragmentTransaction();
+				getContext().addFragmentToTransaction(ProfileFragment.class,
+												 R.id.fragment_container_more, args);
+				getContext().finishFragmentTransaction();
+			}
+		});
+
+		holder.author.setText(comment.getUser().getLogin());
+		holder.meta.setText("commented " + StringUtils.getTimeSince(comment.getCreatedAt()) +
+									" ago");
+
+		MarkdownProcessor processor = new MarkdownProcessor();
+		final String processed = processor.markdown(comment.getBody());
+		holder.content.setText(StringUtils.trimTrailingWhitespace(Html.fromHtml(processed)));
+		holder.content.setMovementMethod(new LinkMovementMethod());
 
 		return convertView;
 	}

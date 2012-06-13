@@ -27,6 +27,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -47,6 +48,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 
 public
@@ -203,6 +205,23 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					if (getBaseActivity() == null) return;
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction(true);
+				}
+			});
 		}
 
 		{
@@ -292,6 +311,22 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction(true);
+				}
+			});
 		}
 
 		if (!getBaseActivity().getCurrentUserLogin().equals("")) {
@@ -381,6 +416,22 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction(true);
+				}
+			});
 		}
 
 		if (!getBaseActivity().getCurrentUserLogin().equals("")) {
@@ -471,6 +522,22 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
+
+			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Bundle args = new Bundle();
+					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
+					getBaseActivity().startFragmentTransaction();
+					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
+															   R.id.fragment_container_more,
+															   args);
+					getBaseActivity().finishFragmentTransaction(true);
+				}
+			});
 		}
 	}
 
