@@ -319,7 +319,8 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			} else {
 				holder = new ListHolder();
 				holder.type = LIST_PUBLIC;
-				holder.title = getString(R.string.events_public);
+				holder.title = getString(R.string.events_public)
+						.replace("Your", mDataFragment.targetUser.getLogin() + "'s");
 				list.setTitle(holder.title);
 				holder.events = new ArrayList<Event>();
 				mDataFragment.eventLists.add(holder);

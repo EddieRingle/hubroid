@@ -274,6 +274,25 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			}
 		};
 		mDataFragment.holders.add(holder);
+
+		holder = new InfoListAdapter.InfoHolder();
+		holder.primary = "Public Activity";
+		holder.onClick = new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public
+			void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				final Bundle args = new Bundle();
+				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(EventsFragment.class,
+														   R.id.fragment_container_more,
+														   args);
+				getBaseActivity().finishFragmentTransaction();
+			}
+		};
+		mDataFragment.holders.add(holder);
 	}
 
 	public
