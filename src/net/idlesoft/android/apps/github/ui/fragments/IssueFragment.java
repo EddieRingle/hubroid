@@ -72,6 +72,8 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 		IssueCommentListAdapter commentAdapter;
 		ArrayList<Comment> issueComments;
 		Issue targetIssue;
+		View issueDetailsView;
+		View issueContentsView;
 	}
 
 	private
@@ -225,9 +227,17 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			issueContents.setText(getString(R.string.issue_empty_description));
 		}
 
-		mDataFragment.list.addHeaderView(IssueUtils.viewFromIssue(getBaseActivity(),
-																  mDataFragment.targetIssue));
-		mDataFragment.list.addHeaderView(issueContents);
+		if (mDataFragment.issueDetailsView != null)
+			mDataFragment.list.removeHeaderView(mDataFragment.issueDetailsView);
+		if (mDataFragment.issueContentsView != null)
+			mDataFragment.list.removeHeaderView(mDataFragment.issueContentsView);
+
+		mDataFragment.issueDetailsView = IssueUtils.viewFromIssue(getBaseActivity(),
+																  mDataFragment.targetIssue);
+		mDataFragment.issueContentsView = issueContents;
+
+		mDataFragment.list.addHeaderView(mDataFragment.issueDetailsView);
+		mDataFragment.list.addHeaderView(mDataFragment.issueContentsView);
 
 		mDataFragment.list.setAdapter(mDataFragment.commentAdapter);
 		/* Allow items within list items to be clickable */
