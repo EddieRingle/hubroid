@@ -38,6 +38,7 @@ class HubroidConstants
 	public final static String ARG_TARGET_REPO = "target_repo";
 	public final static String ARG_TARGET_USER = "target_user";
 	public final static String ARG_TARGET_ISSUE = "target_issue";
+	public final static String ARG_TARGET_URI = "target_uri";
 	public final static String ARG_HANDLED_LISTS = "handled_lists";
 
 	public final static String DEFAULT_USER = "eddieringle";

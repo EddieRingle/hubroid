@@ -141,7 +141,7 @@ class EventUtil
 		} else if (type.equals(Event.TYPE_ISSUE_COMMENT)) {
 			final IssueCommentPayload p = (IssueCommentPayload) event.getPayload();
 			titleBuilder.append("commented on " +
-					((p.getIssue().getPullRequest() != null) ? "pull request " : "issue ") +
+					((p.getIssue().getPullRequest().getId() != 0) ? "pull request " : "issue ") +
 					Integer.toString(p.getIssue().getNumber()) + " on " +
 					event.getRepo().getName());
 			int index = titleBuilder.toString().indexOf(event.getRepo().getName());

@@ -148,13 +148,19 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 						void runTask() throws InterruptedException
 						{
 							final String repoOwner, repoName, htmlUrl;
-							htmlUrl = mDataFragment.targetIssue.getHtmlUrl();
-							repoOwner = htmlUrl.split("/")[3];
-							repoName = htmlUrl.split("/")[4];
+							htmlUrl = mDataFragment.targetIssue.getHtmlUrl().replaceAll("/{2,}", "/");
+							repoOwner = htmlUrl.split("/")[2];
+							repoName = htmlUrl.split("/")[3];
 
 							try {
 								final IssueService is = new IssueService(getBaseActivity()
 																				 .getGHClient());
+								if (mDataFragment.targetIssue.getCreatedAt() == null) {
+									mDataFragment.targetIssue =
+											is.getIssue(repoOwner,
+														repoName,
+														mDataFragment.targetIssue.getNumber());
+								}
 								mDataFragment.issueComments = new ArrayList<Comment>(
 										is.getComments(repoOwner,
 													   repoName,

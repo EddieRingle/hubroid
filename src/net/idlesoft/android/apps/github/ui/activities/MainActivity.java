@@ -36,6 +36,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import com.bugsense.trace.BugSenseHandler;
+import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
 import net.idlesoft.android.apps.github.authenticator.AuthConstants;
@@ -83,22 +84,32 @@ class MainActivity extends BaseActivity
 		super.onResume();
 
 		if (!mFirstRun) {
-			FragmentManager fm = getSupportFragmentManager();
-			FragmentTransaction ft = fm.beginTransaction();
-			DashboardFragment fragment =
-					(DashboardFragment) fm.findFragmentByTag(DashboardFragment.class.getName());
-			if (fragment != null) {
-				return;
-			} else {
-				fragment = new DashboardFragment();
+			try {
+				if (getIntent().getExtras().containsKey(HubroidConstants.ARG_TARGET_URI)) {
+					GitHubIntentFilter.parsePath(MainActivity.this,
+												 getIntent().getExtras().getStringArray(
+														 HubroidConstants.ARG_TARGET_URI));
+				} else {
+					throw new NullPointerException();
+				}
+			} catch (NullPointerException e) {
+				FragmentManager fm = getSupportFragmentManager();
+				FragmentTransaction ft = fm.beginTransaction();
+				DashboardFragment fragment =
+						(DashboardFragment) fm.findFragmentByTag(DashboardFragment.class.getName());
+				if (fragment != null) {
+					return;
+				} else {
+					fragment = new DashboardFragment();
+				}
+
+				if (isMultiPane())
+					ft.replace(R.id.fragment_navigation, fragment, DashboardFragment.class.getName());
+				else
+					ft.replace(R.id.fragment_container, fragment, DashboardFragment.class.getName());
+
+				ft.commit();
 			}
-
-			if (isMultiPane())
-				ft.replace(R.id.fragment_navigation, fragment, DashboardFragment.class.getName());
-			else
-				ft.replace(R.id.fragment_container, fragment, DashboardFragment.class.getName());
-
-			ft.commit();
 		}
 	}
 

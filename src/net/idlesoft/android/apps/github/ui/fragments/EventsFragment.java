@@ -22,8 +22,11 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +36,8 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.GitHubIntentFilter;
+import net.idlesoft.android.apps.github.ui.activities.MainActivity;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
@@ -47,6 +52,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_URI;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public
@@ -143,6 +149,9 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				final GollumPayload p = (GollumPayload) event.getPayload();
 			} else if (type.equals(Event.TYPE_ISSUE_COMMENT)) {
 				final IssueCommentPayload p = (IssueCommentPayload) event.getPayload();
+				final Intent intent = new Intent(getBaseActivity(), GitHubIntentFilter.class);
+				intent.setData(Uri.parse(p.getIssue().getHtmlUrl()));
+				getBaseActivity().startActivity(intent);
 			} else if (type.equals(Event.TYPE_ISSUES)) {
 				final IssuesPayload p = (IssuesPayload) event.getPayload();
 			} else if (type.equals(Event.TYPE_MEMBER)) {
