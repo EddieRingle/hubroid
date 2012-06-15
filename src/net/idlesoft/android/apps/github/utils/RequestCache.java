@@ -47,6 +47,9 @@ public class RequestCache {
 	private final static String REPOSITORY_DIR = "repositories/";
 	private final static String USER_DIR = "users/";
 
+	/* TODO: The amount of time to keep cache should be a preference, really */
+	private final static long KEEP_LENGTH = 24 * 60 * 60000;
+
 	public static Repository getRepository(final BaseActivity context, final String owner,
 										   final String name, final boolean forceUpdate)
 	{
@@ -60,7 +63,7 @@ public class RequestCache {
 		if (!forceUpdate && f.exists()) {
 			/* Check if the cached JSON is really old */
 			final Date d = new Date();
-			final long elderCheck = d.getTime() - (15 * 24 * 60 * 60000);
+			final long elderCheck = d.getTime() - (KEEP_LENGTH);
 			if (f.lastModified() < elderCheck) {
 				shouldRefresh = true;
 			} else {
@@ -136,8 +139,7 @@ public class RequestCache {
 		if (!forceUpdate && f.exists()) {
 			/* Check if the cached JSON is really old (>1 day) */
 			final Date d = new Date();
-			/* TODO: The amount of time to keep cache should be a preference, really */
-			final long elderCheck = d.getTime() - (24 * 60 * 60000);
+			final long elderCheck = d.getTime() - (KEEP_LENGTH);
 			if (f.lastModified() < elderCheck) {
 				shouldRefresh = true;
 			} else {
