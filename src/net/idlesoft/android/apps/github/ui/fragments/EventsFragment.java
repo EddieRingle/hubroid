@@ -154,11 +154,18 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_ISSUE_COMMENT)) {
 				final IssueCommentPayload p = (IssueCommentPayload) event.getPayload();
-				final Intent intent = new Intent(getBaseActivity(), GitHubIntentFilter.class);
-				intent.setData(Uri.parse(p.getIssue().getHtmlUrl()));
-				getBaseActivity().startActivity(intent);
+				args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(p.getIssue()));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(IssueFragment.class,
+														   R.id.fragment_container_more, args);
+				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_ISSUES)) {
 				final IssuesPayload p = (IssuesPayload) event.getPayload();
+				args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(p.getIssue()));
+				getBaseActivity().startFragmentTransaction();
+				getBaseActivity().addFragmentToTransaction(IssueFragment.class,
+														   R.id.fragment_container_more, args);
+				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_MEMBER)) {
 				final MemberPayload p = (MemberPayload) event.getPayload();
 				getBaseActivity().popShortToast("Not supported right now, sorry!");
