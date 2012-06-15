@@ -70,9 +70,9 @@ class MainActivity extends BaseActivity
 		} else {
 			final String current_user_login = mPrefs.getString(PREF_CURRENT_USER_LOGIN, null);
 			if (current_user_login != null) {
-				mCurrentUser = new Account(current_user_login, AuthConstants.GITHUB_ACCOUNT_TYPE);
+				mCurrentAccount = new Account(current_user_login, AuthConstants.GITHUB_ACCOUNT_TYPE);
 			} else {
-				mCurrentUser = null;
+				mCurrentAccount = null;
 			}
 		}
 	}

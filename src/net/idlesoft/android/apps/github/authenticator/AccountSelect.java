@@ -63,7 +63,7 @@ class AccountSelect extends BaseActivity
 		Button signoutBtn = (Button) findViewById(R.id.btn_userselect_signout);
 		mAccountManager = AccountManager.get(getContext());
 
-		if (mCurrentUser == null)
+		if (mCurrentAccount == null)
 			signoutBtn.setVisibility(View.GONE);
 
 		getSupportActionBar().setHomeButtonEnabled(false);

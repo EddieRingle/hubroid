@@ -79,7 +79,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 
 	protected SharedPreferences.Editor mPrefsEditor;
 
-	protected static Account mCurrentUser;
+	protected static Account mCurrentAccount;
 
 	protected static GitHubClient mGitHubClient;
 
@@ -136,12 +136,12 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	GitHubClient getGHClient() throws IOException, AccountsException
 	{
 		if (mGitHubClient == null) {
-			if (mCurrentUser == null) {
+			if (mCurrentAccount == null) {
 				mGitHubClient = mGitHubClientProvider.getAnonymousClient();
 			} else {
-				mGitHubClient = mGitHubClientProvider.getClient(mCurrentUser);
+				mGitHubClient = mGitHubClientProvider.getClient(mCurrentAccount);
 			}
-			mCurrentUser = mGitHubClientProvider.getCurrentUser();
+			mCurrentAccount = mGitHubClientProvider.getCurrentUser();
 		}
 		return mGitHubClient;
 	}
@@ -149,7 +149,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	Account getCurrentUserAccount()
 	{
-		return mCurrentUser;
+		return mCurrentAccount;
 	}
 
 	/**
