@@ -1,6 +1,5 @@
 package net.idlesoft.android.apps.github.utils;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;

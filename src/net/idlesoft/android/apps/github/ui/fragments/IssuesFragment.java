@@ -33,10 +33,10 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.IssuesListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.client.GsonUtils;
@@ -148,31 +148,8 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				holder.issues = new ArrayList<Issue>();
 				mDataFragment.issuesLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable openRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final Repository target = mDataFragment.targetRepository;
-									final IssueService is =
-											new IssueService(getBaseActivity().getGHClient());
-									PageIterator<Issue> itr =
-											is.pageIssues(target.getOwner().getLogin(),
-														  target.getName());
-									holder.issues.addAll(itr.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks openCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable openExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -199,9 +176,28 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 								list.getProgressBar().setVisibility(View.GONE);
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final Repository target = mDataFragment.targetRepository;
+									final IssueService is =
+											new IssueService(getBaseActivity().getGHClient());
+									PageIterator<Issue> itr =
+											is.pageIssues(target.getOwner().getLogin(),
+														  target.getName());
+									holder.issues.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(openRunnable, openCallbacks);
+				mDataFragment.executeNewTask(openExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
@@ -251,34 +247,8 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				holder.issues = new ArrayList<Issue>();
 				mDataFragment.issuesLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable closedRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final Repository target = mDataFragment.targetRepository;
-									final IssueService is =
-											new IssueService(getBaseActivity().getGHClient());
-									Map<String, String> filter = new HashMap<String, String>();
-									filter.put("state", "closed");
-									PageIterator<Issue> itr =
-											is.pageIssues(target.getOwner().getLogin(),
-														  target.getName(),
-														  filter);
-									holder.issues.addAll(itr.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks closedCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable closedExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -305,9 +275,31 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 								list.getProgressBar().setVisibility(View.GONE);
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final Repository target = mDataFragment.targetRepository;
+									final IssueService is =
+											new IssueService(getBaseActivity().getGHClient());
+									Map<String, String> filter = new HashMap<String, String>();
+									filter.put("state", "closed");
+									PageIterator<Issue> itr =
+											is.pageIssues(target.getOwner().getLogin(),
+														  target.getName(),
+														  filter);
+									holder.issues.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(closedRunnable, closedCallbacks);
+				mDataFragment.executeNewTask(closedExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
@@ -356,34 +348,8 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				holder.issues = new ArrayList<Issue>();
 				mDataFragment.issuesLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable assignedRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final Repository target = mDataFragment.targetRepository;
-									final IssueService is =
-											new IssueService(getBaseActivity().getGHClient());
-									Map<String, String> filter = new HashMap<String, String>();
-									filter.put("assignee", getBaseActivity().getCurrentUserLogin());
-									PageIterator<Issue> itr =
-											is.pageIssues(target.getOwner().getLogin(),
-														  target.getName(),
-														  filter);
-									holder.issues.addAll(itr.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks assignedCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable assignedExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -410,9 +376,31 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 								list.getProgressBar().setVisibility(View.GONE);
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final Repository target = mDataFragment.targetRepository;
+									final IssueService is =
+											new IssueService(getBaseActivity().getGHClient());
+									Map<String, String> filter = new HashMap<String, String>();
+									filter.put("assignee", getBaseActivity().getCurrentUserLogin());
+									PageIterator<Issue> itr =
+											is.pageIssues(target.getOwner().getLogin(),
+														  target.getName(),
+														  filter);
+									holder.issues.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(assignedRunnable, assignedCallbacks);
+				mDataFragment.executeNewTask(assignedExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
@@ -427,8 +415,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
-															   R.id.fragment_container_more,
-															   args);
+															   R.id.fragment_container_more, args);
 					getBaseActivity().finishFragmentTransaction(true);
 				}
 			});
@@ -462,34 +449,8 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 
 				mDataFragment.issuesLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable mentionedRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final Repository target = mDataFragment.targetRepository;
-									final IssueService is =
-											new IssueService(getBaseActivity().getGHClient());
-									Map<String, String> filter = new HashMap<String, String>();
-									filter.put("mentioned", getBaseActivity().getCurrentUserLogin());
-									PageIterator<Issue> itr =
-											is.pageIssues(target.getOwner().getLogin(),
-														  target.getName(),
-														  filter);
-									holder.issues.addAll(itr.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks mentionedCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable mentionedRunnable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -516,9 +477,31 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 								list.getProgressBar().setVisibility(View.GONE);
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final Repository target = mDataFragment.targetRepository;
+									final IssueService is =
+											new IssueService(getBaseActivity().getGHClient());
+									Map<String, String> filter = new HashMap<String, String>();
+									filter.put("mentioned", getBaseActivity().getCurrentUserLogin());
+									PageIterator<Issue> itr =
+											is.pageIssues(target.getOwner().getLogin(),
+														  target.getName(),
+														  filter);
+									holder.issues.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(mentionedRunnable, mentionedCallbacks);
+				mDataFragment.executeNewTask(mentionedRunnable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}

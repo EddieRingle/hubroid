@@ -35,12 +35,12 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.UserListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.client.PageIterator;
-import org.eclipse.egit.github.core.service.UserService;
 import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
@@ -141,32 +141,8 @@ class WatchersFragment
 			holder.users = new ArrayList<User>();
 			mDataFragment.userLists.add(holder);
 
-			final DataFragment.DataTask.DataTaskRunnable watchersRunnable =
-					new DataFragment.DataTask.DataTaskRunnable()
-					{
-						@Override
-						public
-						void runTask() throws InterruptedException
-						{
-							try {
-								final WatcherService ws =
-										new WatcherService(getBaseActivity().getGHClient());
-								holder.request =
-										ws.pageWatchers(new RepositoryId(
-												mDataFragment.targetRepository
-															 .getOwner().getLogin(),
-												mDataFragment.targetRepository.getName()));
-								holder.users.addAll(holder.request.next());
-							} catch (IOException e) {
-								e.printStackTrace();
-							} catch (AccountsException e) {
-								e.printStackTrace();
-							}
-						}
-					};
-
-			final DataFragment.DataTask.DataTaskCallbacks followersCallbacks =
-					new DataFragment.DataTask.DataTaskCallbacks()
+			final DataTask.Executable watchersExecutable =
+					new DataTask.Executable()
 					{
 						@Override
 						public
@@ -193,9 +169,29 @@ class WatchersFragment
 							list.getListAdapter().notifyDataSetChanged();
 							list.setListShown(true);
 						}
+
+						@Override
+						public
+						void runTask() throws InterruptedException
+						{
+							try {
+								final WatcherService ws =
+										new WatcherService(getBaseActivity().getGHClient());
+								holder.request =
+										ws.pageWatchers(new RepositoryId(
+												mDataFragment.targetRepository
+															 .getOwner().getLogin(),
+												mDataFragment.targetRepository.getName()));
+								holder.users.addAll(holder.request.next());
+							} catch (IOException e) {
+								e.printStackTrace();
+							} catch (AccountsException e) {
+								e.printStackTrace();
+							}
+						}
 					};
 
-			mDataFragment.executeNewTask(watchersRunnable, followersCallbacks);
+			mDataFragment.executeNewTask(watchersExecutable);
 			if (index < 0)
 				mViewPager.getAdapter().addList(list);
 		}

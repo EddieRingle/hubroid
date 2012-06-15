@@ -23,29 +23,19 @@ package net.idlesoft.android.apps.github.ui.adapters;
 
 import android.os.Bundle;
 import android.text.Html;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.androidquery.AQuery;
-import com.petebevin.markdown.MarkdownFilter;
 import com.petebevin.markdown.MarkdownProcessor;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
-import net.idlesoft.android.apps.github.ui.widgets.FlowLayout;
-import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
-import net.idlesoft.android.apps.github.utils.IssueUtils;
 import net.idlesoft.android.apps.github.utils.StringUtils;
 import org.eclipse.egit.github.core.Comment;
-import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.client.GsonUtils;
 
 public

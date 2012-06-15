@@ -21,24 +21,15 @@
 
 package net.idlesoft.android.apps.github.utils;
 
-import android.provider.BaseColumns;
+import android.content.Context;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
 
-import android.content.Context;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.util.Date;
 
 public class RequestCache {

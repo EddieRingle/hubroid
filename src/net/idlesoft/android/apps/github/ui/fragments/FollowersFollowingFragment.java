@@ -36,6 +36,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.UserListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.client.PageIterator;
@@ -140,29 +141,8 @@ class FollowersFollowingFragment
 				holder.users = new ArrayList<User>();
 				mDataFragment.userLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable followersRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final UserService us =
-											new UserService(getBaseActivity().getGHClient());
-									holder.request = us.pageFollowers(
-											mDataFragment.targetUser.getLogin());
-									holder.users.addAll(holder.request.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks followersCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable followersExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -189,9 +169,26 @@ class FollowersFollowingFragment
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final UserService us =
+											new UserService(getBaseActivity().getGHClient());
+									holder.request = us.pageFollowers(
+											mDataFragment.targetUser.getLogin());
+									holder.users.addAll(holder.request.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(followersRunnable, followersCallbacks);
+				mDataFragment.executeNewTask(followersExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
@@ -240,29 +237,8 @@ class FollowersFollowingFragment
 				holder.users = new ArrayList<User>();
 				mDataFragment.userLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable followingRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final UserService us =
-											new UserService(getBaseActivity().getGHClient());
-									holder.request = us.pageFollowing(
-											mDataFragment.targetUser.getLogin());
-									holder.users.addAll(holder.request.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks followingCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable followingExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -289,9 +265,26 @@ class FollowersFollowingFragment
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final UserService us =
+											new UserService(getBaseActivity().getGHClient());
+									holder.request = us.pageFollowing(
+											mDataFragment.targetUser.getLogin());
+									holder.users.addAll(holder.request.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(followingRunnable, followingCallbacks);
+				mDataFragment.executeNewTask(followingExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}

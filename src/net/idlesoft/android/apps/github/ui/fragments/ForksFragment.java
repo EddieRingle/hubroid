@@ -35,6 +35,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.RepositoryId;
 import org.eclipse.egit.github.core.client.GsonUtils;
@@ -137,30 +138,8 @@ class ForksFragment extends UIFragment<ForksFragment.ForksDataFragment>
 			holder.repositories = new ArrayList<Repository>();
 			mDataFragment.repositoryLists.add(holder);
 
-			final DataFragment.DataTask.DataTaskRunnable forksRunnable =
-					new DataFragment.DataTask.DataTaskRunnable()
-					{
-						@Override
-						public
-						void runTask() throws InterruptedException
-						{
-							try {
-								final RepositoryService rs =
-										new RepositoryService(getBaseActivity().getGHClient());
-								holder.request = rs.pageForks(new RepositoryId(
-										mDataFragment.targetRepository.getOwner().getLogin(),
-										mDataFragment.targetRepository.getName()));
-								holder.repositories.addAll(holder.request.next());
-							} catch (IOException e) {
-								e.printStackTrace();
-							} catch (AccountsException e) {
-								e.printStackTrace();
-							}
-						}
-					};
-
-			final DataFragment.DataTask.DataTaskCallbacks forksCallbacks =
-					new DataFragment.DataTask.DataTaskCallbacks()
+			final DataTask.Executable forksExecutable =
+					new DataTask.Executable()
 					{
 						@Override
 						public
@@ -187,9 +166,27 @@ class ForksFragment extends UIFragment<ForksFragment.ForksDataFragment>
 							list.getListAdapter().notifyDataSetChanged();
 							list.setListShown(true);
 						}
+
+						@Override
+						public
+						void runTask() throws InterruptedException
+						{
+							try {
+								final RepositoryService rs =
+										new RepositoryService(getBaseActivity().getGHClient());
+								holder.request = rs.pageForks(new RepositoryId(
+										mDataFragment.targetRepository.getOwner().getLogin(),
+										mDataFragment.targetRepository.getName()));
+								holder.repositories.addAll(holder.request.next());
+							} catch (IOException e) {
+								e.printStackTrace();
+							} catch (AccountsException e) {
+								e.printStackTrace();
+							}
+						}
 					};
 
-			mDataFragment.executeNewTask(forksRunnable, forksCallbacks);
+			mDataFragment.executeNewTask(forksExecutable);
 			if (index < 0)
 				mViewPager.getAdapter().addList(list);
 		}

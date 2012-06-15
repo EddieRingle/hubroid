@@ -23,133 +23,16 @@ package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.os.Bundle;
 import android.os.Handler;
-
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import net.idlesoft.android.apps.github.utils.DataTask;
 
 public
 class DataFragment extends BaseFragment
 {
-	public static
-	class DataTask
-	{
-		public static abstract
-		class DataTaskRunnable implements Runnable
-		{
-			public DataTask task;
-
-			@Override
-			public final
-			void run()
-			{
-				try {
-					if (task.callbacks != null) {
-						task.handler.post(new Runnable()
-						{
-							@Override
-							public
-							void run()
-							{
-								task.callbacks.onTaskStart();
-							}
-						});
-					}
-
-					runTask();
-
-					if (task.callbacks != null) {
-						task.handler.post(new Runnable()
-						{
-							@Override
-							public
-							void run()
-							{
-								task.callbacks.onTaskComplete();
-							}
-						});
-					}
-				} catch (InterruptedException e) {
-					if (task.callbacks != null) {
-						task.handler.post(new Runnable()
-						{
-							@Override
-							public
-							void run()
-							{
-								task.callbacks.onTaskCancelled();
-							}
-						});
-					}
-				}
-			}
-
-			public abstract
-			void runTask() throws InterruptedException;
-		}
-
-		public static
-		interface DataTaskCallbacks
-		{
-			public
-			void onTaskStart();
-
-			public
-			void onTaskCancelled();
-
-			public
-			void onTaskComplete();
-		}
-
-
-		private
-		DataTaskRunnable runnable;
-
-		private
-		Handler handler;
-
-		protected
-		DataTaskCallbacks callbacks;
-
-		public
-		DataTask(DataTaskRunnable runnable, Handler handler, DataTaskCallbacks callbacks)
-		{
-			this.runnable = runnable;
-			this.handler = handler;
-			this.callbacks = callbacks;
-		}
-	};
-
-	public static
-	class DataTaskExecutor
-	{
-		public
-		ExecutorService mThreadPool = Executors.newFixedThreadPool(3);
-
-		public
-		void execute(DataTask dataTask)
-		{
-			mThreadPool.execute(dataTask.runnable);
-		}
-
-		public
-		void shutdown()
-		{
-			mThreadPool.shutdown();
-		}
-
-		public
-		List<Runnable> shutdownNow()
-		{
-			return mThreadPool.shutdownNow();
-		}
-	}
-
 	private
 	Handler mHandler = new Handler();
 
 	private
-	DataTaskExecutor mThreadPool = new DataTaskExecutor();
+	DataTask.Executor mThreadPool = new DataTask.Executor();
 
 	private
 	boolean mRecreated;
@@ -215,17 +98,15 @@ class DataFragment extends BaseFragment
 	}
 
 	public
-	DataTaskExecutor getThreadPool()
+	DataTask.Executor getThreadPool()
 	{
 		return mThreadPool;
 	}
 
 	public
-	DataTask executeNewTask(DataTask.DataTaskRunnable runnable,
-							DataTask.DataTaskCallbacks callbacks)
+	DataTask executeNewTask(DataTask.Executable runnable)
 	{
-		final DataTask task = new DataTask(runnable, getHandler(), callbacks);
-		runnable.task = task;
+		final DataTask task = new DataTask(runnable, getHandler());
 		getThreadPool().execute(task);
 		return task;
 	}

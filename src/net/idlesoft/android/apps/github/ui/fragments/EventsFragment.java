@@ -22,11 +22,8 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +33,10 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.TitlePageIndicator;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.GitHubIntentFilter;
-import net.idlesoft.android.apps.github.ui.activities.MainActivity;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
@@ -266,29 +262,8 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				holder.events = new ArrayList<Event>();
 				mDataFragment.eventLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable receivedRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final EventService es =
-											new EventService(getBaseActivity().getGHClient());
-									PageIterator<Event> itr =
-											es.pageUserReceivedEvents(mDataFragment.targetUser.getLogin());
-									holder.events.addAll(itr.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks receivedCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable receivedExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -315,9 +290,26 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 								list.getProgressBar().setVisibility(View.GONE);
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final EventService es =
+											new EventService(getBaseActivity().getGHClient());
+									PageIterator<Event> itr =
+											es.pageUserReceivedEvents(mDataFragment.targetUser.getLogin());
+									holder.events.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(receivedRunnable, receivedCallbacks);
+				mDataFragment.executeNewTask(receivedExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
@@ -351,29 +343,8 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				holder.events = new ArrayList<Event>();
 				mDataFragment.eventLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable publicRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final EventService es =
-											new EventService(getBaseActivity().getGHClient());
-									PageIterator<Event> itr =
-											es.pageUserEvents(mDataFragment.targetUser.getLogin());
-									holder.events.addAll(itr.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks receivedCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable publicExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -400,9 +371,26 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final EventService es =
+											new EventService(getBaseActivity().getGHClient());
+									PageIterator<Event> itr =
+											es.pageUserEvents(mDataFragment.targetUser.getLogin());
+									holder.events.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
+				mDataFragment.executeNewTask(publicExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
@@ -435,29 +423,8 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				holder.events = new ArrayList<Event>();
 				mDataFragment.eventLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable publicRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final EventService es =
-											new EventService(getBaseActivity().getGHClient());
-									PageIterator<Event> itr =
-											es.pagePublicEvents(30);
-									holder.events.addAll(itr.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks receivedCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable timelineExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -484,9 +451,26 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final EventService es =
+											new EventService(getBaseActivity().getGHClient());
+									PageIterator<Event> itr =
+											es.pagePublicEvents(30);
+									holder.events.addAll(itr.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(publicRunnable, receivedCallbacks);
+				mDataFragment.executeNewTask(timelineExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}

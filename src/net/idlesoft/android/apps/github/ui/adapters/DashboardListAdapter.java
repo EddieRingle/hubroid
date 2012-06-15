@@ -28,12 +28,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
-import org.eclipse.egit.github.core.User;
-
-import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.HashMap;
 
 public
 class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.DashboardEntry>

@@ -22,13 +22,10 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,17 +36,12 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.petebevin.markdown.MarkdownProcessor;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.IssueCommentListAdapter;
-import net.idlesoft.android.apps.github.ui.widgets.IdleList;
-import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import net.idlesoft.android.apps.github.utils.IssueUtils;
-import net.idlesoft.android.apps.github.utils.RequestCache;
 import net.idlesoft.android.apps.github.utils.StringUtils;
 import org.eclipse.egit.github.core.Comment;
 import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.IssueService;
 
@@ -58,9 +50,6 @@ import java.util.ArrayList;
 
 import static android.util.TypedValue.COMPLEX_UNIT_DIP;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE;
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
-import static net.idlesoft.android.apps.github.utils.StringUtils.isStringEmpty;
 
 public
 class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
@@ -142,9 +131,32 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			mContent.setVisibility(View.VISIBLE);
 			buildUI();
 		} else {
-			final DataFragment.DataTask.DataTaskRunnable repositoryRunnable =
-					new DataFragment.DataTask.DataTaskRunnable()
+			final DataTask.Executable issueExecutable =
+					new DataTask.Executable()
 					{
+						@Override
+						public
+						void onTaskStart()
+						{
+							mContent.setVisibility(View.GONE);
+							mProgress.setVisibility(View.VISIBLE);
+						}
+
+						@Override
+						public
+						void onTaskCancelled()
+						{
+						}
+
+						@Override
+						public
+						void onTaskComplete()
+						{
+							buildUI();
+							mProgress.setVisibility(View.GONE);
+							mContent.setVisibility(View.VISIBLE);
+						}
+
 						@Override
 						public
 						void runTask() throws InterruptedException
@@ -176,34 +188,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 						}
 					};
 
-			final DataFragment.DataTask.DataTaskCallbacks repositoryCallbacks =
-					new DataFragment.DataTask.DataTaskCallbacks()
-					{
-						@Override
-						public
-						void onTaskStart()
-						{
-							mContent.setVisibility(View.GONE);
-							mProgress.setVisibility(View.VISIBLE);
-						}
-
-						@Override
-						public
-						void onTaskCancelled()
-						{
-						}
-
-						@Override
-						public
-						void onTaskComplete()
-						{
-							buildUI();
-							mProgress.setVisibility(View.GONE);
-							mContent.setVisibility(View.VISIBLE);
-						}
-					};
-
-			mDataFragment.executeNewTask(repositoryRunnable, repositoryCallbacks);
+			mDataFragment.executeNewTask(issueExecutable);
 		}
 	}
 

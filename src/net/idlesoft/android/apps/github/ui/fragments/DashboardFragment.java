@@ -26,15 +26,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.ListView;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.DashboardListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 
 import java.util.ArrayList;
-
-import static android.view.View.OnClickListener;
 
 public
 class DashboardFragment extends BaseFragment

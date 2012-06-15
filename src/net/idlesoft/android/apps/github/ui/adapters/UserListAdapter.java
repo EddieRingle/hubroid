@@ -21,22 +21,14 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.androidquery.AQuery;
-import com.androidquery.util.AQUtility;
-import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
-import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
-import net.idlesoft.android.apps.github.utils.StringUtils;
 import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.event.Event;
 
 public
 class UserListAdapter extends BaseListAdapter<User>

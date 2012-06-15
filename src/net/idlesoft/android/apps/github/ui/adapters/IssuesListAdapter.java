@@ -21,32 +21,17 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.RoundRectShape;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.androidquery.AQuery;
-import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.widgets.FlowLayout;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 import net.idlesoft.android.apps.github.utils.IssueUtils;
 import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.Label;
-import org.eclipse.egit.github.core.client.GsonUtils;
-
-import java.util.ArrayList;
-
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static net.idlesoft.android.apps.github.utils.StringUtils.getTimeSince;
 
 public
 class IssuesListAdapter extends BaseListAdapter<Issue>

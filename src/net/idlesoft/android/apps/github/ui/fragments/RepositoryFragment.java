@@ -21,15 +21,16 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
-import android.accounts.AccountsException;
 import android.content.Intent;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -37,13 +38,12 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import net.idlesoft.android.apps.github.utils.RequestCache;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.service.RepositoryService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
@@ -123,25 +123,8 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 			buildHolders(mDataFragment.targetRepo);
 			buildUI(mDataFragment.targetRepo);
 		} else {
-			final DataFragment.DataTask.DataTaskRunnable repositoryRunnable =
-					new DataFragment.DataTask.DataTaskRunnable()
-					{
-						@Override
-						public
-						void runTask() throws InterruptedException
-						{
-							mDataFragment.targetRepo =
-									RequestCache.getRepository(getBaseActivity(),
-															   mDataFragment.targetRepo.getOwner()
-																			.getLogin(),
-															   mDataFragment.targetRepo.getName(),
-															   freshen);
-							buildHolders(mDataFragment.targetRepo);
-						}
-					};
-
-			final DataFragment.DataTask.DataTaskCallbacks repositoryCallbacks =
-					new DataFragment.DataTask.DataTaskCallbacks()
+			final DataTask.Executable repositoryExecutable =
+					new DataTask.Executable()
 					{
 						@Override
 						public
@@ -167,9 +150,22 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 							mProgress.setVisibility(View.GONE);
 							mContent.setVisibility(View.VISIBLE);
 						}
+
+						@Override
+						public
+						void runTask() throws InterruptedException
+						{
+							mDataFragment.targetRepo =
+									RequestCache.getRepository(getBaseActivity(),
+															   mDataFragment.targetRepo.getOwner()
+																			.getLogin(),
+															   mDataFragment.targetRepo.getName(),
+															   freshen);
+							buildHolders(mDataFragment.targetRepo);
+						}
 					};
 
-			mDataFragment.executeNewTask(repositoryRunnable, repositoryCallbacks);
+			mDataFragment.executeNewTask(repositoryExecutable);
 		}
 	}
 

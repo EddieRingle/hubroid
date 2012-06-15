@@ -21,7 +21,6 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;

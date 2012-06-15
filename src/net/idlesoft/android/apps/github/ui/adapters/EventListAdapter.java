@@ -21,12 +21,7 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.text.Spannable;
-import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,18 +31,9 @@ import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
-import net.idlesoft.android.apps.github.ui.fragments.RepositoryFragment;
-import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.utils.EventUtil;
-import net.idlesoft.android.apps.github.utils.StringUtils;
-import org.eclipse.egit.github.core.Commit;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.event.*;
-
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import org.eclipse.egit.github.core.event.Event;
 
 public
 class EventListAdapter extends BaseListAdapter<Event>

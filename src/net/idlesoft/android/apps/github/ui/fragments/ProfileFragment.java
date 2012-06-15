@@ -21,7 +21,6 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
-import android.accounts.AccountsException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -36,14 +35,12 @@ import com.actionbarsherlock.view.MenuItem;
 import com.androidquery.AQuery;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
-import net.idlesoft.android.apps.github.ui.widgets.GravatarView;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import net.idlesoft.android.apps.github.utils.RequestCache;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.service.UserService;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
@@ -127,23 +124,8 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			buildHolders(mDataFragment.targetUser);
 			buildUI(mDataFragment.targetUser);
 		} else {
-			final DataFragment.DataTask.DataTaskRunnable profileRunnable =
-					new DataFragment.DataTask.DataTaskRunnable()
-					{
-						@Override
-						public
-						void runTask() throws InterruptedException
-						{
-							mDataFragment.targetUser =
-									RequestCache.getUser(getBaseActivity(),
-														 mDataFragment.targetUser.getLogin(),
-														 freshen);
-							buildHolders(mDataFragment.targetUser);
-						}
-					};
-
-			final DataFragment.DataTask.DataTaskCallbacks profileCallbacks =
-					new DataFragment.DataTask.DataTaskCallbacks()
+			final DataTask.Executable profileExecutable =
+					new DataTask.Executable()
 					{
 						@Override
 						public
@@ -169,9 +151,20 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 							mProgress.setVisibility(View.GONE);
 							mContent.setVisibility(View.VISIBLE);
 						}
+
+						@Override
+						public
+						void runTask() throws InterruptedException
+						{
+							mDataFragment.targetUser =
+									RequestCache.getUser(getBaseActivity(),
+														 mDataFragment.targetUser.getLogin(),
+														 freshen);
+							buildHolders(mDataFragment.targetUser);
+						}
 					};
 
-			mDataFragment.executeNewTask(profileRunnable, profileCallbacks);
+			mDataFragment.executeNewTask(profileExecutable);
 		}
 	}
 

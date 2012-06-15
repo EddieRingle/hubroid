@@ -31,17 +31,11 @@
 package net.idlesoft.android.apps.github.utils;
 
 import android.graphics.Color;
-import android.os.Bundle;
-import android.text.*;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
-import android.view.View;
-import net.idlesoft.android.apps.github.HubroidConstants;
-import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
-import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
 import org.eclipse.egit.github.core.Commit;
-import org.eclipse.egit.github.core.GollumPage;
-import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.event.*;
 
 public

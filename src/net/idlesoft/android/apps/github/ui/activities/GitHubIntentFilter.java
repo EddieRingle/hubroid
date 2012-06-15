@@ -23,8 +23,6 @@ package net.idlesoft.android.apps.github.ui.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import com.google.gson.Gson;
 import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.GitHubAuthenticatorActivity;

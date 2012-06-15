@@ -36,6 +36,7 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
 import net.idlesoft.android.apps.github.ui.widgets.ListViewPager;
+import net.idlesoft.android.apps.github.utils.DataTask;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
@@ -44,7 +45,9 @@ import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.WatcherService;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 
@@ -141,37 +144,8 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				holder.repositories = new ArrayList<Repository>();
 				mDataFragment.repositoryLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable yoursRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final RepositoryService rs =
-											new RepositoryService(getBaseActivity().getGHClient());
-									if (!mDataFragment.targetUser.getLogin().equals(
-											getBaseActivity().getCurrentUserLogin())) {
-										holder.request = rs.pageRepositories(
-												mDataFragment.targetUser.getLogin());
-									} else {
-										final Map<String, String> filter = new HashMap<String, String>();
-										filter.put("type", "owner");
-										filter.put("sort", "pushed");
-										holder.request = rs.pageRepositories(filter);
-									}
-									holder.repositories.addAll(holder.request.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks yoursCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable yoursExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -198,9 +172,34 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final RepositoryService rs =
+											new RepositoryService(getBaseActivity().getGHClient());
+									if (!mDataFragment.targetUser.getLogin().equals(
+											getBaseActivity().getCurrentUserLogin())) {
+										holder.request = rs.pageRepositories(
+												mDataFragment.targetUser.getLogin());
+									} else {
+										final Map<String, String> filter = new HashMap<String, String>();
+										filter.put("type", "owner");
+										filter.put("sort", "pushed");
+										holder.request = rs.pageRepositories(filter);
+									}
+									holder.repositories.addAll(holder.request.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(yoursRunnable, yoursCallbacks);
+				mDataFragment.executeNewTask(yoursExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
@@ -249,29 +248,8 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				holder.repositories = new ArrayList<Repository>();
 				mDataFragment.repositoryLists.add(holder);
 
-				final DataFragment.DataTask.DataTaskRunnable watchedRunnable =
-						new DataFragment.DataTask.DataTaskRunnable()
-						{
-							@Override
-							public
-							void runTask() throws InterruptedException
-							{
-								try {
-									final WatcherService ws =
-											new WatcherService(getBaseActivity().getGHClient());
-									holder.request = ws.pageWatched(
-											mDataFragment.targetUser.getLogin());
-									holder.repositories.addAll(holder.request.next());
-								} catch (IOException e) {
-									e.printStackTrace();
-								} catch (AccountsException e) {
-									e.printStackTrace();
-								}
-							}
-						};
-
-				final DataFragment.DataTask.DataTaskCallbacks watchedCallbacks =
-						new DataFragment.DataTask.DataTaskCallbacks()
+				final DataTask.Executable watchedExecutable =
+						new DataTask.Executable()
 						{
 							@Override
 							public
@@ -298,9 +276,26 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 								list.getListAdapter().notifyDataSetChanged();
 								list.setListShown(true);
 							}
+
+							@Override
+							public
+							void runTask() throws InterruptedException
+							{
+								try {
+									final WatcherService ws =
+											new WatcherService(getBaseActivity().getGHClient());
+									holder.request = ws.pageWatched(
+											mDataFragment.targetUser.getLogin());
+									holder.repositories.addAll(holder.request.next());
+								} catch (IOException e) {
+									e.printStackTrace();
+								} catch (AccountsException e) {
+									e.printStackTrace();
+								}
+							}
 						};
 
-				mDataFragment.executeNewTask(watchedRunnable, watchedCallbacks);
+				mDataFragment.executeNewTask(watchedExecutable);
 				if (index < 0)
 					mViewPager.getAdapter().addList(list);
 			}
