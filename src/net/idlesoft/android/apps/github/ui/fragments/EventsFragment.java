@@ -51,9 +51,7 @@ import org.eclipse.egit.github.core.service.EventService;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_URI;
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.HubroidConstants.*;
 
 public
 class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
@@ -109,6 +107,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 			final Bundle args = new Bundle();
 			if (type.equals(Event.TYPE_COMMIT_COMMENT)) {
 				final CommitCommentPayload p = (CommitCommentPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_CREATE)) {
 				final CreatePayload p = (CreatePayload) event.getPayload();
 				if (p.getRefType().equals("repository")) {
@@ -122,11 +121,14 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 															   R.id.fragment_container_more, args);
 					getBaseActivity().finishFragmentTransaction();
 				} else {
+					getBaseActivity().popShortToast("Not supported right now, sorry!");
 				}
 			} else if (type.equals(Event.TYPE_DELETE)) {
 				final DeletePayload p = (DeletePayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_DOWNLOAD)) {
 				final DownloadPayload p = (DownloadPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_FOLLOW)) {
 				final FollowPayload p = (FollowPayload) event.getPayload();
 				args.putString(ARG_TARGET_USER, GsonUtils.toJson(p.getTarget()));
@@ -143,10 +145,13 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_FORK_APPLY)) {
 				final ForkApplyPayload p = (ForkApplyPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_GIST)) {
 				final GistPayload p = (GistPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_GOLLUM)) {
 				final GollumPayload p = (GollumPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_ISSUE_COMMENT)) {
 				final IssueCommentPayload p = (IssueCommentPayload) event.getPayload();
 				final Intent intent = new Intent(getBaseActivity(), GitHubIntentFilter.class);
@@ -156,6 +161,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				final IssuesPayload p = (IssuesPayload) event.getPayload();
 			} else if (type.equals(Event.TYPE_MEMBER)) {
 				final MemberPayload p = (MemberPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_PUBLIC)) {
 				final PublicPayload p = (PublicPayload) event.getPayload();
 				final Repository target = new Repository();
@@ -169,13 +175,17 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_PULL_REQUEST)) {
 				final PullRequestPayload p = (PullRequestPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_PULL_REQUEST_REVIEW_COMMENT)) {
 				final PullRequestReviewCommentPayload p =
 						(PullRequestReviewCommentPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_PUSH)) {
 				final PushPayload p = (PushPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_TEAM_ADD)) {
 				final TeamAddPayload p = (TeamAddPayload) event.getPayload();
+				getBaseActivity().popShortToast("Not supported right now, sorry!");
 			} else if (type.equals(Event.TYPE_WATCH)) {
 				final WatchPayload p = (WatchPayload) event.getPayload();
 				final Repository target = new Repository();

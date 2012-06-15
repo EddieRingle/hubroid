@@ -36,10 +36,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
+import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -49,7 +49,6 @@ import net.idlesoft.android.apps.github.GitHubClientProvider;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
-import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.UserService;
@@ -219,6 +218,24 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	void finishFragmentTransaction()
 	{
 		finishFragmentTransaction(true);
+	}
+
+	private
+	void popToast(final String message, int length)
+	{
+		Toast.makeText(this, message, length).show();
+	}
+
+	public
+	void popLongToast(final String message)
+	{
+		popToast(message, Toast.LENGTH_LONG);
+	}
+
+	public
+	void popShortToast(final String message)
+	{
+		popToast(message, Toast.LENGTH_SHORT);
 	}
 
 	@Override
