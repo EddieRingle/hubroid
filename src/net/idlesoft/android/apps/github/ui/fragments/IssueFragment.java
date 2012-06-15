@@ -218,7 +218,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 								 (int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm),
 								 (int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm),
 								 (int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm));
-		if (!mDataFragment.targetIssue.getBody().isEmpty()) {
+		if (!StringUtils.isStringEmpty(mDataFragment.targetIssue.getBody())) {
 			final String rawBody = mDataFragment.targetIssue.getBody();
 			final MarkdownProcessor processor = new MarkdownProcessor();
 			final String processedBody = processor.markdown(rawBody);
