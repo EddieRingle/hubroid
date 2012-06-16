@@ -27,6 +27,8 @@
 
 	<string name="hello">Hello from Hubroid!</string>
 
+	<string name="single_slash">/</string>
+
 	<!-- Action Bar -->
 	<string name="actionbar_action_add_account">New Account</string>
 	<string name="actionbar_action_filters">Filters</string>
@@ -51,7 +53,7 @@
 	<string name="auth_label_login">Login</string>
 	<string name="auth_label_password">Password</string>
 	<string name="auth_label_sign_in">Sign In to GitHub</string>
-	<string name="auth_message_signing_in">Signing in...</string>
+	<string name="auth_message_signing_in">Signing in…</string>
 	<string name="auth_warning_blank_field">Please fill in this field</string>
 	<string name="auth_link_signup">
 		New to GitHub? &lt;a href=\"https://github.com/signup\">Get an account&lt;/a>.
@@ -81,6 +83,8 @@
 	<string name="issues_mentioned">Mentioning You</string>
 
 	<string name="issue_empty_description">No description given.</string>
+
+	<string name="issue_comment_hint">Leave a comment</string>
 
 	<!-- Users -->
 	<string name="followers">Followers</string>

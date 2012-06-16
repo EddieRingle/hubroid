@@ -53,10 +53,9 @@ public
 class FollowersFollowingFragment
 		extends UIFragment<FollowersFollowingFragment.FollowersFollowingDataFragment>
 {
-	public static final int LIST_FOLLOWERS = 1;
-	public static final int LIST_FOLLOWING = 2;
+	private static final int LIST_FOLLOWERS = 1;
+	private static final int LIST_FOLLOWING = 2;
 
-	protected
 	class ListHolder
 	{
 		ArrayList<User> users;
@@ -88,7 +87,9 @@ class FollowersFollowingFragment
 		}
 	}
 
+	private
 	ListViewPager mViewPager;
+	private
 	TitlePageIndicator mTitlePageIndicator;
 
 	public
@@ -114,7 +115,6 @@ class FollowersFollowingFragment
 		return v;
 	}
 
-	public
 	void fetchData(final boolean freshen)
 	{
 		if (!mDataFragment.targetUser.getLogin().equals("")) {

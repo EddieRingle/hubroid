@@ -33,16 +33,15 @@ class StringUtils
 	/**
 	 * Get time string since a specified date
 	 *
-	 * @param pTime
+	 * @param itemTime
 	 * @return String of format "X U(s)", X is the quantity of U time units
 	 *         (e.g., "3 days")
 	 */
 	public static
-	String getTimeSince(final Date pTime)
+	String getTimeSince(final Date itemTime)
 	{
-		final Date item_time = pTime;
-		final Date current_time = new Date();
-		final long ms = current_time.getTime() - item_time.getTime();
+		final Date currentTime = new Date();
+		final long ms = currentTime.getTime() - itemTime.getTime();
 		final long sec = ms / 1000;
 		final long min = sec / 60;
 		final long hour = min / 60;

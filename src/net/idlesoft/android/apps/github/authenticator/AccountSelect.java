@@ -52,7 +52,7 @@ class AccountSelect extends BaseActivity
 		{
 			return null;
 		}
-	};
+	}
 
 	@Override
 	protected

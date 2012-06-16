@@ -26,7 +26,7 @@
 					android:layout_height="wrap_content"
 					android:layout_weight="1"
 					android:editable="true"
-					android:hint="Leave a comment" />
+					android:hint="@string/issue_comment_hint" />
 			<ImageButton android:id="@+id/ib_issue_comment"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"

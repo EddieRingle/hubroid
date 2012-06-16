@@ -106,17 +106,4 @@ class MainActivity extends BaseActivity
 		}
 	}
 
-	@Override
-	protected
-	void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		/*
-		if (requestCode == 0) {
-			/* Account selection is done, restart
-			startActivity(MainActivity.class);
-			finish();
-		}
-		*/
-		super.onActivityResult(requestCode, resultCode, data);
-	}
 }

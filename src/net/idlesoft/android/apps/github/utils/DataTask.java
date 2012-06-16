@@ -144,4 +144,4 @@ class DataTask
 	{
 		return mHandler;
 	}
-};
+}

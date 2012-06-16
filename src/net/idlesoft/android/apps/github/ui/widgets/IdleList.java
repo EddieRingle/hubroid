@@ -23,7 +23,6 @@
 
 package net.idlesoft.android.apps.github.ui.widgets;
 
-import android.R;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -80,7 +79,7 @@ class IdleList<T> extends ListView
 		mFooterView.setGravity(Gravity.CENTER);
 		mFooterView.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
 
-		mProgress = new ProgressBar(context, null, R.attr.progressBarStyle);
+		mProgress = new ProgressBar(context, null, android.R.attr.progressBarStyle);
 		mProgress.setId(INTERNAL_PROGRESS_ID);
 		mProgress.setIndeterminate(true);
 		mProgress.setVisibility(View.GONE);
@@ -182,14 +181,14 @@ class IdleList<T> extends ListView
 		final Context context = getContext();
 		if (shown) {
 			if (animate) {
-				startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_in));
+				startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in));
 			} else {
 				clearAnimation();
 			}
 			setVisibility(View.VISIBLE);
 		} else {
 			if (animate) {
-				startAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_out));
+				startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_out));
 			} else {
 				clearAnimation();
 			}
