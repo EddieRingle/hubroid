@@ -24,6 +24,7 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.accounts.AccountsException;
+import android.app.Service;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -32,6 +33,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
@@ -51,6 +53,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE;
 
 public
@@ -75,6 +79,8 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 	EditText mCommentText;
 	private
 	ImageButton mCommentButton;
+	private
+	ProgressBar mCommentProgress;
 
 	public
 	IssueFragment()
@@ -96,6 +102,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			mContent = (LinearLayout) v.findViewById(R.id.content);
 			mCommentText = (EditText) v.findViewById(R.id.et_issue_comment);
 			mCommentButton = (ImageButton) v.findViewById(R.id.ib_issue_comment);
+			mCommentProgress = (ProgressBar) v.findViewById(R.id.pb_issue_comment_progress);
 		}
 
 		return v;
@@ -120,6 +127,76 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			}
 		}
 
+		mCommentButton.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public
+			void onClick(View view)
+			{
+				final String commentText = mCommentText.getText().toString();
+				if (StringUtils.isStringEmpty(commentText))
+					return;
+				DataTask.Executable commentExecutable = new DataTask.Executable()
+				{
+					@Override
+					public
+					void onTaskStart()
+					{
+						mCommentButton.setVisibility(GONE);
+						mCommentProgress.setVisibility(VISIBLE);
+					}
+
+					@Override
+					public
+					void onTaskComplete()
+					{
+						mCommentText.setText("");
+						mDataFragment.commentAdapter.notifyDataSetChanged();
+						mDataFragment.list.setSelection(mDataFragment.commentAdapter.getCount() - 1);
+						InputMethodManager imm =
+								(InputMethodManager) getBaseActivity().getSystemService(
+										Service.INPUT_METHOD_SERVICE);
+						imm.hideSoftInputFromWindow(mCommentText.getWindowToken(), 0);
+						mCommentProgress.setVisibility(GONE);
+						mCommentButton.setVisibility(VISIBLE);
+					}
+
+					@Override
+					public
+					void runTask() throws InterruptedException
+					{
+						final String repoOwner, repoName, htmlUrl, body;
+						htmlUrl = mDataFragment.targetIssue.getHtmlUrl().replaceAll("/{2,}", "/");
+						repoOwner = htmlUrl.split("/")[2];
+						repoName = htmlUrl.split("/")[3];
+
+						/* Append "Sent via Hubroid" to the comment */
+						body = commentText + "\n\n_Sent via Hubroid_";
+
+						try {
+							final IssueService is =
+									new IssueService(getBaseActivity().getGHClient());
+							final Comment c =
+									is.createComment(repoOwner,
+													 repoName,
+													 mDataFragment.targetIssue.getNumber(),
+													 body);
+							if (c != null) {
+								mDataFragment.issueComments.add(c);
+								mDataFragment.commentAdapter.fillWithItems(
+										mDataFragment.issueComments);
+							}
+						} catch (AccountsException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+				};
+				mDataFragment.executeNewTask(commentExecutable);
+			}
+		});
+
 		mDataFragment.commentAdapter = new IssueCommentListAdapter(getBaseActivity());
 		fetchData(false);
 	}
@@ -140,7 +217,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 						public
 						void onTaskStart()
 						{
-							mContent.setVisibility(View.GONE);
+							mContent.setVisibility(GONE);
 							mProgress.setVisibility(View.VISIBLE);
 						}
 
@@ -155,7 +232,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 						void onTaskComplete()
 						{
 							buildUI();
-							mProgress.setVisibility(View.GONE);
+							mProgress.setVisibility(GONE);
 							mContent.setVisibility(View.VISIBLE);
 						}
 
