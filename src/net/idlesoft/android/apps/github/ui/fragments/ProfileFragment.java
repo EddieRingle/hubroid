@@ -56,6 +56,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 	{
 		ArrayList<InfoListAdapter.InfoHolder> holders;
 		User targetUser;
+		User fullUser;
 		Bitmap gravatarBitmap;
 	}
 
@@ -120,11 +121,11 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 	public
 	void fetchData(final boolean freshen)
 	{
-		if (mDataFragment.holders != null) {
+		if (mDataFragment.fullUser != null && !freshen) {
+			buildHolders(mDataFragment.fullUser);
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
-			buildHolders(mDataFragment.targetUser);
-			buildUI(mDataFragment.targetUser);
+			buildUI(mDataFragment.fullUser);
 		} else {
 			final DataTask.Executable profileExecutable =
 					new DataTask.Executable()
@@ -149,7 +150,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 						{
 							mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 							mListView.getListAdapter().notifyDataSetChanged();
-							buildUI(mDataFragment.targetUser);
+							buildUI(mDataFragment.fullUser);
 							mProgress.setVisibility(View.GONE);
 							mContent.setVisibility(View.VISIBLE);
 						}
@@ -158,11 +159,11 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 						public
 						void runTask() throws InterruptedException
 						{
-							mDataFragment.targetUser =
+							mDataFragment.fullUser =
 									RequestCache.getUser(getBaseActivity(),
 														 mDataFragment.targetUser.getLogin(),
 														 freshen);
-							buildHolders(mDataFragment.targetUser);
+							buildHolders(mDataFragment.fullUser);
 						}
 					};
 
@@ -297,7 +298,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			mDataFragment.targetUser = user;
 
 			final AQuery aq = new AQuery(getBaseActivity());
-			aq.id(mGravatarView).image(mDataFragment.targetUser.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
+			aq.id(mGravatarView).image(mDataFragment.fullUser.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
 
 			final TextView tvLogin = (TextView) mContent.findViewById(R.id.tv_user_login);
 			tvLogin.setText(user.getLogin());

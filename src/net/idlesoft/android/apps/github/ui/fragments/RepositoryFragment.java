@@ -60,6 +60,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 	{
 		ArrayList<InfoListAdapter.InfoHolder> holders;
 		Repository targetRepo;
+		Repository fullRepo;
 	}
 
 	private
@@ -108,9 +109,6 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				mDataFragment.targetRepo = GsonUtils.fromJson(repositoryJson, Repository.class);
 			}
 		}
-		if (mDataFragment.targetRepo == null) {
-			/* uh-oh. */
-		}
 
 		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));
 		fetchData(false);
@@ -119,11 +117,11 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 	public
 	void fetchData(final boolean freshen)
 	{
-		if (mDataFragment.holders != null) {
+		if (mDataFragment.fullRepo != null && !freshen) {
+			buildHolders(mDataFragment.fullRepo);
 			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 			mListView.getListAdapter().notifyDataSetChanged();
-			buildHolders(mDataFragment.targetRepo);
-			buildUI(mDataFragment.targetRepo);
+			buildUI(mDataFragment.fullRepo);
 		} else {
 			final DataTask.Executable repositoryExecutable =
 					new DataTask.Executable()
@@ -148,7 +146,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 						{
 							mListView.getListAdapter().fillWithItems(mDataFragment.holders);
 							mListView.getListAdapter().notifyDataSetChanged();
-							buildUI(mDataFragment.targetRepo);
+							buildUI(mDataFragment.fullRepo);
 							mProgress.setVisibility(View.GONE);
 							mContent.setVisibility(View.VISIBLE);
 						}
@@ -157,13 +155,13 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 						public
 						void runTask() throws InterruptedException
 						{
-							mDataFragment.targetRepo =
+							mDataFragment.fullRepo =
 									RequestCache.getRepository(getBaseActivity(),
 															   mDataFragment.targetRepo.getOwner()
 																			.getLogin(),
 															   mDataFragment.targetRepo.getName(),
 															   freshen);
-							buildHolders(mDataFragment.targetRepo);
+							buildHolders(mDataFragment.fullRepo);
 						}
 					};
 
@@ -189,7 +187,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				public
 				void onItemClick(AdapterView<?> parent, View view, int position, long id)
 				{
-					final User u = mDataFragment.targetRepo.getOwner();
+					final User u = repository.getOwner();
 					final Bundle args = new Bundle();
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(u));
 					getBaseActivity().startFragmentTransaction();
