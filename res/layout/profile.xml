@@ -40,12 +40,17 @@
 		<LinearLayout
 				android:layout_width="match_parent"
 				android:layout_height="wrap_content"
-				android:layout_marginBottom="10dip"
+				android:layout_marginTop="10dp"
+				android:layout_marginBottom="10dp"
 				android:paddingRight="15dp"
 				android:orientation="horizontal">
 			<ImageView android:id="@+id/gravatar"
-					android:layout_width="70dp"
-					android:layout_height="70dp" />
+					android:layout_width="68dp"
+					android:layout_height="68dp"
+					android:layout_marginLeft="10dp"
+					android:layout_gravity="center_vertical"
+					android:padding="2dp"
+					android:background="@drawable/gravatar_border" />
 			<LinearLayout
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -56,12 +61,14 @@
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:textColor="@color/text_color"
-						android:textSize="30dp" />
+						android:textSize="30dp"
+						android:ellipsize="end" />
 				<TextView android:id="@+id/tv_user_fullname"
 						android:layout_width="match_parent"
 						android:layout_height="wrap_content"
 						android:textColor="@color/light_text_color"
-						android:textSize="20dp" />
+						android:textSize="20dp"
+						android:ellipsize="end" />
 			</LinearLayout>
 		</LinearLayout>
 		<net.idlesoft.android.apps.github.ui.widgets.IdleList android:id="@+id/lv_user_info"
