@@ -47,6 +47,7 @@
 		<item name="footerIndicatorHeight">3dp</item>
 		<item name="footerIndicatorStyle">underline</item>
 		<item name="android:textColor">#AA242424</item>
+		<item name="android:textSize">12sp</item>
 		<item name="selectedColor">@color/text_color</item>
 		<item name="selectedBold">true</item>
 	</style>
