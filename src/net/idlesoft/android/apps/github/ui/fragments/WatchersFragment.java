@@ -136,12 +136,16 @@ class WatchersFragment
 			list.getListAdapter().fillWithItems(holder.users);
 			list.getListAdapter().notifyDataSetChanged();
 		} else {
-			holder = new ListHolder();
+			if (index >= 0)
+				holder = mDataFragment.userLists.get(index);
+			else
+				holder = new ListHolder();
 			holder.type = LIST_WATCHERS;
 			holder.title = getString(R.string.watchers);
 			list.setTitle(holder.title);
 			holder.users = new ArrayList<User>();
-			mDataFragment.userLists.add(holder);
+			if (index < 0)
+				mDataFragment.userLists.add(holder);
 
 			final DataTask.Executable watchersExecutable =
 					new DataTask.Executable()

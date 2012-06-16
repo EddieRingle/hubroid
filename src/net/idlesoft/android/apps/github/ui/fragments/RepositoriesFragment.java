@@ -139,12 +139,16 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				list.getListAdapter().fillWithItems(holder.repositories);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.repositoryLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_YOURS;
 				holder.title = mDataFragment.targetUser.getLogin();
 				list.setTitle(holder.title);
 				holder.repositories = new ArrayList<Repository>();
-				mDataFragment.repositoryLists.add(holder);
+				if (index < 0)
+					mDataFragment.repositoryLists.add(holder);
 
 				final DataTask.Executable yoursExecutable =
 						new DataTask.Executable()
@@ -243,12 +247,16 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 				list.getListAdapter().fillWithItems(holder.repositories);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.repositoryLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_WATCHED;
 				holder.title = getString(R.string.repositories_watched);
 				list.setTitle(holder.title);
 				holder.repositories = new ArrayList<Repository>();
-				mDataFragment.repositoryLists.add(holder);
+				if (index < 0)
+					mDataFragment.repositoryLists.add(holder);
 
 				final DataTask.Executable watchedExecutable =
 						new DataTask.Executable()

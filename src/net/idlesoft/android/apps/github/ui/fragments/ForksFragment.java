@@ -133,12 +133,16 @@ class ForksFragment extends UIFragment<ForksFragment.ForksDataFragment>
 			list.getListAdapter().fillWithItems(holder.repositories);
 			list.getListAdapter().notifyDataSetChanged();
 		} else {
-			holder = new ListHolder();
+			if (index >= 0)
+				holder = mDataFragment.repositoryLists.get(index);
+			else
+				holder = new ListHolder();
 			holder.type = LIST_FORKS;
 			holder.title = getString(R.string.forks);
 			list.setTitle(holder.title);
 			holder.repositories = new ArrayList<Repository>();
-			mDataFragment.repositoryLists.add(holder);
+			if (index < 0)
+				mDataFragment.repositoryLists.add(holder);
 
 			final DataTask.Executable forksExecutable =
 					new DataTask.Executable()

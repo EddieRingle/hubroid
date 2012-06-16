@@ -136,12 +136,16 @@ class FollowersFollowingFragment
 				list.getListAdapter().fillWithItems(holder.users);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.userLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_FOLLOWERS;
 				holder.title = getString(R.string.followers);
 				list.setTitle(holder.title);
 				holder.users = new ArrayList<User>();
-				mDataFragment.userLists.add(holder);
+				if (index < 0)
+					mDataFragment.userLists.add(holder);
 
 				final DataTask.Executable followersExecutable =
 						new DataTask.Executable()
@@ -232,12 +236,16 @@ class FollowersFollowingFragment
 				list.getListAdapter().fillWithItems(holder.users);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.userLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_FOLLOWING;
 				holder.title = getString(R.string.following);
 				list.setTitle(holder.title);
 				holder.users = new ArrayList<User>();
-				mDataFragment.userLists.add(holder);
+				if (index < 0)
+					mDataFragment.userLists.add(holder);
 
 				final DataTask.Executable followingExecutable =
 						new DataTask.Executable()

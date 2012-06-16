@@ -142,13 +142,17 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.issuesLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_OPEN;
 				holder.title = getString(R.string.issues_open);
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.issues = new ArrayList<Issue>();
-				mDataFragment.issuesLists.add(holder);
+				if (index < 0)
+					mDataFragment.issuesLists.add(holder);
 
 				final DataTask.Executable openExecutable =
 						new DataTask.Executable()
@@ -241,13 +245,17 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.issuesLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_CLOSED;
 				holder.title = getString(R.string.issues_closed);
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.issues = new ArrayList<Issue>();
-				mDataFragment.issuesLists.add(holder);
+				if (index < 0)
+					mDataFragment.issuesLists.add(holder);
 
 				final DataTask.Executable closedExecutable =
 						new DataTask.Executable()
@@ -342,13 +350,17 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.issuesLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_ASSIGNED;
 				holder.title = getString(R.string.issues_assigned);
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.issues = new ArrayList<Issue>();
-				mDataFragment.issuesLists.add(holder);
+				if (index < 0)
+					mDataFragment.issuesLists.add(holder);
 
 				final DataTask.Executable assignedExecutable =
 						new DataTask.Executable()
@@ -442,14 +454,17 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 				list.getListAdapter().fillWithItems(holder.issues);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.issuesLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_MENTIONED;
 				holder.title = getString(R.string.issues_mentioned);
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.issues = new ArrayList<Issue>();
-
-				mDataFragment.issuesLists.add(holder);
+				if (index < 0)
+					mDataFragment.issuesLists.add(holder);
 
 				final DataTask.Executable mentionedRunnable =
 						new DataTask.Executable()

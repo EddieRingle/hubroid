@@ -256,13 +256,17 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				list.getListAdapter().fillWithItems(holder.events);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.eventLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_RECEIVED;
 				holder.title = getString(R.string.events_received);
 				list.setTitle(holder.title);
 				holder.gravatars = new ArrayList<Bitmap>();
 				holder.events = new ArrayList<Event>();
-				mDataFragment.eventLists.add(holder);
+				if (index < 0)
+					mDataFragment.eventLists.add(holder);
 
 				final DataTask.Executable receivedExecutable =
 						new DataTask.Executable()
@@ -337,13 +341,17 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				list.getListAdapter().fillWithItems(holder.events);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.eventLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_PUBLIC;
 				holder.title = getString(R.string.events_public)
 						.replace("Your", mDataFragment.targetUser.getLogin() + "'s");
 				list.setTitle(holder.title);
 				holder.events = new ArrayList<Event>();
-				mDataFragment.eventLists.add(holder);
+				if (index < 0)
+					mDataFragment.eventLists.add(holder);
 
 				final DataTask.Executable publicExecutable =
 						new DataTask.Executable()
@@ -418,12 +426,16 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				list.getListAdapter().fillWithItems(holder.events);
 				list.getListAdapter().notifyDataSetChanged();
 			} else {
-				holder = new ListHolder();
+				if (index >= 0)
+					holder = mDataFragment.eventLists.get(index);
+				else
+					holder = new ListHolder();
 				holder.type = LIST_TIMELINE;
 				holder.title = getString(R.string.events_timeline);
 				list.setTitle(holder.title);
 				holder.events = new ArrayList<Event>();
-				mDataFragment.eventLists.add(holder);
+				if (index < 0)
+					mDataFragment.eventLists.add(holder);
 
 				final DataTask.Executable timelineExecutable =
 						new DataTask.Executable()
