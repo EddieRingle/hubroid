@@ -94,6 +94,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		}
 	}
 
+	private boolean mAddingIssue;
 	ListViewPager mViewPager;
 	TitlePageIndicator mTitlePageIndicator;
 
@@ -550,7 +551,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
 
-		fetchData(false);
+		fetchData(mAddingIssue);
 	}
 
 	@Override
@@ -578,6 +579,9 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		super.onCreateOptionsMenu(menu, inflater);
 
 		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+
+		menu.findItem(R.id.actionbar_action_add).setVisible(true);
+		menu.findItem(R.id.actionbar_action_add).setTitle(R.string.actionbar_action_add_issue);
 	}
 
 	@Override
@@ -587,6 +591,18 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		switch (item.getItemId()) {
 		case R.id.actionbar_action_refresh:
 			fetchData(true);
+			return true;
+		case R.id.actionbar_action_add:
+			final Bundle args = new Bundle();
+			args.putString(ARG_TARGET_REPO, GsonUtils.toJson(mDataFragment.targetRepository));
+
+			mAddingIssue = true;
+
+			getBaseActivity().startFragmentTransaction();
+			getBaseActivity().addFragmentToTransaction(NewIssueFragment.class,
+													   R.id.fragment_container,
+													   args);
+			getBaseActivity().finishFragmentTransaction();
 			return true;
 		}
 

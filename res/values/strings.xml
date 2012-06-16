@@ -31,6 +31,7 @@
 
 	<!-- Action Bar -->
 	<string name="actionbar_action_add_account">New Account</string>
+	<string name="actionbar_action_add_issue">New Issue</string>
 	<string name="actionbar_action_filters">Filters</string>
 	<string name="actionbar_action_refresh">Refresh</string>
 	<string name="actionbar_action_select_account">Select Account</string>
@@ -83,6 +84,11 @@
 	<string name="issues_mentioned">Mentioning You</string>
 
 	<string name="issue_empty_description">No description given.</string>
+
+	<string name="issue_title_hint">Issue Title</string>
+	<string name="issue_body_hint">Issue Body</string>
+
+	<string name="issue_submit">Submit Issue</string>
 
 	<string name="issue_comment_hint">Leave a comment</string>
 

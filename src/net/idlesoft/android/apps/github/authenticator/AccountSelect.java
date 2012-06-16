@@ -132,7 +132,8 @@ class AccountSelect extends BaseActivity
 		/* Hide the "Select Account" option */
 		menu.findItem(R.id.actionbar_action_select_account).setVisible(false);
 
-		menu.findItem(R.id.actionbar_action_add_account).setVisible(true);
+		menu.findItem(R.id.actionbar_action_add).setVisible(true);
+		menu.findItem(R.id.actionbar_action_add).setTitle(R.string.actionbar_action_add_account);
 
 		return superResult;
 	}
@@ -141,7 +142,7 @@ class AccountSelect extends BaseActivity
 	public
 	boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (item.getItemId() == R.id.actionbar_action_add_account) {
+		if (item.getItemId() == R.id.actionbar_action_add) {
 			 mAccountManager.addAccount(AuthConstants.GITHUB_ACCOUNT_TYPE,
 										AuthConstants.AUTHTOKEN_TYPE,
 										null, null, this, new AccountManagerCallback<Bundle>()
