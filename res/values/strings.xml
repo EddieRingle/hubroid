@@ -90,6 +90,9 @@
 
 	<string name="issue_submit">Submit Issue</string>
 
+	<string name="issue_close">Close Issue</string>
+	<string name="issue_reopen">Reopen Issue</string>
+
 	<string name="issue_comment_hint">Leave a comment</string>
 
 	<!-- Users -->

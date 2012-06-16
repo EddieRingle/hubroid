@@ -88,6 +88,8 @@ class BaseActivity extends RoboSherlockFragmentActivity
 
 	private boolean mAnonymous;
 
+	private boolean mRefreshPrevious;
+
 	public
 	Context getContext()
 	{
@@ -291,5 +293,25 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	ActionBar theActionBar()
 	{
 		return getSherlock().getActionBar();
+	}
+
+	public
+	void setRefreshPrevious(final boolean refreshPrevious)
+	{
+		mRefreshPrevious = refreshPrevious;
+	}
+
+	/**
+	 * Check if a past life wants us to refresh our data
+	 * This is a one-time-only check, so be sure to store the value if you need to
+	 *
+	 * @return
+	 */
+	public
+	boolean getRefreshPrevious()
+	{
+		final boolean oldValue = mRefreshPrevious;
+		mRefreshPrevious = false;
+		return oldValue;
 	}
 }

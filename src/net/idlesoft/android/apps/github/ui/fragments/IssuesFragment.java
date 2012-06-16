@@ -94,7 +94,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		}
 	}
 
-	private boolean mAddingIssue;
 	ListViewPager mViewPager;
 	TitlePageIndicator mTitlePageIndicator;
 
@@ -551,7 +550,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
 
-		fetchData(mAddingIssue);
+		fetchData(getBaseActivity().getRefreshPrevious());
 	}
 
 	@Override
@@ -595,8 +594,6 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		case R.id.actionbar_action_add:
 			final Bundle args = new Bundle();
 			args.putString(ARG_TARGET_REPO, GsonUtils.toJson(mDataFragment.targetRepository));
-
-			mAddingIssue = true;
 
 			getBaseActivity().startFragmentTransaction();
 			getBaseActivity().addFragmentToTransaction(NewIssueFragment.class,

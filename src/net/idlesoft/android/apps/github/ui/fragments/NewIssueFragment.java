@@ -134,6 +134,7 @@ class NewIssueFragment extends UIFragment<NewIssueFragment.NewIssueDataFragment>
 					public
 					void onTaskComplete()
 					{
+						getBaseActivity().setRefreshPrevious(true);
 						getBaseActivity().onBackPressed();
 					}
 

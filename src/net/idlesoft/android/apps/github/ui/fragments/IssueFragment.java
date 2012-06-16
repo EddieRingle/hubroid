@@ -79,6 +79,8 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 	private
 	EditText mCommentText;
 	private
+	CheckBox mCommentState;
+	private
 	ImageButton mCommentButton;
 	private
 	ProgressBar mCommentProgress;
@@ -102,6 +104,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			mProgress = (ProgressBar) v.findViewById(R.id.progress);
 			mContent = (LinearLayout) v.findViewById(R.id.content);
 			mCommentText = (EditText) v.findViewById(R.id.et_issue_comment);
+			mCommentState = (CheckBox) v.findViewById(R.id.cb_issue_state);
 			mCommentButton = (ImageButton) v.findViewById(R.id.ib_issue_comment);
 			mCommentProgress = (ProgressBar) v.findViewById(R.id.pb_issue_comment_progress);
 		}
@@ -135,7 +138,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			void onClick(View view)
 			{
 				final String commentText = mCommentText.getText().toString();
-				if (StringUtils.isStringEmpty(commentText))
+				if (StringUtils.isStringEmpty(commentText) && !mCommentState.isChecked())
 					return;
 				DataTask.Executable commentExecutable = new DataTask.Executable()
 				{
@@ -158,8 +161,15 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 								(InputMethodManager) getBaseActivity().getSystemService(
 										Service.INPUT_METHOD_SERVICE);
 						imm.hideSoftInputFromWindow(mCommentText.getWindowToken(), 0);
+
 						mCommentProgress.setVisibility(GONE);
 						mCommentButton.setVisibility(VISIBLE);
+
+						if (mCommentState.isChecked()) {
+							mCommentState.setChecked(false);
+							getBaseActivity().setRefreshPrevious(true);
+							getBaseActivity().onBackPressed();
+						}
 					}
 
 					@Override
@@ -177,15 +187,29 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 						try {
 							final IssueService is =
 									new IssueService(getBaseActivity().getGHClient());
-							final Comment c =
-									is.createComment(repoOwner,
-													 repoName,
-													 mDataFragment.fullIssue.getNumber(),
-													 body);
-							if (c != null) {
-								mDataFragment.issueComments.add(c);
-								mDataFragment.commentAdapter.fillWithItems(
-										mDataFragment.issueComments);
+
+							if (!StringUtils.isStringEmpty(commentText)) {
+								final Comment c =
+										is.createComment(repoOwner,
+														 repoName,
+														 mDataFragment.fullIssue.getNumber(),
+														 body);
+								if (c != null) {
+									mDataFragment.issueComments.add(c);
+									mDataFragment.commentAdapter.fillWithItems(
+											mDataFragment.issueComments);
+								}
+							}
+
+							if (mCommentState.isChecked()) {
+								if (mDataFragment.fullIssue.getState().equals("open"))
+									mDataFragment.fullIssue.setState("closed");
+								else
+									mDataFragment.fullIssue.setState("open");
+
+								mDataFragment.fullIssue = is.editIssue(repoOwner,
+											 						   repoName,
+											 						   mDataFragment.fullIssue);
 							}
 						} catch (AccountsException e) {
 							e.printStackTrace();
@@ -290,6 +314,10 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			issueContents.setText(StringUtils.trimTrailingWhitespace(Html.fromHtml(processedBody)));
 		} else {
 			issueContents.setText(getString(R.string.issue_empty_description));
+		}
+
+		if (mDataFragment.fullIssue.getState().equals("closed")) {
+			mCommentState.setText(R.string.issue_reopen);
 		}
 
 		if (mDataFragment.issueDetailsView != null)
