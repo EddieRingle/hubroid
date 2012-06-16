@@ -52,7 +52,7 @@ class BaseFragment extends SherlockFragment
 	{
 		super.onResume();
 
-		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(true);
 	}
 

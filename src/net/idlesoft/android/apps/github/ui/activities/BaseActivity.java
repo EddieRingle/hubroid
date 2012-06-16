@@ -108,7 +108,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		getApplicationContext().setTheme(R.style.Theme_Hubroid);
 
 		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(true);
+		actionBar.setDisplayHomeAsUpEnabled(false);
 		actionBar.setHomeButtonEnabled(true);
 	}
 
@@ -260,6 +260,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 				intent.setClass(getApplicationContext(), MainActivity.class);
 				startActivity(intent);
+				finish();
 			}
 
 			return true;
