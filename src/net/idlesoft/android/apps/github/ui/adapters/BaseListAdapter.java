@@ -23,6 +23,7 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
@@ -98,6 +99,13 @@ class BaseListAdapter<T> extends BaseAdapter
 		return position;
 	}
 
+	@Override
+	public
+	void unregisterDataSetObserver(DataSetObserver observer)
+	{
+		if (observer != null)
+			super.unregisterDataSetObserver(observer);
+	}
 
 	protected
 	void fillWithItems(List<T> data, boolean append)
