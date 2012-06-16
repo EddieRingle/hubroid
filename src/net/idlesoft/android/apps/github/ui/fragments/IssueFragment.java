@@ -67,6 +67,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 		IssueCommentListAdapter commentAdapter;
 		ArrayList<Comment> issueComments;
 		Issue targetIssue;
+		Issue fullIssue;
 		View issueDetailsView;
 		View issueContentsView;
 	}
@@ -166,7 +167,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 					void runTask() throws InterruptedException
 					{
 						final String repoOwner, repoName, htmlUrl, body;
-						htmlUrl = mDataFragment.targetIssue.getHtmlUrl().replaceAll("/{2,}", "/");
+						htmlUrl = mDataFragment.fullIssue.getHtmlUrl().replaceAll("/{2,}", "/");
 						repoOwner = htmlUrl.split("/")[2];
 						repoName = htmlUrl.split("/")[3];
 
@@ -179,7 +180,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 							final Comment c =
 									is.createComment(repoOwner,
 													 repoName,
-													 mDataFragment.targetIssue.getNumber(),
+													 mDataFragment.fullIssue.getNumber(),
 													 body);
 							if (c != null) {
 								mDataFragment.issueComments.add(c);
@@ -204,7 +205,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 	public
 	void fetchData(final boolean freshen)
 	{
-		if (mDataFragment.issueComments != null && !freshen) {
+		if (mDataFragment.issueComments != null && mDataFragment.fullIssue != null && !freshen) {
 			mDataFragment.commentAdapter.fillWithItems(mDataFragment.issueComments);
 			mDataFragment.commentAdapter.notifyDataSetChanged();
 			mContent.setVisibility(View.VISIBLE);
@@ -248,8 +249,8 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 							try {
 								final IssueService is = new IssueService(getBaseActivity()
 																				 .getGHClient());
-								if (mDataFragment.targetIssue.getCreatedAt() == null) {
-									mDataFragment.targetIssue =
+								if (mDataFragment.fullIssue == null) {
+									mDataFragment.fullIssue =
 											is.getIssue(repoOwner,
 														repoName,
 														mDataFragment.targetIssue.getNumber());
@@ -282,8 +283,8 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 								 (int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm),
 								 (int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm),
 								 (int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm));
-		if (!StringUtils.isStringEmpty(mDataFragment.targetIssue.getBody())) {
-			final String rawBody = mDataFragment.targetIssue.getBody();
+		if (!StringUtils.isStringEmpty(mDataFragment.fullIssue.getBody())) {
+			final String rawBody = mDataFragment.fullIssue.getBody();
 			final MarkdownProcessor processor = new MarkdownProcessor();
 			final String processedBody = processor.markdown(rawBody);
 			issueContents.setText(StringUtils.trimTrailingWhitespace(Html.fromHtml(processedBody)));
@@ -297,7 +298,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 			mDataFragment.list.removeHeaderView(mDataFragment.issueContentsView);
 
 		mDataFragment.issueDetailsView = IssueUtils.viewFromIssue(getBaseActivity(),
-																  mDataFragment.targetIssue);
+																  mDataFragment.fullIssue);
 		mDataFragment.issueContentsView = issueContents;
 
 		mDataFragment.list.addHeaderView(mDataFragment.issueDetailsView);
