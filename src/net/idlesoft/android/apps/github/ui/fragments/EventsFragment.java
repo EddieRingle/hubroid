@@ -116,7 +116,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
-															   R.id.fragment_container_more, args);
+															   R.id.fragment_container, args);
 					getBaseActivity().finishFragmentTransaction();
 				} else {
 					getBaseActivity().popShortToast("Not supported right now, sorry!");
@@ -132,14 +132,14 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				args.putString(ARG_TARGET_USER, GsonUtils.toJson(p.getTarget()));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
-														   R.id.fragment_container_more, args);
+														   R.id.fragment_container, args);
 				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_FORK)) {
 				final ForkPayload p = (ForkPayload) event.getPayload();
 				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(p.getForkee()));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
-														   R.id.fragment_container_more, args);
+														   R.id.fragment_container, args);
 				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_FORK_APPLY)) {
 				final ForkApplyPayload p = (ForkApplyPayload) event.getPayload();
@@ -155,14 +155,14 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(p.getIssue()));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(IssueFragment.class,
-														   R.id.fragment_container_more, args);
+														   R.id.fragment_container, args);
 				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_ISSUES)) {
 				final IssuesPayload p = (IssuesPayload) event.getPayload();
 				args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(p.getIssue()));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(IssueFragment.class,
-														   R.id.fragment_container_more, args);
+														   R.id.fragment_container, args);
 				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_MEMBER)) {
 				final MemberPayload p = (MemberPayload) event.getPayload();
@@ -176,7 +176,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
-														   R.id.fragment_container_more, args);
+														   R.id.fragment_container, args);
 				getBaseActivity().finishFragmentTransaction();
 			} else if (type.equals(Event.TYPE_PULL_REQUEST)) {
 				final PullRequestPayload p = (PullRequestPayload) event.getPayload();
@@ -200,7 +200,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
-														   R.id.fragment_container_more, args);
+														   R.id.fragment_container, args);
 				getBaseActivity().finishFragmentTransaction();
 			}
 		}

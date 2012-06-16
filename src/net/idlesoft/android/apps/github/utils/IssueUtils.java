@@ -103,7 +103,7 @@ class IssueUtils
 				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(issue.getUser()));
 				context.startFragmentTransaction();
 				context.addFragmentToTransaction(ProfileFragment.class,
-												 R.id.fragment_container_more, args);
+												 R.id.fragment_container, args);
 				context.finishFragmentTransaction();
 			}
 		});

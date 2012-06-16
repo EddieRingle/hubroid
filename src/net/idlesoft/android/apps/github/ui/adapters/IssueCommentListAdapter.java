@@ -95,7 +95,7 @@ class IssueCommentListAdapter extends BaseListAdapter<Comment>
 				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(comment.getUser()));
 				getContext().startFragmentTransaction();
 				getContext().addFragmentToTransaction(ProfileFragment.class,
-												 R.id.fragment_container_more, args);
+												 R.id.fragment_container, args);
 				getContext().finishFragmentTransaction();
 			}
 		});

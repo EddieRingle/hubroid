@@ -242,7 +242,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(RepositoriesFragment.class,
-														   R.id.fragment_container_more,
+														   R.id.fragment_container,
 														   args);
 				getBaseActivity().finishFragmentTransaction();
 			}
@@ -263,7 +263,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(FollowersFollowingFragment.class,
-														   R.id.fragment_container_more,
+														   R.id.fragment_container,
 														   args);
 				getBaseActivity().finishFragmentTransaction();
 			}
@@ -282,7 +282,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(EventsFragment.class,
-														   R.id.fragment_container_more,
+														   R.id.fragment_container,
 														   args);
 				getBaseActivity().finishFragmentTransaction();
 			}

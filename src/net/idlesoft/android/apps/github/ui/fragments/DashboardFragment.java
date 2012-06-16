@@ -167,10 +167,6 @@ class DashboardFragment extends BaseFragment
 	void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
-
-		if (isMultiPane()) {
-			getBigFragmentContainer().setVisibility(View.INVISIBLE);
-		}
 	}
 
 	@Override

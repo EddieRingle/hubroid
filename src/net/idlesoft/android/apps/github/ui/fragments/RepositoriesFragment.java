@@ -217,7 +217,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
 				}
@@ -313,7 +313,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
 				}

@@ -206,7 +206,7 @@ class FollowersFollowingFragment
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
 				}
@@ -302,7 +302,7 @@ class FollowersFollowingFragment
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
 				}

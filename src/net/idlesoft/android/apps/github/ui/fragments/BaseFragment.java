@@ -69,21 +69,9 @@ class BaseFragment extends SherlockFragment
 	}
 
 	protected
-	View getSidebarFragmentContainer()
-	{
-		return getBaseActivity().findViewById(R.id.fragment_navigation);
-	}
-
-	protected
 	View getFragmentContainer()
 	{
 		return getBaseActivity().findViewById(R.id.fragment_container);
-	}
-
-	protected
-	View getBigFragmentContainer()
-	{
-		return getBaseActivity().findViewById(R.id.fragment_container_more);
 	}
 
 	protected

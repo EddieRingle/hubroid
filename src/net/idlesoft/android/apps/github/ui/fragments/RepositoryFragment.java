@@ -194,7 +194,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 					args.putString(ARG_TARGET_USER, GsonUtils.toJson(u));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(ProfileFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
 				}
@@ -252,7 +252,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(RepositoryFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
 				}
@@ -280,7 +280,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 					args.putString(ARG_TARGET_REPO, GsonUtils.toJson(repository));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(IssuesFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction();
 				}
@@ -301,7 +301,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(repository));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(ForksFragment.class,
-														   R.id.fragment_container_more,
+														   R.id.fragment_container,
 														   args);
 				getBaseActivity().finishFragmentTransaction();
 			}
@@ -321,7 +321,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				args.putString(ARG_TARGET_REPO, GsonUtils.toJson(repository));
 				getBaseActivity().startFragmentTransaction();
 				getBaseActivity().addFragmentToTransaction(WatchersFragment.class,
-														   R.id.fragment_container_more,
+														   R.id.fragment_container,
 														   args);
 				getBaseActivity().finishFragmentTransaction();
 			}

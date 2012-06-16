@@ -96,10 +96,7 @@ class MainActivity extends BaseActivity
 					fragment = new DashboardFragment();
 				}
 
-				if (isMultiPane())
-					ft.replace(R.id.fragment_navigation, fragment, DashboardFragment.class.getName());
-				else
-					ft.replace(R.id.fragment_container, fragment, DashboardFragment.class.getName());
+				ft.replace(R.id.fragment_container, fragment, DashboardFragment.class.getName());
 
 				ft.commit();
 			}

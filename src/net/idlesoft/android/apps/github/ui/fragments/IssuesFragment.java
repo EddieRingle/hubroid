@@ -215,7 +215,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction(true);
 				}
@@ -316,7 +316,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction(true);
 				}
@@ -417,7 +417,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
-															   R.id.fragment_container_more, args);
+															   R.id.fragment_container, args);
 					getBaseActivity().finishFragmentTransaction(true);
 				}
 			});
@@ -518,7 +518,7 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 					args.putString(ARG_TARGET_ISSUE, GsonUtils.toJson(holder.issues.get(position)));
 					getBaseActivity().startFragmentTransaction();
 					getBaseActivity().addFragmentToTransaction(IssueFragment.class,
-															   R.id.fragment_container_more,
+															   R.id.fragment_container,
 															   args);
 					getBaseActivity().finishFragmentTransaction(true);
 				}

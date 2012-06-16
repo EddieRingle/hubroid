@@ -90,7 +90,7 @@ class EventListAdapter extends BaseListAdapter<Event>
 				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(event.getActor()));
 				getContext().startFragmentTransaction();
 				getContext().addFragmentToTransaction(ProfileFragment.class,
-													  R.id.fragment_container_more, args);
+													  R.id.fragment_container, args);
 				getContext().finishFragmentTransaction();
 			}
 		});
