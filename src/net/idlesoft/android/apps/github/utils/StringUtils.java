@@ -134,6 +134,9 @@ class StringUtils
 
 	public static
 	CharSequence trimTrailingWhitespace(CharSequence text) {
+		/* Check for empty string */
+		if (text.length() == 0)
+			return text;
 		while (text.charAt(text.length() - 1) == '\n')
 			text = text.subSequence(0, text.length() - 1);
 		return text;
