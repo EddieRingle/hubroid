@@ -168,7 +168,10 @@ class EventUtil
 								 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
 		} else if (type.equals(Event.TYPE_PULL_REQUEST)) {
 			final PullRequestPayload p = (PullRequestPayload) event.getPayload();
-			titleBuilder.append(p.getAction() + " pull request " +
+			String action = p.getAction();
+			if (action.equals("closed") && p.getPullRequest().isMerged())
+				action = "merged";
+			titleBuilder.append(action + " pull request " +
 								Integer.toString(p.getNumber()) + " on " +
 								event.getRepo().getName());
 			int index = titleBuilder.toString().indexOf(event.getRepo().getName());
