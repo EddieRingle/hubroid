@@ -23,6 +23,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
+		android:clipChildren="false"
+		android:clipToPadding="false"
 		android:padding="10dip"
 		android:orientation="horizontal">
 	<ImageView android:id="@+id/iv_user_gravatar"

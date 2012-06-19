@@ -110,7 +110,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 		}
 		if (mDataFragment.targetUser == null) {
 			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
+			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentContextLogin());
 		}
 
 		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));

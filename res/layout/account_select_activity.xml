@@ -21,26 +21,37 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-			  android:layout_width="fill_parent"
-			  android:layout_height="fill_parent"
-			  android:gravity="center"
-			  style="@style/stdLinearLayout">
-	<ListView android:id="@+id/lv_userselect_users"
-			  android:layout_width="match_parent"
-			  android:layout_height="0dp"
-			  android:layout_weight="1" />
-	<TextView android:id="@+id/tv_userselect_msg"
-			  android:layout_width="wrap_content"
-			  android:layout_height="wrap_content"
-			  android:visibility="gone" />
-	<LinearLayout android:orientation="horizontal"
-				  android:layout_width="fill_parent"
-				  android:layout_height="wrap_content">
-		<Button android:id="@+id/btn_userselect_signout"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center"
+		style="@style/stdLinearLayout">
+	<ProgressBar android:id="@+id/progress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:indeterminateOnly="true"
+			android:visibility="gone" />
+	<LinearLayout android:id="@+id/content"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:orientation="vertical">
+		<ListView android:id="@+id/lv_userselect_users"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1" />
+		<TextView android:id="@+id/tv_userselect_msg"
+				android:layout_width="wrap_content"
 				android:layout_height="wrap_content"
-				android:layout_width="0dp"
-				android:layout_weight="1"
-				android:layout_marginLeft="5dip"
-				android:text="@string/userselect_signout" />
+				android:visibility="gone" />
+		<LinearLayout android:orientation="horizontal"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content">
+			<Button android:id="@+id/btn_userselect_signout"
+					android:layout_height="wrap_content"
+					android:layout_width="0dp"
+					android:layout_weight="1"
+					android:layout_marginLeft="5dip"
+					android:text="@string/userselect_signout" />
+		</LinearLayout>
 	</LinearLayout>
 </LinearLayout>

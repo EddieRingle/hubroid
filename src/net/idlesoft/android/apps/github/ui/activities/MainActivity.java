@@ -61,9 +61,14 @@ class MainActivity extends BaseActivity
 			startActivityForResult(new Intent(this, AccountSelect.class), 0);
 			finish();
 		} else {
-			final String current_user_login = mPrefs.getString(PREF_CURRENT_USER_LOGIN, null);
-			if (current_user_login != null) {
-				mCurrentAccount = new Account(current_user_login, AuthConstants.GITHUB_ACCOUNT_TYPE);
+			final String currentUserLogin = mPrefs.getString(PREF_CURRENT_USER_LOGIN, null);
+			final String currentUserJson = mPrefs.getString(PREF_CURRENT_USER, null);
+			if (currentUserLogin != null && currentUserJson == null) {
+				startActivityForResult(new Intent(this, AccountSelect.class), 0);
+				finish();
+			}
+			if (currentUserLogin != null && currentUserJson != null) {
+				mCurrentAccount = new Account(currentUserLogin, AuthConstants.GITHUB_ACCOUNT_TYPE);
 			} else {
 				mCurrentAccount = null;
 			}

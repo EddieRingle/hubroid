@@ -44,7 +44,7 @@ import net.idlesoft.android.apps.github.authenticator.AccountSelect;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
-import org.eclipse.egit.github.core.service.UserService;
+import org.eclipse.egit.github.core.client.GsonUtils;
 
 import java.io.IOException;
 
@@ -63,7 +63,11 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	/*
 	 * Preferences keys
 	 */
+	protected static final String PREF_CURRENT_USER = "currentUser";
+
 	protected static final String PREF_CURRENT_USER_LOGIN = "currentUserLogin";
+
+	protected static final String PREF_CURRENT_CONTEXT_LOGIN = "currentContextLogin";
 
 	protected static final String PREF_FIRST_RUN = "firstRun";
 
@@ -146,19 +150,30 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		return mCurrentAccount;
 	}
 
-	/**
-	 * Does network I/O. Do not run on UI thread.
-	 */
 	public
-	User getCurrentUser() throws IOException, AccountsException
+	User getCurrentUser()
 	{
-		return new UserService(getGHClient()).getUser();
+		final String json = mPrefs.getString(PREF_CURRENT_USER, "");
+		return GsonUtils.fromJson(json, User.class);
 	}
 
 	public
 	String getCurrentUserLogin()
 	{
 		return mPrefs.getString(PREF_CURRENT_USER_LOGIN, "");
+	}
+
+	public
+	String getCurrentContextLogin()
+	{
+		return mPrefs.getString(PREF_CURRENT_CONTEXT_LOGIN, getCurrentUserLogin());
+	}
+
+	public
+	void setCurrentContextLogin(final String context)
+	{
+		mPrefsEditor.putString(PREF_CURRENT_CONTEXT_LOGIN, context);
+		mPrefsEditor.apply();
 	}
 
 	public

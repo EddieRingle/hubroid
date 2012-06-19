@@ -325,28 +325,33 @@ class FollowersFollowingFragment
 		super.onActivityCreated(savedInstanceState);
 
 		final Bundle args = getArguments();
-		final String userJson;
+		String userJson = null;
+		boolean refresh = getBaseActivity().getRefreshPrevious();
+
 		if (args != null) {
 			userJson = args.getString(HubroidConstants.ARG_TARGET_USER);
 			if (userJson != null) {
 				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
 			}
 		}
-		if (mDataFragment.targetUser == null) {
+
+		if (mDataFragment.targetUser == null || userJson == null) {
 			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
+			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentContextLogin());
 		}
+
 		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetUser.getLogin());
-		if (mDataFragment.userLists == null)
+
+		if (mDataFragment.userLists == null || refresh)
 			mDataFragment.userLists = new ArrayList<ListHolder>();
 
-		if (mDataFragment.pagerAdapter == null)
+		if (mDataFragment.pagerAdapter == null || refresh)
 			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
 
 		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
 
-		fetchData(false);
+		fetchData(refresh);
 	}
 
 	@Override

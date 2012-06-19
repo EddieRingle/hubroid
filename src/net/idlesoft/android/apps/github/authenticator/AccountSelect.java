@@ -36,7 +36,14 @@ import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.activities.MainActivity;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.service.UserService;
+import roboguice.util.RoboAsyncTask;
 import roboguice.util.SafeAsyncTask;
+
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
 public
 class AccountSelect extends BaseActivity
@@ -54,11 +61,17 @@ class AccountSelect extends BaseActivity
 		}
 	}
 
+	private ProgressBar mProgress;
+	private LinearLayout mContent;
+
 	@Override
 	protected
 	void onCreate(Bundle icicle)
 	{
 		super.onCreate(icicle, R.layout.account_select_activity);
+
+		mProgress = (ProgressBar) findViewById(R.id.progress);
+		mContent = (LinearLayout) findViewById(R.id.content);
 
 		ListView listView = (ListView) findViewById(R.id.lv_userselect_users);
 		TextView msgView = (TextView) findViewById(R.id.tv_userselect_msg);
@@ -66,7 +79,7 @@ class AccountSelect extends BaseActivity
 		mAccountManager = AccountManager.get(getContext());
 
 		if (mCurrentAccount == null)
-			signoutBtn.setVisibility(View.GONE);
+			signoutBtn.setVisibility(GONE);
 
 		getSupportActionBar().setHomeButtonEnabled(false);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -83,7 +96,7 @@ class AccountSelect extends BaseActivity
 		}
 
 		if (listAdapter.isEmpty()) {
-			listView.setVisibility(View.GONE);
+			listView.setVisibility(GONE);
 			msgView.setVisibility(View.VISIBLE);
 
 			msgView.setText(getString(R.string.userselect_msg_no_accounts));
@@ -92,15 +105,48 @@ class AccountSelect extends BaseActivity
 			{
 				@Override
 				public
-				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				void onItemClick(AdapterView<?> parent, View view, final int position, long id)
 				{
-					mPrefsEditor.putString(PREF_CURRENT_USER_LOGIN, accounts[position].name);
-					mPrefsEditor.commit();
-					mGitHubClient = null;
-					final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(intent);
-					finish();
+					mContent.setVisibility(GONE);
+					mProgress.setVisibility(VISIBLE);
+
+					new RoboAsyncTask<Boolean>(AccountSelect.this) {
+						public Boolean call() throws Exception {
+							mCurrentAccount = accounts[position];
+							mGitHubClient = null;
+
+							UserService service = new UserService(getGHClient());
+							User user = service.getUser();
+
+							if (user != null) {
+								mPrefsEditor.putString(PREF_CURRENT_USER_LOGIN, user.getLogin());
+								mPrefsEditor.putString(PREF_CURRENT_USER, GsonUtils.toJson(user));
+								mPrefsEditor.commit();
+
+								return true;
+							}
+
+							return false;
+						}
+
+						@Override
+						public void onSuccess(Boolean authSuccess) {
+							final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+							startActivity(intent);
+							finish();
+						}
+
+						@Override
+						protected
+						void onFinally() throws RuntimeException
+						{
+							mProgress.setVisibility(GONE);
+							mContent.setVisibility(VISIBLE);
+
+							super.onFinally();
+						}
+					}.execute();
 				}
 			});
 

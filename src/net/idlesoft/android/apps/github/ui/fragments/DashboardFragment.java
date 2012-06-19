@@ -23,6 +23,7 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
+import android.accounts.AccountsException;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -30,14 +31,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.actionbarsherlock.app.ActionBar;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.adapters.ContextListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.DashboardListAdapter;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
+import net.idlesoft.android.apps.github.utils.DataTask;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.service.OrganizationService;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public
-class DashboardFragment extends BaseFragment
+class DashboardFragment extends UIFragment<DashboardFragment.DashboardDataFragment>
 {
 	private static int instanceCount = 0;
 
@@ -52,6 +60,19 @@ class DashboardFragment extends BaseFragment
 	public static final int CHOICE_GISTS = 0x0005;
 
 	public static final int CHOICE_ORGS = 0x0006;
+
+	public static
+	class DashboardDataFragment extends DataFragment
+	{
+		ArrayList<User> contexts;
+		boolean ready;
+	}
+
+	public
+	DashboardFragment()
+	{
+		super(DashboardDataFragment.class);
+	}
 
 	protected
 	void showFragment(final int selection)
@@ -167,6 +188,83 @@ class DashboardFragment extends BaseFragment
 	void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
+
+		if (!getBaseActivity().getCurrentUserLogin().equals("")) {
+			final String currentContext = getBaseActivity().getCurrentContextLogin();
+			final ContextListAdapter contextAdapter = new ContextListAdapter(getBaseActivity());
+
+			DataTask.Executable getOrgs = new DataTask.Executable()
+			{
+				@Override
+				public
+				void runTask() throws InterruptedException
+				{
+					if (mDataFragment.contexts == null) {
+						mDataFragment.contexts = new ArrayList<User>();
+						/* First add the current user */
+						mDataFragment.contexts.add(getBaseActivity().getCurrentUser());
+
+						/* Now add the organizations */
+						try {
+							final OrganizationService os = new OrganizationService(getBaseActivity().getGHClient());
+							final List<User> orgs = os.getOrganizations();
+
+							for (User o : orgs) {
+								mDataFragment.contexts.add(o);
+							}
+						} catch (AccountsException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+
+					contextAdapter.addAll(mDataFragment.contexts);
+				}
+
+				@Override
+				public
+				void onTaskComplete()
+				{
+					int i;
+
+					mDataFragment.ready = false;
+
+					if (mDataFragment.contexts.size() < 2) {
+						getBaseActivity().getSupportActionBar().setTitle(R.string.app_name);
+						return;
+					}
+
+					getBaseActivity().theActionBar().setTitle("");
+					getBaseActivity().theActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+					getBaseActivity().theActionBar().setListNavigationCallbacks(contextAdapter, new ActionBar.OnNavigationListener()
+					{
+						@Override
+						public
+						boolean onNavigationItemSelected(int itemPosition, long itemId)
+						{
+							if (mDataFragment.ready) {
+								getBaseActivity().setCurrentContextLogin(mDataFragment.contexts.get(itemPosition).getLogin());
+							} else {
+								mDataFragment.ready = true;
+							}
+
+							getBaseActivity().setRefreshPrevious(true);
+							return true;
+						}
+					});
+					i = 0;
+					for (User u : mDataFragment.contexts) {
+						if (u.getLogin().equals(currentContext)) {
+							getBaseActivity().theActionBar().setSelectedNavigationItem(i);
+						}
+						i++;
+					}
+				}
+			};
+
+			mDataFragment.executeNewTask(getOrgs);
+		}
 	}
 
 	@Override
@@ -175,7 +273,6 @@ class DashboardFragment extends BaseFragment
 	{
 		super.onResume();
 
-		getBaseActivity().getSupportActionBar().setTitle(R.string.app_name);
 		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(false);
 	}

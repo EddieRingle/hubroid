@@ -21,72 +21,71 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github.ui.fragments;
+package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Bundle;
 import android.view.View;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.androidquery.AQuery;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import org.eclipse.egit.github.core.User;
 
 public
-class BaseFragment extends SherlockFragment
+class ContextListAdapter extends BaseListAdapter<User>
 {
-	protected
-	Configuration mConfiguration;
+	public static
+	class ViewHolder
+	{
+		ImageView gravatar;
+		TextView login;
+	}
+
+	public
+	ContextListAdapter(BaseActivity context)
+	{
+		super(context);
+	}
+
+	public
+	View doGetView(int position, View convertView, ViewGroup parent, boolean dropdown)
+	{
+		ViewHolder holder;
+		if (convertView == null) {
+			convertView = mInflater.inflate(R.layout.user_list_item, null);
+			holder = new ViewHolder();
+			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_user_gravatar);
+			holder.login = (TextView) convertView.findViewById(R.id.tv_user_login);
+			convertView.setTag(holder);
+		} else {
+			holder = (ViewHolder) convertView.getTag();
+		}
+
+		final User user = getItem(position);
+
+		final String login = user.getLogin();
+		final String type = user.getType();
+
+		final AQuery aq = new AQuery(convertView);
+		aq.id(holder.gravatar).image(user.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
+
+		holder.login.setText(login);
+
+		return convertView;
+	}
 
 	@Override
 	public
-	void onCreate(Bundle savedInstanceState)
+	View getView(int position, View convertView, ViewGroup parent)
 	{
-		super.onCreate(savedInstanceState);
-
-		mConfiguration = getResources().getConfiguration();
+		return doGetView(position, convertView, parent, false);
 	}
 
 	@Override
 	public
-	void onActivityCreated(Bundle savedInstanceState)
+	View getDropDownView(int position, View convertView, ViewGroup parent)
 	{
-		super.onActivityCreated(savedInstanceState);
-
-		getBaseActivity().theActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-	}
-
-	@Override
-	public
-	void onResume()
-	{
-		super.onResume();
-
-		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(true);
-	}
-
-	public
-	BaseActivity getBaseActivity()
-	{
-		return (BaseActivity) getSherlockActivity();
-	}
-
-	public
-	Context getContext()
-	{
-		return getBaseActivity().getContext();
-	}
-
-	protected
-	View getFragmentContainer()
-	{
-		return getBaseActivity().findViewById(R.id.fragment_container);
-	}
-
-	protected
-	boolean isMultiPane()
-	{
-		return getBaseActivity().isMultiPane();
+		return doGetView(position, convertView, parent, true);
 	}
 }

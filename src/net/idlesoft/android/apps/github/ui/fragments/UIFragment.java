@@ -26,7 +26,6 @@ package net.idlesoft.android.apps.github.ui.fragments;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
-import net.idlesoft.android.apps.github.R;
 
 public abstract
 class UIFragment<D extends DataFragment> extends BaseFragment
@@ -86,7 +85,7 @@ class UIFragment<D extends DataFragment> extends BaseFragment
 			getFragmentManager().beginTransaction().add(mDataFragment, mDataFragmentTag).commit();
 		}
 
-		getBaseActivity().getSupportActionBar().setTitle(R.string.app_name);
+		getBaseActivity().theActionBar().setTitle("");
 
 		mDataFragment.onUIFragmentReady();
 	}

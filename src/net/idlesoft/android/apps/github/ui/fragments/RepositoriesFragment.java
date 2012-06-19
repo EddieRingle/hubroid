@@ -187,14 +187,19 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 									final RepositoryService rs =
 											new RepositoryService(getBaseActivity().getGHClient());
 									if (!mDataFragment.targetUser.getLogin().equals(
-											getBaseActivity().getCurrentUserLogin())) {
+											getBaseActivity().getCurrentContextLogin())) {
 										holder.request = rs.pageRepositories(
 												mDataFragment.targetUser.getLogin());
 									} else {
 										final Map<String, String> filter = new HashMap<String, String>();
-										filter.put("type", "owner");
-										filter.put("sort", "pushed");
-										holder.request = rs.pageRepositories(filter);
+										if (mDataFragment.targetUser.getLogin().equals(
+												getBaseActivity().getCurrentUserLogin())) {
+											filter.put("type", "owner");
+											filter.put("sort", "pushed");
+											holder.request = rs.pageRepositories(filter);
+										} else {
+											holder.request = rs.pageOrgRepositories(mDataFragment.targetUser.getLogin(), filter);
+										}
 									}
 									holder.repositories.addAll(holder.request.next());
 								} catch (IOException e) {
@@ -336,30 +341,33 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		super.onActivityCreated(savedInstanceState);
 
 		final Bundle args = getArguments();
-		final String userJson;
+		String userJson = null;
+		boolean refresh = getBaseActivity().getRefreshPrevious();
+
 		if (args != null) {
 			userJson = args.getString(HubroidConstants.ARG_TARGET_USER);
 			if (userJson != null) {
 				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
 			}
 		}
-		if (mDataFragment.targetUser == null) {
+
+		if (mDataFragment.targetUser == null || userJson == null) {
 			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
+			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentContextLogin());
 		}
 
-		if (mDataFragment.repositoryLists == null)
+		if (mDataFragment.repositoryLists == null || refresh)
 			mDataFragment.repositoryLists = new ArrayList<ListHolder>();
 
 		getBaseActivity().getSupportActionBar().setTitle(R.string.repositories);
 
-		if (mDataFragment.pagerAdapter == null)
+		if (mDataFragment.pagerAdapter == null || refresh)
 			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
 
 		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
 
-		fetchData(false);
+		fetchData(refresh);
 	}
 
 	@Override
@@ -376,7 +384,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 	void onResume()
 	{
 		super.onResume();
-
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
 	}
 

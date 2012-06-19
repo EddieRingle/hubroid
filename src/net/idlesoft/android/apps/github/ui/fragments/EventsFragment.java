@@ -235,7 +235,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 	public
 	void fetchData(final boolean freshen)
 	{
-		if (mDataFragment.targetUser.getLogin().equals(getBaseActivity().getCurrentUserLogin())
+		if (mDataFragment.targetUser.getLogin().equals(getBaseActivity().getCurrentContextLogin())
 				&& !mDataFragment.targetUser.getLogin().equals("")) {
 			/* Display received events */
 			final IdleList<Event> list;
@@ -507,7 +507,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		}
 		if (mDataFragment.targetUser == null) {
 			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentUserLogin());
+			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentContextLogin());
 		}
 
 		if (mDataFragment.eventLists == null)
