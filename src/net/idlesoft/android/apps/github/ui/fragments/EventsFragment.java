@@ -516,6 +516,8 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		if (mDataFragment.pagerAdapter == null)
 			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
 
+		getBaseActivity().theActionBar().setTitle(R.string.dash_events);
+
 		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
 
