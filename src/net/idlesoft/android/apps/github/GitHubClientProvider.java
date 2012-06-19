@@ -25,7 +25,6 @@ package net.idlesoft.android.apps.github;
 
 import android.accounts.Account;
 import android.accounts.AccountsException;
-import android.util.Log;
 import com.google.inject.Inject;
 import net.idlesoft.android.apps.github.authenticator.OAuthUserProvider;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -47,8 +46,6 @@ class GitHubClientProvider
 	{
 		final GitHubClient client = new GitHubClient();
 		OAuthUserProvider.AuthResponse response = mUserProvider.getOAuthResponse(account);
-		Log.d("hubroid", "account: " + response.account);
-		Log.d("hubroid", "at: " + response.access_token);
 		client.setOAuth2Token(response.access_token);
 		client.setUserAgent(USER_AGENT_STRING);
 		mCurrentUser = response.account;
