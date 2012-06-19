@@ -189,14 +189,16 @@ class EventUtil
 			titleBuilder.setSpan(new ForegroundColorSpan(Color.parseColor("#4183C4")),
 								 index, index + event.getRepo().getName().length(),
 								 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
-			for (Commit c : p.getCommits()) {
-				String commitLine = c.getSha().substring(0, 6) + " " +
-									c.getMessage().split("\n")[0] + "\n";
-				extraBuilder.append(commitLine);
-				extraBuilder.setSpan(new ForegroundColorSpan(Color.parseColor("#4183C4")),
-									 extraBuilder.toString().length() - commitLine.length(),
-									 extraBuilder.toString().length() - commitLine.length() + 7,
-									 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+			if (p.getCommits() != null) {
+				for (Commit c : p.getCommits()) {
+					String commitLine = c.getSha().substring(0, 6) + " " +
+										c.getMessage().split("\n")[0] + "\n";
+					extraBuilder.append(commitLine);
+					extraBuilder.setSpan(new ForegroundColorSpan(Color.parseColor("#4183C4")),
+										 extraBuilder.toString().length() - commitLine.length(),
+										 extraBuilder.toString().length() - commitLine.length() + 7,
+										 Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
+				}
 			}
 		} else if (type.equals(Event.TYPE_TEAM_ADD)) {
 			final TeamAddPayload p = (TeamAddPayload) event.getPayload();
