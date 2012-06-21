@@ -24,6 +24,7 @@
 package net.idlesoft.android.apps.github.ui.activities;
 
 import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
@@ -63,14 +64,39 @@ class MainActivity extends BaseActivity
 		} else {
 			final String currentUserLogin = mPrefs.getString(PREF_CURRENT_USER_LOGIN, null);
 			final String currentUserJson = mPrefs.getString(PREF_CURRENT_USER, null);
+			final Account[] accounts = AccountManager.get(this).getAccountsByType(
+					AuthConstants.GITHUB_ACCOUNT_TYPE);
+			int i;
+
 			if (currentUserLogin != null && currentUserJson == null) {
 				startActivityForResult(new Intent(this, AccountSelect.class), 0);
 				finish();
 			}
+
+			mCurrentAccount = null;
+
 			if (currentUserLogin != null && currentUserJson != null) {
-				mCurrentAccount = new Account(currentUserLogin, AuthConstants.GITHUB_ACCOUNT_TYPE);
-			} else {
 				mCurrentAccount = null;
+
+				/* Try to find our current account */
+				for (i = 0; i < accounts.length; i++) {
+					if (accounts[i].name.equals(currentUserLogin)) {
+						mCurrentAccount = accounts[i];
+					}
+				}
+
+				/*
+				 * If we can't find the account, it must have been deleted.
+				 * Redirect to the Account selection activity.
+				 */
+				if (mCurrentAccount == null) {
+					mPrefsEditor.remove(PREF_CURRENT_USER);
+					mPrefsEditor.remove(PREF_CURRENT_USER_LOGIN);
+					mPrefsEditor.remove(PREF_CURRENT_CONTEXT_LOGIN);
+
+					startActivityForResult(new Intent(this, AccountSelect.class), 0);
+					finish();
+				}
 			}
 		}
 	}

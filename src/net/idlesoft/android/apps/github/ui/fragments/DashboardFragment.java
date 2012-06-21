@@ -264,6 +264,8 @@ class DashboardFragment extends UIFragment<DashboardFragment.DashboardDataFragme
 			};
 
 			mDataFragment.executeNewTask(getOrgs);
+		} else {
+			getBaseActivity().theActionBar().setTitle(R.string.app_name);
 		}
 	}
 

@@ -62,7 +62,7 @@ class AccountSelect extends BaseActivity
 	}
 
 	private ProgressBar mProgress;
-	private LinearLayout mContent;
+	private RelativeLayout mContent;
 
 	@Override
 	protected
@@ -71,15 +71,16 @@ class AccountSelect extends BaseActivity
 		super.onCreate(icicle, R.layout.account_select_activity);
 
 		mProgress = (ProgressBar) findViewById(R.id.progress);
-		mContent = (LinearLayout) findViewById(R.id.content);
+		mContent = (RelativeLayout) findViewById(R.id.content);
 
 		ListView listView = (ListView) findViewById(R.id.lv_userselect_users);
 		TextView msgView = (TextView) findViewById(R.id.tv_userselect_msg);
-		Button signoutBtn = (Button) findViewById(R.id.btn_userselect_signout);
+		Button noChoiceBtn = (Button) findViewById(R.id.btn_userselect_nochoice);
 		mAccountManager = AccountManager.get(getContext());
 
-		if (mCurrentAccount == null)
-			signoutBtn.setVisibility(GONE);
+		if (mCurrentAccount == null) {
+			noChoiceBtn.setText(R.string.userselect_justbrowsing);
+		}
 
 		getSupportActionBar().setHomeButtonEnabled(false);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
@@ -95,12 +96,25 @@ class AccountSelect extends BaseActivity
 			listAdapter.add(a.name);
 		}
 
-		if (listAdapter.isEmpty()) {
-			listView.setVisibility(GONE);
-			msgView.setVisibility(View.VISIBLE);
+		noChoiceBtn.setOnClickListener(new View.OnClickListener()
+		{
+			@Override
+			public
+			void onClick(View v)
+			{
+				mPrefsEditor.remove(PREF_CURRENT_USER_LOGIN);
+				mPrefsEditor.remove(PREF_CURRENT_USER);
+				mPrefsEditor.remove(PREF_CURRENT_CONTEXT_LOGIN);
+				mPrefsEditor.commit();
+				final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
+						.FLAG_ACTIVITY_NEW_TASK);
+				startActivity(intent);
+				finish();
+			}
+		});
 
-			msgView.setText(getString(R.string.userselect_msg_no_accounts));
-		} else {
+		if (!listAdapter.isEmpty()) {
 			listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
 			{
 				@Override
@@ -151,21 +165,6 @@ class AccountSelect extends BaseActivity
 			});
 
 			listView.setAdapter(listAdapter);
-
-			signoutBtn.setOnClickListener(new View.OnClickListener()
-			{
-				@Override
-				public
-				void onClick(View v)
-				{
-					mPrefsEditor.remove(PREF_CURRENT_USER_LOGIN);
-					mPrefsEditor.commit();
-					final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
-					intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-					startActivity(intent);
-					finish();
-				}
-			});
 		}
 	}
 

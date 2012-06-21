@@ -31,27 +31,24 @@
 			android:layout_gravity="center"
 			android:indeterminateOnly="true"
 			android:visibility="gone" />
-	<LinearLayout android:id="@+id/content"
+	<RelativeLayout android:id="@+id/content"
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:orientation="vertical">
+			android:layout_gravity="center">
+		<TextView android:id="@+id/tv_userselect_msg"
+				  android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="@string/userselect_msg" />
+		<Button android:id="@+id/btn_userselect_nochoice"
+				android:layout_height="wrap_content"
+				android:layout_width="match_parent"
+				android:layout_alignParentBottom="true"
+				android:text="@string/userselect_signout" />
 		<ListView android:id="@+id/lv_userselect_users"
 				android:layout_width="match_parent"
-				android:layout_height="0dp"
-				android:layout_weight="1" />
-		<TextView android:id="@+id/tv_userselect_msg"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:visibility="gone" />
-		<LinearLayout android:orientation="horizontal"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content">
-			<Button android:id="@+id/btn_userselect_signout"
-					android:layout_height="wrap_content"
-					android:layout_width="0dp"
-					android:layout_weight="1"
-					android:layout_marginLeft="5dip"
-					android:text="@string/userselect_signout" />
-		</LinearLayout>
-	</LinearLayout>
+				android:layout_height="match_parent"
+				android:layout_margin="10dp"
+				android:layout_below="@id/tv_userselect_msg"
+				android:layout_above="@id/btn_userselect_nochoice" />
+	</RelativeLayout>
 </LinearLayout>

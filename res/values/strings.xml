@@ -47,7 +47,10 @@
 	<!-- User selection dialog -->
 	<string name="userselect_title">Accounts</string>
 	<string name="userselect_signout">Sign out</string>
-	<string name="userselect_msg_no_accounts">No accounts found, add one from the menu.</string>
+	<string name="userselect_justbrowsing">Just browsing</string>
+	<string name="userselect_msg">
+		Sign in with a GitHub account already linked with this device or add a new one.
+	</string>
 
 	<!-- Authentication -->
 	<string name="auther_label">Hubroid - GitHub Client</string>
