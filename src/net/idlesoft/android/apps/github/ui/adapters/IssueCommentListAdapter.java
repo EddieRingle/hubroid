@@ -107,7 +107,7 @@ class IssueCommentListAdapter extends BaseListAdapter<Comment>
 		MarkdownProcessor processor = new MarkdownProcessor();
 		final String processed = processor.markdown(comment.getBody());
 		holder.content.setText(StringUtils.trimTrailingWhitespace(Html.fromHtml(processed)));
-		holder.content.setMovementMethod(new LinkMovementMethod());
+		holder.content.setMovementMethod(LinkMovementMethod.getInstance());
 
 		return convertView;
 	}

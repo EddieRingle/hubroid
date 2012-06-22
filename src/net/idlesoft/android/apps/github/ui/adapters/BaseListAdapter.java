@@ -53,7 +53,7 @@ class BaseListAdapter<T> extends BaseAdapter
 		super();
 
 		mContext = context;
-		mInflater = LayoutInflater.from(context.getContext());
+		mInflater = LayoutInflater.from(mContext);
 		mData = new ArrayList<T>();
 	}
 
