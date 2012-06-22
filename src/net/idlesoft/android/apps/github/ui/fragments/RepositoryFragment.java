@@ -33,6 +33,7 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -389,6 +390,15 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 				return false;
 			}
 		});
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setTitle(mDataFragment.targetRepo.getName());
 	}
 
 	@Override

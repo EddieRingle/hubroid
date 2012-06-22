@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -516,8 +517,6 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		if (mDataFragment.pagerAdapter == null)
 			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
 
-		getBaseActivity().theActionBar().setTitle(R.string.dash_events);
-
 		mViewPager.setAdapter(mDataFragment.pagerAdapter);
 		mTitlePageIndicator.setViewPager(mViewPager);
 
@@ -540,6 +539,15 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setTitle(R.string.dash_events);
 	}
 
 	@Override

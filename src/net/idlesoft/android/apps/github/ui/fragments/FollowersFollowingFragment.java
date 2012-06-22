@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -340,8 +341,6 @@ class FollowersFollowingFragment
 			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentContextLogin());
 		}
 
-		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetUser.getLogin());
-
 		if (mDataFragment.userLists == null || refresh)
 			mDataFragment.userLists = new ArrayList<ListHolder>();
 
@@ -370,6 +369,15 @@ class FollowersFollowingFragment
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setTitle(mDataFragment.targetUser.getLogin());
 	}
 
 	@Override

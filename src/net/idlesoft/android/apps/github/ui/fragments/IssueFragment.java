@@ -35,6 +35,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.*;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -335,6 +336,13 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 		mDataFragment.list.setAdapter(mDataFragment.commentAdapter);
 		/* Allow items within list items to be clickable */
 		mDataFragment.list.setItemsCanFocus(true);
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
 	}
 
 	@Override

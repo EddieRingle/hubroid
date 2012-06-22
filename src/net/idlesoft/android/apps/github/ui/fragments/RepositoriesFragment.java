@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -359,8 +360,6 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		if (mDataFragment.repositoryLists == null || refresh)
 			mDataFragment.repositoryLists = new ArrayList<ListHolder>();
 
-		getBaseActivity().getSupportActionBar().setTitle(R.string.repositories);
-
 		if (mDataFragment.pagerAdapter == null || refresh)
 			mDataFragment.pagerAdapter = new ListViewPager.MultiListPagerAdapter(getContext());
 
@@ -385,6 +384,15 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 	{
 		super.onResume();
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setTitle(R.string.repositories);
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.*;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
@@ -81,9 +82,6 @@ class AccountSelect extends BaseActivity
 		if (mCurrentAccount == null) {
 			noChoiceBtn.setText(R.string.userselect_justbrowsing);
 		}
-
-		getSupportActionBar().setHomeButtonEnabled(false);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
 		final Account[] accounts = mAccountManager
 				.getAccountsByType(AuthConstants.GITHUB_ACCOUNT_TYPE);
@@ -170,9 +168,19 @@ class AccountSelect extends BaseActivity
 
 	@Override
 	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setHomeButtonEnabled(false);
+		bar.setDisplayHomeAsUpEnabled(false);
+	}
+
+	@Override
+	public
 	boolean onCreateOptionsMenu(Menu menu)
 	{
-		final boolean superResult = super.onCreateOptionsMenu(menu);
+		super.onCreateOptionsMenu(menu);
 
 		/* Hide the "Select Account" option */
 		menu.findItem(R.id.actionbar_action_select_account).setVisible(false);
@@ -180,7 +188,7 @@ class AccountSelect extends BaseActivity
 		menu.findItem(R.id.actionbar_action_add).setVisible(true);
 		menu.findItem(R.id.actionbar_action_add).setTitle(R.string.actionbar_action_add_account);
 
-		return superResult;
+		return true;
 	}
 
 	@Override

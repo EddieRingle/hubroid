@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import com.actionbarsherlock.app.ActionBar;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.utils.DataTask;
 import net.idlesoft.android.apps.github.utils.StringUtils;
@@ -106,8 +107,6 @@ class NewIssueFragment extends UIFragment<NewIssueFragment.NewIssueDataFragment>
 			}
 		}
 
-		getBaseActivity().theActionBar().setTitle(R.string.actionbar_action_add_issue);
-
 		mSubmitButton.setOnClickListener(new View.OnClickListener()
 		{
 			@Override
@@ -172,5 +171,14 @@ class NewIssueFragment extends UIFragment<NewIssueFragment.NewIssueDataFragment>
 				mDataFragment.executeNewTask(issueExecutable);
 			}
 		});
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setTitle(R.string.actionbar_action_add_issue);
 	}
 }

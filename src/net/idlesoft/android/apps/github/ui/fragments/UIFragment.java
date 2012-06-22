@@ -62,14 +62,6 @@ class UIFragment<D extends DataFragment> extends BaseFragment
 
 	@Override
 	public
-	void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setHasOptionsMenu(true);
-	}
-
-	@Override
-	public
 	void onActivityCreated(Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
@@ -85,8 +77,14 @@ class UIFragment<D extends DataFragment> extends BaseFragment
 			getFragmentManager().beginTransaction().add(mDataFragment, mDataFragmentTag).commit();
 		}
 
-		getBaseActivity().theActionBar().setTitle("");
-
 		mDataFragment.onUIFragmentReady();
+	}
+
+	@Override
+	public
+	void onStart()
+	{
+		super.onStart();
+		setHasOptionsMenu(true);
 	}
 }

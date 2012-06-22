@@ -231,13 +231,12 @@ class DashboardFragment extends UIFragment<DashboardFragment.DashboardDataFragme
 					mDataFragment.ready = false;
 
 					if (mDataFragment.contexts.size() < 2) {
-						getBaseActivity().getSupportActionBar().setTitle(R.string.app_name);
 						return;
 					}
 
-					getBaseActivity().theActionBar().setTitle("");
-					getBaseActivity().theActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
-					getBaseActivity().theActionBar().setListNavigationCallbacks(contextAdapter, new ActionBar.OnNavigationListener()
+					getBaseActivity().getSupportActionBar().setTitle("");
+					getBaseActivity().getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+					getBaseActivity().getSupportActionBar().setListNavigationCallbacks(contextAdapter, new ActionBar.OnNavigationListener()
 					{
 						@Override
 						public
@@ -256,7 +255,7 @@ class DashboardFragment extends UIFragment<DashboardFragment.DashboardDataFragme
 					i = 0;
 					for (User u : mDataFragment.contexts) {
 						if (u.getLogin().equals(currentContext)) {
-							getBaseActivity().theActionBar().setSelectedNavigationItem(i);
+							getBaseActivity().getSupportActionBar().setSelectedNavigationItem(i);
 						}
 						i++;
 					}
@@ -264,18 +263,17 @@ class DashboardFragment extends UIFragment<DashboardFragment.DashboardDataFragme
 			};
 
 			mDataFragment.executeNewTask(getOrgs);
-		} else {
-			getBaseActivity().theActionBar().setTitle(R.string.app_name);
 		}
 	}
 
 	@Override
 	public
-	void onResume()
+	void onCreateActionBar(ActionBar bar)
 	{
-		super.onResume();
+		super.onCreateActionBar(bar);
 
-		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(false);
+		bar.setTitle("");
+		bar.setDisplayHomeAsUpEnabled(false);
+		bar.setHomeButtonEnabled(false);
 	}
 }

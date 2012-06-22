@@ -31,6 +31,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
@@ -94,6 +95,19 @@ class BaseActivity extends RoboSherlockFragmentActivity
 
 	private boolean mRefreshPrevious;
 
+	private boolean mCreateActionBarCalled = false;
+
+	private final FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener =
+			new FragmentManager.OnBackStackChangedListener() {
+				@Override
+				public
+				void onBackStackChanged()
+				{
+					/* Invalidate the options menu whenever the backstack changes */
+					invalidateOptionsMenu();
+				}
+			};
+
 	public
 	Context getContext()
 	{
@@ -111,11 +125,11 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
 		mPrefsEditor = mPrefs.edit();
 
+		/* Make sure we're using the right theme */
 		getApplicationContext().setTheme(R.style.Theme_Hubroid);
 
-		ActionBar actionBar = getSupportActionBar();
-		actionBar.setDisplayHomeAsUpEnabled(false);
-		actionBar.setHomeButtonEnabled(true);
+		/* Refresh the options menu (and the rest of the Action Bar) when the backstack changes */
+		getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
 	}
 
 	protected
@@ -248,10 +262,22 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		popToast(message, Toast.LENGTH_SHORT);
 	}
 
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		mCreateActionBarCalled = true;
+
+		bar.setTitle("");
+		bar.setDisplayShowHomeEnabled(true);
+		bar.setDisplayHomeAsUpEnabled(false);
+	}
+
 	@Override
 	public
 	boolean onCreateOptionsMenu(Menu menu)
 	{
+		super.onCreateOptionsMenu(menu);
+
 		/* Inflate menu from XML */
 		MenuInflater inflater = getSherlock().getMenuInflater();
 		inflater.inflate(R.menu.actionbar, menu);
@@ -259,7 +285,12 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		/* Show default actions */
 		menu.findItem(R.id.actionbar_action_select_account).setVisible(true);
 
-		return super.onCreateOptionsMenu(menu);
+		mCreateActionBarCalled = false;
+		onCreateActionBar(getSupportActionBar());
+		if (!mCreateActionBarCalled)
+			throw new IllegalStateException("You must call super() in onCreateActionBar()");
+
+		return true;
 	}
 
 	@Override
@@ -268,7 +299,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	{
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			if ((theActionBar().getDisplayOptions() & DISPLAY_HOME_AS_UP)
+			if ((getSupportActionBar().getDisplayOptions() & DISPLAY_HOME_AS_UP)
 					== DISPLAY_HOME_AS_UP
 					&& mUpActivity != null) {
 				onBackPressed();
@@ -301,13 +332,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		}
 
 		super.onBackPressed();
-	}
-
-	/* Shorter-named getter method because I'm lazy */
-	public
-	ActionBar theActionBar()
-	{
-		return getSherlock().getActionBar();
 	}
 
 	public

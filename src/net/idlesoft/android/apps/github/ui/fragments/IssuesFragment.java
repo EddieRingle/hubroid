@@ -30,6 +30,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -584,6 +585,13 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
 	}
 
 	@Override

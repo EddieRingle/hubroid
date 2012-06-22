@@ -29,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -235,7 +236,7 @@ class WatchersFragment
 																	Repository.class);
 			}
 		}
-		getBaseActivity().getSupportActionBar().setTitle(mDataFragment.targetRepository.getName());
+
 		if (mDataFragment.userLists == null)
 			mDataFragment.userLists = new ArrayList<ListHolder>();
 
@@ -264,6 +265,15 @@ class WatchersFragment
 		super.onResume();
 
 		mViewPager.setCurrentItem(mDataFragment.currentItem);
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setTitle(mDataFragment.targetRepository.getName());
 	}
 
 	@Override

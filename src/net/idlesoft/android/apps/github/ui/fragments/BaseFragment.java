@@ -29,6 +29,8 @@ import android.os.Bundle;
 import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
@@ -38,6 +40,9 @@ class BaseFragment extends SherlockFragment
 	protected
 	Configuration mConfiguration;
 
+	private
+	boolean mCreateActionBarCalled = false;
+
 	@Override
 	public
 	void onCreate(Bundle savedInstanceState)
@@ -45,25 +50,6 @@ class BaseFragment extends SherlockFragment
 		super.onCreate(savedInstanceState);
 
 		mConfiguration = getResources().getConfiguration();
-	}
-
-	@Override
-	public
-	void onActivityCreated(Bundle savedInstanceState)
-	{
-		super.onActivityCreated(savedInstanceState);
-
-		getBaseActivity().theActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-	}
-
-	@Override
-	public
-	void onResume()
-	{
-		super.onResume();
-
-		getBaseActivity().getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-		getBaseActivity().getSupportActionBar().setHomeButtonEnabled(true);
 	}
 
 	public
@@ -88,5 +74,28 @@ class BaseFragment extends SherlockFragment
 	boolean isMultiPane()
 	{
 		return getBaseActivity().isMultiPane();
+	}
+
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		mCreateActionBarCalled = true;
+
+		bar.setTitle("");
+		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+		bar.setDisplayHomeAsUpEnabled(false);
+		bar.setHomeButtonEnabled(true);
+	}
+
+	@Override
+	public
+	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+	{
+		super.onCreateOptionsMenu(menu, inflater);
+
+		mCreateActionBarCalled = false;
+		onCreateActionBar(getBaseActivity().getSupportActionBar());
+		if (!mCreateActionBarCalled)
+			throw new IllegalStateException("You must call super() in onCreateActionBar()");
 	}
 }

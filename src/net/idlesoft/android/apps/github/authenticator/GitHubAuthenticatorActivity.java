@@ -34,6 +34,7 @@ import android.view.View;
 import android.view.View.OnKeyListener;
 import android.widget.*;
 import android.widget.TextView.OnEditorActionListener;
+import com.actionbarsherlock.app.ActionBar;
 import net.idlesoft.android.apps.github.R.id;
 import net.idlesoft.android.apps.github.R.layout;
 import net.idlesoft.android.apps.github.R.string;
@@ -136,9 +137,6 @@ public class GitHubAuthenticatorActivity extends BaseActivity
 		mRequestNewAccount = mLogin == null;
 		mConfirmCredentials = intent.getBooleanExtra(PARAM_CONFIRMCREDENTIALS, false);
 
-		getSupportActionBar().setHomeButtonEnabled(false);
-		getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-
 		mLoginText.setAdapter(
 				new ArrayAdapter<String>(this, simple_dropdown_item_1line, userLoginAccounts()));
 
@@ -187,6 +185,16 @@ public class GitHubAuthenticatorActivity extends BaseActivity
 		TextView signupText = (TextView) findViewById(id.tv_auth_link_sign_up);
 		signupText.setMovementMethod(LinkMovementMethod.getInstance());
 		signupText.setText(Html.fromHtml(getString(string.auth_link_signup)));
+	}
+
+	@Override
+	public
+	void onCreateActionBar(ActionBar bar)
+	{
+		super.onCreateActionBar(bar);
+
+		bar.setHomeButtonEnabled(false);
+		bar.setDisplayHomeAsUpEnabled(false);
 	}
 
 	private List<String> userLoginAccounts() {
