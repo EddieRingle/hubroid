@@ -37,6 +37,9 @@
 	<item android:id="@+id/actionbar_action_select_account"
 			android:title="@string/actionbar_action_select_account"
 			android:visible="false" />
+	<item android:id="@+id/actionbar_action_report_issue"
+		  	android:title="@string/actionbar_action_report_issue"
+			android:showAsAction="never" />
 	<item android:id="@+id/actionbar_action_about"
 			android:title="@string/actionbar_action_about"
 			android:showAsAction="never" />

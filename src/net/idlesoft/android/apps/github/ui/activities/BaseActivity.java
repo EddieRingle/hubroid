@@ -29,6 +29,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
@@ -315,6 +316,12 @@ class BaseActivity extends RoboSherlockFragmentActivity
 			return true;
 		case R.id.actionbar_action_select_account:
 			startActivity(AccountSelect.class);
+			return true;
+		case R.id.actionbar_action_report_issue:
+			final Intent intent = new Intent();
+			intent.setAction(Intent.ACTION_VIEW);
+			intent.setData(Uri.parse("https://github.com/eddieringle/hubroid/issues"));
+			startActivity(intent);
 			return true;
 		case R.id.actionbar_action_about:
 			AboutDialogFragment about = new AboutDialogFragment();
