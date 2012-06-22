@@ -302,7 +302,7 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 	{
 		TextView issueContents = new TextView(getBaseActivity());
 		issueContents.setTextSize(12.0f);
-		issueContents.setMovementMethod(new LinkMovementMethod());
+		issueContents.setMovementMethod(LinkMovementMethod.getInstance());
 		final DisplayMetrics dm = getResources().getDisplayMetrics();
 		issueContents.setPadding((int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm),
 								 (int)TypedValue.applyDimension(COMPLEX_UNIT_DIP, 10.0f, dm),
