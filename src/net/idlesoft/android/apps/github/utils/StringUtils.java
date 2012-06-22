@@ -26,6 +26,8 @@ package net.idlesoft.android.apps.github.utils;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public
 class StringUtils
@@ -133,12 +135,35 @@ class StringUtils
 	}
 
 	public static
-	CharSequence trimTrailingWhitespace(CharSequence text) {
+	CharSequence trimTrailingWhitespace(CharSequence text)
+	{
 		/* Check for empty string */
 		if (text.length() == 0)
 			return text;
 		while (text.charAt(text.length() - 1) == '\n')
 			text = text.subSequence(0, text.length() - 1);
 		return text;
+	}
+
+	public static
+	String ghFlavoredMarkdown(String input)
+	{
+		final StringBuffer output = new StringBuffer();
+		final Pattern usernamePattern = Pattern.compile("@([A-Za-z0-9]?[A-Za-z0-9-]+)");
+		final Matcher usernameMatcher = usernamePattern.matcher(input);
+
+		/* Loop through @username matches */
+		while (usernameMatcher.find()) {
+			/* Grab the username from the match (without the '@') */
+			final String username = usernameMatcher.group(1);
+			/* Create a URL to the user's profile */
+			final String r = "<a href=\"https://github.com/" + username + "\">@" + username + "</a>";
+			/* Append the replacement */
+			usernameMatcher.appendReplacement(output, r);
+		}
+		/* Append the rest of the non-matching text */
+		usernameMatcher.appendTail(output);
+
+		return output.toString();
 	}
 }

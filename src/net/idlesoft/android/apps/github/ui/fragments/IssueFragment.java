@@ -311,7 +311,8 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 		if (!StringUtils.isStringEmpty(mDataFragment.fullIssue.getBody())) {
 			final String rawBody = mDataFragment.fullIssue.getBody();
 			final MarkdownProcessor processor = new MarkdownProcessor();
-			final String processedBody = processor.markdown(rawBody);
+			final String processedBody =
+					StringUtils.ghFlavoredMarkdown(processor.markdown(rawBody));
 			issueContents.setText(StringUtils.trimTrailingWhitespace(Html.fromHtml(processedBody)));
 		} else {
 			issueContents.setText(getString(R.string.issue_empty_description));

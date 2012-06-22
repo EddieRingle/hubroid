@@ -105,7 +105,8 @@ class IssueCommentListAdapter extends BaseListAdapter<Comment>
 									" ago");
 
 		MarkdownProcessor processor = new MarkdownProcessor();
-		final String processed = processor.markdown(comment.getBody());
+		final String processed =
+				StringUtils.ghFlavoredMarkdown(processor.markdown(comment.getBody()));
 		holder.content.setText(StringUtils.trimTrailingWhitespace(Html.fromHtml(processed)));
 		holder.content.setMovementMethod(LinkMovementMethod.getInstance());
 
