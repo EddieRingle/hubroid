@@ -42,6 +42,7 @@ import com.google.inject.Inject;
 import net.idlesoft.android.apps.github.GitHubClientProvider;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AccountSelect;
+import net.idlesoft.android.apps.github.ui.fragments.AboutDialogFragment;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -314,6 +315,10 @@ class BaseActivity extends RoboSherlockFragmentActivity
 			return true;
 		case R.id.actionbar_action_select_account:
 			startActivity(AccountSelect.class);
+			return true;
+		case R.id.actionbar_action_about:
+			AboutDialogFragment about = new AboutDialogFragment();
+			about.show(getSupportFragmentManager(), AboutDialogFragment.class.getName());
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);

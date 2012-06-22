@@ -35,6 +35,7 @@
 	<string name="actionbar_action_filters">Filters</string>
 	<string name="actionbar_action_refresh">Refresh</string>
 	<string name="actionbar_action_select_account">Select Account</string>
+	<string name="actionbar_action_about">About</string>
 
 	<!-- Dashboard -->
 	<string name="dash_events">Events</string>

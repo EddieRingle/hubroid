@@ -21,20 +21,23 @@
   -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/actionbar_action_add"
-		  android:icon="@drawable/ic_menu_add"
-		  android:showAsAction="ifRoom|withText"
-		  android:visible="false" />
+			android:icon="@drawable/ic_menu_add"
+			android:showAsAction="ifRoom|withText"
+			android:visible="false" />
 	<item android:id="@+id/actionbar_action_tags"
-		  android:icon="@drawable/tags"
-		  android:title="@string/actionbar_action_filters"
-		  android:showAsAction="ifRoom|withText"
-		  android:visible="false" />
+			android:icon="@drawable/tags"
+			android:title="@string/actionbar_action_filters"
+			android:showAsAction="ifRoom|withText"
+			android:visible="false" />
 	<item android:id="@+id/actionbar_action_refresh"
-		  android:icon="@drawable/ic_menu_refresh"
-		  android:title="@string/actionbar_action_refresh"
-		  android:showAsAction="ifRoom"
-		  android:visible="false" />
+			android:icon="@drawable/ic_menu_refresh"
+			android:title="@string/actionbar_action_refresh"
+			android:showAsAction="ifRoom"
+			android:visible="false" />
 	<item android:id="@+id/actionbar_action_select_account"
-		  android:title="@string/actionbar_action_select_account"
-		  android:visible="false" />
+			android:title="@string/actionbar_action_select_account"
+			android:visible="false" />
+	<item android:id="@+id/actionbar_action_about"
+			android:title="@string/actionbar_action_about"
+			android:showAsAction="never" />
 </menu>
