@@ -37,7 +37,17 @@ public
 class AboutDialogFragment extends DialogFragment
 {
 	private
+	TextView mDialogTitle;
+	private
 	TextView mAppVersion;
+
+	@Override
+	public
+	void onCreate(Bundle savedInstanceState)
+	{
+		super.onCreate(savedInstanceState);
+		setStyle(STYLE_NO_TITLE, R.style.Theme_Sherlock_Light_Dialog);
+	}
 
 	@Override
 	public
@@ -46,11 +56,13 @@ class AboutDialogFragment extends DialogFragment
 		/* Inflate the view from XML */
 		View view = inflater.inflate(R.layout.about_dialog, container);
 
+		/* Get a reference to the dialog title TextView */
+		mDialogTitle = (TextView) view.findViewById(R.id.title);
 		/* Get a reference to the app version TextView */
 		mAppVersion = (TextView) view.findViewById(R.id.tv_about_version);
 
 		/* Set the dialog's title */
-		getDialog().setTitle(R.string.actionbar_action_about);
+		mDialogTitle.setText(R.string.actionbar_action_about);
 
 		return view;
 	}

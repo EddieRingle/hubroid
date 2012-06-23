@@ -24,15 +24,31 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:padding="20dp"
+		android:layout_height="wrap_content"
+		android:minWidth="256dp"
 		android:orientation="vertical">
-	<TextView android:id="@+id/tv_about_name"
+	<TextView android:id="@+id/title"
+			style="?android:attr/windowTitleStyle"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="20dp"
+			android:gravity="center_vertical|left" />
+	<View android:id="@+id/titleDivider"
+			android:layout_width="match_parent"
+			android:layout_height="2dip"
+			android:background="@color/github_blue" />
+	<LinearLayout
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textStyle="bold"
-			android:text="@string/app_name" />
-	<TextView android:id="@+id/tv_about_version"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" />
+			android:padding="20dp"
+			android:orientation="vertical">
+		<TextView android:id="@+id/tv_about_name"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content"
+				android:textStyle="bold"
+				android:text="@string/app_name" />
+		<TextView android:id="@+id/tv_about_version"
+				android:layout_width="wrap_content"
+				android:layout_height="wrap_content" />
+	</LinearLayout>
 </LinearLayout>
