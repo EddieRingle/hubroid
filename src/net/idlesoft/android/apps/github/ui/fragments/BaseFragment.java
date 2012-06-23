@@ -83,7 +83,7 @@ class BaseFragment extends SherlockFragment
 
 		bar.setTitle("");
 		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		bar.setDisplayHomeAsUpEnabled(false);
+		bar.setDisplayHomeAsUpEnabled(true);
 		bar.setHomeButtonEnabled(true);
 	}
 

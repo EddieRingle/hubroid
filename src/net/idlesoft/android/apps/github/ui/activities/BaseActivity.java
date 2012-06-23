@@ -82,8 +82,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 
 	protected static GitHubClient mGitHubClient;
 
-	protected Class<?> mUpActivity = MainActivity.class;
-
 	protected
 	Configuration mConfiguration;
 
@@ -109,6 +107,12 @@ class BaseActivity extends RoboSherlockFragmentActivity
 					invalidateOptionsMenu();
 				}
 			};
+
+	public interface OnUpListener {
+		public boolean onUp(final BaseActivity activity);
+	}
+
+	protected OnUpListener mOnUpListener;
 
 	public
 	Context getContext()
@@ -265,6 +269,12 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	}
 
 	public
+	void setOnUpListener(final OnUpListener listener)
+	{
+		mOnUpListener = listener;
+	}
+
+	public
 	void onCreateActionBar(ActionBar bar)
 	{
 		mCreateActionBarCalled = true;
@@ -304,8 +314,8 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		case android.R.id.home:
 			if ((getSupportActionBar().getDisplayOptions() & DISPLAY_HOME_AS_UP)
 					== DISPLAY_HOME_AS_UP
-					&& mUpActivity != null) {
-				onBackPressed();
+					&& mOnUpListener != null) {
+				mOnUpListener.onUp(this);
 			} else {
 				final Intent intent = new Intent();
 				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -337,8 +347,8 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	void onBackPressed()
 	{
-		if (mUpActivity == MainActivity.class && !(this instanceof MainActivity)) {
-			final Intent intent = new Intent(getContext(), mUpActivity);
+		if (!(this instanceof MainActivity)) {
+			final Intent intent = new Intent(getContext(), MainActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(intent);
 			finish();
