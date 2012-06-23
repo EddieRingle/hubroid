@@ -25,6 +25,7 @@ package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.HubroidApplication;
 
 public
 class AboutDialogFragment extends DialogFragment

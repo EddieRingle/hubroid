@@ -267,7 +267,8 @@ class ForksFragment extends UIFragment<ForksFragment.ForksDataFragment>
 	{
 		super.onCreateActionBar(bar);
 
-		bar.setTitle(mDataFragment.targetRepository.getName());
+		bar.setTitle(R.string.forks);
+		bar.setSubtitle(mDataFragment.targetRepository.getName());
 	}
 
 	@Override

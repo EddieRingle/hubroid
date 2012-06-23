@@ -548,6 +548,7 @@ class EventsFragment extends UIFragment<EventsFragment.EventsDataFragment>
 		super.onCreateActionBar(bar);
 
 		bar.setTitle(R.string.dash_events);
+		bar.setSubtitle(mDataFragment.targetUser.getLogin());
 	}
 
 	@Override

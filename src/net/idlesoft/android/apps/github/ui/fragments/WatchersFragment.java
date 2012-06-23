@@ -273,7 +273,9 @@ class WatchersFragment
 	{
 		super.onCreateActionBar(bar);
 
-		bar.setTitle(mDataFragment.targetRepository.getName());
+		bar.setTitle(R.string.watchers);
+		bar.setSubtitle(mDataFragment.targetRepository.getOwner().getLogin() + "/"
+				+ mDataFragment.targetRepository.getName());
 	}
 
 	@Override

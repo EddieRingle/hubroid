@@ -180,5 +180,7 @@ class NewIssueFragment extends UIFragment<NewIssueFragment.NewIssueDataFragment>
 		super.onCreateActionBar(bar);
 
 		bar.setTitle(R.string.actionbar_action_add_issue);
+		bar.setSubtitle(mDataFragment.targetRepository.getOwner().getLogin() + "/"
+				+ mDataFragment.targetRepository.getName());
 	}
 }

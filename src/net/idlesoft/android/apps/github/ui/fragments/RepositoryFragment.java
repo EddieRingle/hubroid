@@ -399,6 +399,7 @@ class RepositoryFragment extends UIFragment<RepositoryFragment.RepositoryDataFra
 		super.onCreateActionBar(bar);
 
 		bar.setTitle(mDataFragment.targetRepo.getName());
+		bar.setSubtitle(mDataFragment.targetRepo.getOwner().getLogin());
 	}
 
 	@Override

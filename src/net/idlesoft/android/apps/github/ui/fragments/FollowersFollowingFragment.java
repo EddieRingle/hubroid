@@ -377,7 +377,8 @@ class FollowersFollowingFragment
 	{
 		super.onCreateActionBar(bar);
 
-		bar.setTitle(mDataFragment.targetUser.getLogin());
+		bar.setTitle(getString(R.string.followers) + " & " + getString(R.string.following));
+		bar.setSubtitle(mDataFragment.targetUser.getLogin());
 	}
 
 	@Override

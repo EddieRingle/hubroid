@@ -592,6 +592,10 @@ class IssuesFragment extends UIFragment<IssuesFragment.IssuesDataFragment>
 	void onCreateActionBar(ActionBar bar)
 	{
 		super.onCreateActionBar(bar);
+
+		bar.setTitle(R.string.issues);
+		bar.setSubtitle(mDataFragment.targetRepository.getOwner().getLogin() + "/"
+				+ mDataFragment.targetRepository.getName());
 	}
 
 	@Override

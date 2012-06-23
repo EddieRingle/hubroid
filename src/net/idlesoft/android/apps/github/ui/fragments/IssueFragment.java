@@ -344,6 +344,14 @@ class IssueFragment extends UIFragment<IssueFragment.IssueDataFragment>
 	void onCreateActionBar(ActionBar bar)
 	{
 		super.onCreateActionBar(bar);
+
+		final String repoOwner, repoName, htmlUrl;
+		htmlUrl = mDataFragment.targetIssue.getHtmlUrl().replaceAll("/{2,}", "/");
+		repoOwner = htmlUrl.split("/")[2];
+		repoName = htmlUrl.split("/")[3];
+
+		bar.setTitle("Issue #" + Integer.toString(mDataFragment.targetIssue.getNumber()));
+		bar.setSubtitle(repoOwner + "/" + repoName);
 	}
 
 	@Override

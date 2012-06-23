@@ -393,6 +393,7 @@ class RepositoriesFragment extends UIFragment<RepositoriesFragment.RepositoriesD
 		super.onCreateActionBar(bar);
 
 		bar.setTitle(R.string.repositories);
+		bar.setSubtitle(mDataFragment.targetUser.getLogin());
 	}
 
 	@Override
