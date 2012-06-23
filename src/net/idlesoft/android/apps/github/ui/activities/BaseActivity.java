@@ -108,12 +108,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 				}
 			};
 
-	public interface OnUpListener {
-		public boolean onUp(final BaseActivity activity);
-	}
-
-	protected OnUpListener mOnUpListener;
-
 	public
 	Context getContext()
 	{
@@ -269,12 +263,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	}
 
 	public
-	void setOnUpListener(final OnUpListener listener)
-	{
-		mOnUpListener = listener;
-	}
-
-	public
 	void onCreateActionBar(ActionBar bar)
 	{
 		mCreateActionBarCalled = true;
@@ -310,26 +298,22 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	boolean onOptionsItemSelected(MenuItem item)
 	{
+		final Intent intent;
+
 		switch (item.getItemId()) {
 		case android.R.id.home:
-			if ((getSupportActionBar().getDisplayOptions() & DISPLAY_HOME_AS_UP)
-					== DISPLAY_HOME_AS_UP
-					&& mOnUpListener != null) {
-				mOnUpListener.onUp(this);
-			} else {
-				final Intent intent = new Intent();
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-				intent.setClass(getApplicationContext(), MainActivity.class);
-				startActivity(intent);
-				finish();
-			}
+			intent = new Intent();
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+			intent.setClass(getApplicationContext(), MainActivity.class);
+			startActivity(intent);
+			finish();
 
 			return true;
 		case R.id.actionbar_action_select_account:
 			startActivity(AccountSelect.class);
 			return true;
 		case R.id.actionbar_action_report_issue:
-			final Intent intent = new Intent();
+			intent = new Intent();
 			intent.setAction(Intent.ACTION_VIEW);
 			intent.setData(Uri.parse("https://github.com/eddieringle/hubroid/issues"));
 			startActivity(intent);
