@@ -20,11 +20,6 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<!--
-	<style name="Widget.Styled.ActionBar" parent="Widget.Sherlock.ActionBar.Solid">
-		<item name="android:background">@color/abs__background_holo_light</item>
-	</style>
-	-->
 	<style name="stdLinearLayout">
 		<item name="android:orientation">vertical</item>
 		<item name="android:paddingTop">10dip</item>
@@ -51,50 +46,59 @@
 		<item name="selectedColor">@color/text_color</item>
 		<item name="selectedBold">true</item>
 	</style>
-	<style name="Theme.Hubroid" parent="@style/Theme.Sherlock.Light">
-		<!--
-		<item name="actionBarStyle">@style/Widget.Styled.ActionBar</item>
-		<item name="android:actionBarStyle">@style/Widget.Styled.ActionBar</item>
-		-->
+	<style name="Theme.Hubroid" parent="@style/Theme.Sherlock.Light.DarkActionBar">
 		<item name="android:buttonStyle">@style/stdButton</item>
-		<item name="android:textColor">@color/text_color</item>
 		<item name="vpiTitlePageIndicatorStyle">@style/CustomTitlePageIndicator</item>
+		<item name="android:textColor">?android:attr/textColorPrimary</item>
 
 		<item name="actionBarItemBackground">@drawable/selectable_background_hubroid</item>
 		<item name="popupMenuStyle">@style/Hubroid_PopupMenu</item>
 		<item name="dropDownListViewStyle">@style/Hubroid_DropDownListView</item>
 		<item name="actionBarTabStyle">@style/Hubroid_ActionBarTabStyle</item>
 		<item name="actionDropDownStyle">@style/Hubroid_DropDownNav</item>
-		<item name="actionBarStyle">@style/Hubroid_ActionBar</item>
+		<item name="actionBarStyle">@style/Hubroid_Solid_ActionBar</item>
 		<item name="android:selectableItemBackground">@drawable/selectable_background_hubroid</item>
 		<item name="android:popupMenuStyle">@style/Hubroid_PopupMenu</item>
 		<item name="android:dropDownListViewStyle">@style/Hubroid_DropDownListView</item>
 		<item name="android:actionBarTabStyle">@style/Hubroid_ActionBarTabStyle</item>
 		<item name="android:actionDropDownStyle">@style/Hubroid_DropDownNav</item>
-		<item name="android:actionBarStyle">@style/Hubroid_ActionBar</item>
+		<item name="android:actionBarStyle">@style/Hubroid_Solid_ActionBar</item>
+		<item name="android:panelBackground">@drawable/menu_hardkey_panel_hubroid</item>
+		<item name="android:listViewStyle">@style/Hubroid_DropDownListView</item>
 	</style>
-	<style name="Hubroid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar">
+	<style name="Hubroid_Solid_ActionBar" parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
 		<item name="background">@drawable/ab_solid_hubroid</item>
 		<item name="backgroundStacked">@drawable/ab_stacked_solid_hubroid</item>
 		<item name="backgroundSplit">@drawable/ab_bottom_solid_hubroid</item>
+		<item name="progressBarStyle">@style/Hubroid_ProgressBar</item>
 		<item name="android:background">@drawable/ab_solid_hubroid</item>
 		<item name="android:backgroundStacked">@drawable/ab_stacked_solid_hubroid</item>
 		<item name="android:backgroundSplit">@drawable/ab_bottom_solid_hubroid</item>
 	</style>
+	<style name="Hubroid_Transparent_ActionBar" parent="@style/Widget.Sherlock.ActionBar">
+		<item name="background">@drawable/ab_transparent_hubroid</item>
+		<item name="progressBarStyle">@style/Hubroid_ProgressBar</item>
+
+		<item name="android:background">@drawable/ab_transparent_hubroid</item>
+		<item name="android:progressBarStyle">@style/Hubroid_ProgressBar</item>
+	</style>
 	<style name="Hubroid_PopupMenu" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
 		<item name="android:popupBackground">@drawable/menu_dropdown_panel_hubroid</item>
 	</style>
-	<style name="Hubroid_DropDownListView" parent="@style/Widget.Sherlock.ListView.DropDown">
+	<style name="Hubroid_DropDownListView" parent="@style/Widget.Sherlock.Light.ListView.DropDown">
 		<item name="android:listSelector">@drawable/selectable_background_hubroid</item>
 	</style>
 	<style name="Hubroid_ActionBarTabStyle" parent="@style/Widget.Sherlock.Light.ActionBar.TabView">
 		<item name="background">@drawable/tab_indicator_ab_hubroid</item>
 		<item name="android:background">@drawable/tab_indicator_ab_hubroid</item>
 	</style>
-	<style name="Hubroid_DropDownNav" parent="@android:style/Widget.Holo.Light.Spinner">
+	<style name="Hubroid_DropDownNav" parent="@style/Widget.Sherlock.Light.Spinner.DropDown.ActionBar">
 		<item name="background">@drawable/spinner_background_ab_hubroid</item>
 		<item name="android:background">@drawable/spinner_background_ab_hubroid</item>
 		<item name="android:popupBackground">@drawable/menu_dropdown_panel_hubroid</item>
 		<item name="android:dropDownSelector">@drawable/selectable_background_hubroid</item>
+	</style>
+	<style name="Hubroid_ProgressBar" parent="@style/Widget.Sherlock.Light.ProgressBar.Horizontal">
+		<item name="android:progressDrawable">@drawable/progress_horizontal_hubroid</item>
 	</style>
 </resources>

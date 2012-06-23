@@ -272,6 +272,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		bar.setTitle("");
 		bar.setDisplayShowHomeEnabled(true);
 		bar.setDisplayHomeAsUpEnabled(false);
+		bar.setIcon(R.drawable.ic_launcher_white);
 	}
 
 	@Override

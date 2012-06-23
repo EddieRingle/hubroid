@@ -23,6 +23,7 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -70,6 +71,7 @@ class ContextListAdapter extends BaseListAdapter<User>
 		final AQuery aq = new AQuery(convertView);
 		aq.id(holder.gravatar).image(user.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
 
+		holder.login.setTextColor(Color.WHITE);
 		holder.login.setText(login);
 
 		return convertView;
