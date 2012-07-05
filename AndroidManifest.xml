@@ -11,26 +11,6 @@
 	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
 	<uses-permission android:name="android.permission.USE_CREDENTIALS"/>
 
-	<!-- We support every density except LDPI -->
-	<compatible-screens>
-		<!-- Small screens -->
-		<screen android:screenSize="small" android:screenDensity="mdpi" />
-		<screen android:screenSize="small" android:screenDensity="hdpi" />
-		<screen android:screenSize="small" android:screenDensity="xhdpi" />
-		<!-- Normal screens -->
-		<screen android:screenSize="normal" android:screenDensity="mdpi" />
-		<screen android:screenSize="normal" android:screenDensity="hdpi" />
-		<screen android:screenSize="normal" android:screenDensity="xhdpi" />
-		<!-- Large screens -->
-		<screen android:screenSize="large" android:screenDensity="mdpi" />
-		<screen android:screenSize="large" android:screenDensity="hdpi" />
-		<screen android:screenSize="large" android:screenDensity="xhdpi" />
-		<!-- Very large screens -->
-		<screen android:screenSize="xlarge" android:screenDensity="mdpi" />
-		<screen android:screenSize="xlarge" android:screenDensity="hdpi" />
-		<screen android:screenSize="xlarge" android:screenDensity="xhdpi" />
-	</compatible-screens>
-
     <application android:name=".ui.HubroidApplication"
             android:label="@string/app_name"
             android:icon="@drawable/ic_launcher"
