@@ -17,12 +17,12 @@
             android:theme="@style/Theme.Hubroid">
 
 		<!-- Activities -->
-        <activity android:name=".ui.activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+		<activity android:name=".ui.activities.app.HomeActivity">
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN"></action>
+				<category android:name="android.intent.category.LAUNCHER"></category>
+			</intent-filter>
+		</activity>
 		<activity android:name=".ui.activities.GitHubIntentFilter">
 			<intent-filter>
 				<action android:name="android.intent.action.VIEW"></action>
@@ -41,9 +41,9 @@
 			</intent-filter>
 			<meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
 		</service>
-		<activity android:name=".authenticator.AccountSelect"
+		<activity android:name=".ui.activities.app.AccountSelectActivity"
 				  android:label="@string/userselect_title" />
-		<activity android:name=".authenticator.GitHubAuthenticatorActivity"
+		<activity android:name=".ui.activities.app.GitHubAuthenticatorActivity"
 				  android:excludeFromRecents="true" />
 
     </application>

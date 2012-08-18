@@ -21,7 +21,7 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github.authenticator;
+package net.idlesoft.android.apps.github.ui.activities.app;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -34,9 +34,10 @@ import android.widget.*;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.authenticator.AuthConstants;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-import net.idlesoft.android.apps.github.ui.activities.MainActivity;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.service.UserService;
@@ -47,7 +48,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public
-class AccountSelect extends BaseActivity
+class AccountSelectActivity extends BaseActivity
 {
 	private AccountManager mAccountManager;
 
@@ -100,13 +101,13 @@ class AccountSelect extends BaseActivity
 			public
 			void onClick(View v)
 			{
-				mPrefsEditor.remove(PREF_CURRENT_USER_LOGIN);
-				mPrefsEditor.remove(PREF_CURRENT_USER);
-				mPrefsEditor.remove(PREF_CURRENT_CONTEXT_LOGIN);
+				mPrefsEditor.remove(HubroidConstants.PREF_CURRENT_USER_LOGIN);
+				mPrefsEditor.remove(HubroidConstants.PREF_CURRENT_USER);
+				mPrefsEditor.remove(HubroidConstants.PREF_CURRENT_CONTEXT_LOGIN);
 				mPrefsEditor.commit();
-				final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent
-						.FLAG_ACTIVITY_NEW_TASK);
+				final Intent intent = new Intent(AccountSelectActivity.this, HomeActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+										| Intent.FLAG_ACTIVITY_NEW_TASK);
 				startActivity(intent);
 				finish();
 			}
@@ -122,7 +123,7 @@ class AccountSelect extends BaseActivity
 					mContent.setVisibility(GONE);
 					mProgress.setVisibility(VISIBLE);
 
-					new RoboAsyncTask<Boolean>(AccountSelect.this) {
+					new RoboAsyncTask<Boolean>(AccountSelectActivity.this) {
 						public Boolean call() throws Exception {
 							mCurrentAccount = accounts[position];
 							mGitHubClient = null;
@@ -131,8 +132,8 @@ class AccountSelect extends BaseActivity
 							User user = service.getUser();
 
 							if (user != null) {
-								mPrefsEditor.putString(PREF_CURRENT_USER_LOGIN, user.getLogin());
-								mPrefsEditor.putString(PREF_CURRENT_USER, GsonUtils.toJson(user));
+								mPrefsEditor.putString(HubroidConstants.PREF_CURRENT_USER_LOGIN, user.getLogin());
+								mPrefsEditor.putString(HubroidConstants.PREF_CURRENT_USER, GsonUtils.toJson(user));
 								mPrefsEditor.commit();
 
 								return true;
@@ -143,8 +144,10 @@ class AccountSelect extends BaseActivity
 
 						@Override
 						public void onSuccess(Boolean authSuccess) {
-							final Intent intent = new Intent(AccountSelect.this, MainActivity.class);
-							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+							final Intent intent = new Intent(AccountSelectActivity.this,
+															 HomeActivity.class);
+							intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+													| Intent.FLAG_ACTIVITY_NEW_TASK);
 							startActivity(intent);
 							finish();
 						}
@@ -205,18 +208,11 @@ class AccountSelect extends BaseActivity
 				 void run(AccountManagerFuture<Bundle> future)
 				 {
 					 /* Restart this activity to show the new account */
-					 startActivity(AccountSelect.class);
+					 startActivity(AccountSelectActivity.class);
 					 finish();
 				 }
 			 }, null);
 		}
 		return super.onOptionsItemSelected(item);
-	}
-
-	@Override
-	public
-	void onBackPressed()
-	{
-		finish();
 	}
 }

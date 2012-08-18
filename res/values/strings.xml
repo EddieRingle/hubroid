@@ -29,6 +29,8 @@
 
 	<string name="single_slash">/</string>
 
+	<string name="loading_indicator">Loading more items...</string>
+
 	<!-- Action Bar -->
 	<string name="actionbar_action_add_account">New Account</string>
 	<string name="actionbar_action_add_issue">New Issue</string>

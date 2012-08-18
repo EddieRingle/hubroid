@@ -20,6 +20,7 @@ import android.accounts.*;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import net.idlesoft.android.apps.github.ui.activities.app.GitHubAuthenticatorActivity;
 import org.eclipse.egit.github.core.Authorization;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.service.OAuthService;
@@ -31,7 +32,7 @@ import java.util.List;
 import static android.accounts.AccountManager.*;
 import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
 import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHUB_ACCOUNT_TYPE;
-import static net.idlesoft.android.apps.github.authenticator.GitHubAuthenticatorActivity
+import static net.idlesoft.android.apps.github.ui.activities.app.GitHubAuthenticatorActivity
 		.PARAM_AUTHTOKEN_TYPE;
 
 class GitHubAccountAuthenticator extends AbstractAccountAuthenticator {

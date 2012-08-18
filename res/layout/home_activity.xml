@@ -22,9 +22,35 @@
   ~ WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<item type="id" name="container_main" />
-	<item type="id" name="container_right_half" />
-	<item type="id" name="container_right_third" />
-	<item type="id" name="container_right_twothirds" />
-</resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:gravity="center"
+		android:orientation="vertical">
+	<ProgressBar android:id="@+id/progress"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center"
+			android:indeterminate="true"
+			android:visibility="gone" />
+	<LinearLayout android:id="@+id/content"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:visibility="visible"
+			android:gravity="center"
+			android:orientation="vertical">
+		<com.viewpagerindicator.TabPageIndicator
+				android:id="@+id/tpi_header"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+		<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="1dp"
+				android:background="@color/github_blue" />
+		<android.support.v4.view.ViewPager
+				android:id="@+id/vp_pages"
+				android:layout_width="match_parent"
+				android:layout_height="0dp"
+				android:layout_weight="1" />
+	</LinearLayout>
+</LinearLayout>

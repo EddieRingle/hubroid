@@ -24,15 +24,27 @@
 package net.idlesoft.android.apps.github.ui.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.GsonUtils;
+
+import java.util.HashMap;
+
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public
 class BaseFragment extends SherlockFragment
@@ -43,6 +55,14 @@ class BaseFragment extends SherlockFragment
 	private
 	boolean mCreateActionBarCalled = false;
 
+	protected
+	HashMap<String, Object> mArgumentMap = new HashMap<String, Object>();
+
+	public
+	BaseFragment()
+	{
+	}
+
 	@Override
 	public
 	void onCreate(Bundle savedInstanceState)
@@ -50,9 +70,36 @@ class BaseFragment extends SherlockFragment
 		super.onCreate(savedInstanceState);
 
 		mConfiguration = getResources().getConfiguration();
+
+		/*
+		 * Process arguments Bundle into a HashMap of different objects
+		 */
+		final Bundle arguments = getArguments();
+		if (arguments != null) {
+			if (arguments.getString(ARG_TARGET_USER) != null)
+				mArgumentMap.put(ARG_TARGET_USER,
+								 GsonUtils.fromJson(arguments.getString(ARG_TARGET_USER),
+													User.class));
+			if (arguments.getString(ARG_TARGET_ISSUE) != null)
+				mArgumentMap.put(ARG_TARGET_ISSUE,
+								 GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
+													Issue.class));
+			if (arguments.getString(ARG_TARGET_REPO) != null)
+				mArgumentMap.put(ARG_TARGET_ISSUE,
+								 GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
+													Repository.class));
+		}
 	}
 
-	public
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        /* Let the system know this fragment can provide an options menu */
+        setHasOptionsMenu(true);
+    }
+
+    public
 	BaseActivity getBaseActivity()
 	{
 		return (BaseActivity) getSherlockActivity();
@@ -67,7 +114,7 @@ class BaseFragment extends SherlockFragment
 	protected
 	View getFragmentContainer()
 	{
-		return getBaseActivity().findViewById(R.id.fragment_container);
+		return getBaseActivity().findViewById(R.id.container_main);
 	}
 
 	protected
@@ -80,12 +127,6 @@ class BaseFragment extends SherlockFragment
 	void onCreateActionBar(ActionBar bar)
 	{
 		mCreateActionBarCalled = true;
-
-		bar.setTitle("");
-		bar.setSubtitle("");
-		bar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-		bar.setDisplayHomeAsUpEnabled(true);
-		bar.setHomeButtonEnabled(true);
 	}
 
 	@Override
@@ -98,5 +139,33 @@ class BaseFragment extends SherlockFragment
 		onCreateActionBar(getBaseActivity().getSupportActionBar());
 		if (!mCreateActionBarCalled)
 			throw new IllegalStateException("You must call super() in onCreateActionBar()");
+	}
+
+	/**
+	 * @return The target user sent to this DataFragment as an argument, or null if none exists.
+	 */
+	public
+	User getTargetUser()
+	{
+		return (User) mArgumentMap.get(ARG_TARGET_USER);
+	}
+
+	/**
+	 * @return The target issue sent to this DataFragment as an argument, or null if none exists.
+	 */
+	public
+	Issue getTargetIssue()
+	{
+		return (Issue) mArgumentMap.get(ARG_TARGET_ISSUE);
+	}
+
+	/**
+	 * @return The target repository sent to this DataFragment as an argument, or null if none
+	 * 		   exists.
+	 */
+	public
+	Repository getTargetRepo()
+	{
+		return (Repository) mArgumentMap.get(ARG_TARGET_REPO);
 	}
 }

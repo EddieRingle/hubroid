@@ -21,12 +21,14 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github.ui.fragments;
+package net.idlesoft.android.apps.github.ui.fragments.app;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,31 +38,30 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.androidquery.AQuery;
+import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.adapters.HeaderFooterListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
+import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
-import net.idlesoft.android.apps.github.utils.DataTask;
+import net.idlesoft.android.apps.github.utils.AsyncLoader;
 import net.idlesoft.android.apps.github.utils.RequestCache;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
 
 import java.util.ArrayList;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.HubroidConstants.LOADER_PROFILE;
 import static net.idlesoft.android.apps.github.utils.StringUtils.isStringEmpty;
 
 public
-class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
+class ProfileFragment extends BaseFragment implements LoaderManager.LoaderCallbacks<User>
 {
-	public static
-	class ProfileDataFragment extends DataFragment
-	{
-		ArrayList<InfoListAdapter.InfoHolder> holders;
-		User targetUser;
-		User fullUser;
-		Bitmap gravatarBitmap;
-	}
-
+	private
+	ArrayList<InfoListAdapter.InfoHolder> mHolders;
 	private
 	ProgressBar mProgress;
 	private
@@ -69,12 +70,6 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 	LinearLayout mContent;
 	private
 	IdleList<InfoListAdapter.InfoHolder> mListView;
-
-	public
-	ProfileFragment()
-	{
-		super(ProfileDataFragment.class);
-	}
 
 	@Override
 	public
@@ -101,205 +96,60 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 	{
 		super.onActivityCreated(savedInstanceState);
 
-		final Bundle args = getArguments();
-		final String userJson;
-		if (args != null) {
-			userJson = args.getString(ARG_TARGET_USER);
-			if (userJson != null) {
-				mDataFragment.targetUser = GsonUtils.fromJson(userJson, User.class);
+		getBaseActivity().getSupportLoaderManager().initLoader(LOADER_PROFILE, null, this);
+	}
+
+	@Override
+	public
+	Loader<User> onCreateLoader(int i, Bundle bundle)
+	{
+		return new AsyncLoader<User>(getBaseActivity())
+		{
+			@Override
+			protected
+			void onStartLoading()
+			{
+				super.onStartLoading();
+
+				mContent.setVisibility(GONE);
+				mProgress.setVisibility(VISIBLE);
 			}
-		}
-		if (mDataFragment.targetUser == null) {
-			mDataFragment.targetUser = new User();
-			mDataFragment.targetUser.setLogin(getBaseActivity().getCurrentContextLogin());
-		}
+
+			@Override
+			public
+			User loadInBackground()
+			{
+				return RequestCache.getUser(getBaseActivity(),
+											getTargetUser().getLogin(),
+											isReset());
+			}
+
+			@Override
+			protected
+			void onStopLoading()
+			{
+				super.onStopLoading();
+
+				mProgress.setVisibility(GONE);
+				mContent.setVisibility(VISIBLE);
+			}
+		};
+	}
+
+	@Override
+	public
+	void onLoadFinished(Loader<User> userLoader, User user)
+	{
+		buildHolders(user);
 
 		mListView.setAdapter(new InfoListAdapter(getBaseActivity()));
+		mListView.getListAdapter().fillWithItems(mHolders);
+		mListView.getListAdapter().notifyDataSetChanged();
 
-		fetchData(false);
-	}
-
-	public
-	void fetchData(final boolean freshen)
-	{
-		if (mDataFragment.fullUser != null && !freshen) {
-			buildHolders(mDataFragment.fullUser);
-			mListView.getListAdapter().fillWithItems(mDataFragment.holders);
-			mListView.getListAdapter().notifyDataSetChanged();
-			buildUI(mDataFragment.fullUser);
-		} else {
-			final DataTask.Executable profileExecutable =
-					new DataTask.Executable()
-					{
-						@Override
-						public
-						void onTaskStart()
-						{
-							mContent.setVisibility(View.GONE);
-							mProgress.setVisibility(View.VISIBLE);
-						}
-
-						@Override
-						public
-						void onTaskCancelled()
-						{
-						}
-
-						@Override
-						public
-						void onTaskComplete()
-						{
-							mListView.getListAdapter().fillWithItems(mDataFragment.holders);
-							mListView.getListAdapter().notifyDataSetChanged();
-							buildUI(mDataFragment.fullUser);
-							mProgress.setVisibility(View.GONE);
-							mContent.setVisibility(View.VISIBLE);
-						}
-
-						@Override
-						public
-						void runTask() throws InterruptedException
-						{
-							mDataFragment.fullUser =
-									RequestCache.getUser(getBaseActivity(),
-														 mDataFragment.targetUser.getLogin(),
-														 freshen);
-							buildHolders(mDataFragment.fullUser);
-						}
-					};
-
-			mDataFragment.executeNewTask(profileExecutable);
-		}
-	}
-
-	public
-	void buildHolders(final User user)
-	{
-		mDataFragment.holders = new ArrayList<InfoListAdapter.InfoHolder>();
-
-		InfoListAdapter.InfoHolder holder;
-
-		if (!isStringEmpty(user.getEmail())) {
-			holder = new InfoListAdapter.InfoHolder();
-			holder.primary = "Email";
-			holder.secondary = user.getEmail();
-
-			holder.onClick = new AdapterView.OnItemClickListener()
-			{
-				@Override
-				public
-				void onItemClick(AdapterView<?> parent, View view, int position, long id)
-				{
-					final Intent intent = new Intent(Intent.ACTION_SEND);
-					intent.setType("message/rfc822");
-					intent.putExtra(Intent.EXTRA_EMAIL, new String[] {mDataFragment.holders.get(position).secondary});
-					getBaseActivity().startActivity(
-							Intent.createChooser(intent, "Send mail..."));
-				}
-			};
-
-			mDataFragment.holders.add(holder);
-		}
-
-		if (!isStringEmpty(user.getBlog())) {
-			holder = new InfoListAdapter.InfoHolder();
-			holder.primary = "Blog";
-			holder.secondary = user.getBlog();
-
-			holder.onClick = new AdapterView.OnItemClickListener()
-			{
-				@Override
-				public
-				void onItemClick(AdapterView<?> parent, View view, int position, long id)
-				{
-					final Intent intent = new Intent(Intent.ACTION_VIEW);
-					intent.setData(Uri.parse(mDataFragment.holders.get(position).secondary));
-					getBaseActivity().startActivity(intent);
-				}
-			};
-
-			mDataFragment.holders.add(holder);
-		}
-
-		if (!isStringEmpty(user.getCompany())) {
-			holder = new InfoListAdapter.InfoHolder();
-			holder.primary = "Company";
-			holder.secondary = user.getCompany();
-
-			mDataFragment.holders.add(holder);
-		}
-
-		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Repositories";
-		holder.secondary =
-				"Owns " + Integer.toString(user.getOwnedPrivateRepos() + user.getPublicRepos());
-
-		holder.onClick = new AdapterView.OnItemClickListener()
-		{
-			@Override
-			public
-			void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				final Bundle args = new Bundle();
-				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
-				getBaseActivity().startFragmentTransaction();
-				getBaseActivity().addFragmentToTransaction(RepositoriesFragment.class,
-														   R.id.fragment_container,
-														   args);
-				getBaseActivity().finishFragmentTransaction();
-			}
-		};
-
-		mDataFragment.holders.add(holder);
-
-		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Followers/Following";
-		holder.secondary = Integer.toString(user.getFollowing());
-		holder.onClick = new AdapterView.OnItemClickListener()
-		{
-			@Override
-			public
-			void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				final Bundle args = new Bundle();
-				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
-				getBaseActivity().startFragmentTransaction();
-				getBaseActivity().addFragmentToTransaction(FollowersFollowingFragment.class,
-														   R.id.fragment_container,
-														   args);
-				getBaseActivity().finishFragmentTransaction();
-			}
-		};
-		mDataFragment.holders.add(holder);
-
-		holder = new InfoListAdapter.InfoHolder();
-		holder.primary = "Public Activity";
-		holder.onClick = new AdapterView.OnItemClickListener()
-		{
-			@Override
-			public
-			void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				final Bundle args = new Bundle();
-				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
-				getBaseActivity().startFragmentTransaction();
-				getBaseActivity().addFragmentToTransaction(EventsFragment.class,
-														   R.id.fragment_container,
-														   args);
-				getBaseActivity().finishFragmentTransaction();
-			}
-		};
-		mDataFragment.holders.add(holder);
-	}
-
-	public
-	void buildUI(final User user)
-	{
 		if (user != null) {
-			mDataFragment.targetUser = user;
-
 			final AQuery aq = new AQuery(getBaseActivity());
-			aq.id(mGravatarView).image(mDataFragment.fullUser.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
+			aq.id(mGravatarView).image(user.getAvatarUrl(), true, true, 200, R.drawable.gravatar,
+									   null, AQuery.FADE_IN_NETWORK, 1.0f);
 
 			final TextView tvLogin = (TextView) mContent.findViewById(R.id.tv_user_login);
 			tvLogin.setText(user.getLogin());
@@ -308,7 +158,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			if (!isStringEmpty(user.getName())) {
 				tvFullName.setText(user.getName());
 			} else {
-				tvFullName.setVisibility(View.GONE);
+				tvFullName.setVisibility(GONE);
 			}
 		}
 
@@ -320,7 +170,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			{
 				final InfoListAdapter.InfoHolder holder;
 				try {
-					holder = mDataFragment.holders.get(position);
+					holder = mHolders.get(position);
 					if (holder.onClick != null) {
 						holder.onClick.onItemClick(parent, view, position, id);
 					}
@@ -329,6 +179,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				}
 			}
 		});
+
 		mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
 		{
 			@Override
@@ -337,7 +188,7 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 			{
 				final InfoListAdapter.InfoHolder holder;
 				try {
-					holder = mDataFragment.holders.get(position);
+					holder = mHolders.get(position);
 					if (holder.onLongClick != null) {
 						holder.onLongClick.onItemLongClick(parent, view, position, id);
 					}
@@ -347,15 +198,120 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 				return false;
 			}
 		});
+
+		mProgress.setVisibility(GONE);
+		mContent.setVisibility(VISIBLE);
 	}
 
 	@Override
 	public
-	void onCreateActionBar(ActionBar bar)
+	void onLoaderReset(Loader<User> userLoader)
 	{
-		super.onCreateActionBar(bar);
+	}
 
-		bar.setTitle(mDataFragment.targetUser.getLogin());
+	public
+	void buildHolders(final User user)
+	{
+		mHolders = new ArrayList<InfoListAdapter.InfoHolder>();
+
+		InfoListAdapter.InfoHolder holder;
+
+		/* Email */
+		if (!isStringEmpty(user.getEmail())) {
+			holder = new InfoListAdapter.InfoHolder();
+			holder.primary = "Email";
+			holder.secondary = user.getEmail();
+			holder.onClick = new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Intent intent = new Intent(Intent.ACTION_SEND);
+					intent.setType("message/rfc822");
+					intent.putExtra(Intent.EXTRA_EMAIL,
+									new String[] { mHolders.get(position).secondary });
+					getBaseActivity().startActivity(
+							Intent.createChooser(intent, "Send mail..."));
+				}
+			};
+			mHolders.add(holder);
+		}
+
+		/* Blog/Website */
+		if (!isStringEmpty(user.getBlog())) {
+			holder = new InfoListAdapter.InfoHolder();
+			holder.primary = "Blog";
+			holder.secondary = user.getBlog();
+			holder.onClick = new AdapterView.OnItemClickListener()
+			{
+				@Override
+				public
+				void onItemClick(AdapterView<?> parent, View view, int position, long id)
+				{
+					final Intent intent = new Intent(Intent.ACTION_VIEW);
+					intent.setData(Uri.parse(mHolders.get(position).secondary));
+					getBaseActivity().startActivity(intent);
+				}
+			};
+			mHolders.add(holder);
+		}
+
+		/* Company */
+		if (!isStringEmpty(user.getCompany())) {
+			holder = new InfoListAdapter.InfoHolder();
+			holder.primary = "Company";
+			holder.secondary = user.getCompany();
+			mHolders.add(holder);
+		}
+
+		/* Repositories */
+		holder = new InfoListAdapter.InfoHolder();
+		holder.primary = "Repositories";
+		holder.secondary =
+				"Owns " + Integer.toString(user.getOwnedPrivateRepos() + user.getPublicRepos());
+		holder.onClick = new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public
+			void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				final Bundle args = new Bundle();
+				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
+			}
+		};
+		mHolders.add(holder);
+
+		/* Followers/Following */
+		holder = new InfoListAdapter.InfoHolder();
+		holder.primary = "Followers/Following";
+		holder.secondary = Integer.toString(user.getFollowing());
+		holder.onClick = new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public
+			void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				final Bundle args = new Bundle();
+				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
+			}
+		};
+		mHolders.add(holder);
+
+		/* Activity */
+		holder = new InfoListAdapter.InfoHolder();
+		holder.primary = "Public Activity";
+		holder.onClick = new AdapterView.OnItemClickListener()
+		{
+			@Override
+			public
+			void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				final Bundle args = new Bundle();
+				args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
+			}
+		};
+		mHolders.add(holder);
 	}
 
 	@Override
@@ -371,11 +327,13 @@ class ProfileFragment extends UIFragment<ProfileFragment.ProfileDataFragment>
 	public
 	boolean onOptionsItemSelected(MenuItem item)
 	{
-		switch (item.getItemId()) {
-		case R.id.actionbar_action_refresh:
-			mDataFragment.holders = null;
-			fetchData(true);
-			return true;
+		if (item.getItemId() == R.id.actionbar_action_refresh) {
+			if (getBaseActivity().getSupportLoaderManager().getLoader(LOADER_PROFILE) != null) {
+				getBaseActivity().getSupportLoaderManager().getLoader(LOADER_PROFILE).reset();
+				getBaseActivity().getSupportLoaderManager().getLoader(LOADER_PROFILE).forceLoad();
+			} else {
+				getBaseActivity().getSupportLoaderManager().initLoader(LOADER_PROFILE, null, this);
+			}
 		}
 
 		return super.onOptionsItemSelected(item);

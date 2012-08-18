@@ -41,9 +41,11 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.google.inject.Inject;
 import net.idlesoft.android.apps.github.GitHubClientProvider;
+import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.authenticator.AccountSelect;
-import net.idlesoft.android.apps.github.ui.fragments.AboutDialogFragment;
+import net.idlesoft.android.apps.github.ui.activities.app.AccountSelectActivity;
+import net.idlesoft.android.apps.github.ui.activities.app.HomeActivity;
+import net.idlesoft.android.apps.github.ui.fragments.app.AboutDialogFragment;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
@@ -51,9 +53,7 @@ import org.eclipse.egit.github.core.client.GsonUtils;
 
 import java.io.IOException;
 
-import static com.actionbarsherlock.app.ActionBar.DISPLAY_HOME_AS_UP;
-
-public
+public abstract
 class BaseActivity extends RoboSherlockFragmentActivity
 {
 	protected static final int NO_LAYOUT = -1;
@@ -62,17 +62,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	 * Intent Extra keys
 	 */
 	protected static final String KEY_CURRENT_USER = "current_user";
-
-	/*
-	 * Preferences keys
-	 */
-	protected static final String PREF_CURRENT_USER = "currentUser";
-
-	protected static final String PREF_CURRENT_USER_LOGIN = "currentUserLogin";
-
-	protected static final String PREF_CURRENT_CONTEXT_LOGIN = "currentContextLogin";
-
-	protected static final String PREF_FIRST_RUN = "firstRun";
 
 	protected SharedPreferences mPrefs;
 
@@ -96,6 +85,10 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	private boolean mRefreshPrevious;
 
 	private boolean mCreateActionBarCalled = false;
+
+	private boolean mRefreshing = false;
+
+	private User mCurrentContext = null;
 
 	private final FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener =
 			new FragmentManager.OnBackStackChangedListener() {
@@ -167,26 +160,26 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	public
 	User getCurrentUser()
 	{
-		final String json = mPrefs.getString(PREF_CURRENT_USER, "");
+		final String json = mPrefs.getString(HubroidConstants.PREF_CURRENT_USER, "");
 		return GsonUtils.fromJson(json, User.class);
 	}
 
 	public
 	String getCurrentUserLogin()
 	{
-		return mPrefs.getString(PREF_CURRENT_USER_LOGIN, "");
+		return mPrefs.getString(HubroidConstants.PREF_CURRENT_USER_LOGIN, "");
 	}
 
 	public
 	String getCurrentContextLogin()
 	{
-		return mPrefs.getString(PREF_CURRENT_CONTEXT_LOGIN, getCurrentUserLogin());
+		return mPrefs.getString(HubroidConstants.PREF_CURRENT_CONTEXT_LOGIN, getCurrentUserLogin());
 	}
 
 	public
 	void setCurrentContextLogin(final String context)
 	{
-		mPrefsEditor.putString(PREF_CURRENT_CONTEXT_LOGIN, context);
+		mPrefsEditor.putString(HubroidConstants.PREF_CURRENT_CONTEXT_LOGIN, context);
 		mPrefsEditor.apply();
 	}
 
@@ -219,8 +212,8 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		}
 		if (arguments != null)
 			fragment.setArguments(arguments);
-		if (!isMultiPane() && container != R.id.fragment_container)
-			container = R.id.fragment_container;
+		if (!isMultiPane() && container != R.id.container_main)
+			container = R.id.container_main;
 		mFragmentTransaction.replace(container, fragment, fragmentClass.getName());
 	}
 
@@ -247,7 +240,7 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	private
 	void popToast(final String message, int length)
 	{
-		Toast.makeText(this, message, length).show();
+		Toast.makeText(getApplication(), message, length).show();
 	}
 
 	public
@@ -267,9 +260,9 @@ class BaseActivity extends RoboSherlockFragmentActivity
 	{
 		mCreateActionBarCalled = true;
 
-		bar.setTitle("");
-		bar.setDisplayShowHomeEnabled(true);
-		bar.setDisplayHomeAsUpEnabled(false);
+        bar.setDisplayShowHomeEnabled(true);
+
+		/* The all-white icon plays nicer with the theme */
 		bar.setIcon(R.drawable.ic_launcher_white);
 	}
 
@@ -304,13 +297,13 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		case android.R.id.home:
 			intent = new Intent();
 			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			intent.setClass(getApplicationContext(), MainActivity.class);
+			intent.setClass(getApplicationContext(), HomeActivity.class);
 			startActivity(intent);
 			finish();
 
 			return true;
 		case R.id.actionbar_action_select_account:
-			startActivity(AccountSelect.class);
+			startActivity(AccountSelectActivity.class);
 			return true;
 		case R.id.actionbar_action_report_issue:
 			intent = new Intent();
@@ -325,20 +318,6 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	@Override
-	public
-	void onBackPressed()
-	{
-		if (!(this instanceof MainActivity)) {
-			final Intent intent = new Intent(getContext(), MainActivity.class);
-			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-			startActivity(intent);
-			finish();
-		}
-
-		super.onBackPressed();
 	}
 
 	public
@@ -359,5 +338,47 @@ class BaseActivity extends RoboSherlockFragmentActivity
 		final boolean oldValue = mRefreshPrevious;
 		mRefreshPrevious = false;
 		return oldValue;
+	}
+
+	public
+	void onStartRefresh()
+	{
+		mRefreshing = true;
+	}
+
+	public
+	void onFinishRefresh()
+	{
+		mRefreshing = false;
+	}
+
+	protected
+	void doRefresh()
+	{
+	}
+
+	/**
+	 * This method is useful when creating Executables to run on a DataFragment and you need to
+	 * know if the data should be refreshed from its source or if it's okay to use cached
+	 * information (or something like that).
+	 *
+	 * @return Whether or not the UIFragment is refreshing its data & UI
+	 */
+	public
+	boolean isRefreshing()
+	{
+		return mRefreshing;
+	}
+
+	public
+	SharedPreferences getPrefs()
+	{
+		return mPrefs;
+	}
+
+	public
+	SharedPreferences.Editor getPrefsEditor()
+	{
+		return mPrefsEditor;
 	}
 }

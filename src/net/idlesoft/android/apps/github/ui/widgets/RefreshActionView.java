@@ -70,6 +70,7 @@ class RefreshActionView extends ImageView
 	void removeFromParentItem()
 	{
 		removeFrom(mItem);
+		mItem = null;
 	}
 
 	public

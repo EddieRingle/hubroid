@@ -21,7 +21,7 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github.ui.fragments;
+package net.idlesoft.android.apps.github.ui.fragments.app;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;

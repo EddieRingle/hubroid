@@ -36,4 +36,28 @@ class HubroidConstants
 
 	public final static String DEFAULT_USER = "eddieringle";
 	public final static String DEFAULT_REPO = "hubroid";
+
+	/*
+	 * Preferences keys
+	 */
+	public static final String PREF_CURRENT_USER = "currentUser";
+	public static final String PREF_CURRENT_USER_LOGIN = "currentUserLogin";
+	public static final String PREF_CURRENT_CONTEXT_LOGIN = "currentContextLogin";
+	public static final String PREF_FIRST_RUN = "firstRun";
+	public static final String PREF_LAST_DASHBOARD_LIST = "lastDashboardList";
+
+	/*
+	 * Loader IDs
+	 *
+	 * Each ID has to be unique in order to prevent conflicts where two fragments
+	 * that might both use a loader with id 0 or something and cause a crash.
+	 * Experienced the bug during development, doing it this way now to prevent
+	 * further issues.
+	 */
+	public static final int LOADER_CONTEXTS = 0;
+	public static final int LOADER_PROFILE = 1;
+	public static final int LOADER_OWNED_REPOSITORIES_PAGER = 2;
+	public static final int LOADER_WATCHED_REPOSITORIES_PAGER = 3;
+
+    public static final int REQUEST_PAGE_SIZE = 40;
 }

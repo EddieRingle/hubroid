@@ -20,13 +20,24 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 		android:background="@android:color/white"
-		android:layout_width="fill_parent"
-		android:layout_height="fill_parent"
-		android:gravity="center">
-	<FrameLayout android:id="@+id/fragment_container"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent">
-	</FrameLayout>
-</RelativeLayout>
+		android:layout_width="match_parent"
+		android:layout_height="match_parent">
+	<FrameLayout android:id="@id/container_main"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1" />
+	<FrameLayout android:id="@id/container_right_half"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="1" />
+	<FrameLayout android:id="@id/container_right_third"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="0.5" />
+	<FrameLayout android:id="@id/container_right_twothirds"
+			android:layout_width="0dp"
+			android:layout_height="match_parent"
+			android:layout_weight="2" />
+</LinearLayout>

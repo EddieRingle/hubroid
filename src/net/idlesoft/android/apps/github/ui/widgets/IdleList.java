@@ -97,7 +97,7 @@ class IdleList<T> extends ListView
 
 		mFooterView.addView(mStandardEmptyView, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
 
-		setLayoutParams(new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+		setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
 
 		setFooterDividersEnabled(true);
 		addFooterView(mFooterView, null, false);

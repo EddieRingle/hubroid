@@ -26,6 +26,7 @@ package net.idlesoft.android.apps.github.ui.adapters;
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
+import android.widget.HeaderViewListAdapter;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
 import java.util.ArrayList;

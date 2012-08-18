@@ -38,6 +38,8 @@ class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.Dashboar
 	class DashboardEntry
 	{
 		public
+		int id;
+		public
 		Drawable icon;
 		public
 		String label;

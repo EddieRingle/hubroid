@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.idlesoft.android.apps.github.authenticator;
+package net.idlesoft.android.apps.github.ui.activities.app;
 
 import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
@@ -38,6 +38,7 @@ import com.actionbarsherlock.app.ActionBar;
 import net.idlesoft.android.apps.github.R.id;
 import net.idlesoft.android.apps.github.R.layout;
 import net.idlesoft.android.apps.github.R.string;
+import net.idlesoft.android.apps.github.authenticator.AuthConstants;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.utils.TextWatcherAdapter;
 import net.idlesoft.android.apps.github.utils.ToastUtil;
@@ -202,6 +203,7 @@ public class GitHubAuthenticatorActivity extends BaseActivity
 		List<Account> accountList = new ArrayList<Account>(Arrays.asList(
 				mAccountManager.getAccountsByType("com.google")));
 		accountList.addAll(Arrays.asList(mAccountManager.getAccountsByType("com.github.gauges")));
+		accountList.addAll(Arrays.asList(mAccountManager.getAccountsByType("com.github")));
 		accounts = accountList.toArray();
 		List<String> logins = new ArrayList<String>(accounts.length);
 		for (Object account : accounts)
