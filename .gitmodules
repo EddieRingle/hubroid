@@ -4,3 +4,6 @@
 [submodule "contrib/Android-ViewPagerIndicator"]
 	path = contrib/Android-ViewPagerIndicator
 	url = git://github.com/JakeWharton/Android-ViewPagerIndicator.git
+[submodule "contrib/android-undergarment"]
+	path = contrib/android-undergarment
+	url = git://github.com/eddieringle/android-undergarment.git
