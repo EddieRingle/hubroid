@@ -31,6 +31,7 @@ import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.authenticator.AuthConstants;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
 import net.idlesoft.android.apps.github.ui.adapters.ContextListAdapter;
 import net.idlesoft.android.apps.github.ui.fragments.app.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment;
@@ -65,7 +66,7 @@ import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFr
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_WATCHED;
 
-public class HomeActivity extends BaseActivity
+public class HomeActivity extends BaseDashboardActivity
         implements LoaderManager.LoaderCallbacks<List<User>> {
 
     private static class TabHolder {
