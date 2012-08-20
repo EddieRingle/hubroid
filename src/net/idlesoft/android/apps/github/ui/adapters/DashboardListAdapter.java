@@ -23,61 +23,58 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
-public
-class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.DashboardEntry>
-{
-	public static
-	class DashboardEntry
-	{
-		public
-		int id;
-		public
-		Drawable icon;
-		public
-		String label;
-	}
+public class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.DashboardEntry> {
 
-	public static
-	class ViewHolder
-	{
-		ImageView icon;
-		TextView label;
-	}
+    public static class DashboardEntry {
 
-	public
-	DashboardListAdapter(BaseActivity context)
-	{
-		super(context);
-	}
+        public
+        int id;
 
-	@Override
-	public
-	View getView(int position, View convertView, ViewGroup parent)
-	{
-		ViewHolder holder;
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.dashboard_list_item, null);
-			holder = new ViewHolder();
-			holder.icon = (ImageView) convertView.findViewById(R.id.iv_dashboard_icon);
-			holder.label = (TextView) convertView.findViewById(R.id.tv_dashboard_label);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+        public
+        Drawable icon;
 
-		final DashboardEntry entry = getItem(position);
+        public
+        String label;
+    }
 
-		holder.icon.setImageDrawable(entry.icon);
-		holder.label.setText(entry.label);
+    public static class ViewHolder {
 
-		return convertView;
-	}
+        ImageView icon;
+
+        TextView label;
+    }
+
+    public DashboardListAdapter(BaseActivity context) {
+        super(context);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.dashboard_list_item, null);
+            holder = new ViewHolder();
+            holder.icon = (ImageView) convertView.findViewById(R.id.iv_dashboard_icon);
+            holder.label = (TextView) convertView.findViewById(R.id.tv_dashboard_label);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        final DashboardEntry entry = getItem(position);
+
+        holder.icon.setImageDrawable(entry.icon);
+        holder.label.setText(entry.label);
+
+        return convertView;
+    }
 }

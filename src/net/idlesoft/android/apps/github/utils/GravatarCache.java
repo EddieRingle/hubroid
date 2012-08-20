@@ -37,130 +37,124 @@ import java.net.URL;
 
 public class GravatarCache {
 
-	/* Root directory for gravatar storage on the SD card */
-	private final static String ROOT_DIR = "hubroid/gravatars";
+    /* Root directory for gravatar storage on the SD card */
+    private final static String ROOT_DIR = "hubroid/gravatars";
 
-	private static Bitmap downloadGravatar(final String gravatarHash) throws IOException {
-		final URL aURL;
-		final Bitmap bm;
-		final InputStream is;
-		HttpURLConnection conn = null;
+    private static Bitmap downloadGravatar(final String gravatarHash) throws IOException {
+        final URL aURL;
+        final Bitmap bm;
+        final InputStream is;
+        HttpURLConnection conn = null;
 
-		if (gravatarHash != null && !gravatarHash.equals("")) {
-			aURL = new URL("http://www.gravatar.com/avatar/" + gravatarHash + "?s=140&d=404");
-		} else {
-			aURL = null;
-		}
+        if (gravatarHash != null && !gravatarHash.equals("")) {
+            aURL = new URL("http://www.gravatar.com/avatar/" + gravatarHash + "?s=140&d=404");
+        } else {
+            aURL = null;
+        }
 
-		if (aURL != null) {
-			conn = (HttpURLConnection) aURL.openConnection();
-			conn.setDoInput(true);
-			conn.connect();
-		}
+        if (aURL != null) {
+            conn = (HttpURLConnection) aURL.openConnection();
+            conn.setDoInput(true);
+            conn.connect();
+        }
 
-		if (aURL == null || (conn != null && conn.getResponseCode() != 404)) {
-			is = conn.getInputStream();
-			bm = BitmapFactory.decodeStream(is);
-			is.close();
-			return bm;
-		} else {
-			return null;
-		}
-	}
+        if (aURL == null || (conn != null && conn.getResponseCode() != 404)) {
+            is = conn.getInputStream();
+            bm = BitmapFactory.decodeStream(is);
+            is.close();
+            return bm;
+        } else {
+            return null;
+        }
+    }
 
-	private static File ensure_directory(final String path) throws IOException {
-		File root = Environment.getExternalStorageDirectory();
-		if (!root.canWrite()) {
-			throw new IOException("External storage directory is not writable");
-		}
-		final String[] parts = path.split("/");
-		for (final String part : parts) {
-			final File f = new File(root, part);
-			if (!f.exists()) {
-				final boolean created = f.mkdir();
-				if (!created) {
-					throw new IOException("Unable to create directory " + part);
-				}
-			} else {
-				if (!f.isDirectory()) {
-					throw new IOException("Unable to create directory " + part);
-				}
-			}
-			root = f;
-		}
-		return root;
-	}
+    private static File ensure_directory(final String path) throws IOException {
+        File root = Environment.getExternalStorageDirectory();
+        if (!root.canWrite()) {
+            throw new IOException("External storage directory is not writable");
+        }
+        final String[] parts = path.split("/");
+        for (final String part : parts) {
+            final File f = new File(root, part);
+            if (!f.exists()) {
+                final boolean created = f.mkdir();
+                if (!created) {
+                    throw new IOException("Unable to create directory " + part);
+                }
+            } else {
+                if (!f.isDirectory()) {
+                    throw new IOException("Unable to create directory " + part);
+                }
+            }
+            root = f;
+        }
+        return root;
+    }
 
-	/**
-	 * Returns a density-independent Bitmap of the Gravatar associated with the
-	 * provided login. The image will be scaled to a variable pixel size
-	 * dependent on the provided dip size.
-	 *
-	 * @param gravatarHash
-	 * @param size - Size in density-independent pixels (dip)
-	 * @param densityScale - Scale provided by
-	 *            android.util.DisplayMetrics.density
-	 */
-	public static Bitmap getDipGravatar(final String gravatarHash, final float size,
-										final float densityScale) {
-		return getGravatar(gravatarHash, (int) (size * densityScale + 0.5f));
-	}
+    /**
+     * Returns a density-independent Bitmap of the Gravatar associated with the provided login. The
+     * image will be scaled to a variable pixel size dependent on the provided dip size.
+     *
+     * @param size         - Size in density-independent pixels (dip)
+     * @param densityScale - Scale provided by android.util.DisplayMetrics.density
+     */
+    public static Bitmap getDipGravatar(final String gravatarHash, final float size,
+            final float densityScale) {
+        return getGravatar(gravatarHash, (int) (size * densityScale + 0.5f));
+    }
 
-	/**
-	 * Returns a Bitmap of the Gravatar associated with the provided login. This
-	 * image will be scaled according to the provided size.
-	 *
-	 * @param gravatarHash
-	 * @param size
-	 * @return a scaled Bitmap
-	 */
-	public static Bitmap getGravatar(final String gravatarHash, final int size) {
-		Bitmap bm = null;
-		try {
-			final File gravatars = ensure_directory(ROOT_DIR);
-			/* Prevents the gravatars from showing up in the Gallery app */
-			hideMediaFromGallery(gravatars);
+    /**
+     * Returns a Bitmap of the Gravatar associated with the provided login. This image will be scaled
+     * according to the provided size.
+     *
+     * @return a scaled Bitmap
+     */
+    public static Bitmap getGravatar(final String gravatarHash, final int size) {
+        Bitmap bm = null;
+        try {
+            final File gravatars = ensure_directory(ROOT_DIR);            /* Prevents the gravatars from showing up in the Gallery app */
+            hideMediaFromGallery(gravatars);
 
-			final File image = new File(gravatars, gravatarHash + ".png");
-			bm = BitmapFactory.decodeFile(image.getPath());
-			if (bm == null) {
-				bm = downloadGravatar(gravatarHash);
+            final File image = new File(gravatars, gravatarHash + ".png");
+            bm = BitmapFactory.decodeFile(image.getPath());
+            if (bm == null) {
+                bm = downloadGravatar(gravatarHash);
 				/* Compress to a 140x140px PNG */
-				bm.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(image));
-			}
-			bm = Bitmap.createScaledBitmap(bm, size, size, true);
-		} catch (final IOException e) {
-			Log.e("hubroid", "Error saving bitmap", e);
-			e.printStackTrace();
-		}
-		return bm;
-	}
+                bm.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(image));
+            }
+            bm = Bitmap.createScaledBitmap(bm, size, size, true);
+        } catch (final IOException e) {
+            Log.e("hubroid", "Error saving bitmap", e);
+            e.printStackTrace();
+        }
+        return bm;
+    }
 
-	private static void hideMediaFromGallery(final File gravatars) throws IOException {
-		final File nomedia = new File(gravatars, ".nomedia");
-		if (!nomedia.exists()) {
-			nomedia.createNewFile();
-		}
-	}
+    private static void hideMediaFromGallery(final File gravatars) throws IOException {
+        final File nomedia = new File(gravatars, ".nomedia");
+        if (!nomedia.exists()) {
+            nomedia.createNewFile();
+        }
+    }
 
-	private static boolean deleteDirectory(File path) {
-		if (path.exists()) {
-			File[] files = path.listFiles();
-			for (int i = 0; i < files.length; i++) {
-				if (files[i].isDirectory()) {
-					deleteDirectory(files[i]);
-				} else {
-					files[i].delete();
-				}
-			}
-			return path.delete();
-		} else {
-			return false;
-		}
-	}
+    private static boolean deleteDirectory(File path) {
+        if (path.exists()) {
+            File[] files = path.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                if (files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                } else {
+                    files[i].delete();
+                }
+            }
+            return path.delete();
+        } else {
+            return false;
+        }
+    }
 
-	public static boolean clearCache() {
-		final File gravatars = new File(Environment.getExternalStorageDirectory(), ROOT_DIR);
-		return deleteDirectory(gravatars);
-	}
+    public static boolean clearCache() {
+        final File gravatars = new File(Environment.getExternalStorageDirectory(), ROOT_DIR);
+        return deleteDirectory(gravatars);
+    }
 }

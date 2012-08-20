@@ -21,23 +21,23 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:background="@android:color/white"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent">
-	<FrameLayout android:id="@id/container_main"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1" />
-	<FrameLayout android:id="@id/container_right_half"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1" />
-	<FrameLayout android:id="@id/container_right_third"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="0.5" />
-	<FrameLayout android:id="@id/container_right_twothirds"
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="2" />
+              android:background="@android:color/white"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+    <FrameLayout android:id="@id/container_main"
+                 android:layout_width="0dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="1"/>
+    <FrameLayout android:id="@id/container_right_half"
+                 android:layout_width="0dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="1"/>
+    <FrameLayout android:id="@id/container_right_third"
+                 android:layout_width="0dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="0.5"/>
+    <FrameLayout android:id="@id/container_right_twothirds"
+                 android:layout_width="0dp"
+                 android:layout_height="match_parent"
+                 android:layout_weight="2"/>
 </LinearLayout>

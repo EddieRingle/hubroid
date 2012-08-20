@@ -34,102 +34,85 @@ import android.widget.ProgressBar;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public
-class LoadableImageView extends FrameLayout
-{
-	private final static int INTERNAL_PROGRESS_ID = 0x00ff0001;
-	private final static int INTERNAL_IMAGEVIEW_ID = 0x00ff0002;
+public class LoadableImageView extends FrameLayout {
 
-	private
-	ProgressBar mProgressBar;
+    private final static int INTERNAL_PROGRESS_ID = 0x00ff0001;
 
-	private
-	ImageView mImageView;
+    private final static int INTERNAL_IMAGEVIEW_ID = 0x00ff0002;
 
-	private
-	boolean mIsLoading;
+    private ProgressBar mProgressBar;
 
-	public
-	LoadableImageView(Context context)
-	{
-		super(context);
-		buildView();
-	}
+    private ImageView mImageView;
 
-	public
-	LoadableImageView(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
-		buildView();
-	}
+    private boolean mIsLoading;
 
-	public
-	LoadableImageView(Context context, AttributeSet attrs, int defStyle)
-	{
-		super(context, attrs, defStyle);
-		buildView();
-	}
+    public LoadableImageView(Context context) {
+        super(context);
+        buildView();
+    }
 
-	protected
-	void buildView()
-	{
-		final Context context = getContext();
+    public LoadableImageView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        buildView();
+    }
 
-		mProgressBar = new ProgressBar(context);
-		final LayoutParams progressLayoutParams = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
-		progressLayoutParams.gravity = Gravity.CENTER;
-		mProgressBar.setLayoutParams(progressLayoutParams);
-		mProgressBar.setId(INTERNAL_PROGRESS_ID);
-		mProgressBar.setIndeterminate(true);
-		mProgressBar.setVisibility(View.GONE);
+    public LoadableImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        buildView();
+    }
 
-		addView(mProgressBar);
+    protected void buildView() {
+        final Context context = getContext();
 
-		mIsLoading = false;
+        mProgressBar = new ProgressBar(context);
+        final LayoutParams progressLayoutParams = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        progressLayoutParams.gravity = Gravity.CENTER;
+        mProgressBar.setLayoutParams(progressLayoutParams);
+        mProgressBar.setId(INTERNAL_PROGRESS_ID);
+        mProgressBar.setIndeterminate(true);
+        mProgressBar.setVisibility(View.GONE);
 
-		mImageView = new ImageView(context);
-		final LayoutParams imageViewLayoutParams = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
-		imageViewLayoutParams.gravity = Gravity.CENTER;
-		mImageView.setLayoutParams(imageViewLayoutParams);
-		mImageView.setId(INTERNAL_IMAGEVIEW_ID);
-		mImageView.setVisibility(View.VISIBLE);
+        addView(mProgressBar);
 
-		addView(mImageView);
+        mIsLoading = false;
 
-		setLayoutParams(new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
-	}
+        mImageView = new ImageView(context);
+        final LayoutParams imageViewLayoutParams = new LayoutParams(MATCH_PARENT, MATCH_PARENT);
+        imageViewLayoutParams.gravity = Gravity.CENTER;
+        mImageView.setLayoutParams(imageViewLayoutParams);
+        mImageView.setId(INTERNAL_IMAGEVIEW_ID);
+        mImageView.setVisibility(View.VISIBLE);
 
-	public
-	void setIsLoading(final boolean isLoading)
-	{
-		if (mIsLoading == isLoading) return;
+        addView(mImageView);
 
-		mIsLoading = isLoading;
+        setLayoutParams(new LayoutParams(WRAP_CONTENT, WRAP_CONTENT));
+    }
 
-		if (isLoading) {
-			mProgressBar.setVisibility(View.VISIBLE);
-			mImageView.setVisibility(View.GONE);
-		} else {
-			mImageView.setVisibility(View.VISIBLE);
-			mProgressBar.setVisibility(View.GONE);
-		}
-	}
+    public void setIsLoading(final boolean isLoading) {
+        if (mIsLoading == isLoading) {
+            return;
+        }
 
-	public
-	boolean isLoading()
-	{
-		return mIsLoading;
-	}
+        mIsLoading = isLoading;
 
-	public
-	ProgressBar getProgressBar()
-	{
-		return mProgressBar;
-	}
+        if (isLoading) {
+            mProgressBar.setVisibility(View.VISIBLE);
+            mImageView.setVisibility(View.GONE);
+        } else {
+            mImageView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
+    }
 
-	public
-	ImageView getImageView()
-	{
-		return mImageView;
-	}
+    public boolean isLoading() {
+        return mIsLoading;
+    }
+
+    public ProgressBar getProgressBar() {
+        return mProgressBar;
+    }
+
+    public ImageView getImageView() {
+        return mImageView;
+    }
 }

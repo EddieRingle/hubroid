@@ -23,83 +23,86 @@
 
 package net.idlesoft.android.apps.github.ui.fragments.app;
 
-import android.accounts.AccountsException;
-import android.os.Bundle;
-import android.support.v4.content.Loader;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
 import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.fragments.PagedListFragment;
+
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.client.PageIterator;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.WatcherService;
 
+import android.accounts.AccountsException;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-import static net.idlesoft.android.apps.github.HubroidConstants.*;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
+import static net.idlesoft.android.apps.github.HubroidConstants.LOADER_OWNED_REPOSITORIES_PAGER;
+import static net.idlesoft.android.apps.github.HubroidConstants.LOADER_WATCHED_REPOSITORIES_PAGER;
+import static net.idlesoft.android.apps.github.HubroidConstants.REQUEST_PAGE_SIZE;
 
-public
-class RepositoryListFragment extends PagedListFragment<Repository>
-{
-	public static final int LIST_USER = 1;
-	public static final int LIST_WATCHED = 2;
+public class RepositoryListFragment extends PagedListFragment<Repository> {
 
-	public static final String ARG_LIST_TYPE = "list_type";
+    public static final int LIST_USER = 1;
 
-	private
-	int mListType;
+    public static final int LIST_WATCHED = 2;
 
-	@Override
-	public
-	PageIterator<Repository> onCreatePageIterator()
-	{
-		switch (mListType) {
-		case LIST_USER:
-			try {
-				final RepositoryService rs =
-						new RepositoryService(getBaseActivity().getGHClient());
-				if (!getTargetUser().getLogin().equals(
-						getBaseActivity().getCurrentContextLogin())) {
-					return rs.pageRepositories(getTargetUser().getLogin());
-				} else {
-					final Map<String, String> filter = new HashMap<String, String>();
-					if (getTargetUser().getLogin().equals(
-							getBaseActivity().getCurrentUserLogin())) {
-						filter.put("type", "owner");
-						filter.put("sort", "pushed");
-						return rs.pageRepositories(filter, REQUEST_PAGE_SIZE);
-					} else {
-						return rs.pageOrgRepositories(getTargetUser().getLogin(),
-													  filter,
-													  REQUEST_PAGE_SIZE);
-					}
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (AccountsException e) {
-				e.printStackTrace();
-			}
-			break;
-		case LIST_WATCHED:
-			try {
-				final WatcherService ws =
-						new WatcherService(getBaseActivity().getGHClient());
-				return ws.pageWatched(getTargetUser().getLogin(), REQUEST_PAGE_SIZE);
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (AccountsException e) {
-				e.printStackTrace();
-			}
-			break;
-		}
+    public static final String ARG_LIST_TYPE = "list_type";
 
-		return null;
-	}
+    private int mListType;
+
+    @Override
+    public PageIterator<Repository> onCreatePageIterator() {
+        switch (mListType) {
+            case LIST_USER:
+                try {
+                    final RepositoryService rs =
+                            new RepositoryService(getBaseActivity().getGHClient());
+                    if (!getTargetUser().getLogin().equals(
+                            getBaseActivity().getCurrentContextLogin())) {
+                        return rs.pageRepositories(getTargetUser().getLogin());
+                    } else {
+                        final Map<String, String> filter = new HashMap<String, String>();
+                        if (getTargetUser().getLogin().equals(
+                                getBaseActivity().getCurrentUserLogin())) {
+                            filter.put("type", "owner");
+                            filter.put("sort", "pushed");
+                            return rs.pageRepositories(filter, REQUEST_PAGE_SIZE);
+                        } else {
+                            return rs.pageOrgRepositories(getTargetUser().getLogin(),
+                                    filter,
+                                    REQUEST_PAGE_SIZE);
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (AccountsException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case LIST_WATCHED:
+                try {
+                    final WatcherService ws =
+                            new WatcherService(getBaseActivity().getGHClient());
+                    return ws.pageWatched(getTargetUser().getLogin(), REQUEST_PAGE_SIZE);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } catch (AccountsException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
+
+        return null;
+    }
 
     @Override
     public int getLoaderId() {
@@ -150,11 +153,9 @@ class RepositoryListFragment extends PagedListFragment<Repository>
     }
 
     @Override
-	public
-	BaseListAdapter<Repository> onCreateListAdapter()
-	{
-		return new RepositoryListAdapter(getBaseActivity());
-	}
+    public BaseListAdapter<Repository> onCreateListAdapter() {
+        return new RepositoryListAdapter(getBaseActivity());
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -166,16 +167,13 @@ class RepositoryListFragment extends PagedListFragment<Repository>
         }
     }
 
-	@Override
-	public
-	void onItemClick(AdapterView<?> adapterView, View view, int position, long id)
-	{
-		/*
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {        /*
 		 * Send the user off to the Repository activity
 		 */
-		final Repository target = getListAdapter().getWrappedAdapter().getItem(position);
-		final Bundle args = new Bundle();
-		args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
+        final Repository target = getListAdapter().getWrappedAdapter().getItem(position);
+        final Bundle args = new Bundle();
+        args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
 		/* TODO: Send the user off to the Repository activity */
-	}
+    }
 }

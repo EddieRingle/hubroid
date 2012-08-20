@@ -23,32 +23,35 @@
 
 package net.idlesoft.android.apps.github.ui.loaders;
 
-import android.content.Context;
-import android.util.Log;
 import net.idlesoft.android.apps.github.utils.AsyncLoader;
+
 import org.eclipse.egit.github.core.client.PageIterator;
+
+import android.content.Context;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 public class PagedAsyncLoader<T> extends AsyncLoader<List<T>> {
+
     private static final String TAG = "PagedAsyncLoader";
 
     private ArrayList<T> mItems;
+
     private PageIterator<T> mPageIterator;
+
     private PagedAsyncLoaderCallbacks<T> mCallbacks;
 
-    public static
-    interface PagedAsyncLoaderCallbacks<T> {
-        public
-        Collection<T> onProcessItems(Collection<T> items);
-        public
-        void onLoadFinished(Collection<T> items);
+    public static interface PagedAsyncLoaderCallbacks<T> {
+
+        public Collection<T> onProcessItems(Collection<T> items);
+
+        public void onLoadFinished(Collection<T> items);
     }
 
     public PagedAsyncLoader(Context context, PageIterator<T> pageIterator,
-                            PagedAsyncLoaderCallbacks<T> callbacks) {
+            PagedAsyncLoaderCallbacks<T> callbacks) {
         super(context);
         mPageIterator = pageIterator;
         mCallbacks = callbacks;
@@ -69,9 +72,7 @@ public class PagedAsyncLoader<T> extends AsyncLoader<List<T>> {
     }
 
     @Override
-    public
-    List<T> loadInBackground()
-    {
+    public List<T> loadInBackground() {
         final ArrayList<T> result = new ArrayList<T>();
         Collection<T> newItems = null;
         if (mPageIterator != null && mPageIterator.hasNext()) {

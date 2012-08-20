@@ -20,6 +20,6 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<bool name="multi_paned">false</bool>
+<resources>
+    <bool name="multi_paned">false</bool>
 </resources>

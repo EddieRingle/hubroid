@@ -19,16 +19,16 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@android:id/background"
-          android:drawable="@drawable/progress_bg_hubroid" />
+          android:drawable="@drawable/progress_bg_hubroid"/>
 
     <item android:id="@android:id/secondaryProgress">
         <scale android:scaleWidth="100%"
-               android:drawable="@drawable/progress_secondary_hubroid" />
+               android:drawable="@drawable/progress_secondary_hubroid"/>
     </item>
 
     <item android:id="@android:id/progress">
         <scale android:scaleWidth="100%"
-               android:drawable="@drawable/progress_primary_hubroid" />
+               android:drawable="@drawable/progress_primary_hubroid"/>
     </item>
 
 </layer-list>

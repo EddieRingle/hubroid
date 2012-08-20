@@ -23,71 +23,67 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import com.androidquery.AQuery;
+
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+
+import org.eclipse.egit.github.core.User;
+
 import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.androidquery.AQuery;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-import org.eclipse.egit.github.core.User;
 
-public
-class ContextListAdapter extends BaseListAdapter<User>
-{
-	public static
-	class ViewHolder
-	{
-		ImageView gravatar;
-		TextView login;
-	}
+public class ContextListAdapter extends BaseListAdapter<User> {
 
-	public
-	ContextListAdapter(BaseActivity context)
-	{
-		super(context);
-	}
+    public static class ViewHolder {
 
-	public
-	View doGetView(int position, View convertView, ViewGroup parent, boolean dropdown)
-	{
-		ViewHolder holder;
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.user_list_item, null);
-			holder = new ViewHolder();
-			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_user_gravatar);
-			holder.login = (TextView) convertView.findViewById(R.id.tv_user_login);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+        ImageView gravatar;
 
-		final User user = getItem(position);
+        TextView login;
+    }
 
-		final String login = user.getLogin();
-		final String type = user.getType();
+    public ContextListAdapter(BaseActivity context) {
+        super(context);
+    }
 
-		final AQuery aq = new AQuery(convertView);
-		aq.id(holder.gravatar).image(user.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
+    public View doGetView(int position, View convertView, ViewGroup parent, boolean dropdown) {
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.user_list_item, null);
+            holder = new ViewHolder();
+            holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_user_gravatar);
+            holder.login = (TextView) convertView.findViewById(R.id.tv_user_login);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
-		holder.login.setTextColor(Color.WHITE);
-		holder.login.setText(login);
+        final User user = getItem(position);
 
-		return convertView;
-	}
+        final String login = user.getLogin();
+        final String type = user.getType();
 
-	@Override
-	public
-	View getView(int position, View convertView, ViewGroup parent)
-	{
-		return doGetView(position, convertView, parent, false);
-	}
+        final AQuery aq = new AQuery(convertView);
+        aq.id(holder.gravatar)
+                .image(user.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null,
+                        AQuery.FADE_IN_NETWORK, 1.0f);
 
-	@Override
-	public
-	View getDropDownView(int position, View convertView, ViewGroup parent)
-	{
-		return doGetView(position, convertView, parent, true);
-	}
+        holder.login.setTextColor(Color.WHITE);
+        holder.login.setText(login);
+
+        return convertView;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        return doGetView(position, convertView, parent, false);
+    }
+
+    @Override
+    public View getDropDownView(int position, View convertView, ViewGroup parent) {
+        return doGetView(position, convertView, parent, true);
+    }
 }

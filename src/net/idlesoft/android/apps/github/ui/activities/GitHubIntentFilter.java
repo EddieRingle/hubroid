@@ -23,73 +23,72 @@
 
 package net.idlesoft.android.apps.github.ui.activities;
 
-import android.content.Intent;
-import android.os.Bundle;
-import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.ui.activities.app.GitHubAuthenticatorActivity;
 
-public
-class GitHubIntentFilter extends BaseActivity
-{
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+import android.content.Intent;
+import android.os.Bundle;
 
-		final String uri = getIntent().getDataString().replaceAll("/{2,}", "/");
-		final String[] parts = uri.split("/");
-		final String scheme = parts[0];
-		final String host = parts[1];
-		final String[] path = new String[parts.length - 2];
-		final Intent intent = new Intent();
-		for (int i = 2; i < parts.length; i++)
-			path[i - 2] = parts[i];
+public class GitHubIntentFilter extends BaseActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        final String uri = getIntent().getDataString().replaceAll("/{2,}", "/");
+        final String[] parts = uri.split("/");
+        final String scheme = parts[0];
+        final String host = parts[1];
+        final String[] path = new String[parts.length - 2];
+        final Intent intent = new Intent();
+        for (int i = 2; i < parts.length; i++) {
+            path[i - 2] = parts[i];
+        }
 
 		/* We're only handling OAuth intents, for now */
-		if (path[0].equalsIgnoreCase("oauth")) {
-			intent.setClass(GitHubIntentFilter.this, GitHubAuthenticatorActivity.class);
-			if (getIntent().getData().getQueryParameter("code") != null) {
-				intent.putExtra("stage", 2);
-				intent.putExtra("code", getIntent().getData().getQueryParameter("code"));
-			}
-			startActivity(intent);
-		}
+        if (path[0].equalsIgnoreCase("oauth")) {
+            intent.setClass(GitHubIntentFilter.this, GitHubAuthenticatorActivity.class);
+            if (getIntent().getData().getQueryParameter("code") != null) {
+                intent.putExtra("stage", 2);
+                intent.putExtra("code", getIntent().getData().getQueryParameter("code"));
+            }
+            startActivity(intent);
+        }
 
-		if (host.matches("^(www.)?github.com$")) {
-			parsePath(this, path);
-		}
+        if (host.matches("^(www.)?github.com$")) {
+            parsePath(this, path);
+        }
 
-		finish();
-	}
+        finish();
+    }
 
-	public static
-	void parsePath(final BaseActivity activity, final String[] path) {
-		final Bundle args = new Bundle();
-		String user, repo, action, id;
+    public static void parsePath(final BaseActivity activity, final String[] path) {
+        final Bundle args = new Bundle();
+        String user, repo, action, id;
 
-		user = repo = action = id = null;
+        user = repo = action = id = null;
 
-		try {
-			user = path[0];
-			repo = path[1];
-			action = path[2];
-			id = path[3].split("#")[0];
-		} catch (IndexOutOfBoundsException e) {
-		}
+        try {
+            user = path[0];
+            repo = path[1];
+            action = path[2];
+            id = path[3].split("#")[0];
+        } catch (IndexOutOfBoundsException e) {
+        }
 
 		/* Bow out if the user tried to open https://github.com/ in Hubroid */
-		if (user == null)
-			return;
+        if (user == null) {
+            return;
+        }
 
-		if (repo == null) {
-			/* Send the user to a profile */
-		} else if (action == null) {
+        if (repo == null) {            /* Send the user to a profile */
+        } else if (action == null) {
 			/* Send the user to a repository */
-		} else if (action.equalsIgnoreCase("issues")) {
-			if (id == null) {
+        } else if (action.equalsIgnoreCase("issues")) {
+            if (id == null) {
 				/* Go to a repository's issues */
-			} else {
+            } else {
 				/* Go to an individual issue */
-			}
-		}
-	}
+            }
+        }
+    }
 }

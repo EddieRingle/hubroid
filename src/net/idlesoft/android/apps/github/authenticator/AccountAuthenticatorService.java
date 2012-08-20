@@ -26,15 +26,18 @@ import static android.accounts.AccountManager.ACTION_AUTHENTICATOR_INTENT;
  * Authenticator service that returns a subclass of AbstractAccountAuthenticator in onBind()
  */
 public class AccountAuthenticatorService extends Service {
+
     private static GitHubAccountAuthenticator sAccountAuthenticator = null;
 
     public IBinder onBind(Intent intent) {
-        return intent.getAction().equals(ACTION_AUTHENTICATOR_INTENT) ? getAuthenticator().getIBinder() : null;
+        return intent.getAction().equals(ACTION_AUTHENTICATOR_INTENT) ? getAuthenticator()
+                .getIBinder() : null;
     }
 
     private GitHubAccountAuthenticator getAuthenticator() {
-        if (sAccountAuthenticator == null)
+        if (sAccountAuthenticator == null) {
             sAccountAuthenticator = new GitHubAccountAuthenticator(this);
+        }
         return sAccountAuthenticator;
     }
 

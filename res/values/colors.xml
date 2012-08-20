@@ -19,41 +19,41 @@
   ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<!-- Generic colors -->
-	<color name="orange1">#FFFF6600</color>
-	<color name="orange2">#FFFF9900</color>
+<resources>
+    <!-- Generic colors -->
+    <color name="orange1">#FFFF6600</color>
+    <color name="orange2">#FFFF9900</color>
 
-	<color name="focused_hubroid">#884183c4</color>
-	<color name="pressed_hubroid">#CC4183c4</color>
+    <color name="focused_hubroid">#884183c4</color>
+    <color name="pressed_hubroid">#CC4183c4</color>
 
-	<color name="github_blue">#FF4183C4</color>
-	<color name="github_orange">#FFFF8811</color>
+    <color name="github_blue">#FF4183C4</color>
+    <color name="github_orange">#FFFF8811</color>
 
-	<color name="issue_green">#3CBF5E</color>
-	<color name="issue_red">#BF3C4A</color>
+    <color name="issue_green">#3CBF5E</color>
+    <color name="issue_red">#BF3C4A</color>
 
-	<!-- Text colors -->
-	<color name="text_color">#ff111111</color>
-	<color name="light_text_color">#99111111</color>
+    <!-- Text colors -->
+    <color name="text_color">#ff111111</color>
+    <color name="light_text_color">#99111111</color>
 
-	<!-- Button colors -->
-	<color name="button_normal_fill">#F4F4F4</color>
-	<color name="button_normal_stroke">#D4D4D4</color>
-	<color name="button_focused_fill">#599bdc</color>
-	<color name="button_focused_stroke">#2a65a0</color>
-	<color name="button_pressed_fill">@color/github_blue</color>
-	<color name="button_pressed_stroke">#2a65a0</color>
+    <!-- Button colors -->
+    <color name="button_normal_fill">#F4F4F4</color>
+    <color name="button_normal_stroke">#D4D4D4</color>
+    <color name="button_focused_fill">#599bdc</color>
+    <color name="button_focused_stroke">#2a65a0</color>
+    <color name="button_pressed_fill">@color/github_blue</color>
+    <color name="button_pressed_stroke">#2a65a0</color>
 
-	<!-- Gravatar colors -->
-	<color name="gravatar_border">#FFD8D8D8</color>
+    <!-- Gravatar colors -->
+    <color name="gravatar_border">#FFD8D8D8</color>
 
-	<!-- Colors for the tablet-mode Dashboard fragment -->
-	<color name="dashboard_background">#FF161616</color>
-	<color name="dashboard_button_normal">#00FFFFFF</color>
-	<color name="dashboard_button_highlighted">#88000000</color>
+    <!-- Colors for the tablet-mode Dashboard fragment -->
+    <color name="dashboard_background">#FF161616</color>
+    <color name="dashboard_button_normal">#00FFFFFF</color>
+    <color name="dashboard_button_highlighted">#88000000</color>
 
-	<color name="sidebar_shadow_dark">#66000000</color>
-	<color name="container_shadow_dark">#66000000</color>
-	<color name="centerfold_shadow_dark">#55000000</color>
+    <color name="sidebar_shadow_dark">#66000000</color>
+    <color name="container_shadow_dark">#66000000</color>
+    <color name="centerfold_shadow_dark">#55000000</color>
 </resources>

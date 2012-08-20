@@ -23,65 +23,62 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.TextView;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
-public
-class InfoListAdapter extends BaseListAdapter<InfoListAdapter.InfoHolder>
-{
-	public static
-	class InfoHolder
-	{
-		public
-		String primary;
-		public
-		String secondary;
+public class InfoListAdapter extends BaseListAdapter<InfoListAdapter.InfoHolder> {
 
-		public
-		AdapterView.OnItemClickListener onClick;
-		public
-		AdapterView.OnItemLongClickListener onLongClick;
-	}
+    public static class InfoHolder {
 
-	public static
-	class ViewHolder
-	{
-		TextView primary;
-		TextView secondary;
-	}
+        public
+        String primary;
 
-	public
-	InfoListAdapter(BaseActivity context)
-	{
-		super(context);
-	}
+        public
+        String secondary;
 
-	@Override
-	public
-	View getView(int position, View convertView, ViewGroup parent)
-	{
-		ViewHolder viewHolder;
+        public
+        AdapterView.OnItemClickListener onClick;
 
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.info_list_item, null);
-			viewHolder = new ViewHolder();
-			viewHolder.primary = (TextView) convertView.findViewById(R.id.tv_info_primary);
-			viewHolder.secondary = (TextView) convertView.findViewById(R.id.tv_info_secondary);
-			convertView.setTag(viewHolder);
-		} else {
-			viewHolder = (ViewHolder) convertView.getTag();
-		}
+        public
+        AdapterView.OnItemLongClickListener onLongClick;
+    }
 
-		final InfoHolder holder = getItem(position);
+    public static class ViewHolder {
 
-		viewHolder.primary.setText(holder.primary);
-		viewHolder.secondary.setText(holder.secondary);
+        TextView primary;
 
-		return convertView;
-	}
+        TextView secondary;
+    }
+
+    public InfoListAdapter(BaseActivity context) {
+        super(context);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
+
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.info_list_item, null);
+            viewHolder = new ViewHolder();
+            viewHolder.primary = (TextView) convertView.findViewById(R.id.tv_info_primary);
+            viewHolder.secondary = (TextView) convertView.findViewById(R.id.tv_info_secondary);
+            convertView.setTag(viewHolder);
+        } else {
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+
+        final InfoHolder holder = getItem(position);
+
+        viewHolder.primary.setText(holder.primary);
+        viewHolder.secondary.setText(holder.secondary);
+
+        return convertView;
+    }
 
 }

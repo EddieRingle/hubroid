@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-	<declare-styleable name="FlowLayout">
-		<attr name="horizontalSpacing" format="dimension" />
-		<attr name="verticalSpacing" format="dimension" />
-	</declare-styleable>
-	<declare-styleable name="FlowLayout_LayoutParams">
-		<attr name="layout_spacing" format="dimension" />
-		<attr name="breakLine" format="boolean" />
-	</declare-styleable>
+<resources>
+    <declare-styleable name="FlowLayout">
+        <attr name="horizontalSpacing" format="dimension"/>
+        <attr name="verticalSpacing" format="dimension"/>
+    </declare-styleable>
+    <declare-styleable name="FlowLayout_LayoutParams">
+        <attr name="layout_spacing" format="dimension"/>
+        <attr name="breakLine" format="boolean"/>
+    </declare-styleable>
 </resources>

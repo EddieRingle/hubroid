@@ -23,47 +23,47 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.loaders.PagedAsyncLoader;
+
+import org.eclipse.egit.github.core.client.PageIterator;
+
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.loaders.PagedAsyncLoader;
-import org.eclipse.egit.github.core.client.PageIterator;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract
-class PagedListFragment<T> extends BaseListFragment<T> implements AbsListView.OnScrollListener,
-                                                                  LoaderManager.LoaderCallbacks<List<T>>,
-                                                                  PagedAsyncLoader.PagedAsyncLoaderCallbacks<T>
-{
-	private
-	PageIterator<T> mPageIterator;
-	private
-	View mLoadingIndicator;
-    private
-    boolean mLoading;
-	private
-	boolean mShowingLoadingIndicator;
+public abstract class PagedListFragment<T> extends BaseListFragment<T>
+        implements AbsListView.OnScrollListener,
+        LoaderManager.LoaderCallbacks<List<T>>,
+        PagedAsyncLoader.PagedAsyncLoaderCallbacks<T> {
 
-	/**
-	 * Implementations of this method should be responsible for creating an instance of a
-	 * PageIterator to be used in loading the list with items.
-	 *
-	 * @return PageIterator
-	 */
-	public abstract
-	PageIterator<T> onCreatePageIterator();
+    private PageIterator<T> mPageIterator;
+
+    private View mLoadingIndicator;
+
+    private boolean mLoading;
+
+    private boolean mShowingLoadingIndicator;
+
+    /**
+     * Implementations of this method should be responsible for creating an instance of a PageIterator
+     * to be used in loading the list with items.
+     *
+     * @return PageIterator
+     */
+    public abstract PageIterator<T> onCreatePageIterator();
 
     /**
      * Returns a unique identifying integer for use with the LoaderManager in order to prevent
@@ -71,12 +71,9 @@ class PagedListFragment<T> extends BaseListFragment<T> implements AbsListView.On
      *
      * @return loader id
      */
-    public abstract
-    int getLoaderId();
+    public abstract int getLoaderId();
 
-    public
-    void startLoading()
-    {
+    public void startLoading() {
         mLoading = true;
         Loader<T> loader = getLoaderManager().getLoader(getLoaderId());
         if (loader != null) {
@@ -87,8 +84,7 @@ class PagedListFragment<T> extends BaseListFragment<T> implements AbsListView.On
         }
     }
 
-    public
-    void startLoadingMore() {
+    public void startLoadingMore() {
         if (mLoading) {
             return;
         }
@@ -101,36 +97,31 @@ class PagedListFragment<T> extends BaseListFragment<T> implements AbsListView.On
         }
     }
 
-    public
-	void setLoadingIndicatorVisible(final boolean show)
-	{
-		if (mShowingLoadingIndicator != show && getListAdapter() != null) {
-			if (show)
-				getListAdapter().addFooter(mLoadingIndicator, null, false);
-			else
-				getListAdapter().removeFooter(mLoadingIndicator);
-		}
-		mShowingLoadingIndicator = show;
-	}
+    public void setLoadingIndicatorVisible(final boolean show) {
+        if (mShowingLoadingIndicator != show && getListAdapter() != null) {
+            if (show) {
+                getListAdapter().addFooter(mLoadingIndicator, null, false);
+            } else {
+                getListAdapter().removeFooter(mLoadingIndicator);
+            }
+        }
+        mShowingLoadingIndicator = show;
+    }
 
-	@Override
-	public
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		/* Grab the loading indicator layout during view creation */
-		mLoadingIndicator = inflater.inflate(R.layout.loading_indicator, null, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {        /* Grab the loading indicator layout during view creation */
+        mLoadingIndicator = inflater.inflate(R.layout.loading_indicator, null, false);
 
-		return super.onCreateView(inflater, container, savedInstanceState);
-	}
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
 
-	@Override
-	public
-	void onActivityCreated(Bundle savedInstanceState)
-	{
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-		mPageIterator = onCreatePageIterator();
-	}
+        mPageIterator = onCreatePageIterator();
+    }
 
     @Override
     public void onStart() {
@@ -145,17 +136,13 @@ class PagedListFragment<T> extends BaseListFragment<T> implements AbsListView.On
     }
 
     @Override
-	public
-	void onScrollStateChanged(AbsListView absListView, int i)
-	{
+    public void onScrollStateChanged(AbsListView absListView, int i) {
 		/* stub */
-	}
+    }
 
-	@Override
-	public
-	void onScroll(AbsListView absListView, int firstVisibleItem,
-				  int visibleItemCount, int totalItemCount)
-	{
+    @Override
+    public void onScroll(AbsListView absListView, int firstVisibleItem,
+            int visibleItemCount, int totalItemCount) {
 		/*
 		 * We want to bail out on the following cases:
 		 *  - There are no more pages in the iterator to load
@@ -163,16 +150,16 @@ class PagedListFragment<T> extends BaseListFragment<T> implements AbsListView.On
 		 * Otherwise, we trigger the load of the next page and
 		 * display its results in the list.
 		 */
-		if (mPageIterator == null) {
-			return;
-        }
-		if (mLoading) {
+        if (mPageIterator == null) {
             return;
         }
-		if (getListView().getLastVisiblePosition() + 1 >= getListAdapter().getCount()) {
+        if (mLoading) {
+            return;
+        }
+        if (getListView().getLastVisiblePosition() + 1 >= getListAdapter().getCount()) {
             startLoadingMore();
-		}
-	}
+        }
+    }
 
     @Override
     public Loader<List<T>> onCreateLoader(int id, Bundle args) {
@@ -208,25 +195,21 @@ class PagedListFragment<T> extends BaseListFragment<T> implements AbsListView.On
     }
 
     @Override
-	public
-	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-	{
-		super.onCreateOptionsMenu(menu, inflater);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
 
-		menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
-	}
+        menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
+    }
 
-	@Override
-	public
-	boolean onOptionsItemSelected(MenuItem item)
-	{
-		if (item.getItemId() == R.id.actionbar_action_refresh) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.actionbar_action_refresh) {
             mPageIterator = onCreatePageIterator();
             getLoaderManager().destroyLoader(getLoaderId());
             setListShown(false);
             startLoading();
-		}
+        }
 
-		return super.onOptionsItemSelected(item);
-	}
+        return super.onOptionsItemSelected(item);
+    }
 }

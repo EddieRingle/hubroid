@@ -23,13 +23,14 @@
 
 package net.idlesoft.android.apps.github.authenticator;
 
+import com.google.inject.Inject;
+
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AccountsException;
 import android.app.Activity;
 import android.os.Bundle;
-import com.google.inject.Inject;
 
 import java.io.IOException;
 
@@ -41,15 +42,16 @@ import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHU
 /**
  * Bridge class that obtains a GitHub OAuth code for the currently configured account
  */
-public class OAuthUserProvider
-{
+public class OAuthUserProvider {
 
     private static final String TAG = "OCP";
 
-	public static class AuthResponse {
-		public Account account;
-		public String access_token;
-	}
+    public static class AuthResponse {
+
+        public Account account;
+
+        public String access_token;
+    }
 
     @Inject
     private Activity activity;
@@ -58,16 +60,16 @@ public class OAuthUserProvider
     private AccountManager accountManager;
 
     public AuthResponse getOAuthResponse(Account account)
-			throws AccountsException, IOException {
-		AccountManagerFuture<Bundle> accountManagerFuture;
+            throws AccountsException, IOException {
+        AccountManagerFuture<Bundle> accountManagerFuture;
 
-		accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null, activity,
-														   null, null);
+        accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null, activity,
+                null, null);
 
         Bundle result = accountManagerFuture.getResult();
 
-		AuthResponse response = new AuthResponse();
-		response.account = new Account(result.getString(KEY_ACCOUNT_NAME), GITHUB_ACCOUNT_TYPE);
+        AuthResponse response = new AuthResponse();
+        response.account = new Account(result.getString(KEY_ACCOUNT_NAME), GITHUB_ACCOUNT_TYPE);
         response.access_token = result.getString(KEY_AUTHTOKEN);
 
         return response;

@@ -23,203 +23,190 @@
 
 package net.idlesoft.android.apps.github.ui.widgets;
 
+import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.*;
-import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
+import android.widget.HeaderViewListAdapter;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public
-class IdleList<T> extends ListView
-{
-	static final int INTERNAL_EMPTY_ID = 0x00ff0001;
-	static final int INTERNAL_PROGRESS_ID = 0x00ff0002;
-	static final int INTERNAL_FOOTER_ID = 0x00ff0003;
+public class IdleList<T> extends ListView {
 
-	LinearLayout mFooterView;
-	TextView mStandardEmptyView;
-	ProgressBar mProgress;
-	CharSequence mEmptyText;
-	CharSequence mTitle;
-	boolean mListShown;
+    static final int INTERNAL_EMPTY_ID = 0x00ff0001;
 
-	public
-	IdleList(Context context)
-	{
-		super(context);
-		setupIdleList();
-	}
+    static final int INTERNAL_PROGRESS_ID = 0x00ff0002;
 
-	public
-	IdleList(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
-		setupIdleList();
-	}
+    static final int INTERNAL_FOOTER_ID = 0x00ff0003;
 
-	public
-	IdleList(Context context, AttributeSet attrs, int defStyle)
-	{
-		super(context, attrs, defStyle);
-		setupIdleList();
-	}
+    LinearLayout mFooterView;
 
-	private
-	void setupIdleList()
-	{
-		Context context = getContext();
+    TextView mStandardEmptyView;
 
-		mFooterView = new LinearLayout(context);
-		mFooterView.setId(INTERNAL_FOOTER_ID);
-		mFooterView.setGravity(Gravity.CENTER);
-		mFooterView.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+    ProgressBar mProgress;
 
-		mProgress = new ProgressBar(context, null, android.R.attr.progressBarStyle);
-		mProgress.setId(INTERNAL_PROGRESS_ID);
-		mProgress.setIndeterminate(true);
-		mProgress.setVisibility(View.GONE);
-		final LayoutParams progressLayoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-		mProgress.setLayoutParams(progressLayoutParams);
+    CharSequence mEmptyText;
 
-		mFooterView.addView(mProgress);
+    CharSequence mTitle;
 
-		mStandardEmptyView = new TextView(context);
-		mStandardEmptyView.setId(INTERNAL_EMPTY_ID);
-		mStandardEmptyView.setGravity(Gravity.CENTER);
-		mStandardEmptyView.setVisibility(View.GONE);
-		mStandardEmptyView.setPadding(10, 15, 10, 15);
-		mStandardEmptyView.setText("That's all, folks!");
+    boolean mListShown;
 
-		mFooterView.addView(mStandardEmptyView, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+    public IdleList(Context context) {
+        super(context);
+        setupIdleList();
+    }
 
-		setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+    public IdleList(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setupIdleList();
+    }
 
-		setFooterDividersEnabled(true);
-		addFooterView(mFooterView, null, false);
+    public IdleList(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        setupIdleList();
+    }
 
-		setItemsCanFocus(true);
-		setDrawSelectorOnTop(true);
+    private void setupIdleList() {
+        Context context = getContext();
+
+        mFooterView = new LinearLayout(context);
+        mFooterView.setId(INTERNAL_FOOTER_ID);
+        mFooterView.setGravity(Gravity.CENTER);
+        mFooterView.setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+
+        mProgress = new ProgressBar(context, null, android.R.attr.progressBarStyle);
+        mProgress.setId(INTERNAL_PROGRESS_ID);
+        mProgress.setIndeterminate(true);
+        mProgress.setVisibility(View.GONE);
+        final LayoutParams progressLayoutParams = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
+        mProgress.setLayoutParams(progressLayoutParams);
+
+        mFooterView.addView(mProgress);
+
+        mStandardEmptyView = new TextView(context);
+        mStandardEmptyView.setId(INTERNAL_EMPTY_ID);
+        mStandardEmptyView.setGravity(Gravity.CENTER);
+        mStandardEmptyView.setVisibility(View.GONE);
+        mStandardEmptyView.setPadding(10, 15, 10, 15);
+        mStandardEmptyView.setText("That's all, folks!");
+
+        mFooterView.addView(mStandardEmptyView, new LayoutParams(MATCH_PARENT, MATCH_PARENT));
+
+        setLayoutParams(new LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+
+        setFooterDividersEnabled(true);
+        addFooterView(mFooterView, null, false);
+
+        setItemsCanFocus(true);
+        setDrawSelectorOnTop(true);
 
 		/* A tiny hack to get the ProgressBar to show */
-		mListShown = true;
-		setListShown(true);
-		setFooterShown(true);
-	}
+        mListShown = true;
+        setListShown(true);
+        setFooterShown(true);
+    }
 
-	public
-	BaseListAdapter<T> getListAdapter()
-	{
-		final ListAdapter adapter = getAdapter();
+    public BaseListAdapter<T> getListAdapter() {
+        final ListAdapter adapter = getAdapter();
 
-		if (adapter instanceof HeaderViewListAdapter)
-			return (BaseListAdapter<T>) ((HeaderViewListAdapter) adapter).getWrappedAdapter();
-		else
-			return (BaseListAdapter<T>) getAdapter();
-	}
+        if (adapter instanceof HeaderViewListAdapter) {
+            return (BaseListAdapter<T>) ((HeaderViewListAdapter) adapter).getWrappedAdapter();
+        } else {
+            return (BaseListAdapter<T>) getAdapter();
+        }
+    }
 
-	@Override
-	public
-	void setAdapter(ListAdapter adapter)
-	{
-		if (!(adapter instanceof BaseListAdapter)) {
-			throw new IllegalArgumentException("IdleList must use a BaseListAdapter.");
-		}
+    @Override
+    public void setAdapter(ListAdapter adapter) {
+        if (!(adapter instanceof BaseListAdapter)) {
+            throw new IllegalArgumentException("IdleList must use a BaseListAdapter.");
+        }
 
-		boolean hadAdapter = getListAdapter() != null;
+        boolean hadAdapter = getListAdapter() != null;
 
-		super.setAdapter(adapter);
+        super.setAdapter(adapter);
 
-		if (!(mListShown || hadAdapter)) {
-			setListShown(true, getWindowToken() != null);
-		}
-	}
+        if (!(mListShown || hadAdapter)) {
+            setListShown(true, getWindowToken() != null);
+        }
+    }
 
-	public
-	CharSequence getTitle()
-	{
-		return mTitle;
-	}
+    public CharSequence getTitle() {
+        return mTitle;
+    }
 
-	public
-	void setTitle(CharSequence title)
-	{
-		mTitle = title;
-	}
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+    }
 
-	public
-	void setEmptyText(CharSequence text)
-	{
-		if (mStandardEmptyView == null) {
-			throw new IllegalStateException("Can't be used with a custom content view");
-		}
-		mStandardEmptyView.setText(text);
-		if (mEmptyText == null) {
-			setEmptyView(mStandardEmptyView);
-		}
-		mEmptyText = text;
-	}
+    public void setEmptyText(CharSequence text) {
+        if (mStandardEmptyView == null) {
+            throw new IllegalStateException("Can't be used with a custom content view");
+        }
+        mStandardEmptyView.setText(text);
+        if (mEmptyText == null) {
+            setEmptyView(mStandardEmptyView);
+        }
+        mEmptyText = text;
+    }
 
-	public
-	void setListShown(boolean shown) {
-		setListShown(shown, true);
-	}
+    public void setListShown(boolean shown) {
+        setListShown(shown, true);
+    }
 
-	public
-	void setListShownNoAnimation(boolean shown) {
-		setListShown(shown, false);
-	}
+    public void setListShownNoAnimation(boolean shown) {
+        setListShown(shown, false);
+    }
 
-	private
-	void setListShown(boolean shown, boolean animate) {
-		if (mListShown == shown) return;
-		mListShown = shown;
-		final Context context = getContext();
-		if (shown) {
-			if (animate) {
-				startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in));
-			} else {
-				clearAnimation();
-			}
-			setVisibility(View.VISIBLE);
-		} else {
-			if (animate) {
-				startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_out));
-			} else {
-				clearAnimation();
-			}
-			setVisibility(View.GONE);
-		}
-	}
+    private void setListShown(boolean shown, boolean animate) {
+        if (mListShown == shown) {
+            return;
+        }
+        mListShown = shown;
+        final Context context = getContext();
+        if (shown) {
+            if (animate) {
+                startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in));
+            } else {
+                clearAnimation();
+            }
+            setVisibility(View.VISIBLE);
+        } else {
+            if (animate) {
+                startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_out));
+            } else {
+                clearAnimation();
+            }
+            setVisibility(View.GONE);
+        }
+    }
 
-	public
-	void setFooterShown(boolean shown) {
-		if (shown) {
-			mFooterView.setVisibility(View.VISIBLE);
-		} else {
-			mFooterView.setVisibility(View.GONE);
-		}
-	}
+    public void setFooterShown(boolean shown) {
+        if (shown) {
+            mFooterView.setVisibility(View.VISIBLE);
+        } else {
+            mFooterView.setVisibility(View.GONE);
+        }
+    }
 
-	public
-	ProgressBar getProgressBar()
-	{
-		return mProgress;
-	}
+    public ProgressBar getProgressBar() {
+        return mProgress;
+    }
 
-	public
-	LinearLayout getFooterView()
-	{
-		return mFooterView;
-	}
+    public LinearLayout getFooterView() {
+        return mFooterView;
+    }
 
-	public
-	TextView getStandardEmptyView()
-	{
-		return mStandardEmptyView;
-	}
+    public TextView getStandardEmptyView() {
+        return mStandardEmptyView;
+    }
 }

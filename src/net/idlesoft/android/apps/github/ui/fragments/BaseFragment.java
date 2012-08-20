@@ -23,22 +23,23 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Bundle;
-import android.view.View;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
+
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GsonUtils;
+
+import android.content.Context;
+import android.content.res.Configuration;
+import android.os.Bundle;
+import android.view.View;
 
 import java.util.HashMap;
 
@@ -46,50 +47,45 @@ import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
-public
-class BaseFragment extends SherlockFragment
-{
-	protected
-	Configuration mConfiguration;
+public class BaseFragment extends SherlockFragment {
 
-	private
-	boolean mCreateActionBarCalled = false;
+    protected Configuration mConfiguration;
 
-	protected
-	HashMap<String, Object> mArgumentMap = new HashMap<String, Object>();
+    private boolean mCreateActionBarCalled = false;
 
-	public
-	BaseFragment()
-	{
-	}
+    protected HashMap<String, Object> mArgumentMap = new HashMap<String, Object>();
 
-	@Override
-	public
-	void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
+    public BaseFragment() {
+    }
 
-		mConfiguration = getResources().getConfiguration();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mConfiguration = getResources().getConfiguration();
 
 		/*
-		 * Process arguments Bundle into a HashMap of different objects
+         * Process arguments Bundle into a HashMap of different objects
 		 */
-		final Bundle arguments = getArguments();
-		if (arguments != null) {
-			if (arguments.getString(ARG_TARGET_USER) != null)
-				mArgumentMap.put(ARG_TARGET_USER,
-								 GsonUtils.fromJson(arguments.getString(ARG_TARGET_USER),
-													User.class));
-			if (arguments.getString(ARG_TARGET_ISSUE) != null)
-				mArgumentMap.put(ARG_TARGET_ISSUE,
-								 GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
-													Issue.class));
-			if (arguments.getString(ARG_TARGET_REPO) != null)
-				mArgumentMap.put(ARG_TARGET_ISSUE,
-								 GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
-													Repository.class));
-		}
-	}
+        final Bundle arguments = getArguments();
+        if (arguments != null) {
+            if (arguments.getString(ARG_TARGET_USER) != null) {
+                mArgumentMap.put(ARG_TARGET_USER,
+                        GsonUtils.fromJson(arguments.getString(ARG_TARGET_USER),
+                                User.class));
+            }
+            if (arguments.getString(ARG_TARGET_ISSUE) != null) {
+                mArgumentMap.put(ARG_TARGET_ISSUE,
+                        GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
+                                Issue.class));
+            }
+            if (arguments.getString(ARG_TARGET_REPO) != null) {
+                mArgumentMap.put(ARG_TARGET_ISSUE,
+                        GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
+                                Repository.class));
+            }
+        }
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -99,73 +95,55 @@ class BaseFragment extends SherlockFragment
         setHasOptionsMenu(true);
     }
 
-    public
-	BaseActivity getBaseActivity()
-	{
-		return (BaseActivity) getSherlockActivity();
-	}
+    public BaseActivity getBaseActivity() {
+        return (BaseActivity) getSherlockActivity();
+    }
 
-	public
-	Context getContext()
-	{
-		return getBaseActivity().getContext();
-	}
+    public Context getContext() {
+        return getBaseActivity().getContext();
+    }
 
-	protected
-	View getFragmentContainer()
-	{
-		return getBaseActivity().findViewById(R.id.container_main);
-	}
+    protected View getFragmentContainer() {
+        return getBaseActivity().findViewById(R.id.container_main);
+    }
 
-	protected
-	boolean isMultiPane()
-	{
-		return getBaseActivity().isMultiPane();
-	}
+    protected boolean isMultiPane() {
+        return getBaseActivity().isMultiPane();
+    }
 
-	public
-	void onCreateActionBar(ActionBar bar)
-	{
-		mCreateActionBarCalled = true;
-	}
+    public void onCreateActionBar(ActionBar bar) {
+        mCreateActionBarCalled = true;
+    }
 
-	@Override
-	public
-	void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-	{
-		super.onCreateOptionsMenu(menu, inflater);
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
 
-		mCreateActionBarCalled = false;
-		onCreateActionBar(getBaseActivity().getSupportActionBar());
-		if (!mCreateActionBarCalled)
-			throw new IllegalStateException("You must call super() in onCreateActionBar()");
-	}
+        mCreateActionBarCalled = false;
+        onCreateActionBar(getBaseActivity().getSupportActionBar());
+        if (!mCreateActionBarCalled) {
+            throw new IllegalStateException("You must call super() in onCreateActionBar()");
+        }
+    }
 
-	/**
-	 * @return The target user sent to this DataFragment as an argument, or null if none exists.
-	 */
-	public
-	User getTargetUser()
-	{
-		return (User) mArgumentMap.get(ARG_TARGET_USER);
-	}
+    /**
+     * @return The target user sent to this DataFragment as an argument, or null if none exists.
+     */
+    public User getTargetUser() {
+        return (User) mArgumentMap.get(ARG_TARGET_USER);
+    }
 
-	/**
-	 * @return The target issue sent to this DataFragment as an argument, or null if none exists.
-	 */
-	public
-	Issue getTargetIssue()
-	{
-		return (Issue) mArgumentMap.get(ARG_TARGET_ISSUE);
-	}
+    /**
+     * @return The target issue sent to this DataFragment as an argument, or null if none exists.
+     */
+    public Issue getTargetIssue() {
+        return (Issue) mArgumentMap.get(ARG_TARGET_ISSUE);
+    }
 
-	/**
-	 * @return The target repository sent to this DataFragment as an argument, or null if none
-	 * 		   exists.
-	 */
-	public
-	Repository getTargetRepo()
-	{
-		return (Repository) mArgumentMap.get(ARG_TARGET_REPO);
-	}
+    /**
+     * @return The target repository sent to this DataFragment as an argument, or null if none exists.
+     */
+    public Repository getTargetRepo() {
+        return (Repository) mArgumentMap.get(ARG_TARGET_REPO);
+    }
 }

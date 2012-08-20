@@ -23,9 +23,11 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
+import net.idlesoft.android.apps.github.ui.adapters.HeaderFooterListAdapter;
+
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,55 +35,45 @@ import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
-import net.idlesoft.android.apps.github.ui.adapters.HeaderFooterListAdapter;
-import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
-import net.idlesoft.android.apps.github.ui.widgets.IdleList;
-
-import java.util.List;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public abstract
-class BaseListFragment<T> extends BaseFragment implements AdapterView.OnItemClickListener
-{
-	private
-	ProgressBar mProgress;
-	private
-	LinearLayout mContent;
-	private
-	ListView mListView;
+public abstract class BaseListFragment<T> extends BaseFragment
+        implements AdapterView.OnItemClickListener {
 
-	/**
-	 * Implementations of this method should create an instance of a subclass of BaseListAdapter
-	 * specialized to the specified template type (e.g., PagedListFragment<Repository>
-	 * implementations should return an instance of RepositoryListAdapter).
-	 *
-	 * @return BaseListAdapter
-	 */
-	public abstract
-	BaseListAdapter<T> onCreateListAdapter();
+    private ProgressBar mProgress;
 
-	@Override
-	public
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		if (container == null) {
-			getBaseActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+    private LinearLayout mContent;
+
+    private ListView mListView;
+
+    /**
+     * Implementations of this method should create an instance of a subclass of BaseListAdapter
+     * specialized to the specified template type (e.g., PagedListFragment<Repository> implementations
+     * should return an instance of RepositoryListAdapter).
+     *
+     * @return BaseListAdapter
+     */
+    public abstract BaseListAdapter<T> onCreateListAdapter();
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        if (container == null) {
+            getBaseActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
         }
 
-		View v = inflater.inflate(R.layout.list_fragment, container, false);
+        View v = inflater.inflate(R.layout.list_fragment, container, false);
 
-		if (v != null) {
-			mProgress = (ProgressBar) v.findViewById(R.id.progress);
-			mContent = (LinearLayout) v.findViewById(R.id.content);
-			mListView = (ListView) v.findViewById(R.id.list);
-		}
+        if (v != null) {
+            mProgress = (ProgressBar) v.findViewById(R.id.progress);
+            mContent = (LinearLayout) v.findViewById(R.id.content);
+            mListView = (ListView) v.findViewById(R.id.list);
+        }
 
-		return v;
-	}
+        return v;
+    }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -91,26 +83,19 @@ class BaseListFragment<T> extends BaseFragment implements AdapterView.OnItemClic
                 new HeaderFooterListAdapter<BaseListAdapter<T>>(mListView, onCreateListAdapter()));
     }
 
-    protected
-	ProgressBar getProgressBar()
-	{
-		return mProgress;
-	}
+    protected ProgressBar getProgressBar() {
+        return mProgress;
+    }
 
-	protected
-	LinearLayout getContentView()
-	{
-		return mContent;
-	}
+    protected LinearLayout getContentView() {
+        return mContent;
+    }
 
-	protected
-	ListView getListView()
-	{
-		return mListView;
-	}
+    protected ListView getListView() {
+        return mListView;
+    }
 
-    public
-    void setListShown(boolean shown) {
+    public void setListShown(boolean shown) {
         if (shown) {
             mProgress.setVisibility(GONE);
             mContent.setVisibility(VISIBLE);
@@ -122,13 +107,13 @@ class BaseListFragment<T> extends BaseFragment implements AdapterView.OnItemClic
         }
     }
 
-	protected HeaderFooterListAdapter<BaseListAdapter<T>> getListAdapter() {
-		if (getListView() != null) {
-			return (HeaderFooterListAdapter<BaseListAdapter<T>>) getListView().getAdapter();
+    protected HeaderFooterListAdapter<BaseListAdapter<T>> getListAdapter() {
+        if (getListView() != null) {
+            return (HeaderFooterListAdapter<BaseListAdapter<T>>) getListView().getAdapter();
         } else {
-			return null;
+            return null;
         }
-	}
+    }
 
     protected BaseListAdapter<T> getWrappedListAdapter() {
         HeaderFooterListAdapter<BaseListAdapter<T>> wrappingAdapter = getListAdapter();

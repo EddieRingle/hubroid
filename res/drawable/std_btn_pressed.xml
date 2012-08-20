@@ -21,8 +21,8 @@
   -->
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
-		android:shape="rectangle">
-	<corners android:radius="3dip" />
-	<solid android:color="@color/button_pressed_fill" />
-	<stroke android:color="@color/button_pressed_stroke" android:width="1dip" />
+       android:shape="rectangle">
+    <corners android:radius="3dip"/>
+    <solid android:color="@color/button_pressed_fill"/>
+    <stroke android:color="@color/button_pressed_stroke" android:width="1dip"/>
 </shape>

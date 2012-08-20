@@ -20,90 +20,90 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <resources
-		xmlns:android="http://schemas.android.com/apk/res/net.idlesoft.android.apps.github">
-	<!-- Application -->
-	<string name="app_name">Hubroid</string>
-	<string name="github">GitHub</string>
+        >
+    <!-- Application -->
+    <string name="app_name">Hubroid</string>
+    <string name="github">GitHub</string>
 
-	<string name="hello">Hello from Hubroid!</string>
+    <string name="hello">Hello from Hubroid!</string>
 
-	<string name="single_slash">/</string>
+    <string name="single_slash">/</string>
 
-	<string name="loading_indicator">Loading more items...</string>
+    <string name="loading_indicator">Loading more items...</string>
 
-	<!-- Action Bar -->
-	<string name="actionbar_action_add_account">New Account</string>
-	<string name="actionbar_action_add_issue">New Issue</string>
-	<string name="actionbar_action_filters">Filters</string>
-	<string name="actionbar_action_refresh">Refresh</string>
-	<string name="actionbar_action_select_account">Select Account</string>
-	<string name="actionbar_action_report_issue">Report Issue</string>
-	<string name="actionbar_action_about">About</string>
+    <!-- Action Bar -->
+    <string name="actionbar_action_add_account">New Account</string>
+    <string name="actionbar_action_add_issue">New Issue</string>
+    <string name="actionbar_action_filters">Filters</string>
+    <string name="actionbar_action_refresh">Refresh</string>
+    <string name="actionbar_action_select_account">Select Account</string>
+    <string name="actionbar_action_report_issue">Report Issue</string>
+    <string name="actionbar_action_about">About</string>
 
-	<!-- Dashboard -->
-	<string name="dash_events">Events</string>
-	<string name="dash_repos">Repositories</string>
-	<string name="dash_profile">Profile</string>
-	<string name="dash_users">Users</string>
-	<string name="dash_gists">Gists</string>
-	<string name="dash_orgs">Organizations</string>
+    <!-- Dashboard -->
+    <string name="dash_events">Events</string>
+    <string name="dash_repos">Repositories</string>
+    <string name="dash_profile">Profile</string>
+    <string name="dash_users">Users</string>
+    <string name="dash_gists">Gists</string>
+    <string name="dash_orgs">Organizations</string>
 
-	<!-- User selection dialog -->
-	<string name="userselect_title">Accounts</string>
-	<string name="userselect_signout">Sign out</string>
-	<string name="userselect_justbrowsing">Just browsing</string>
-	<string name="userselect_msg">
-		Sign in with a GitHub account already linked with this device or add a new one.
-	</string>
+    <!-- User selection dialog -->
+    <string name="userselect_title">Accounts</string>
+    <string name="userselect_signout">Sign out</string>
+    <string name="userselect_justbrowsing">Just browsing</string>
+    <string name="userselect_msg">
+        Sign in with a GitHub account already linked with this device or add a new one.
+    </string>
 
-	<!-- Authentication -->
-	<string name="auther_label">Hubroid - GitHub Client</string>
-	<string name="auth_label_login">Login</string>
-	<string name="auth_label_password">Password</string>
-	<string name="auth_label_sign_in">Sign In to GitHub</string>
-	<string name="auth_message_signing_in">Signing in…</string>
-	<string name="auth_warning_blank_field">Please fill in this field</string>
-	<string name="auth_link_signup">
-		New to GitHub? &lt;a href=\"https://github.com/signup\">Get an account&lt;/a>.
-	</string>
-	<string name="auth_message_bad_credentials">Login or Password is incorrect</string>
-	<string name="auth_message_auth_failed">Please enter a valid password</string>
-	<string name="auth_message_auth_failed_new_account">
-		Please enter a valid login &amp; password
-	</string>
+    <!-- Authentication -->
+    <string name="auther_label">Hubroid - GitHub Client</string>
+    <string name="auth_label_login">Login</string>
+    <string name="auth_label_password">Password</string>
+    <string name="auth_label_sign_in">Sign In to GitHub</string>
+    <string name="auth_message_signing_in">Signing in…</string>
+    <string name="auth_warning_blank_field">Please fill in this field</string>
+    <string name="auth_link_signup">
+        New to GitHub? &lt;a href=\"https://github.com/signup\">Get an account&lt;/a>.
+    </string>
+    <string name="auth_message_bad_credentials">Login or Password is incorrect</string>
+    <string name="auth_message_auth_failed">Please enter a valid password</string>
+    <string name="auth_message_auth_failed_new_account">
+        Please enter a valid login &amp; password
+    </string>
 
-	<!-- Events -->
-	<string name="events_timeline">Timeline</string>
-	<string name="events_received">Private Feed</string>
-	<string name="events_public">Your Activity</string>
+    <!-- Events -->
+    <string name="events_timeline">Timeline</string>
+    <string name="events_received">Private Feed</string>
+    <string name="events_public">Your Activity</string>
 
-	<!-- Repositories -->
-	<string name="repositories">Repositories</string>
-	<string name="repositories_watched">Watched</string>
-	<string name="forks">Forks</string>
+    <!-- Repositories -->
+    <string name="repositories">Repositories</string>
+    <string name="repositories_watched">Watched</string>
+    <string name="forks">Forks</string>
 
-	<!-- Issues -->
-	<string name="issues">Issues</string>
-	<string name="issues_filters">Filters</string>
-	<string name="issues_open">Open</string>
-	<string name="issues_closed">Closed</string>
-	<string name="issues_assigned">Assigned To You</string>
-	<string name="issues_mentioned">Mentioning You</string>
+    <!-- Issues -->
+    <string name="issues">Issues</string>
+    <string name="issues_filters">Filters</string>
+    <string name="issues_open">Open</string>
+    <string name="issues_closed">Closed</string>
+    <string name="issues_assigned">Assigned To You</string>
+    <string name="issues_mentioned">Mentioning You</string>
 
-	<string name="issue_empty_description">No description given.</string>
+    <string name="issue_empty_description">No description given.</string>
 
-	<string name="issue_title_hint">Issue Title</string>
-	<string name="issue_body_hint">Issue Body</string>
+    <string name="issue_title_hint">Issue Title</string>
+    <string name="issue_body_hint">Issue Body</string>
 
-	<string name="issue_submit">Submit Issue</string>
+    <string name="issue_submit">Submit Issue</string>
 
-	<string name="issue_close">Close Issue</string>
-	<string name="issue_reopen">Reopen Issue</string>
+    <string name="issue_close">Close Issue</string>
+    <string name="issue_reopen">Reopen Issue</string>
 
-	<string name="issue_comment_hint">Leave a comment</string>
+    <string name="issue_comment_hint">Leave a comment</string>
 
-	<!-- Users -->
-	<string name="followers">Followers</string>
-	<string name="following">Following</string>
-	<string name="watchers">Watchers</string>
+    <!-- Users -->
+    <string name="followers">Followers</string>
+    <string name="following">Following</string>
+    <string name="watchers">Watchers</string>
 </resources>
