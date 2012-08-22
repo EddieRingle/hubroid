@@ -48,6 +48,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -125,6 +126,12 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
 
     protected void onCreate(final Bundle icicle) {
         onCreate(icicle, NO_LAYOUT);
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        getWindow().getDecorView().setBackgroundColor(Color.WHITE);
     }
 
     public boolean isMultiPane() {
