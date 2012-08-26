@@ -30,6 +30,7 @@ import com.actionbarsherlock.view.MenuInflater;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
 
 import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Repository;
@@ -111,7 +112,7 @@ public class BaseFragment extends SherlockFragment {
         return getBaseActivity().isMultiPane();
     }
 
-    public void onCreateActionBar(ActionBar bar) {
+    public void onCreateActionBar(ActionBar bar, Menu menu, MenuInflater inflater) {
         mCreateActionBarCalled = true;
 
         bar.setHomeButtonEnabled(true);
@@ -121,13 +122,18 @@ public class BaseFragment extends SherlockFragment {
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+    public final void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        mCreateActionBarCalled = false;
-        onCreateActionBar(getBaseActivity().getSupportActionBar());
-        if (!mCreateActionBarCalled) {
-            throw new IllegalStateException("You must call super() in onCreateActionBar()");
+        if (getBaseActivity() instanceof BaseDashboardActivity &&
+                ((BaseDashboardActivity)getBaseActivity()).isDrawerOpened()) {
+            return;
+        } else {
+            mCreateActionBarCalled = false;
+            onCreateActionBar(getBaseActivity().getSupportActionBar(), menu, inflater);
+            if (!mCreateActionBarCalled) {
+                throw new IllegalStateException("You must call super() in onCreateActionBar()");
+            }
         }
     }
 

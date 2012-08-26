@@ -321,15 +321,10 @@ public class ProfileFragment extends BaseFragment {
     }
 
     @Override
-    public void onCreateActionBar(ActionBar bar) {
-        super.onCreateActionBar(bar);
+    public void onCreateActionBar(ActionBar bar, Menu menu, MenuInflater inflater) {
+        super.onCreateActionBar(bar, menu, inflater);
 
         bar.setTitle(getTargetUser().getLogin());
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
 
         menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
     }

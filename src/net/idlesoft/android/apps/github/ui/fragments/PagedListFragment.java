@@ -25,6 +25,7 @@ package net.idlesoft.android.apps.github.ui.fragments;
 
 import com.google.gson.reflect.TypeToken;
 
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
@@ -236,9 +237,10 @@ public abstract class PagedListFragment<T> extends BaseListFragment<T>
         }
     }
 
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+    public void onCreateActionBar(ActionBar bar, Menu menu, MenuInflater inflater) {
+        super.onCreateActionBar(bar, menu, inflater);
 
         menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
     }

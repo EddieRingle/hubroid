@@ -26,6 +26,8 @@ package net.idlesoft.android.apps.github.ui.fragments.app;
 import com.google.gson.reflect.TypeToken;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.services.GitHubApiService;
@@ -174,8 +176,8 @@ public class RepositoryListFragment extends PagedListFragment<Repository> {
     }
 
     @Override
-    public void onCreateActionBar(ActionBar bar) {
-        super.onCreateActionBar(bar);
+    public void onCreateActionBar(ActionBar bar, Menu menu, MenuInflater inflater) {
+        super.onCreateActionBar(bar, menu, inflater);
 
         bar.setTitle(getTargetUser().getLogin());
 

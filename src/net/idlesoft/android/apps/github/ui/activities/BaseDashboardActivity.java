@@ -26,6 +26,7 @@ package net.idlesoft.android.apps.github.ui.activities;
 import com.google.gson.reflect.TypeToken;
 
 import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.github.eddieringle.android.libs.undergarment.widgets.DrawerGarment;
 
@@ -63,6 +64,7 @@ import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_ORGS_SELF_MEMBERSHIPS;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.PARAM_LOGIN;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_WATCHED;
@@ -138,6 +140,14 @@ public class BaseDashboardActivity extends BaseActivity {
         return mDrawerGarment;
     }
 
+    public boolean isDrawerOpened() {
+        if (getDrawerGarment() != null) {
+            return getDrawerGarment().isDrawerOpened();
+        }
+
+        return false;
+    }
+
     @Override
     protected void onCreate(Bundle icicle, int layout) {
         super.onCreate(icicle, layout);
@@ -152,12 +162,14 @@ public class BaseDashboardActivity extends BaseActivity {
             @Override
             public void onDrawerOpened() {
                 mShowingDash = true;
+                supportInvalidateOptionsMenu();
                 getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             }
 
             @Override
             public void onDrawerClosed() {
                 mShowingDash = false;
+                supportInvalidateOptionsMenu();
                 getSupportActionBar().setDisplayHomeAsUpEnabled(false);
             }
         });
@@ -402,8 +414,14 @@ public class BaseDashboardActivity extends BaseActivity {
     public void onCreateActionBar(ActionBar bar) {
         super.onCreateActionBar(bar);
 
-        if (mDrawerGarment.isDrawerEnabled()) {
+        if (getDrawerGarment().isDrawerEnabled()) {
             bar.setIcon(R.drawable.ic_launcher_white_dashboard);
+
+            if (getDrawerGarment().isDrawerOpened()) {
+                bar.setDisplayHomeAsUpEnabled(true);
+            } else {
+                bar.setDisplayHomeAsUpEnabled(false);
+            }
         }
     }
 
