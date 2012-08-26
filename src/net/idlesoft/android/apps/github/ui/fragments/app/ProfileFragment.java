@@ -31,6 +31,7 @@ import com.androidquery.AQuery;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.services.GitHubApiService;
+import net.idlesoft.android.apps.github.ui.activities.app.RepositoriesActivity;
 import net.idlesoft.android.apps.github.ui.adapters.InfoListAdapter;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import net.idlesoft.android.apps.github.ui.widgets.IdleList;
@@ -63,6 +64,8 @@ import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACC
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_ERROR;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.PARAM_LOGIN;
+import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
 import static net.idlesoft.android.apps.github.utils.StringUtils.isStringEmpty;
 
 public class ProfileFragment extends BaseFragment {
@@ -170,6 +173,12 @@ public class ProfileFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 final Bundle args = new Bundle();
                 args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
+                args.putInt(ARG_LIST_TYPE, LIST_USER);
+
+                final Intent startRepositories = new Intent(getBaseActivity(),
+                        RepositoriesActivity.class);
+                startRepositories.putExtras(args);
+                getBaseActivity().startActivity(startRepositories);
             }
         };
         mHolders.add(holder);
