@@ -69,6 +69,8 @@ import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFr
 
 public class BaseDashboardActivity extends BaseActivity {
 
+    public static final String ARG_DASHBOARD_ITEM = "arg_dashboard_item";
+
     public static final String EXTRA_CONTEXTS = "extra_contexts";
 
     public static final String EXTRA_SHOWING_DASH = "extra_showing_dash";
@@ -160,6 +162,11 @@ public class BaseDashboardActivity extends BaseActivity {
             }
         });
 
+        int selectedItem = 4;
+        if (getIntent() != null) {
+            selectedItem = getIntent().getIntExtra(ARG_DASHBOARD_ITEM, 4);
+        }
+
         final ArrayList<DashboardListAdapter.DashboardEntry> dashboardEntries =
                 new ArrayList<DashboardListAdapter.DashboardEntry>();
 
@@ -169,6 +176,7 @@ public class BaseDashboardActivity extends BaseActivity {
                 .setGlyphColor(Color.parseColor("#2c2c2c"))
                 .setGlyphSize(72.0f)
                 .toDrawable();
+        entry.selected = false;
         dashboardEntries.add(entry);
 
         entry = new DashboardListAdapter.DashboardEntry();
@@ -177,6 +185,27 @@ public class BaseDashboardActivity extends BaseActivity {
                 .setGlyphColor(Color.parseColor("#2c2c2c"))
                 .setGlyphSize(72.0f)
                 .toDrawable();
+        entry.selected = false;
+        if (this instanceof RepositoriesActivity) {
+            final int listType = getIntent().getIntExtra(ARG_LIST_TYPE, -1);
+            if (listType == LIST_USER) {
+                entry.selected = true;
+            }
+        }
+        entry.onEntryClickListener = new DashboardListAdapter.DashboardEntry.OnEntryClickListener() {
+            @Override
+            public void onClick(DashboardListAdapter.DashboardEntry entry, int i) {
+                final Intent reposIntent = new Intent(BaseDashboardActivity.this,
+                        RepositoriesActivity.class);
+                reposIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
+                reposIntent.putExtra(ARG_DASHBOARD_ITEM, i);
+                reposIntent.putExtra(ARG_TARGET_USER,
+                        GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
+                reposIntent.putExtra(ARG_LIST_TYPE, LIST_USER);
+                startActivity(reposIntent);
+                finish();
+            }
+        };
         dashboardEntries.add(entry);
 
         entry = new DashboardListAdapter.DashboardEntry();
@@ -185,6 +214,27 @@ public class BaseDashboardActivity extends BaseActivity {
                 .setGlyphColor(Color.parseColor("#2c2c2c"))
                 .setGlyphSize(72.0f)
                 .toDrawable();
+        entry.selected = false;
+        if (this instanceof RepositoriesActivity) {
+            final int listType = getIntent().getIntExtra(ARG_LIST_TYPE, -1);
+            if (listType == LIST_WATCHED) {
+                entry.selected = true;
+            }
+        }
+        entry.onEntryClickListener = new DashboardListAdapter.DashboardEntry.OnEntryClickListener() {
+            @Override
+            public void onClick(DashboardListAdapter.DashboardEntry entry, int i) {
+                final Intent reposIntent = new Intent(BaseDashboardActivity.this,
+                        RepositoriesActivity.class);
+                reposIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
+                reposIntent.putExtra(ARG_DASHBOARD_ITEM, i);
+                reposIntent.putExtra(ARG_TARGET_USER,
+                        GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
+                reposIntent.putExtra(ARG_LIST_TYPE, LIST_WATCHED);
+                startActivity(reposIntent);
+                finish();
+            }
+        };
         dashboardEntries.add(entry);
 
         entry = new DashboardListAdapter.DashboardEntry();
@@ -193,6 +243,23 @@ public class BaseDashboardActivity extends BaseActivity {
                 .setGlyphColor(Color.parseColor("#2c2c2c"))
                 .setGlyphSize(72.0f)
                 .toDrawable();
+        entry.selected = false;
+        if (this instanceof ProfileActivity) {
+            entry.selected = true;
+        }
+        entry.onEntryClickListener = new DashboardListAdapter.DashboardEntry.OnEntryClickListener() {
+            @Override
+            public void onClick(DashboardListAdapter.DashboardEntry entry, int i) {
+                final Intent profileIntent = new Intent(BaseDashboardActivity.this,
+                        ProfileActivity.class);
+                profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
+                profileIntent.putExtra(ARG_DASHBOARD_ITEM, i);
+                profileIntent.putExtra(ARG_TARGET_USER,
+                        GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
+                startActivity(profileIntent);
+                finish();
+            }
+        };
         dashboardEntries.add(entry);
 
         entry = new DashboardListAdapter.DashboardEntry();
@@ -243,7 +310,6 @@ public class BaseDashboardActivity extends BaseActivity {
         mDashboardListView = (ListView) mDrawerGarment.findViewById(R.id.list);
         mDashboardListView.addHeaderView(headerLayout);
         mDashboardListView.setAdapter(mDashboardListAdapter);
-        mDashboardListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         mDashboardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -253,29 +319,9 @@ public class BaseDashboardActivity extends BaseActivity {
                     i--;
                 }
                 final DashboardListAdapter.DashboardEntry entry = mDashboardListAdapter.getItem(i);
-                view.setSelected(true);
                 if (entry != null) {
-                    if (entry.label.endsWith("Repositories")) {
-                        final Intent reposIntent = new Intent(BaseDashboardActivity.this,
-                                RepositoriesActivity.class);
-                        reposIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
-                        reposIntent.putExtra(ARG_TARGET_USER,
-                                GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
-                        if (entry.label.startsWith("Your")) {
-                            reposIntent.putExtra(ARG_LIST_TYPE, LIST_USER);
-                        } else if (entry.label.startsWith("Starred")) {
-                            reposIntent.putExtra(ARG_LIST_TYPE, LIST_WATCHED);
-                        }
-                        startActivity(reposIntent);
-                        finish();
-                    } else if (entry.label.equals(getString(R.string.dash_profile))) {
-                        final Intent profileIntent = new Intent(BaseDashboardActivity.this,
-                                ProfileActivity.class);
-                        profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
-                        profileIntent.putExtra(ARG_TARGET_USER,
-                                GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
-                        startActivity(profileIntent);
-                        finish();
+                    if (entry.onEntryClickListener != null) {
+                        entry.onEntryClickListener.onClick(entry, i);
                     }
                 }
             }

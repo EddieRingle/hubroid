@@ -26,6 +26,7 @@ package net.idlesoft.android.apps.github.ui.adapters;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,14 +37,19 @@ public class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.D
 
     public static class DashboardEntry {
 
-        public
-        int id;
+        public boolean selected;
 
-        public
-        Drawable icon;
+        public int id;
 
-        public
-        String label;
+        public Drawable icon;
+
+        public String label;
+
+        public OnEntryClickListener onEntryClickListener;
+
+        public static interface OnEntryClickListener {
+            public void onClick(DashboardEntry entry, int i);
+        }
     }
 
     public static class ViewHolder {
@@ -75,6 +81,22 @@ public class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.D
         holder.icon.setImageDrawable(entry.icon);
         holder.label.setText(entry.label);
 
+        if (entry.selected) {
+            convertView.setBackgroundResource(R.color.selected_hubroid);
+        } else {
+            convertView.setBackgroundColor(Color.TRANSPARENT);
+        }
+
         return convertView;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return !getItem(position).selected;
     }
 }

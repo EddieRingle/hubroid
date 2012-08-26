@@ -26,6 +26,7 @@
 
     <color name="focused_hubroid">#884183c4</color>
     <color name="pressed_hubroid">#CC4183c4</color>
+    <color name="selected_hubroid">#424183c4</color>
 
     <color name="github_blue">#FF4183C4</color>
     <color name="github_orange">#FFFF8811</color>
