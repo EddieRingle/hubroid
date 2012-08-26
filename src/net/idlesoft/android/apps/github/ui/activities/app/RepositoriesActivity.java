@@ -23,26 +23,28 @@
 
 package net.idlesoft.android.apps.github.ui.activities.app;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.view.MenuItem;
+
+import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
+import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-public class RepositoriesActivity extends BaseDashboardActivity {
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
-    private boolean mViewingSelf;
+public class RepositoriesActivity extends BaseDashboardActivity {
 
     @Override
     protected void onCreate(Bundle icicle, int layout) {
         super.onCreate(icicle, R.layout.main);
-
-        mViewingSelf = getTargetUser().getLogin().equals(getCurrentContextLogin());
-        if (!mViewingSelf) {
-            getDrawerGarment().setDrawerEnabled(false);
-        }
 
         final FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(RepositoryListFragment.class.getName());
@@ -56,5 +58,20 @@ public class RepositoriesActivity extends BaseDashboardActivity {
                     .replace(R.id.container_main, fragment, RepositoryListFragment.class.getName())
                     .commit();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home && !isFromDashboard()) {
+            final String userJson = getIntent().getStringExtra(ARG_TARGET_USER);
+            if (userJson != null) {
+                final Intent toUser = new Intent(this, ProfileActivity.class);
+                toUser.putExtra(ARG_TARGET_USER, userJson);
+                startActivity(toUser);
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

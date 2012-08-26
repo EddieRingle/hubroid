@@ -33,16 +33,9 @@ import android.support.v4.app.FragmentManager;
 
 public class ProfileActivity extends BaseDashboardActivity {
 
-    private boolean mViewingSelf;
-
     @Override
     protected void onCreate(Bundle icicle, int layout) {
         super.onCreate(icicle, R.layout.main);
-
-        mViewingSelf = getTargetUser().getLogin().equals(getCurrentContextLogin());
-        if (!mViewingSelf) {
-            getDrawerGarment().setDrawerEnabled(false);
-        }
 
         final FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentByTag(ProfileFragment.class.getName());

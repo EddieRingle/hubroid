@@ -64,6 +64,7 @@ import java.util.HashMap;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity.EXTRA_SHOWING_DASH;
 
 public abstract class BaseActivity extends RoboSherlockFragmentActivity {
 
@@ -326,16 +327,12 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                if ((getSupportActionBar().getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP)
-                        == ActionBar.DISPLAY_HOME_AS_UP) {
-                    onBackPressed();
-                } else {
-                    intent = new Intent();
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    intent.setClass(getApplicationContext(), HomeActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
+                intent = new Intent();
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.putExtra(EXTRA_SHOWING_DASH, true);
+                intent.setClass(getApplicationContext(), HomeActivity.class);
+                startActivity(intent);
+                finish();
                 return true;
             case R.id.actionbar_action_select_account:
                 startActivity(AccountSelectActivity.class);

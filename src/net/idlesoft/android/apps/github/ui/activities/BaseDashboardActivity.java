@@ -26,7 +26,6 @@ package net.idlesoft.android.apps.github.ui.activities;
 import com.google.gson.reflect.TypeToken;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.github.eddieringle.android.libs.undergarment.widgets.DrawerGarment;
 
@@ -64,7 +63,6 @@ import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_ORGS_SELF_MEMBERSHIPS;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
-import static net.idlesoft.android.apps.github.services.GitHubApiService.PARAM_LOGIN;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_WATCHED;
@@ -75,7 +73,11 @@ public class BaseDashboardActivity extends BaseActivity {
 
     public static final String EXTRA_CONTEXTS = "extra_contexts";
 
+    public static final String ARG_FROM_DASHBOARD = "extra_from_dashboard";
+
     public static final String EXTRA_SHOWING_DASH = "extra_showing_dash";
+
+    private boolean mFromDashboard;
 
     private boolean mReadyForContext = false;
 
@@ -148,6 +150,10 @@ public class BaseDashboardActivity extends BaseActivity {
         return false;
     }
 
+    public boolean isFromDashboard() {
+        return mFromDashboard;
+    }
+
     @Override
     protected void onCreate(Bundle icicle, int layout) {
         super.onCreate(icicle, layout);
@@ -175,8 +181,18 @@ public class BaseDashboardActivity extends BaseActivity {
         });
 
         int selectedItem = 4;
+
         if (getIntent() != null) {
             selectedItem = getIntent().getIntExtra(ARG_DASHBOARD_ITEM, 4);
+
+            mFromDashboard = getIntent().getBooleanExtra(ARG_FROM_DASHBOARD, false);
+            if (!mFromDashboard) {
+                getDrawerGarment().setDrawerEnabled(false);
+            }
+
+            if (getIntent().hasExtra(EXTRA_SHOWING_DASH)) {
+                mShowingDash = getIntent().getBooleanExtra(EXTRA_SHOWING_DASH, mShowingDash);
+            }
         }
 
         final ArrayList<DashboardListAdapter.DashboardEntry> dashboardEntries =
@@ -211,6 +227,7 @@ public class BaseDashboardActivity extends BaseActivity {
                         RepositoriesActivity.class);
                 reposIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 reposIntent.putExtra(ARG_DASHBOARD_ITEM, i);
+                reposIntent.putExtra(ARG_FROM_DASHBOARD, true);
                 reposIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
                 reposIntent.putExtra(ARG_LIST_TYPE, LIST_USER);
@@ -240,6 +257,7 @@ public class BaseDashboardActivity extends BaseActivity {
                         RepositoriesActivity.class);
                 reposIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 reposIntent.putExtra(ARG_DASHBOARD_ITEM, i);
+                reposIntent.putExtra(ARG_FROM_DASHBOARD, true);
                 reposIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
                 reposIntent.putExtra(ARG_LIST_TYPE, LIST_WATCHED);
@@ -266,6 +284,7 @@ public class BaseDashboardActivity extends BaseActivity {
                         ProfileActivity.class);
                 profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 profileIntent.putExtra(ARG_DASHBOARD_ITEM, i);
+                profileIntent.putExtra(ARG_FROM_DASHBOARD, true);
                 profileIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
                 startActivity(profileIntent);
@@ -415,13 +434,19 @@ public class BaseDashboardActivity extends BaseActivity {
         super.onCreateActionBar(bar);
 
         if (getDrawerGarment().isDrawerEnabled()) {
-            bar.setIcon(R.drawable.ic_launcher_white_dashboard);
+            if (isFromDashboard()) {
+                bar.setIcon(R.drawable.ic_launcher_white_dashboard);
+            }
 
             if (getDrawerGarment().isDrawerOpened()) {
                 bar.setDisplayHomeAsUpEnabled(true);
             } else {
                 bar.setDisplayHomeAsUpEnabled(false);
             }
+        }
+
+        if (!isFromDashboard()) {
+            bar.setDisplayHomeAsUpEnabled(true);
         }
     }
 

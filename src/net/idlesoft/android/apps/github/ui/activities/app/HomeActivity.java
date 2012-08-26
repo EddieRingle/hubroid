@@ -39,6 +39,8 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity.ARG_FROM_DASHBOARD;
+import static net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity.EXTRA_SHOWING_DASH;
 
 public class HomeActivity extends BaseActivity {
 
@@ -110,8 +112,12 @@ public class HomeActivity extends BaseActivity {
 
         final Intent startIntent = new Intent(this, ProfileActivity.class);
         startIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startIntent.putExtra(ARG_FROM_DASHBOARD, true);
         startIntent.putExtra(ARG_TARGET_USER,
                 GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
+        if (getIntent() != null && getIntent().getBooleanExtra(EXTRA_SHOWING_DASH, false)) {
+            startIntent.putExtra(EXTRA_SHOWING_DASH, true);
+        }
         startActivity(startIntent);
         finish();
     }
