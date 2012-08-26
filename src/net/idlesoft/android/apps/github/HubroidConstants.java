@@ -70,5 +70,5 @@ public class HubroidConstants {
 
     public static final int LOADER_WATCHED_REPOSITORIES_PAGER = 3;
 
-    public static final int REQUEST_PAGE_SIZE = 40;
+    public static final int REQUEST_PAGE_SIZE = 20;
 }

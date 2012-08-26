@@ -82,8 +82,7 @@ public class ListViewPager extends ViewPager {
                 final ViewGroup existingParent = (ViewGroup) list.getParent();
                 if (existingParent != null && existingParent.indexOfChild(list) >= 0) {
                     existingParent.removeView(list);
-                }
-				/* Add list to the new container */
+                }                /* Add list to the new container */
                 container.addView(list);
             }
 

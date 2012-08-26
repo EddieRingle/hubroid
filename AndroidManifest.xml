@@ -36,8 +36,12 @@
                       android:host="oauth"></data>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activities.app.RepositoriesActivity" />
+        <activity android:name=".ui.activities.app.ProfileActivity" />
 
         <!-- Services -->
+        <service android:name=".services.GitHubApiService" />
+
         <service android:name=".authenticator.AccountAuthenticatorService" android:process=":auth">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>

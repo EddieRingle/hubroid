@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright (c) 2012 Eddie Ringle
   ~ All rights reserved.
@@ -23,34 +24,29 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="center"
-              android:orientation="vertical">
-    <ProgressBar android:id="@+id/progress"
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_gravity="center"
-                 android:indeterminate="true"
-                 android:visibility="gone"/>
-    <LinearLayout android:id="@+id/content"
-                  android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:visibility="visible"
-                  android:gravity="center"
-                  android:orientation="vertical">
-        <com.viewpagerindicator.TabPageIndicator
-                android:id="@+id/tpi_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="@color/github_blue"/>
-        <android.support.v4.view.ViewPager
-                android:id="@+id/vp_pages"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-    </LinearLayout>
+              android:layout_height="wrap_content">
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:background="#cacaca"
+            android:textColor="#2c2c2c"
+            android:textStyle="bold"
+            android:text="CONTEXT" />
+    <Spinner android:id="@+id/context_spinner"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:background="@drawable/spinner_background_ab_hubroid" />
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="3dp"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:background="#cacaca"
+            android:textColor="#2c2c2c"
+            android:textStyle="bold"
+            android:text="NAVIGATION" />
 </LinearLayout>

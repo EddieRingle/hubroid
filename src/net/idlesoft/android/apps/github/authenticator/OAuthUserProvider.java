@@ -23,13 +23,12 @@
 
 package net.idlesoft.android.apps.github.authenticator;
 
-import com.google.inject.Inject;
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AccountsException;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 
 import java.io.IOException;
@@ -53,18 +52,23 @@ public class OAuthUserProvider {
         public String access_token;
     }
 
-    @Inject
-    private Activity activity;
-
-    @Inject
     private AccountManager accountManager;
 
-    public AuthResponse getOAuthResponse(Account account)
+    public AuthResponse getOAuthResponse(Context context, Account account)
             throws AccountsException, IOException {
         AccountManagerFuture<Bundle> accountManagerFuture;
 
-        accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null, activity,
-                null, null);
+        if (accountManager == null) {
+            accountManager = AccountManager.get(context);
+        }
+
+        if (context instanceof Activity) {
+            accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null,
+                    (Activity) context, null, null);
+        } else {
+            accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null, true,
+                    null, null);
+        }
 
         Bundle result = accountManagerFuture.getResult();
 

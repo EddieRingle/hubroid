@@ -104,8 +104,8 @@ public class GravatarCache {
     }
 
     /**
-     * Returns a Bitmap of the Gravatar associated with the provided login. This image will be scaled
-     * according to the provided size.
+     * Returns a Bitmap of the Gravatar associated with the provided login. This image will be
+     * scaled according to the provided size.
      *
      * @return a scaled Bitmap
      */
@@ -118,8 +118,7 @@ public class GravatarCache {
             final File image = new File(gravatars, gravatarHash + ".png");
             bm = BitmapFactory.decodeFile(image.getPath());
             if (bm == null) {
-                bm = downloadGravatar(gravatarHash);
-				/* Compress to a 140x140px PNG */
+                bm = downloadGravatar(gravatarHash);                /* Compress to a 140x140px PNG */
                 bm.compress(Bitmap.CompressFormat.PNG, 100, new FileOutputStream(image));
             }
             bm = Bitmap.createScaledBitmap(bm, size, size, true);

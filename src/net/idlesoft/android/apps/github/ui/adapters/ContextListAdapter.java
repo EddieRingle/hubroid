@@ -71,8 +71,8 @@ public class ContextListAdapter extends BaseListAdapter<User> {
                 .image(user.getAvatarUrl(), true, true, 200, R.drawable.gravatar, null,
                         AQuery.FADE_IN_NETWORK, 1.0f);
 
-        holder.login.setTextColor(Color.WHITE);
         holder.login.setText(login);
+        holder.login.setTextColor(Color.parseColor("#2c2c2c"));
 
         return convertView;
     }

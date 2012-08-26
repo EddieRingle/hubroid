@@ -137,8 +137,7 @@ public class StringUtils {
         final Matcher usernameMatcher = usernamePattern.matcher(input);
 
 		/* Loop through @username matches */
-        while (usernameMatcher.find()) {
-			/* Grab the username from the match (without the '@') */
+        while (usernameMatcher.find()) {            /* Grab the username from the match (without the '@') */
             final String username = usernameMatcher.group(1);
 			/* Create a URL to the user's profile */
             final String r = "<a href=\"https://github.com/" + username + "\">@" + username

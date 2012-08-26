@@ -23,31 +23,38 @@
 
 package net.idlesoft.android.apps.github.ui.fragments.app;
 
+import com.google.gson.reflect.TypeToken;
+
+import com.actionbarsherlock.app.ActionBar;
+
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.services.GitHubApiService;
 import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.fragments.PagedListFragment;
 
 import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.client.PageIterator;
-import org.eclipse.egit.github.core.service.RepositoryService;
-import org.eclipse.egit.github.core.service.WatcherService;
 
-import android.accounts.AccountsException;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
-import static net.idlesoft.android.apps.github.HubroidConstants.LOADER_OWNED_REPOSITORIES_PAGER;
-import static net.idlesoft.android.apps.github.HubroidConstants.LOADER_WATCHED_REPOSITORIES_PAGER;
-import static net.idlesoft.android.apps.github.HubroidConstants.REQUEST_PAGE_SIZE;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_ORG_OWNED;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_SELF_OWNED;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_USER_OWNED;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_USER_WATCHED;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.PARAM_LOGIN;
 
 public class RepositoryListFragment extends PagedListFragment<Repository> {
 
@@ -59,97 +66,85 @@ public class RepositoryListFragment extends PagedListFragment<Repository> {
 
     private int mListType;
 
-    @Override
-    public PageIterator<Repository> onCreatePageIterator() {
-        switch (mListType) {
-            case LIST_USER:
-                try {
-                    final RepositoryService rs =
-                            new RepositoryService(getBaseActivity().getGHClient());
-                    if (!getTargetUser().getLogin().equals(
-                            getBaseActivity().getCurrentContextLogin())) {
-                        return rs.pageRepositories(getTargetUser().getLogin());
-                    } else {
-                        final Map<String, String> filter = new HashMap<String, String>();
-                        if (getTargetUser().getLogin().equals(
-                                getBaseActivity().getCurrentUserLogin())) {
-                            filter.put("type", "owner");
-                            filter.put("sort", "pushed");
-                            return rs.pageRepositories(filter, REQUEST_PAGE_SIZE);
-                        } else {
-                            return rs.pageOrgRepositories(getTargetUser().getLogin(),
-                                    filter,
-                                    REQUEST_PAGE_SIZE);
-                        }
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (AccountsException e) {
-                    e.printStackTrace();
-                }
-                break;
-            case LIST_WATCHED:
-                try {
-                    final WatcherService ws =
-                            new WatcherService(getBaseActivity().getGHClient());
-                    return ws.pageWatched(getTargetUser().getLogin(), REQUEST_PAGE_SIZE);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (AccountsException e) {
-                    e.printStackTrace();
-                }
-                break;
-        }
-
-        return null;
+    public RepositoryListFragment() {
+        super(new TypeToken<List<Repository>>() {
+        });
     }
 
     @Override
-    public int getLoaderId() {
-        switch (mListType) {
-            case LIST_USER:
-                return LOADER_OWNED_REPOSITORIES_PAGER;
-            case LIST_WATCHED:
-                return LOADER_WATCHED_REPOSITORIES_PAGER;
-        }
+    public PagedListBroadcastReceiver onCreateBroadcastReceiver() {
+        return new PagedListBroadcastReceiver() {
+            @Override
+            public List<Repository> handleReceive(Context context, Intent intent,
+                    List<Repository> items) {
+                if (items == null) {
+                    return null;
+                }
 
-        return 0;
-    }
+                ArrayList<Repository> processed = new ArrayList<Repository>();
 
-    @Override
-    public Collection<Repository> onProcessItems(Collection<Repository> items) {
-        /*
-         * In the case of a list of repositories a user is watching, we want to strip out
-         * all repositories belonging to the current context.
-         */
-        switch (mListType) {
-            case LIST_WATCHED:
-                final ArrayList<Repository> list = new ArrayList<Repository>();
-                list.addAll(items);
-                int len = list.size();
-                for (int i = 0; i < len; i++) {
-                    try {
-                        final Repository repo = list.get(i);
+                if (intent.getAction().equals(ACTION_REPOS_LIST_USER_WATCHED)) {
+                    /*
+                     * In the case of a list of repositories a user is watching, we want to strip
+                     * out all repositories belonging to the current context.
+                     */
+                    for (Repository repo : items) {
                         if (repo == null || repo.getOwner() == null) {
-                            list.remove(i);
-                            len--;
-                            i--;
+                            continue;
                         }
-                        if (repo.getOwner().getLogin().equalsIgnoreCase(
+                        if (repo.getOwner().getLogin().equals(
                                 getBaseActivity().getCurrentContextLogin())) {
-                            list.remove(i);
-                            len--;
-                            i--;
+                            continue;
                         }
-                    } catch (IndexOutOfBoundsException e) {
-                        e.printStackTrace();
+                        processed.add(repo);
+                    }
+                    return processed;
+                } else {
+                    return items;
+                }
+            }
+        };
+    }
+
+    @Override
+    public IntentFilter onCreateIntentFilter() {
+        final IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_REPOS_LIST_ORG_OWNED);
+        filter.addAction(ACTION_REPOS_LIST_SELF_OWNED);
+        filter.addAction(ACTION_REPOS_LIST_USER_OWNED);
+        filter.addAction(ACTION_REPOS_LIST_USER_WATCHED);
+        return filter;
+    }
+
+    @Override
+    public Intent onCreateServiceIntent() {
+        final Intent getRepositoriesIntent = new Intent(getBaseActivity(), GitHubApiService.class);
+        getRepositoriesIntent.putExtra(ARG_ACCOUNT, getBaseActivity().getCurrentUserAccount());
+
+        switch (mListType) {
+            case LIST_USER:
+                if (!getTargetUser().getLogin().equals(
+                        getBaseActivity().getCurrentContextLogin())) {
+                    getRepositoriesIntent.setAction(ACTION_REPOS_LIST_USER_OWNED);
+                    getRepositoriesIntent.putExtra(PARAM_LOGIN, getTargetUser().getLogin());
+                } else {
+                    final Map<String, String> filter = new HashMap<String, String>();
+                    if (getTargetUser().getLogin().equals(
+                            getBaseActivity().getCurrentUserLogin())) {
+                        getRepositoriesIntent.setAction(ACTION_REPOS_LIST_SELF_OWNED);
+                    } else {
+                        getRepositoriesIntent.setAction(ACTION_REPOS_LIST_ORG_OWNED);
+                        getRepositoriesIntent.putExtra(PARAM_LOGIN, getTargetUser().getLogin());
                     }
                 }
-                list.trimToSize();
-                return list;
+                break;
+            case LIST_WATCHED:
+                getRepositoriesIntent.setAction(ACTION_REPOS_LIST_USER_WATCHED);
+                getRepositoriesIntent.putExtra(PARAM_LOGIN, getTargetUser().getLogin());
+                break;
         }
 
-        return items;
+        return getRepositoriesIntent;
     }
 
     @Override
@@ -168,12 +163,29 @@ public class RepositoryListFragment extends PagedListFragment<Repository> {
     }
 
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {        /*
-		 * Send the user off to the Repository activity
-		 */
+    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+        /*
+         * Send the user off to the Repository activity
+         */
         final Repository target = getListAdapter().getWrappedAdapter().getItem(position);
         final Bundle args = new Bundle();
         args.putString(ARG_TARGET_REPO, GsonUtils.toJson(target));
-		/* TODO: Send the user off to the Repository activity */
+        /* TODO: Send the user off to the Repository activity */
+    }
+
+    @Override
+    public void onCreateActionBar(ActionBar bar) {
+        super.onCreateActionBar(bar);
+
+        bar.setTitle(getTargetUser().getLogin());
+
+        switch (mListType) {
+            case LIST_USER:
+                bar.setSubtitle(R.string.repositories);
+                break;
+            case LIST_WATCHED:
+                bar.setSubtitle(R.string.repositories_watched);
+                break;
+        }
     }
 }

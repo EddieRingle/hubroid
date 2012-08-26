@@ -81,8 +81,7 @@ public class GitHubIntentFilter extends BaseActivity {
         }
 
         if (repo == null) {            /* Send the user to a profile */
-        } else if (action == null) {
-			/* Send the user to a repository */
+        } else if (action == null) {            /* Send the user to a repository */
         } else if (action.equalsIgnoreCase("issues")) {
             if (id == null) {
 				/* Go to a repository's issues */

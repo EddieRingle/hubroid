@@ -23,77 +23,116 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
+import com.google.gson.reflect.TypeToken;
+
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.loaders.PagedAsyncLoader;
 
-import org.eclipse.egit.github.core.client.PageIterator;
+import org.eclipse.egit.github.core.client.GsonUtils;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-public abstract class PagedListFragment<T> extends BaseListFragment<T>
-        implements AbsListView.OnScrollListener,
-        LoaderManager.LoaderCallbacks<List<T>>,
-        PagedAsyncLoader.PagedAsyncLoaderCallbacks<T> {
+import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_START_PAGE;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_ERROR;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_HAS_NEXT;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_NEXT_PAGE;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
 
-    private PageIterator<T> mPageIterator;
+public abstract class PagedListFragment<T> extends BaseListFragment<T>
+        implements AbsListView.OnScrollListener {
+
+    private static final String EXTRA_LIST_ITEMS = "extra_list_items";
+
+    private boolean mHasNext = true;
+
+    private boolean mLoadingMore;
+
+    private int mNextPage = 1;
+
+    private BroadcastReceiver mBroadcastReceiver;
+
+    private TypeToken<List<T>> mListTypeToken;
 
     private View mLoadingIndicator;
 
-    private boolean mLoading;
-
     private boolean mShowingLoadingIndicator;
 
-    /**
-     * Implementations of this method should be responsible for creating an instance of a PageIterator
-     * to be used in loading the list with items.
-     *
-     * @return PageIterator
-     */
-    public abstract PageIterator<T> onCreatePageIterator();
+    protected abstract class PagedListBroadcastReceiver extends BroadcastReceiver {
 
-    /**
-     * Returns a unique identifying integer for use with the LoaderManager in order to prevent
-     * Loader conflicts.
-     *
-     * @return loader id
-     */
-    public abstract int getLoaderId();
+        public abstract List<T> handleReceive(Context context, Intent intent, List<T> items);
 
-    public void startLoading() {
-        mLoading = true;
-        Loader<T> loader = getLoaderManager().getLoader(getLoaderId());
-        if (loader != null) {
-            loader.reset();
-            loader.startLoading();
-        } else {
-            getLoaderManager().initLoader(getLoaderId(), null, this);
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (context == null || intent == null) {
+                return;
+            }
+
+            if (intent.getBooleanExtra(EXTRA_ERROR, false)) {
+                getBaseActivity().popShortToast("An error occurred.");
+            } else {
+                final ArrayList<T> listItems = new ArrayList<T>();
+                final String resultJson = intent.getStringExtra(EXTRA_RESULT_JSON);
+                List<T> fetchedItems = null;
+                if (resultJson != null) {
+                    fetchedItems = GsonUtils.fromJson(resultJson, mListTypeToken.getType());
+                }
+
+                fetchedItems = handleReceive(context, intent, fetchedItems);
+
+                if (fetchedItems != null) {
+                    listItems.addAll(fetchedItems);
+                }
+
+                if (!mLoadingMore) {
+                    getWrappedListAdapter().fillWithItems(listItems);
+                } else {
+                    getWrappedListAdapter().appendWithItems(listItems);
+                }
+
+                mHasNext = intent.getBooleanExtra(EXTRA_HAS_NEXT, false);
+                mNextPage = intent.getIntExtra(EXTRA_NEXT_PAGE, -1);
+
+                setLoadingIndicatorVisible(mHasNext);
+                getListView().setOnScrollListener((mHasNext) ? PagedListFragment.this : null);
+
+                getWrappedListAdapter().notifyDataSetChanged();
+            }
+
+            setListShown(true);
+
+            mLoadingMore = false;
         }
     }
 
-    public void startLoadingMore() {
-        if (mLoading) {
+    public abstract PagedListBroadcastReceiver onCreateBroadcastReceiver();
+
+    public abstract IntentFilter onCreateIntentFilter();
+
+    public abstract Intent onCreateServiceIntent();
+
+    public void startLoading(final boolean forceRefresh) {
+        if (mLoadingMore && !forceRefresh) {
             return;
         }
-        if (mPageIterator.hasNext() && mPageIterator.getNextPage() > 1) {
-            setLoadingIndicatorVisible(true);
-            startLoading();
-        } else {
-            setLoadingIndicatorVisible(false);
-            mLoading = false;
+        final Intent startServiceIntent = onCreateServiceIntent();
+        if (startServiceIntent != null) {
+            startServiceIntent.putExtra(ARG_START_PAGE, mNextPage);
+            getBaseActivity().startService(startServiceIntent);
         }
     }
 
@@ -108,9 +147,14 @@ public abstract class PagedListFragment<T> extends BaseListFragment<T>
         mShowingLoadingIndicator = show;
     }
 
+    public PagedListFragment(final TypeToken<List<T>> listTypeToken) {
+        mListTypeToken = listTypeToken;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {        /* Grab the loading indicator layout during view creation */
+            Bundle savedInstanceState) {
+        /* Grab the loading indicator layout during view creation */
         mLoadingIndicator = inflater.inflate(R.layout.loading_indicator, null, false);
 
         return super.onCreateView(inflater, container, savedInstanceState);
@@ -120,24 +164,53 @@ public abstract class PagedListFragment<T> extends BaseListFragment<T>
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        mPageIterator = onCreatePageIterator();
-    }
+        mBroadcastReceiver = onCreateBroadcastReceiver();
+        if (mBroadcastReceiver != null) {
+            final IntentFilter filter = onCreateIntentFilter();
+            if (filter != null) {
+                getBaseActivity().registerReceiver(mBroadcastReceiver, filter);
+            }
+        }
 
-    @Override
-    public void onStart() {
-        super.onStart();
+        if (savedInstanceState == null) {
+            if (getWrappedListAdapter() != null && getWrappedListAdapter().isEmpty()) {
+                setListShown(false);
+                startLoading(false);
+            }
+        } else {
+            mHasNext = savedInstanceState.getBoolean(EXTRA_HAS_NEXT, true);
+            mNextPage = savedInstanceState.getInt(EXTRA_NEXT_PAGE, -1);
 
-        getListView().setOnScrollListener(this);
+            final String itemsJson = savedInstanceState.getString(EXTRA_LIST_ITEMS);
+            if (itemsJson != null) {
+                final List<T> items = GsonUtils.fromJson(itemsJson, mListTypeToken.getType());
 
-        if (getWrappedListAdapter() != null && getWrappedListAdapter().isEmpty()) {
-            setListShown(false);
-            startLoading();
+                getWrappedListAdapter().fillWithItems(items);
+                getWrappedListAdapter().notifyDataSetChanged();
+
+                setLoadingIndicatorVisible(mNextPage > 0 && mHasNext);
+                getListView().setOnScrollListener((mNextPage > 0 && mHasNext) ? this : null);
+
+                setListShown(true);
+            }
         }
     }
 
     @Override
-    public void onScrollStateChanged(AbsListView absListView, int i) {
-		/* stub */
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (mBroadcastReceiver != null) {
+            try {
+                getBaseActivity().unregisterReceiver(mBroadcastReceiver);
+            } catch (IllegalArgumentException e) {
+                /* Ignore this. */
+            }
+        }
+    }
+
+    @Override
+    public void onScrollStateChanged(AbsListView absListView, int i) {        /* stub */
     }
 
     @Override
@@ -150,48 +223,17 @@ public abstract class PagedListFragment<T> extends BaseListFragment<T>
 		 * Otherwise, we trigger the load of the next page and
 		 * display its results in the list.
 		 */
-        if (mPageIterator == null) {
+        if (mNextPage < 0 || !mHasNext) {
             return;
         }
-        if (mLoading) {
+        if (mLoadingMore) {
             return;
         }
         if (getListView().getLastVisiblePosition() + 1 >= getListAdapter().getCount()) {
-            startLoadingMore();
+            Log.d("hubroid", ">> onScroll() -> Going to load more!");
+            startLoading(false);
+            mLoadingMore = true;
         }
-    }
-
-    @Override
-    public Loader<List<T>> onCreateLoader(int id, Bundle args) {
-        return new PagedAsyncLoader<T>(getBaseActivity(), mPageIterator, this);
-    }
-
-    @Override
-    public void onLoadFinished(Collection<T> items) {
-        mLoading = false;
-
-        if (items != null) {
-            final ArrayList<T> list = new ArrayList<T>();
-            list.addAll(items);
-            getWrappedListAdapter().fillWithItems(list);
-            getWrappedListAdapter().notifyDataSetChanged();
-        }
-
-        if (mPageIterator != null) {
-            setLoadingIndicatorVisible(mPageIterator.hasNext());
-        } else {
-            setLoadingIndicatorVisible(false);
-        }
-
-        setListShown(true);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<T>> loader, List<T> data) {
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<T>> loader) {
     }
 
     @Override
@@ -204,12 +246,27 @@ public abstract class PagedListFragment<T> extends BaseListFragment<T>
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.actionbar_action_refresh) {
-            mPageIterator = onCreatePageIterator();
-            getLoaderManager().destroyLoader(getLoaderId());
             setListShown(false);
-            startLoading();
+            getListView().setOnScrollListener(this);
+            mHasNext = true;
+            mNextPage = 1;
+            startLoading(true);
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putBoolean(EXTRA_HAS_NEXT, mHasNext);
+
+        outState.putInt(EXTRA_HAS_NEXT, mNextPage);
+
+        if (getWrappedListAdapter() != null && getWrappedListAdapter().getAll() != null) {
+            final ArrayList<T> items = getWrappedListAdapter().getAll();
+            outState.putString(EXTRA_LIST_ITEMS, GsonUtils.toJson(items));
+        }
     }
 }

@@ -62,6 +62,10 @@ public abstract class BaseListAdapter<T> extends BaseAdapter {
         }
     }
 
+    public ArrayList<T> getAll() {
+        return mData;
+    }
+
     public void addAll(Collection<? extends T> collection) {
         mData.addAll(collection);
         if (mNotifyOnChange) {

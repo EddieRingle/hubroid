@@ -771,7 +771,7 @@ public class OcticonView extends RelativeLayout {
                         Html.fromHtml("&#x" + Integer.toHexString(MINI + mCurrentOcticon) + ";"));
             }
         }        /*
-		 * A hack to get rid of the bottom padding beneath these glyphs.
+         * A hack to get rid of the bottom padding beneath these glyphs.
 		 * setIncludeFontPadding(false) just causes a load of other problems, so this is really
 		 * the only decent solution at the moment.
 		 */

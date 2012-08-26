@@ -96,7 +96,7 @@ public class BaseFragment extends SherlockFragment {
     }
 
     public BaseActivity getBaseActivity() {
-        return (BaseActivity) getSherlockActivity();
+        return (BaseActivity) getActivity();
     }
 
     public Context getContext() {
@@ -113,6 +113,11 @@ public class BaseFragment extends SherlockFragment {
 
     public void onCreateActionBar(ActionBar bar) {
         mCreateActionBarCalled = true;
+
+        bar.setHomeButtonEnabled(true);
+
+        bar.setDisplayShowHomeEnabled(true);
+        bar.setDisplayShowTitleEnabled(true);
     }
 
     @Override
@@ -141,7 +146,8 @@ public class BaseFragment extends SherlockFragment {
     }
 
     /**
-     * @return The target repository sent to this DataFragment as an argument, or null if none exists.
+     * @return The target repository sent to this DataFragment as an argument, or null if none
+     *         exists.
      */
     public Repository getTargetRepo() {
         return (Repository) mArgumentMap.get(ARG_TARGET_REPO);

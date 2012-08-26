@@ -50,8 +50,8 @@ public abstract class BaseListFragment<T> extends BaseFragment
 
     /**
      * Implementations of this method should create an instance of a subclass of BaseListAdapter
-     * specialized to the specified template type (e.g., PagedListFragment<Repository> implementations
-     * should return an instance of RepositoryListAdapter).
+     * specialized to the specified template type (e.g., PagedListFragment<Repository>
+     * implementations should return an instance of RepositoryListAdapter).
      *
      * @return BaseListAdapter
      */

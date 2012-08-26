@@ -38,6 +38,8 @@ import net.idlesoft.android.apps.github.ui.activities.app.HomeActivity;
 import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import net.idlesoft.android.apps.github.ui.fragments.app.AboutDialogFragment;
 
+import org.eclipse.egit.github.core.Issue;
+import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.GsonUtils;
@@ -57,6 +59,11 @@ import android.support.v4.app.FragmentTransaction;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.util.HashMap;
+
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public abstract class BaseActivity extends RoboSherlockFragmentActivity {
 
@@ -94,6 +101,8 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
 
     private User mCurrentContext = null;
 
+    protected HashMap<String, Object> mArgumentMap = new HashMap<String, Object>();
+
     private final FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener =
             new FragmentManager.OnBackStackChangedListener() {
                 @Override
@@ -107,18 +116,41 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
     }
 
     protected void onCreate(final Bundle icicle, final int layout) {
+        /* Make sure we're using the right theme */
+        getApplicationContext().setTheme(R.style.Theme_Hubroid);
+
         super.onCreate(icicle);
+
         if (layout != NO_LAYOUT) {
             setContentView(layout);
         }
 
         mConfiguration = getResources().getConfiguration();
 
+        /*
+         * Process arguments Bundle into a HashMap of different objects
+		 */
+        final Bundle arguments = getIntent().getExtras();
+        if (arguments != null) {
+            if (arguments.getString(ARG_TARGET_USER) != null) {
+                mArgumentMap.put(ARG_TARGET_USER,
+                        GsonUtils.fromJson(arguments.getString(ARG_TARGET_USER),
+                                User.class));
+            }
+            if (arguments.getString(ARG_TARGET_ISSUE) != null) {
+                mArgumentMap.put(ARG_TARGET_ISSUE,
+                        GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
+                                Issue.class));
+            }
+            if (arguments.getString(ARG_TARGET_REPO) != null) {
+                mArgumentMap.put(ARG_TARGET_ISSUE,
+                        GsonUtils.fromJson(arguments.getString(ARG_TARGET_ISSUE),
+                                Repository.class));
+            }
+        }
+
         mPrefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         mPrefsEditor = mPrefs.edit();
-
-		/* Make sure we're using the right theme */
-        getApplicationContext().setTheme(R.style.Theme_Hubroid);
 
 		/* Refresh the options menu (and the rest of the Action Bar) when the backstack changes */
         getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
@@ -134,6 +166,28 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
         getWindow().getDecorView().setBackgroundColor(Color.WHITE);
     }
 
+    /**
+     * @return The target user sent to this DataFragment as an argument, or null if none exists.
+     */
+    public User getTargetUser() {
+        return (User) mArgumentMap.get(ARG_TARGET_USER);
+    }
+
+    /**
+     * @return The target issue sent to this DataFragment as an argument, or null if none exists.
+     */
+    public Issue getTargetIssue() {
+        return (Issue) mArgumentMap.get(ARG_TARGET_ISSUE);
+    }
+
+    /**
+     * @return The target repository sent to this DataFragment as an argument, or null if none
+     *         exists.
+     */
+    public Repository getTargetRepo() {
+        return (Repository) mArgumentMap.get(ARG_TARGET_REPO);
+    }
+
     public boolean isMultiPane() {
         return getResources().getBoolean(R.bool.multi_paned);
     }
@@ -143,7 +197,7 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
             if (mCurrentAccount == null) {
                 mGitHubClient = mGitHubClientProvider.getAnonymousClient();
             } else {
-                mGitHubClient = mGitHubClientProvider.getClient(mCurrentAccount);
+                mGitHubClient = mGitHubClientProvider.getClient(this, mCurrentAccount);
             }
             mCurrentAccount = mGitHubClientProvider.getCurrentUser();
         }
@@ -217,8 +271,7 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
             mFragmentTransaction.addToBackStack(null);
         }
 
-        mFragmentTransaction.commitAllowingStateLoss();
-		/* Set the activity's transaction to null so a new one can be created */
+        mFragmentTransaction.commitAllowingStateLoss();        /* Set the activity's transaction to null so a new one can be created */
         mFragmentTransaction = null;
     }
 
@@ -273,12 +326,16 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                intent = new Intent();
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setClass(getApplicationContext(), HomeActivity.class);
-                startActivity(intent);
-                finish();
-
+                if ((getSupportActionBar().getDisplayOptions() & ActionBar.DISPLAY_HOME_AS_UP)
+                        == ActionBar.DISPLAY_HOME_AS_UP) {
+                    onBackPressed();
+                } else {
+                    intent = new Intent();
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.setClass(getApplicationContext(), HomeActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
                 return true;
             case R.id.actionbar_action_select_account:
                 startActivity(AccountSelectActivity.class);
@@ -303,8 +360,8 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
     }
 
     /**
-     * Check if a past life wants us to refresh our data This is a one-time-only check, so be sure to
-     * store the value if you need to
+     * Check if a past life wants us to refresh our data This is a one-time-only check, so be sure
+     * to store the value if you need to
      */
     public boolean getRefreshPrevious() {
         final boolean oldValue = mRefreshPrevious;
@@ -324,8 +381,8 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
     }
 
     /**
-     * This method is useful when creating Executables to run on a DataFragment and you need to know if
-     * the data should be refreshed from its source or if it's okay to use cached information (or
+     * This method is useful when creating Executables to run on a DataFragment and you need to know
+     * if the data should be refreshed from its source or if it's okay to use cached information (or
      * something like that).
      *
      * @return Whether or not the UIFragment is refreshing its data & UI

@@ -21,48 +21,40 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github;
+package net.idlesoft.android.apps.github.ui.activities.app;
 
-import com.google.inject.Inject;
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
+import net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment;
 
-import net.idlesoft.android.apps.github.authenticator.OAuthUserProvider;
+import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 
-import org.eclipse.egit.github.core.client.GitHubClient;
+public class RepositoriesActivity extends BaseDashboardActivity {
 
-import android.accounts.Account;
-import android.accounts.AccountsException;
-import android.content.Context;
+    private boolean mViewingSelf;
 
-import java.io.IOException;
+    @Override
+    protected void onCreate(Bundle icicle, int layout) {
+        super.onCreate(icicle, R.layout.main);
 
-import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
+        mViewingSelf = getTargetUser().getLogin().equals(getCurrentContextLogin());
+        if (!mViewingSelf) {
+            getDrawerGarment().setDrawerEnabled(false);
+        }
 
-public class GitHubClientProvider {
+        final FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = fm.findFragmentByTag(RepositoryListFragment.class.getName());
 
-    @Inject
-    private OAuthUserProvider mUserProvider;
+        if (fragment == null) {
+            fragment = new RepositoryListFragment();
+            fragment.setArguments(getIntent().getExtras());
 
-    private Account mCurrentUser;
-
-    public GitHubClient getClient(final Context context, final Account account)
-            throws IOException, AccountsException {
-        final GitHubClient client = new GitHubClient();
-        OAuthUserProvider.AuthResponse response = mUserProvider.getOAuthResponse(context, account);
-        client.setOAuth2Token(response.access_token);
-        client.setUserAgent(USER_AGENT_STRING);
-        mCurrentUser = response.account;
-
-        return client;
-    }
-
-    public GitHubClient getAnonymousClient() {
-        final GitHubClient client = new GitHubClient();
-        client.setUserAgent(USER_AGENT_STRING);
-        mCurrentUser = null;
-        return client;
-    }
-
-    public Account getCurrentUser() {
-        return mCurrentUser;
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.container_main, fragment, RepositoryListFragment.class.getName())
+                    .commit();
+        }
     }
 }

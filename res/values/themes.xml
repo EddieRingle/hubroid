@@ -70,6 +70,7 @@
         <item name="android:panelBackground">@drawable/menu_hardkey_panel_hubroid</item>
         <item name="android:listViewStyle">@style/Hubroid_DropDownListView</item>
     </style>
+
     <style name="Hubroid_Solid_ActionBar"
            parent="@style/Widget.Sherlock.Light.ActionBar.Solid.Inverse">
         <item name="background">@drawable/ab_solid_hubroid</item>

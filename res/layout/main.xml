@@ -28,16 +28,4 @@
                  android:layout_width="0dp"
                  android:layout_height="match_parent"
                  android:layout_weight="1"/>
-    <FrameLayout android:id="@id/container_right_half"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="1"/>
-    <FrameLayout android:id="@id/container_right_third"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="0.5"/>
-    <FrameLayout android:id="@id/container_right_twothirds"
-                 android:layout_width="0dp"
-                 android:layout_height="match_parent"
-                 android:layout_weight="2"/>
 </LinearLayout>

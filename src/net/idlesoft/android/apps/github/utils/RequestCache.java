@@ -134,8 +134,7 @@ public class RequestCache {
             dir.mkdirs();
         }
         final File f = new File(dir, login + ".json");
-        if (!forceUpdate && f.exists()) {
-			/* Check if the cached JSON is really old (>1 day) */
+        if (!forceUpdate && f.exists()) {            /* Check if the cached JSON is really old (>1 day) */
             final Date d = new Date();
             final long elderCheck = d.getTime() - (KEEP_LENGTH);
             if (f.lastModified() < elderCheck) {
