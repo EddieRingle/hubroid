@@ -60,6 +60,8 @@ public class GitHubApiService extends IntentService {
 
     public static final String ACTION_GET_URI = "action_get_uri";
 
+    public static final String ACTION_EVENTS_LIST_SELF_RECEIVED = "action_events_list_self_received";
+
     public static final String ACTION_EVENTS_LIST_TIMELINE = "action_events_list_timeline";
 
     public static final String ACTION_ORGS_LIST_MEMBERS = "action_orgs_list_members";
@@ -186,6 +188,31 @@ public class GitHubApiService extends IntentService {
             if (response != null) {
                 resultIntent.putExtra(EXTRA_HAS_NEXT, response.getNext() != null);
                 resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(response.getBody()));
+            } else {
+                resultIntent.putExtra(EXTRA_ERROR, true);
+            }
+            sendBroadcast(resultIntent);
+        } else if (intent.getAction().equals(ACTION_EVENTS_LIST_SELF_RECEIVED)) {
+            final EventService es = new EventService(mGitHubClient);
+            ArrayList<Event> result = null;
+            PageIterator<Event> iterator = null;
+            final int startPage = intent.getIntExtra(ARG_START_PAGE, 1);
+
+            if (intent.hasExtra(PARAM_LOGIN)) {
+                iterator = es.pageUserReceivedEvents(intent.getStringExtra(PARAM_LOGIN), false,
+                        startPage, REQUEST_PAGE_SIZE);
+            }
+
+            if (iterator != null && iterator.hasNext()) {
+                result = new ArrayList<Event>();
+                result.addAll(iterator.next());
+            }
+
+            final Intent resultIntent = new Intent(ACTION_EVENTS_LIST_TIMELINE);
+            if (result != null) {
+                resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
+                resultIntent.putExtra(EXTRA_HAS_NEXT, iterator.hasNext());
+                resultIntent.putExtra(EXTRA_NEXT_PAGE, iterator.getNextPage());
             } else {
                 resultIntent.putExtra(EXTRA_ERROR, true);
             }

@@ -46,8 +46,10 @@ import android.widget.AdapterView;
 
 import java.util.List;
 
+import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_EVENTS_LIST_SELF_RECEIVED;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_EVENTS_LIST_TIMELINE;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
+import static net.idlesoft.android.apps.github.services.GitHubApiService.PARAM_LOGIN;
 
 public class EventListFragment extends PagedListFragment<Event> {
 
@@ -79,6 +81,7 @@ public class EventListFragment extends PagedListFragment<Event> {
     @Override
     public IntentFilter onCreateIntentFilter() {
         final IntentFilter filter = new IntentFilter();
+        filter.addAction(ACTION_EVENTS_LIST_SELF_RECEIVED);
         filter.addAction(ACTION_EVENTS_LIST_TIMELINE);
         return filter;
     }
@@ -89,6 +92,10 @@ public class EventListFragment extends PagedListFragment<Event> {
         getEventsIntent.putExtra(ARG_ACCOUNT, getBaseActivity().getCurrentUserAccount());
 
         switch (mListType) {
+            case LIST_USER_PRIVATE:
+                getEventsIntent.setAction(ACTION_EVENTS_LIST_SELF_RECEIVED);
+                getEventsIntent.putExtra(PARAM_LOGIN, getTargetUser().getLogin());
+                break;
             case LIST_TIMELINE:
                 getEventsIntent.setAction(ACTION_EVENTS_LIST_TIMELINE);
                 break;
@@ -123,6 +130,9 @@ public class EventListFragment extends PagedListFragment<Event> {
         bar.setTitle(getTargetUser().getLogin());
 
         switch (mListType) {
+            case LIST_USER_PRIVATE:
+                bar.setSubtitle(R.string.events_received);
+                break;
             case LIST_TIMELINE:
                 bar.setTitle(R.string.events_timeline);
                 break;

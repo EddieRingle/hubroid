@@ -66,6 +66,7 @@ import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACC
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
 import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.ARG_EVENT_LIST_TYPE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_TIMELINE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_USER_PRIVATE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_WATCHED;
@@ -218,7 +219,7 @@ public class BaseDashboardActivity extends BaseActivity {
                 eventsIntent.putExtra(ARG_FROM_DASHBOARD, true);
                 eventsIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
-                eventsIntent.putExtra(ARG_EVENT_LIST_TYPE, LIST_TIMELINE);
+                eventsIntent.putExtra(ARG_EVENT_LIST_TYPE, LIST_USER_PRIVATE);
                 startActivity(eventsIntent);
             }
         };
