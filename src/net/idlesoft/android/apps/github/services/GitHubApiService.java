@@ -257,15 +257,11 @@ public class GitHubApiService extends IntentService {
             PageIterator<Repository> iterator;
             final int startPage = intent.getIntExtra(ARG_START_PAGE, 1);
 
-            try {
-                Map<String, String> filter = new HashMap<String, String>();
-                filter.put("type", "owner");
-                filter.put("sort", "pushed");
+            Map<String, String> filter = new HashMap<String, String>();
+            filter.put("type", "owner");
+            filter.put("sort", "pushed");
 
-                iterator = rs.pageRepositories(filter, startPage, REQUEST_PAGE_SIZE);
-            } catch (IOException e) {
-                iterator = null;
-            }
+            iterator = rs.pageRepositories(filter, startPage, REQUEST_PAGE_SIZE);
 
             if (iterator != null && iterator.hasNext()) {
                 result = new ArrayList<Repository>();
@@ -287,12 +283,8 @@ public class GitHubApiService extends IntentService {
             PageIterator<Repository> iterator;
             final int startPage = intent.getIntExtra(ARG_START_PAGE, 1);
 
-            try {
-                iterator = rs.pageRepositories(intent.getStringExtra(PARAM_LOGIN),
-                        startPage, REQUEST_PAGE_SIZE);
-            } catch (IOException e) {
-                iterator = null;
-            }
+            iterator = rs.pageRepositories(intent.getStringExtra(PARAM_LOGIN),
+                    startPage, REQUEST_PAGE_SIZE);
 
             if (iterator != null && iterator.hasNext()) {
                 result = new ArrayList<Repository>();
