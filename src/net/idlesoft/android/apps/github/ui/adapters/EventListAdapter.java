@@ -27,14 +27,22 @@ import com.androidquery.AQuery;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import net.idlesoft.android.apps.github.ui.activities.app.ProfileActivity;
 import net.idlesoft.android.apps.github.utils.EventUtil;
 
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.event.Event;
 
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
 public class EventListAdapter extends BaseListAdapter<Event> {
 
@@ -73,7 +81,21 @@ public class EventListAdapter extends BaseListAdapter<Event> {
 
         final AQuery aq = new AQuery(getContext());
 
-        aq.id(holder.gravatar).image(e.getActor().getAvatarUrl(), true, true, 140, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK);
+        aq.id(holder.gravatar)
+          .image(e.getActor().getAvatarUrl(), true, true, 140, R.drawable.gravatar, null,
+                  AQuery.FADE_IN_NETWORK);
+
+        holder.gravatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Intent profileIntent = new Intent(getContext(),
+                        ProfileActivity.class);
+                profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
+                profileIntent.putExtra(ARG_TARGET_USER,
+                        GsonUtils.toJson(e.getActor()));
+                getContext().startActivity(profileIntent);
+            }
+        });
 
         return convertView;
     }
