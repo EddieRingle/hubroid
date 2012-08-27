@@ -271,7 +271,7 @@ public class ProfileFragment extends BaseFragment {
         final Intent getProfileIntent = new Intent(getBaseActivity(), GitHubApiService.class);
         getProfileIntent.setAction(ACTION_USERS_GET_USER);
         getProfileIntent.putExtra(ARG_ACCOUNT, getBaseActivity().getCurrentUserAccount());
-        getProfileIntent.putExtra(PARAM_LOGIN, getBaseActivity().getCurrentContextLogin());
+        getProfileIntent.putExtra(PARAM_LOGIN, getTargetUser().getLogin());
         getBaseActivity().startService(getProfileIntent);
     }
 
