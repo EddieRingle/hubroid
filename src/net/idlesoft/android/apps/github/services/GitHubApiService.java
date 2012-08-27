@@ -44,6 +44,7 @@ import android.accounts.Account;
 import android.accounts.AccountsException;
 import android.app.IntentService;
 import android.content.Intent;
+import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;

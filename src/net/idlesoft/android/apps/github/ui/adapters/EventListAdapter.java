@@ -27,6 +27,7 @@ import com.androidquery.AQuery;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import net.idlesoft.android.apps.github.utils.EventUtil;
 
 import org.eclipse.egit.github.core.event.Event;
 
@@ -39,11 +40,11 @@ public class EventListAdapter extends BaseListAdapter<Event> {
 
     public static class ViewHolder {
 
-        TextView title;
+        public TextView title;
 
-        ImageView gravatar;
+        public ImageView gravatar;
 
-        TextView extra;
+        public TextView extra;
     }
 
     public EventListAdapter(BaseActivity context) {
@@ -68,8 +69,7 @@ public class EventListAdapter extends BaseListAdapter<Event> {
 
         final Event e = getItem(position);
 
-        holder.title.setText(e.getActor().getLogin() + " did a(n) " + e.getType());
-        holder.extra.setText(e.getCreatedAt().toString());
+        EventUtil.fillHolderWithEvent(holder, e);
 
         final AQuery aq = new AQuery(getContext());
 
