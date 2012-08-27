@@ -36,6 +36,7 @@
                       android:host="oauth"></data>
             </intent-filter>
         </activity>
+        <activity android:name=".ui.activities.app.EventsActivity" />
         <activity android:name=".ui.activities.app.RepositoriesActivity" />
         <activity android:name=".ui.activities.app.ProfileActivity" />
 

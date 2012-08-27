@@ -31,11 +31,13 @@ import com.github.eddieringle.android.libs.undergarment.widgets.DrawerGarment;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.services.GitHubApiService;
+import net.idlesoft.android.apps.github.ui.activities.app.EventsActivity;
 import net.idlesoft.android.apps.github.ui.activities.app.HomeActivity;
 import net.idlesoft.android.apps.github.ui.activities.app.ProfileActivity;
 import net.idlesoft.android.apps.github.ui.activities.app.RepositoriesActivity;
 import net.idlesoft.android.apps.github.ui.adapters.ContextListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.DashboardListAdapter;
+import net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 
 import org.eclipse.egit.github.core.User;
@@ -63,6 +65,8 @@ import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_ORGS_SELF_MEMBERSHIPS;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
+import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.ARG_EVENT_LIST_TYPE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_TIMELINE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_WATCHED;
@@ -205,6 +209,20 @@ public class BaseDashboardActivity extends BaseActivity {
                 .setGlyphSize(72.0f)
                 .toDrawable();
         entry.selected = false;
+        entry.onEntryClickListener = new DashboardListAdapter.DashboardEntry.OnEntryClickListener() {
+            @Override
+            public void onClick(DashboardListAdapter.DashboardEntry entry, int i) {
+                final Intent eventsIntent = new Intent(BaseDashboardActivity.this,
+                        EventsActivity.class);
+                eventsIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
+                eventsIntent.putExtra(ARG_DASHBOARD_ITEM, i);
+                eventsIntent.putExtra(ARG_FROM_DASHBOARD, true);
+                eventsIntent.putExtra(ARG_TARGET_USER,
+                        GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
+                eventsIntent.putExtra(ARG_EVENT_LIST_TYPE, LIST_TIMELINE);
+                startActivity(eventsIntent);
+            }
+        };
         dashboardEntries.add(entry);
 
         entry = new DashboardListAdapter.DashboardEntry();
