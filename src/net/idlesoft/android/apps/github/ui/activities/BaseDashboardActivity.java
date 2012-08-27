@@ -37,7 +37,6 @@ import net.idlesoft.android.apps.github.ui.activities.app.ProfileActivity;
 import net.idlesoft.android.apps.github.ui.activities.app.RepositoriesActivity;
 import net.idlesoft.android.apps.github.ui.adapters.ContextListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.DashboardListAdapter;
-import net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment;
 import net.idlesoft.android.apps.github.ui.widgets.OcticonView;
 
 import org.eclipse.egit.github.core.User;

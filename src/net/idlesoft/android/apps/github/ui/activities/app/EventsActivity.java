@@ -28,7 +28,6 @@ import com.actionbarsherlock.view.MenuItem;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
 import net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment;
-import net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment;
 
 import android.content.Intent;
 import android.os.Bundle;

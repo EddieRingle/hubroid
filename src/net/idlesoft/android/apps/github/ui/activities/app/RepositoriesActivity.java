@@ -23,14 +23,10 @@
 
 package net.idlesoft.android.apps.github.ui.activities.app;
 
-import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.MenuItem;
 
-import net.idlesoft.android.apps.github.HubroidConstants;
 import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
-import net.idlesoft.android.apps.github.ui.fragments.BaseFragment;
 import net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment;
 
 import android.content.Intent;

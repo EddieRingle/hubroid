@@ -33,11 +33,8 @@ import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.services.GitHubApiService;
 import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
 import net.idlesoft.android.apps.github.ui.adapters.EventListAdapter;
-import net.idlesoft.android.apps.github.ui.adapters.RepositoryListAdapter;
 import net.idlesoft.android.apps.github.ui.fragments.PagedListFragment;
 
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.client.GsonUtils;
 import org.eclipse.egit.github.core.event.Event;
 
 import android.content.Context;
@@ -47,19 +44,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_EVENTS_LIST_TIMELINE;
-import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_ORG_OWNED;
-import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_SELF_OWNED;
-import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_USER_OWNED;
-import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_REPOS_LIST_USER_WATCHED;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
-import static net.idlesoft.android.apps.github.services.GitHubApiService.PARAM_LOGIN;
 
 public class EventListFragment extends PagedListFragment<Event> {
 

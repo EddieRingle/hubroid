@@ -28,7 +28,6 @@ import com.androidquery.AQuery;
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
-import org.eclipse.egit.github.core.Repository;
 import org.eclipse.egit.github.core.event.Event;
 
 import android.view.View;
