@@ -65,11 +65,10 @@ import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
 import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.ARG_EVENT_LIST_TYPE;
-import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_TIMELINE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_USER_PRIVATE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
-import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_WATCHED;
+import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_STARRED;
 
 public class BaseDashboardActivity extends BaseActivity {
 
@@ -264,7 +263,7 @@ public class BaseDashboardActivity extends BaseActivity {
         entry.selected = false;
         if (this instanceof RepositoriesActivity) {
             final int listType = getIntent().getIntExtra(ARG_LIST_TYPE, -1);
-            if (listType == LIST_WATCHED) {
+            if (listType == LIST_STARRED) {
                 entry.selected = true;
             }
         }
@@ -278,7 +277,7 @@ public class BaseDashboardActivity extends BaseActivity {
                 reposIntent.putExtra(ARG_FROM_DASHBOARD, true);
                 reposIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
-                reposIntent.putExtra(ARG_LIST_TYPE, LIST_WATCHED);
+                reposIntent.putExtra(ARG_LIST_TYPE, LIST_STARRED);
                 startActivity(reposIntent);
                 finish();
             }

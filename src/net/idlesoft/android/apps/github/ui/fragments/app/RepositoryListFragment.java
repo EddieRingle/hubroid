@@ -62,7 +62,7 @@ public class RepositoryListFragment extends PagedListFragment<Repository> {
 
     public static final int LIST_USER = 1;
 
-    public static final int LIST_WATCHED = 2;
+    public static final int LIST_STARRED = 2;
 
     public static final String ARG_LIST_TYPE = "list_type";
 
@@ -111,10 +111,21 @@ public class RepositoryListFragment extends PagedListFragment<Repository> {
     @Override
     public IntentFilter onCreateIntentFilter() {
         final IntentFilter filter = new IntentFilter();
-        filter.addAction(ACTION_REPOS_LIST_ORG_OWNED);
-        filter.addAction(ACTION_REPOS_LIST_SELF_OWNED);
-        filter.addAction(ACTION_REPOS_LIST_USER_OWNED);
-        filter.addAction(ACTION_REPOS_LIST_USER_WATCHED);
+
+        /*
+         * Make sure we only receive what we might actually want.
+         */
+        switch (mListType) {
+            case LIST_USER:
+                filter.addAction(ACTION_REPOS_LIST_ORG_OWNED);
+                filter.addAction(ACTION_REPOS_LIST_SELF_OWNED);
+                filter.addAction(ACTION_REPOS_LIST_USER_OWNED);
+                break;
+            case LIST_STARRED:
+                filter.addAction(ACTION_REPOS_LIST_USER_WATCHED);
+                break;
+        }
+
         return filter;
     }
 
@@ -140,7 +151,7 @@ public class RepositoryListFragment extends PagedListFragment<Repository> {
                     }
                 }
                 break;
-            case LIST_WATCHED:
+            case LIST_STARRED:
                 getRepositoriesIntent.setAction(ACTION_REPOS_LIST_USER_WATCHED);
                 getRepositoriesIntent.putExtra(PARAM_LOGIN, getTargetUser().getLogin());
                 break;
@@ -185,8 +196,8 @@ public class RepositoryListFragment extends PagedListFragment<Repository> {
             case LIST_USER:
                 bar.setSubtitle(R.string.repositories);
                 break;
-            case LIST_WATCHED:
-                bar.setSubtitle(R.string.repositories_watched);
+            case LIST_STARRED:
+                bar.setSubtitle(R.string.repositories_starred);
                 break;
         }
     }

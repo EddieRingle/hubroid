@@ -83,6 +83,13 @@ public abstract class PagedListFragment<T> extends BaseListFragment<T>
                 return;
             }
 
+            /*
+             * Return if we didn't receive the broadcast we asked for.
+             */
+            if (!onCreateServiceIntent().getAction().equals(intent.getAction())) {
+                return;
+            }
+
             if (intent.getBooleanExtra(EXTRA_ERROR, false)) {
                 getBaseActivity().popShortToast("An error occurred.");
             } else {

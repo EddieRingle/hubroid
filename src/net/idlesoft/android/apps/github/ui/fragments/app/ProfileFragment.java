@@ -163,42 +163,10 @@ public class ProfileFragment extends BaseFragment {
             mHolders.add(holder);
         }
 
-		/* Repositories */
-        holder = new InfoListAdapter.InfoHolder();
-        holder.primary = "Repositories";
-        holder.secondary =
-                "Owns " + Integer.toString(user.getOwnedPrivateRepos() + user.getPublicRepos());
-        holder.onClick = new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Bundle args = new Bundle();
-                args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
-                args.putInt(ARG_LIST_TYPE, LIST_USER);
-
-                final Intent startRepositories = new Intent(getBaseActivity(),
-                        RepositoriesActivity.class);
-                startRepositories.putExtras(args);
-                getBaseActivity().startActivity(startRepositories);
-            }
-        };
-        mHolders.add(holder);
-
 		/* Followers/Following */
         holder = new InfoListAdapter.InfoHolder();
         holder.primary = "Followers/Following";
         holder.secondary = Integer.toString(user.getFollowing());
-        holder.onClick = new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Bundle args = new Bundle();
-                args.putString(ARG_TARGET_USER, GsonUtils.toJson(user));
-            }
-        };
-        mHolders.add(holder);
-
-		/* Activity */
-        holder = new InfoListAdapter.InfoHolder();
-        holder.primary = "Public Activity";
         holder.onClick = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -334,6 +302,7 @@ public class ProfileFragment extends BaseFragment {
         super.onCreateActionBar(bar, menu, inflater);
 
         bar.setTitle(getTargetUser().getLogin());
+        bar.setSubtitle(null);
 
         menu.findItem(R.id.actionbar_action_refresh).setVisible(true);
     }

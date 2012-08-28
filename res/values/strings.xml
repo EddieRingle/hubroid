@@ -75,11 +75,11 @@
     <!-- Events -->
     <string name="events_timeline">Timeline</string>
     <string name="events_received">Private Feed</string>
-    <string name="events_public">Your Activity</string>
+    <string name="events_public">Public Activity</string>
 
     <!-- Repositories -->
     <string name="repositories">Repositories</string>
-    <string name="repositories_watched">Watched</string>
+    <string name="repositories_starred">Starred</string>
     <string name="forks">Forks</string>
 
     <!-- Issues -->
