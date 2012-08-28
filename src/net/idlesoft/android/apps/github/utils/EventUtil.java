@@ -198,7 +198,23 @@ class EventUtil
                     index, index + event.getRepo().getName().length(),
                     Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             if (p.getCommits() != null) {
+                final int commitLimit = 3;
+                final int commitCount = p.getCommits().size();
+                int counter = 0;
                 for (Commit c : p.getCommits()) {
+                    /*
+                     * If we hit the limit for showing commits, leave a note saying how many
+                     * are left in this push, then get the heck out.
+                     */
+                    if (counter++ >= commitLimit) {
+                        extraBuilder.append("\n... and " + (commitCount - commitLimit) + " more\n");
+                        break;
+                    }
+
+                    /*
+                     * Otherwise, write the commit SHA and first line of the commit message and
+                     * format with a nice blue color (just like on GitHub)
+                     */
                     String commitLine = c.getSha().substring(0, 6) + " " +
                             c.getMessage().split("\n")[0] + "\n";
                     extraBuilder.append(commitLine);
