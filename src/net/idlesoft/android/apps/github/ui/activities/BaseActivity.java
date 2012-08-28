@@ -64,6 +64,7 @@ import java.util.HashMap;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_ISSUE;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_REPO;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.ui.activities.BaseActivity.mCurrentAccount;
 import static net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity.EXTRA_SHOWING_DASH;
 
 public abstract class BaseActivity extends RoboSherlockFragmentActivity {
@@ -207,6 +208,10 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
 
     public Account getCurrentUserAccount() {
         return mCurrentAccount;
+    }
+
+    public boolean isLoggedIn() {
+        return mCurrentAccount != null;
     }
 
     public User getCurrentUser() {

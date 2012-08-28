@@ -159,7 +159,8 @@ public class GitHubApiService extends IntentService {
             } else if (intent.hasExtra(ARG_BASIC_USERNAME) && intent.hasExtra(ARG_BASIC_PASSWORD)) {
                 mGitHubClient.setCredentials(intent.getStringExtra(ARG_BASIC_USERNAME),
                         intent.getStringExtra(ARG_BASIC_PASSWORD));
-            } else if (intent.hasExtra(ARG_ACCOUNT)) {
+            } else if (intent.hasExtra(ARG_ACCOUNT) &&
+                    intent.getParcelableExtra(ARG_ACCOUNT) != null) {
                 final Account account = intent.getParcelableExtra(ARG_ACCOUNT);
                 try {
                     final String oauthToken =
@@ -168,7 +169,11 @@ public class GitHubApiService extends IntentService {
                         mGitHubClient.setOAuth2Token(oauthToken);
                     }
                 } catch (IOException e) {
+                    e.printStackTrace();
                 } catch (AccountsException e) {
+                    e.printStackTrace();
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
                 }
             }
         }

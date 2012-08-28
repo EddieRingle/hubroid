@@ -61,6 +61,7 @@ import java.util.List;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
 import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.HubroidConstants.PREF_CURRENT_USER_LOGIN;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ACTION_ORGS_SELF_MEMBERSHIPS;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.ARG_ACCOUNT;
 import static net.idlesoft.android.apps.github.services.GitHubApiService.EXTRA_RESULT_JSON;
@@ -356,15 +357,21 @@ public class BaseDashboardActivity extends BaseActivity {
         };
 
         mDashboardListView = (ListView) mDrawerGarment.findViewById(R.id.list);
-        mDashboardListView.addHeaderView(headerLayout);
+
+        if (isLoggedIn()) {
+            mDashboardListView.addHeaderView(headerLayout);
+        }
+
         mDashboardListView.setAdapter(mDashboardListAdapter);
         mDashboardListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0) {
-                    return;
-                } else {
-                    i--;
+                if (isLoggedIn()) {
+                    if (i == 0) {
+                        return;
+                    } else {
+                        i--;
+                    }
                 }
                 final DashboardListAdapter.DashboardEntry entry = mDashboardListAdapter.getItem(i);
                 if (entry != null) {
@@ -375,42 +382,44 @@ public class BaseDashboardActivity extends BaseActivity {
             }
         });
 
-        final IntentFilter contextFilter = new IntentFilter(ACTION_ORGS_SELF_MEMBERSHIPS);
-        registerReceiver(mContextReceiver, contextFilter);
+        if (isLoggedIn()) {
+            final IntentFilter contextFilter = new IntentFilter(ACTION_ORGS_SELF_MEMBERSHIPS);
+            registerReceiver(mContextReceiver, contextFilter);
 
-        if (icicle == null) {
-            final Intent getContextsIntent = new Intent(this, GitHubApiService.class);
-            getContextsIntent.setAction(ACTION_ORGS_SELF_MEMBERSHIPS);
-            getContextsIntent.putExtra(ARG_ACCOUNT, getCurrentUserAccount());
-            startService(getContextsIntent);
-        } else {
-            if (icicle.containsKey(EXTRA_CONTEXTS)) {
-                final String contextsJson = icicle.getString(EXTRA_CONTEXTS);
-                if (contextsJson != null) {
-                    TypeToken<List<User>> token = new TypeToken<List<User>>() {
-                    };
-                    List<User> contexts = GsonUtils.fromJson(contextsJson, token.getType());
+            if (icicle == null) {
+                final Intent getContextsIntent = new Intent(this, GitHubApiService.class);
+                getContextsIntent.setAction(ACTION_ORGS_SELF_MEMBERSHIPS);
+                getContextsIntent.putExtra(ARG_ACCOUNT, getCurrentUserAccount());
+                startService(getContextsIntent);
+            } else {
+                if (icicle.containsKey(EXTRA_CONTEXTS)) {
+                    final String contextsJson = icicle.getString(EXTRA_CONTEXTS);
+                    if (contextsJson != null) {
+                        TypeToken<List<User>> token = new TypeToken<List<User>>() {
+                        };
+                        List<User> contexts = GsonUtils.fromJson(contextsJson, token.getType());
 
-                    /*
-                     * Loop through the list of users/organizations to find the
-                     * current context the user is browsing as and rearrange the
-                     * list so that it's at the top.
-                     */
-                    int len = contexts.size();
-                    for (int i = 0; i < len; i++) {
-                        if (contexts.get(i).getLogin().equals(getCurrentContextLogin())) {
-                            Collections.swap(contexts, i, 0);
-                            break;
+                        /*
+                         * Loop through the list of users/organizations to find the
+                         * current context the user is browsing as and rearrange the
+                         * list so that it's at the top.
+                         */
+                        int len = contexts.size();
+                        for (int i = 0; i < len; i++) {
+                            if (contexts.get(i).getLogin().equals(getCurrentContextLogin())) {
+                                Collections.swap(contexts, i, 0);
+                                break;
+                            }
                         }
+
+                        mContextListAdapter = new ContextListAdapter(BaseDashboardActivity.this);
+                        mContextListAdapter.fillWithItems(contexts);
+
+                        mContextSpinner.setAdapter(mContextListAdapter);
+
+                        mContextSpinner.setOnItemSelectedListener(mOnContextItemSelectedListener);
+                        mContextSpinner.setEnabled(true);
                     }
-
-                    mContextListAdapter = new ContextListAdapter(BaseDashboardActivity.this);
-                    mContextListAdapter.fillWithItems(contexts);
-
-                    mContextSpinner.setAdapter(mContextListAdapter);
-
-                    mContextSpinner.setOnItemSelectedListener(mOnContextItemSelectedListener);
-                    mContextSpinner.setEnabled(true);
                 }
             }
         }
