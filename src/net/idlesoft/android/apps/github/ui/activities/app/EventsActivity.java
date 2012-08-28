@@ -23,51 +23,109 @@
 
 package net.idlesoft.android.apps.github.ui.activities.app;
 
-import com.actionbarsherlock.view.MenuItem;
+import com.viewpagerindicator.TitlePageIndicator;
 
 import net.idlesoft.android.apps.github.R;
 import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
 import net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment;
+import net.idlesoft.android.apps.github.ui.fragments.app.ProfileFragment;
+import net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 
-import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.ARG_EVENT_LIST_TYPE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_TIMELINE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_USER_PRIVATE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment.LIST_USER_PUBLIC;
+import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
+import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_STARRED;
 
 public class EventsActivity extends BaseDashboardActivity {
 
-    @Override
-    protected void onCreate(Bundle icicle, int layout) {
-        super.onCreate(icicle, R.layout.main);
+    private EventListFragmentPagerAdapter mPagerAdapter;
 
-        final FragmentManager fm = getSupportFragmentManager();
-        Fragment fragment = fm.findFragmentByTag(EventListFragment.class.getName());
+    private TitlePageIndicator mTitlePageIndicator;
 
-        if (fragment == null) {
+    private ViewPager mViewPager;
+
+    private class EventListFragmentPagerAdapter extends FragmentPagerAdapter {
+
+        public EventListFragmentPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            final Fragment fragment;
+            final Bundle args = new Bundle();
+            args.putAll(getIntent().getExtras());
+
             fragment = new EventListFragment();
-            fragment.setArguments(getIntent().getExtras());
 
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.container_main, fragment, EventListFragment.class.getName())
-                    .commit();
+            if (getTargetUser() == null || getTargetUser().getLogin() == null) {
+                args.putInt(EventListFragment.ARG_EVENT_LIST_TYPE, LIST_TIMELINE);
+            } else {
+                switch (position) {
+                    case 0:
+                        args.putInt(ARG_EVENT_LIST_TYPE, LIST_USER_PRIVATE);
+                        break;
+                    case 1:
+                        args.putInt(ARG_EVENT_LIST_TYPE, LIST_USER_PUBLIC);
+                        break;
+                    case 2:
+                        args.putInt(ARG_EVENT_LIST_TYPE, LIST_TIMELINE);
+                        break;
+                }
+            }
+
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        @Override
+        public int getCount() {
+            if (getTargetUser() == null || getTargetUser().getLogin() == null) {
+                return 1;
+            } else {
+                return 3;
+            }
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            if (getTargetUser() == null || getTargetUser().getLogin() == null) {
+                return getString(R.string.events_timeline);
+            } else {
+                switch (position) {
+                    case 0:
+                        return getString(R.string.events_received);
+                    case 1:
+                        return getString(R.string.events_public);
+                    case 2:
+                        return getString(R.string.events_timeline);
+                }
+            }
+
+            return "";
         }
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home && !isFromDashboard()) {
-            final String userJson = getIntent().getStringExtra(ARG_TARGET_USER);
-            if (userJson != null) {
-                final Intent toUser = new Intent(this, ProfileActivity.class);
-                toUser.putExtra(ARG_TARGET_USER, userJson);
-                startActivity(toUser);
-                finish();
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
+    protected void onCreate(Bundle icicle, int layout) {
+        super.onCreate(icicle, R.layout.viewpager_fragment);
+
+        mTitlePageIndicator = (TitlePageIndicator) findViewById(R.id.tpi_header);
+        mViewPager = (ViewPager) findViewById(R.id.vp_pages);
+        mViewPager.setOffscreenPageLimit(5);
+
+        mPagerAdapter = new EventListFragmentPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mPagerAdapter);
+
+        mTitlePageIndicator.setViewPager(mViewPager);
     }
 }
