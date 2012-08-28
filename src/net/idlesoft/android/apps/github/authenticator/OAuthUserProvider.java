@@ -28,8 +28,8 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
 import android.accounts.AccountsException;
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
-import com.google.inject.Inject;
 
 import java.io.IOException;
 
@@ -41,33 +41,39 @@ import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHU
 /**
  * Bridge class that obtains a GitHub OAuth code for the currently configured account
  */
-public class OAuthUserProvider
-{
+public class OAuthUserProvider {
 
     private static final String TAG = "OCP";
 
-	public static class AuthResponse {
-		public Account account;
-		public String access_token;
-	}
+    public static class AuthResponse {
 
-    @Inject
-    private Activity activity;
+        public Account account;
 
-    @Inject
+        public String access_token;
+    }
+
     private AccountManager accountManager;
 
-    public AuthResponse getOAuthResponse(Account account)
-			throws AccountsException, IOException {
-		AccountManagerFuture<Bundle> accountManagerFuture;
+    public AuthResponse getOAuthResponse(Context context, Account account)
+            throws AccountsException, IOException {
+        AccountManagerFuture<Bundle> accountManagerFuture;
 
-		accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null, activity,
-														   null, null);
+        if (accountManager == null) {
+            accountManager = AccountManager.get(context);
+        }
+
+        if (context instanceof Activity) {
+            accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null,
+                    (Activity) context, null, null);
+        } else {
+            accountManagerFuture = accountManager.getAuthToken(account, AUTHTOKEN_TYPE, null, true,
+                    null, null);
+        }
 
         Bundle result = accountManagerFuture.getResult();
 
-		AuthResponse response = new AuthResponse();
-		response.account = new Account(result.getString(KEY_ACCOUNT_NAME), GITHUB_ACCOUNT_TYPE);
+        AuthResponse response = new AuthResponse();
+        response.account = new Account(result.getString(KEY_ACCOUNT_NAME), GITHUB_ACCOUNT_TYPE);
         response.access_token = result.getString(KEY_AUTHTOKEN);
 
         return response;

@@ -23,59 +23,80 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
-public
-class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.DashboardEntry>
-{
-	public static
-	class DashboardEntry
-	{
-		public
-		Drawable icon;
-		public
-		String label;
-	}
+public class DashboardListAdapter extends BaseListAdapter<DashboardListAdapter.DashboardEntry> {
 
-	public static
-	class ViewHolder
-	{
-		ImageView icon;
-		TextView label;
-	}
+    public static class DashboardEntry {
 
-	public
-	DashboardListAdapter(BaseActivity context)
-	{
-		super(context);
-	}
+        public boolean selected;
 
-	@Override
-	public
-	View getView(int position, View convertView, ViewGroup parent)
-	{
-		ViewHolder holder;
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.dashboard_list_item, null);
-			holder = new ViewHolder();
-			holder.icon = (ImageView) convertView.findViewById(R.id.iv_dashboard_icon);
-			holder.label = (TextView) convertView.findViewById(R.id.tv_dashboard_label);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+        public int id;
 
-		final DashboardEntry entry = getItem(position);
+        public Drawable icon;
 
-		holder.icon.setImageDrawable(entry.icon);
-		holder.label.setText(entry.label);
+        public String label;
 
-		return convertView;
-	}
+        public OnEntryClickListener onEntryClickListener;
+
+        public static interface OnEntryClickListener {
+            public void onClick(DashboardEntry entry, int i);
+        }
+    }
+
+    public static class ViewHolder {
+
+        ImageView icon;
+
+        TextView label;
+    }
+
+    public DashboardListAdapter(BaseActivity context) {
+        super(context);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.dashboard_list_item, null);
+            holder = new ViewHolder();
+            holder.icon = (ImageView) convertView.findViewById(R.id.iv_dashboard_icon);
+            holder.label = (TextView) convertView.findViewById(R.id.tv_dashboard_label);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        final DashboardEntry entry = getItem(position);
+
+        holder.icon.setImageDrawable(entry.icon);
+        holder.label.setText(entry.label);
+
+        if (entry.selected) {
+            convertView.setBackgroundResource(R.color.selected_hubroid);
+        } else {
+            convertView.setBackgroundColor(Color.TRANSPARENT);
+        }
+
+        return convertView;
+    }
+
+    @Override
+    public boolean areAllItemsEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled(int position) {
+        return !getItem(position).selected;
+    }
 }

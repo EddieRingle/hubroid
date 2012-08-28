@@ -32,133 +32,97 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 
-public
-class ListViewPager extends ViewPager
-{
-	public static class MultiListPagerAdapter extends PagerAdapter
-	{
-		protected
-		ArrayList<IdleList> mLists;
+public class ListViewPager extends ViewPager {
 
-		protected
-		Context mContext;
+    public static class MultiListPagerAdapter extends PagerAdapter {
 
-		public
-		MultiListPagerAdapter(Context context)
-		{
-			mContext = context;
-			mLists = new ArrayList<IdleList>();
-		}
+        protected ArrayList<IdleList> mLists;
 
-		public
-		int getListCount()
-		{
-			return mLists.size();
-		}
+        protected Context mContext;
 
-		public
-		IdleList getList(int position)
-		{
-			return mLists.get(position);
-		}
+        public MultiListPagerAdapter(Context context) {
+            mContext = context;
+            mLists = new ArrayList<IdleList>();
+        }
 
-		public
-		void addList(IdleList list, int position)
-		{
-			mLists.add(position, list);
-			notifyDataSetChanged();
-		}
+        public int getListCount() {
+            return mLists.size();
+        }
 
-		public
-		void addList(IdleList list)
-		{
-			mLists.add(list);
-			notifyDataSetChanged();
-		}
+        public IdleList getList(int position) {
+            return mLists.get(position);
+        }
 
-		public
-		void removeList(IdleList list)
-		{
-			mLists.remove(list);
-			notifyDataSetChanged();
-		}
+        public void addList(IdleList list, int position) {
+            mLists.add(position, list);
+            notifyDataSetChanged();
+        }
 
-		public
-		void removeList(int index)
-		{
-			mLists.remove(index);
-			notifyDataSetChanged();
-		}
+        public void addList(IdleList list) {
+            mLists.add(list);
+            notifyDataSetChanged();
+        }
 
-		@Override
-		public
-		Object instantiateItem(ViewGroup container, int position)
-		{
-			IdleList list = mLists.get(position);
+        public void removeList(IdleList list) {
+            mLists.remove(list);
+            notifyDataSetChanged();
+        }
+
+        public void removeList(int index) {
+            mLists.remove(index);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            IdleList list = mLists.get(position);
 
 			/* Add the list to the container */
-			if (container.indexOfChild(list) < 0) {
-				/* Remove list from its current parent if it has one */
-				final ViewGroup existingParent = (ViewGroup) list.getParent();
-				if (existingParent != null && existingParent.indexOfChild(list) >= 0)
-					existingParent.removeView(list);
-				/* Add list to the new container */
-				container.addView(list);
-			}
+            if (container.indexOfChild(list) < 0) {                /* Remove list from its current parent if it has one */
+                final ViewGroup existingParent = (ViewGroup) list.getParent();
+                if (existingParent != null && existingParent.indexOfChild(list) >= 0) {
+                    existingParent.removeView(list);
+                }                /* Add list to the new container */
+                container.addView(list);
+            }
 
-			return list;
-		}
+            return list;
+        }
 
-		@Override
-		public
-		void destroyItem(ViewGroup container, int position, Object object)
-		{
-			container.removeView((View)object);
-		}
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
 
-		@Override
-		public
-		int getCount()
-		{
-			return mLists.size();
-		}
+        @Override
+        public int getCount() {
+            return mLists.size();
+        }
 
-		@Override
-		public
-		boolean isViewFromObject(View view, Object object)
-		{
-			return view == object;
-		}
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
 
-		@Override
-		public
-		CharSequence getPageTitle(int position)
-		{
-			return mLists.get(position).getTitle();
-		}
-	}
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mLists.get(position).getTitle();
+        }
+    }
 
-	public
-	ListViewPager(Context context)
-	{
-		super(context);
-	}
+    public ListViewPager(Context context) {
+        super(context);
+    }
 
-	public
-	ListViewPager(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
-	}
+    public ListViewPager(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	public
-	void setAdapter(MultiListPagerAdapter adapter)
-	{
-		super.setAdapter(adapter);
-	}
+    public void setAdapter(MultiListPagerAdapter adapter) {
+        super.setAdapter(adapter);
+    }
 
-	public
-	MultiListPagerAdapter getAdapter()
-	{
-		return (MultiListPagerAdapter) super.getAdapter();
-	}
+    public MultiListPagerAdapter getAdapter() {
+        return (MultiListPagerAdapter) super.getAdapter();
+    }
 }

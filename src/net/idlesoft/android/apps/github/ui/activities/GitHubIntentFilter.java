@@ -23,111 +23,71 @@
 
 package net.idlesoft.android.apps.github.ui.activities;
 
+import net.idlesoft.android.apps.github.ui.activities.app.GitHubAuthenticatorActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
-import net.idlesoft.android.apps.github.HubroidConstants;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.authenticator.GitHubAuthenticatorActivity;
-import net.idlesoft.android.apps.github.ui.fragments.IssueFragment;
-import net.idlesoft.android.apps.github.ui.fragments.IssuesFragment;
-import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
-import net.idlesoft.android.apps.github.ui.fragments.RepositoryFragment;
-import org.eclipse.egit.github.core.Issue;
-import org.eclipse.egit.github.core.Repository;
-import org.eclipse.egit.github.core.User;
-import org.eclipse.egit.github.core.client.GsonUtils;
 
-public
-class GitHubIntentFilter extends BaseActivity
-{
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+public class GitHubIntentFilter extends BaseActivity {
 
-		final String uri = getIntent().getDataString().replaceAll("/{2,}", "/");
-		final String[] parts = uri.split("/");
-		final String scheme = parts[0];
-		final String host = parts[1];
-		final String[] path = new String[parts.length - 2];
-		final Intent intent = new Intent();
-		for (int i = 2; i < parts.length; i++)
-			path[i - 2] = parts[i];
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        final String uri = getIntent().getDataString().replaceAll("/{2,}", "/");
+        final String[] parts = uri.split("/");
+        final String scheme = parts[0];
+        final String host = parts[1];
+        final String[] path = new String[parts.length - 2];
+        final Intent intent = new Intent();
+        for (int i = 2; i < parts.length; i++) {
+            path[i - 2] = parts[i];
+        }
 
 		/* We're only handling OAuth intents, for now */
-		if (path[0].equalsIgnoreCase("oauth")) {
-			intent.setClass(GitHubIntentFilter.this, GitHubAuthenticatorActivity.class);
-			if (getIntent().getData().getQueryParameter("code") != null) {
-				intent.putExtra("stage", 2);
-				intent.putExtra("code", getIntent().getData().getQueryParameter("code"));
-			}
-			startActivity(intent);
-		}
+        if (path[0].equalsIgnoreCase("oauth")) {
+            intent.setClass(GitHubIntentFilter.this, GitHubAuthenticatorActivity.class);
+            if (getIntent().getData().getQueryParameter("code") != null) {
+                intent.putExtra("stage", 2);
+                intent.putExtra("code", getIntent().getData().getQueryParameter("code"));
+            }
+            startActivity(intent);
+        }
 
-		if (host.matches("^(www.)?github.com$")) {
-			intent.setClass(GitHubIntentFilter.this, MainActivity.class);
-			intent.putExtra(HubroidConstants.ARG_TARGET_URI, path);
-			startActivity(intent);
-		}
+        if (host.matches("^(www.)?github.com$")) {
+            parsePath(this, path);
+        }
 
-		finish();
-	}
+        finish();
+    }
 
-	public static
-	void parsePath(final BaseActivity activity, final String[] path) {
-		final Bundle args = new Bundle();
-		String user, repo, action, id;
+    public static void parsePath(final BaseActivity activity, final String[] path) {
+        final Bundle args = new Bundle();
+        String user, repo, action, id;
 
-		user = repo = action = id = null;
+        user = repo = action = id = null;
 
-		try {
-			user = path[0];
-			repo = path[1];
-			action = path[2];
-			id = path[3].split("#")[0];
-		} catch (IndexOutOfBoundsException e) {
-		}
+        try {
+            user = path[0];
+            repo = path[1];
+            action = path[2];
+            id = path[3].split("#")[0];
+        } catch (IndexOutOfBoundsException e) {
+        }
 
 		/* Bow out if the user tried to open https://github.com/ in Hubroid */
-		if (user == null)
-			return;
+        if (user == null) {
+            return;
+        }
 
-		activity.startFragmentTransaction();
-
-		if (repo == null) {
-			/* Send the user to a profile */
-			args.putString(HubroidConstants.ARG_TARGET_USER,
-						   GsonUtils.toJson((new User()).setLogin(user)));
-			activity.addFragmentToTransaction(ProfileFragment.class, R.id.fragment_container, args);
-		} else if (action == null) {
-			/* Send the user to a repository */
-			args.putString(HubroidConstants.ARG_TARGET_REPO,
-						   GsonUtils.toJson((new Repository()).setName(repo).setOwner(
-								   (new User()).setLogin(user))));
-			activity.addFragmentToTransaction(RepositoryFragment.class,
-											  R.id.fragment_container,
-											  args);
-		} else if (action.equalsIgnoreCase("issues")) {
-			if (id == null) {
+        if (repo == null) {            /* Send the user to a profile */
+        } else if (action == null) {            /* Send the user to a repository */
+        } else if (action.equalsIgnoreCase("issues")) {
+            if (id == null) {
 				/* Go to a repository's issues */
-				args.putString(HubroidConstants.ARG_TARGET_REPO,
-							   GsonUtils.toJson((new Repository()).setName(repo).setOwner(
-									   (new User()).setLogin(user))));
-				activity.addFragmentToTransaction(IssuesFragment.class,
-												  R.id.fragment_container,
-												  args);
-			} else {
+            } else {
 				/* Go to an individual issue */
-				args.putString(HubroidConstants.ARG_TARGET_ISSUE,
-							   GsonUtils.toJson((new Issue()).setHtmlUrl("https://github.com/"
-																				 + user + "/"
-																				 + repo +
-																				 "/issues/" + id)
-															 .setNumber(Integer.parseInt(id))));
-				activity.addFragmentToTransaction(IssueFragment.class,
-												  R.id.fragment_container,
-												  args);
-			}
-		}
-		activity.finishFragmentTransaction(false);
-	}
+            }
+        }
+    }
 }

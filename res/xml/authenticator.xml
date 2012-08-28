@@ -20,7 +20,7 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <account-authenticator xmlns:android="http://schemas.android.com/apk/res/android"
-					   android:accountType="com.github"
-					   android:icon="@drawable/ic_launcher"
-					   android:smallIcon="@drawable/ic_launcher"
-					   android:label="@string/auther_label" />
+                       android:accountType="com.github.eddieringle"
+                       android:icon="@drawable/ic_launcher"
+                       android:smallIcon="@drawable/ic_launcher"
+                       android:label="@string/auther_label"/>

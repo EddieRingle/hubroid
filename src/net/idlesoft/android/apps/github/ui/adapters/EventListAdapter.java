@@ -23,78 +23,80 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
-import android.os.Bundle;
+import com.androidquery.AQuery;
+
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+import net.idlesoft.android.apps.github.ui.activities.app.ProfileActivity;
+import net.idlesoft.android.apps.github.utils.EventUtil;
+
+import org.eclipse.egit.github.core.User;
+import org.eclipse.egit.github.core.client.GsonUtils;
+import org.eclipse.egit.github.core.event.Event;
+
+import android.content.Intent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.androidquery.AQuery;
-import net.idlesoft.android.apps.github.HubroidConstants;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-import net.idlesoft.android.apps.github.ui.fragments.ProfileFragment;
-import net.idlesoft.android.apps.github.utils.EventUtil;
-import org.eclipse.egit.github.core.client.GsonUtils;
-import org.eclipse.egit.github.core.event.Event;
 
-public
-class EventListAdapter extends BaseListAdapter<Event>
-{
-	public static
-	class ViewHolder
-	{
-		public
-		ImageView gravatar;
-		public
-		TextView title;
-		public
-		TextView extra;
-	}
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
 
-	public
-	EventListAdapter(BaseActivity context)
-	{
-		super(context);
-	}
+public class EventListAdapter extends BaseListAdapter<Event> {
 
-	@Override
-	public
-	View getView(int position, View convertView, ViewGroup parent)
-	{
-		ViewHolder holder;
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.event_list_item, null);
-			holder = new ViewHolder();
-			holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_event_gravatar);
-			holder.title = (TextView) convertView.findViewById(R.id.tv_event_title);
-			holder.extra = (TextView) convertView.findViewById(R.id.tv_event_extra);
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+    public static class ViewHolder {
 
-		final Event event = getItem(position);
-		final String type = event.getType();
-		EventUtil.fillHolderWithEvent(holder, event);
+        public TextView title;
 
-		final AQuery aq = new AQuery(convertView);
-		aq.id(holder.gravatar).image(event.getActor().getAvatarUrl(), true, true, 200, R.drawable.gravatar, null, AQuery.FADE_IN_NETWORK, 1.0f);
+        public ImageView gravatar;
 
-		holder.gravatar.setOnClickListener(new View.OnClickListener()
-		{
-			@Override
-			public
-			void onClick(View v)
-			{
-				final Bundle args = new Bundle();
-				args.putString(HubroidConstants.ARG_TARGET_USER, GsonUtils.toJson(event.getActor()));
-				getContext().startFragmentTransaction();
-				getContext().addFragmentToTransaction(ProfileFragment.class,
-													  R.id.fragment_container, args);
-				getContext().finishFragmentTransaction();
-			}
-		});
+        public TextView extra;
+    }
 
-		return convertView;
-	}
+    public EventListAdapter(BaseActivity context) {
+        super(context);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.event_list_item, null);
+            holder = new ViewHolder();
+
+            holder.title = (TextView) convertView.findViewById(R.id.tv_event_title);
+            holder.gravatar = (ImageView) convertView.findViewById(R.id.iv_event_gravatar);
+            holder.extra = (TextView) convertView.findViewById(R.id.tv_event_extra);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        final Event e = getItem(position);
+
+        EventUtil.fillHolderWithEvent(holder, e);
+
+        final AQuery aq = new AQuery(getContext());
+
+        aq.id(holder.gravatar)
+          .image(e.getActor().getAvatarUrl(), true, true, 140, R.drawable.gravatar, null,
+                  AQuery.FADE_IN_NETWORK);
+
+        holder.gravatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final Intent profileIntent = new Intent(getContext(),
+                        ProfileActivity.class);
+                profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
+                profileIntent.putExtra(ARG_TARGET_USER,
+                        GsonUtils.toJson(e.getActor()));
+                getContext().startActivity(profileIntent);
+            }
+        });
+
+        return convertView;
+    }
 }

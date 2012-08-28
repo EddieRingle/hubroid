@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2012 Eddie Ringle
+  ~ All rights reserved.
+  ~
+  ~ Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+  ~ following conditions are met:
+  ~
+  ~ Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+  ~ disclaimer.
+  ~ Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+  ~ disclaimer in the documentation and/or other materials provided with the distribution.
+  ~
+  ~ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES,
+  ~ INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  ~ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+  ~ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+  ~ SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+  ~ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE
+  ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  -->
+<resources>
+    <item type="id" name="octicon_private_repo"/>
+    <item type="id" name="octicon_public_repo"/>
+    <item type="id" name="octicon_repo_forked"/>
+    <item type="id" name="octicon_create"/>
+    <item type="id" name="octicon_delete"/>
+    <item type="id" name="octicon_push"/>
+    <item type="id" name="octicon_pull"/>
+    <item type="id" name="octicon_wiki"/>
+    <item type="id" name="octicon_readme"/>
+    <item type="id" name="octicon_octocat"/>
+    <item type="id" name="octicon_blacktocat"/>
+    <item type="id" name="octicon_invertocat"/>
+    <item type="id" name="octicon_download"/>
+    <item type="id" name="octicon_upload"/>
+    <item type="id" name="octicon_keyboard"/>
+    <item type="id" name="octicon_gist"/>
+    <item type="id" name="octicon_gist_private"/>
+    <item type="id" name="octicon_code_file"/>
+    <item type="id" name="octicon_download_unknown"/>
+    <item type="id" name="octicon_text_file"/>
+    <item type="id" name="octicon_download_text"/>
+    <item type="id" name="octicon_download_media"/>
+    <item type="id" name="octicon_download_zip"/>
+    <item type="id" name="octicon_download_pdf"/>
+    <item type="id" name="octicon_download_tag"/>
+    <item type="id" name="octicon_directory"/>
+    <item type="id" name="octicon_submodule"/>
+    <item type="id" name="octicon_person"/>
+    <item type="id" name="octicon_team"/>
+    <item type="id" name="octicon_member_added"/>
+    <item type="id" name="octicon_member_removed"/>
+    <item type="id" name="octicon_follow"/>
+    <item type="id" name="octicon_watching"/>
+    <item type="id" name="octicon_unwatch"/>
+    <item type="id" name="octicon_commit"/>
+    <item type="id" name="octicon_public_fork"/>
+    <item type="id" name="octicon_fork"/>
+    <item type="id" name="octicon_private_fork"/>
+    <item type="id" name="octicon_pull_request"/>
+    <item type="id" name="octicon_merge"/>
+    <item type="id" name="octicon_public_mirror"/>
+    <item type="id" name="octicon_private_mirror"/>
+    <item type="id" name="octicon_issue_opened"/>
+    <item type="id" name="octicon_issue_reopened"/>
+    <item type="id" name="octicon_issue_closed"/>
+    <item type="id" name="octicon_issue_comment"/>
+    <item type="id" name="octicon_star"/>
+    <item type="id" name="octicon_commit_comment"/>
+    <item type="id" name="octicon_help"/>
+    <item type="id" name="octicon_exclamation"/>
+    <item type="id" name="octicon_search_input"/>
+    <item type="id" name="octicon_advanced_search"/>
+    <item type="id" name="octicon_notifications"/>
+    <item type="id" name="octicon_account_settings"/>
+    <item type="id" name="octicon_logout"/>
+    <item type="id" name="octicon_admin_tools"/>
+    <item type="id" name="octicon_feed"/>
+    <item type="id" name="octicon_clipboard"/>
+    <!-- Unofficial name -->
+    <item type="id" name="octicon_apple"/>
+    <item type="id" name="octicon_windows"/>
+    <item type="id" name="octicon_ios"/>
+    <item type="id" name="octicon_android"/>
+    <item type="id" name="octicon_confirm"/>
+    <item type="id" name="octicon_unread_note"/>
+    <item type="id" name="octicon_read_note"/>
+    <item type="id" name="octicon_arr_up"/>
+    <item type="id" name="octicon_arr_right"/>
+    <item type="id" name="octicon_arr_down"/>
+    <item type="id" name="octicon_arr_left"/>
+    <item type="id" name="octicon_pin"/>
+    <item type="id" name="octicon_gift"/>
+    <item type="id" name="octicon_graph"/>
+    <item type="id" name="octicon_wrench"/>
+    <item type="id" name="octicon_credit_card"/>
+    <item type="id" name="octicon_time"/>
+    <item type="id" name="octicon_ruby"/>
+    <item type="id" name="octicon_podcast"/>
+    <item type="id" name="octicon_key"/>
+    <item type="id" name="octicon_force_push"/>
+    <item type="id" name="octicon_sync"/>
+    <item type="id" name="octicon_clone"/>
+    <item type="id" name="octicon_diff"/>
+    <item type="id" name="octicon_watchers"/>
+    <item type="id" name="octicon_discussion"/>
+    <item type="id" name="octicon_delete_note"/>
+    <item type="id" name="octicon_remove_close"/>
+    <item type="id" name="octicon_reply"/>
+    <item type="id" name="octicon_mail_status"/>
+    <item type="id" name="octicon_block"/>
+    <item type="id" name="octicon_tag_create"/>
+    <item type="id" name="octicon_tag_delete"/>
+    <item type="id" name="octicon_branch_create"/>
+    <item type="id" name="octicon_branch_delete"/>
+    <item type="id" name="octicon_edit"/>
+    <item type="id" name="octicon_info"/>
+    <item type="id" name="octicon_arr_collapsed"/>
+    <item type="id" name="octicon_arr_expanded"/>
+    <item type="id" name="octicon_link"/>
+    <item type="id" name="octicon_add"/>
+    <item type="id" name="octicon_reorder"/>
+    <item type="id" name="octicon_code"/>
+    <item type="id" name="octicon_location"/>
+    <item type="id" name="octicon_u_list"/>
+    <item type="id" name="octicon_o_list"/>
+    <item type="id" name="octicon_quotemark"/>
+    <item type="id" name="octicon_version"/>
+    <item type="id" name="octicon_brightness"/>
+    <item type="id" name="octicon_fullscreen"/>
+    <item type="id" name="octicon_normalscreen"/>
+    <item type="id" name="octicon_calendar"/>
+    <item type="id" name="octicon_beer"/>
+    <item type="id" name="octicon_lock"/>
+    <item type="id" name="octicon_secure"/>
+    <item type="id" name="octicon_added"/>
+    <item type="id" name="octicon_removed"/>
+    <item type="id" name="octicon_modified"/>
+    <item type="id" name="octicon_moved"/>
+    <item type="id" name="octicon_add_comment"/>
+    <item type="id" name="octicon_horizontal_rule"/>
+    <item type="id" name="octicon_arr_right_mini"/>
+    <item type="id" name="octicon_jump_down"/>
+    <item type="id" name="octicon_jump_up"/>
+    <item type="id" name="octicon_reference"/>
+    <item type="id" name="octicon_milestone"/>
+    <item type="id" name="octicon_save_document"/>
+    <item type="id" name="octicon_megaphone"/>
+</resources>

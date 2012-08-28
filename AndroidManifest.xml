@@ -1,50 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-      package="net.idlesoft.android.apps.github"
-      android:versionCode="2012061800"
-      android:versionName="3.0-alpha3">
-    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15" />
-	<uses-permission android:name="android.permission.INTERNET" />
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-	<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-	<uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
-	<uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
-	<uses-permission android:name="android.permission.USE_CREDENTIALS"/>
+          package="net.idlesoft.android.apps.github"
+          android:versionCode="2012061800"
+          android:versionName="4.0-infdev">
+    <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="15"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.MANAGE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
 
     <application android:name=".ui.HubroidApplication"
-            android:label="@string/app_name"
-            android:icon="@drawable/ic_launcher"
-            android:theme="@style/Theme.Hubroid">
+                 android:label="@string/app_name"
+                 android:icon="@drawable/ic_launcher"
+                 android:theme="@style/Theme.Hubroid">
 
-		<!-- Activities -->
-        <activity android:name=".ui.activities.MainActivity">
+        <!-- Activities -->
+        <activity android:name=".ui.activities.app.HomeActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MAIN"></action>
+                <category android:name="android.intent.category.LAUNCHER"></category>
             </intent-filter>
         </activity>
-		<activity android:name=".ui.activities.GitHubIntentFilter">
-			<intent-filter>
-				<action android:name="android.intent.action.VIEW"></action>
-				<category android:name="android.intent.category.DEFAULT"></category>
-				<category android:name="android.intent.category.BROWSABLE"></category>
-				<data android:scheme="https" android:pathPattern="/.*" android:host="github.com"></data>
-				<data android:scheme="https" android:pathPattern="/.*" android:host="gist.github.com"></data>
-				<data android:scheme="hubroid" android:pathPattern="/.*" android:host="oauth"></data>
-			</intent-filter>
-		</activity>
+        <activity android:name=".ui.activities.GitHubIntentFilter">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"></action>
+                <category android:name="android.intent.category.DEFAULT"></category>
+                <category android:name="android.intent.category.BROWSABLE"></category>
+                <data android:scheme="https" android:pathPattern="/.*"
+                      android:host="github.com"></data>
+                <data android:scheme="https" android:pathPattern="/.*"
+                      android:host="gist.github.com"></data>
+                <data android:scheme="hubroid" android:pathPattern="/.*"
+                      android:host="oauth"></data>
+            </intent-filter>
+        </activity>
+        <activity android:name=".ui.activities.app.EventsActivity" />
+        <activity android:name=".ui.activities.app.RepositoriesActivity" />
+        <activity android:name=".ui.activities.app.ProfileActivity" />
 
-		<!-- Services -->
-		<service android:name=".authenticator.AccountAuthenticatorService" android:process=":auth">
-			<intent-filter>
-				<action android:name="android.accounts.AccountAuthenticator" />
-			</intent-filter>
-			<meta-data android:name="android.accounts.AccountAuthenticator" android:resource="@xml/authenticator" />
-		</service>
-		<activity android:name=".authenticator.AccountSelect"
-				  android:label="@string/userselect_title" />
-		<activity android:name=".authenticator.GitHubAuthenticatorActivity"
-				  android:excludeFromRecents="true" />
+        <!-- Services -->
+        <service android:name=".services.GitHubApiService" />
+
+        <service android:name=".authenticator.AccountAuthenticatorService" android:process=":auth">
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data android:name="android.accounts.AccountAuthenticator"
+                       android:resource="@xml/authenticator"/>
+        </service>
+        <activity android:name=".ui.activities.app.AccountSelectActivity"
+                  android:label="@string/userselect_title"/>
+        <activity android:name=".ui.activities.app.GitHubAuthenticatorActivity"
+                  android:excludeFromRecents="true"/>
 
     </application>
 </manifest>

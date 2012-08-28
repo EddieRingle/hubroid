@@ -20,8 +20,8 @@
   ~ USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   -->
 <net.idlesoft.android.apps.github.ui.widgets.RefreshActionView
-		xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="wrap_content"
-		android:layout_height="wrap_content"
-		android:src="@drawable/ic_menu_refresh"
-		style="@style/Widget.Sherlock.Light.ActionButton" />
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_menu_refresh"
+        style="@style/Widget.Sherlock.Light.ActionButton"/>

@@ -23,89 +23,71 @@
 
 package net.idlesoft.android.apps.github.ui.widgets;
 
+import com.actionbarsherlock.view.MenuItem;
+
+import net.idlesoft.android.apps.github.R;
+
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import com.actionbarsherlock.view.MenuItem;
-import net.idlesoft.android.apps.github.R;
 
-public
-class RefreshActionView extends ImageView
-{
-	protected Animation mAnimation = null;
-	protected MenuItem mItem      = null;
+public class RefreshActionView extends ImageView {
 
-	public
-	RefreshActionView(Context context)
-	{
-		super(context);
-		setupAnimation();
-	}
+    protected Animation mAnimation = null;
 
-	public
-	RefreshActionView(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
-		setupAnimation();
-	}
+    protected MenuItem mItem = null;
 
-	public
-	RefreshActionView(Context context, AttributeSet attrs, int defStyle)
-	{
-		super(context, attrs, defStyle);
-		setupAnimation();
-	}
+    public RefreshActionView(Context context) {
+        super(context);
+        setupAnimation();
+    }
 
-	public
-	void addTo(MenuItem item)
-	{
-		mItem = item;
-		startAnimation(mAnimation);
-		item.setActionView(this);
-	}
+    public RefreshActionView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setupAnimation();
+    }
 
-	public
-	void removeFromParentItem()
-	{
-		removeFrom(mItem);
-	}
+    public RefreshActionView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        setupAnimation();
+    }
 
-	public
-	void removeFrom(final MenuItem item)
-	{
-		mAnimation.setAnimationListener(new Animation.AnimationListener()
-		{
-			@Override
-			public
-			void onAnimationStart(Animation animation)
-			{
-			}
+    public void addTo(MenuItem item) {
+        mItem = item;
+        startAnimation(mAnimation);
+        item.setActionView(this);
+    }
 
-			@Override
-			public
-			void onAnimationEnd(Animation animation)
-			{
-				clearAnimation();
-				item.setActionView(null);
-			}
+    public void removeFromParentItem() {
+        removeFrom(mItem);
+        mItem = null;
+    }
 
-			@Override
-			public
-			void onAnimationRepeat(Animation animation)
-			{
-			}
-		});
-		mAnimation.setRepeatCount(0);
-	}
+    public void removeFrom(final MenuItem item) {
+        mAnimation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
 
-	protected
-	void setupAnimation()
-	{
-		if (mAnimation == null) {
-			mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.clockwise_refresh);
-			mAnimation.setRepeatCount(Animation.INFINITE);
-		}
-	}
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                clearAnimation();
+                item.setActionView(null);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        mAnimation.setRepeatCount(0);
+    }
+
+    protected void setupAnimation() {
+        if (mAnimation == null) {
+            mAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.clockwise_refresh);
+            mAnimation.setRepeatCount(Animation.INFINITE);
+        }
+    }
 }

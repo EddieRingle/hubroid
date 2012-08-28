@@ -24,7 +24,7 @@ public interface AuthConstants {
     /**
      * Account type id
      */
-    String GITHUB_ACCOUNT_TYPE = "com.github";
+    String GITHUB_ACCOUNT_TYPE = "com.github.eddieringle";
 
     /**
      * Account name

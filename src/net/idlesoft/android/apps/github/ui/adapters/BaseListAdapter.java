@@ -23,113 +23,93 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+
 import android.database.DataSetObserver;
 import android.view.LayoutInflater;
 import android.widget.BaseAdapter;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public abstract
-class BaseListAdapter<T> extends BaseAdapter
-{
-	protected
-	LayoutInflater mInflater;
+public abstract class BaseListAdapter<T> extends BaseAdapter {
 
-	private
-	ArrayList<T> mData;
+    protected LayoutInflater mInflater;
 
-	private
-	boolean mNotifyOnChange;
+    private ArrayList<T> mData;
 
-	private
-	BaseActivity mContext;
+    private boolean mNotifyOnChange;
 
-	public
-	BaseListAdapter(BaseActivity context)
-	{
-		super();
+    private BaseActivity mContext;
 
-		mContext = context;
-		mInflater = LayoutInflater.from(mContext);
-		mData = new ArrayList<T>();
-	}
+    public BaseListAdapter(BaseActivity context) {
+        super();
 
-	public
-	BaseActivity getContext()
-	{
-		return mContext;
-	}
+        mContext = context;
+        mInflater = LayoutInflater.from(mContext);
+        mData = new ArrayList<T>();
+    }
 
-	public
-	void clear()
-	{
-		mData.clear();
-		if (mNotifyOnChange)
-			notifyDataSetChanged();
-	}
+    public BaseActivity getContext() {
+        return mContext;
+    }
 
-	public
-	void addAll(Collection<? extends T> collection)
-	{
-		mData.addAll(collection);
-		if (mNotifyOnChange)
-			notifyDataSetChanged();
-	}
+    public void clear() {
+        mData.clear();
+        if (mNotifyOnChange) {
+            notifyDataSetChanged();
+        }
+    }
 
-	@Override
-	public
-	int getCount()
-	{
-		return mData.size();
-	}
+    public ArrayList<T> getAll() {
+        return mData;
+    }
 
-	public
-	T getItem(int position)
-	{
-		return mData.get(position);
-	}
+    public void addAll(Collection<? extends T> collection) {
+        mData.addAll(collection);
+        if (mNotifyOnChange) {
+            notifyDataSetChanged();
+        }
+    }
 
-	@Override
-	public
-	long getItemId(int position)
-	{
-		return position;
-	}
+    @Override
+    public int getCount() {
+        return mData.size();
+    }
 
-	@Override
-	public
-	void unregisterDataSetObserver(DataSetObserver observer)
-	{
-		if (observer != null)
-			super.unregisterDataSetObserver(observer);
-	}
+    public T getItem(int position) {
+        return mData.get(position);
+    }
 
-	protected
-	void fillWithItems(List<T> data, boolean append)
-	{
-		if (!append)
-			clear();
-		addAll(data);
-	}
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
-	public
-	void fillWithItems(List<T> data)
-	{
-		fillWithItems(data, false);
-	}
+    @Override
+    public void unregisterDataSetObserver(DataSetObserver observer) {
+        if (observer != null) {
+            super.unregisterDataSetObserver(observer);
+        }
+    }
 
-	public
-	void appendWithItems(List<T> data)
-	{
-		fillWithItems(data, true);
-	}
+    protected void fillWithItems(List<T> data, boolean append) {
+        if (!append) {
+            clear();
+        }
+        addAll(data);
+    }
 
-	public
-	void setNotifyOnChange(boolean notifyOnChange)
-	{
-		mNotifyOnChange = notifyOnChange;
-	}
+    public void fillWithItems(List<T> data) {
+        fillWithItems(data, false);
+    }
+
+    public void appendWithItems(List<T> data) {
+        fillWithItems(data, true);
+    }
+
+    public void setNotifyOnChange(boolean notifyOnChange) {
+        mNotifyOnChange = notifyOnChange;
+    }
 }

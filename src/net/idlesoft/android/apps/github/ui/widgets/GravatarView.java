@@ -23,161 +23,124 @@
 
 package net.idlesoft.android.apps.github.ui.widgets;
 
+import net.idlesoft.android.apps.github.utils.GravatarCache;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
-import net.idlesoft.android.apps.github.utils.GravatarCache;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
-public
-class GravatarView extends LoadableImageView
-{
-	private
-	Bitmap mSourceBitmap;
+public class GravatarView extends LoadableImageView {
 
-	private
-	int mDefaultResource;
+    private Bitmap mSourceBitmap;
 
-	private
-	String mGravatarHash;
+    private int mDefaultResource;
 
-	private
-	Handler mHandler = new Handler();
+    private String mGravatarHash;
 
-	private
-	GravatarViewCallback mGravatarViewCallback;
+    private Handler mHandler = new Handler();
 
-	private
-	Thread mGravatarThread = new Thread(new Runnable()
-	{
-		@Override
-		public
-		void run()
-		{
-			mSourceBitmap = GravatarCache.getGravatar(mGravatarHash, 140);
-			mHandler.post(new Runnable()
-			{
-				@Override
-				public
-				void run()
-				{
-					getImageView().setImageBitmap(mSourceBitmap);
-					setIsLoading(false);
-					if (mGravatarViewCallback != null)
-						mGravatarViewCallback.OnGravatarFinishedLoading(mSourceBitmap);
-				}
-			});
-		}
-	});
+    private GravatarViewCallback mGravatarViewCallback;
 
-	public
-	GravatarView(Context context)
-	{
-		super(context);
-	}
+    private Thread mGravatarThread = new Thread(new Runnable() {
+        @Override
+        public void run() {
+            mSourceBitmap = GravatarCache.getGravatar(mGravatarHash, 140);
+            mHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    getImageView().setImageBitmap(mSourceBitmap);
+                    setIsLoading(false);
+                    if (mGravatarViewCallback != null) {
+                        mGravatarViewCallback.OnGravatarFinishedLoading(mSourceBitmap);
+                    }
+                }
+            });
+        }
+    });
 
-	public
-	GravatarView(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
-	}
+    public GravatarView(Context context) {
+        super(context);
+    }
 
-	public
-	GravatarView(Context context, AttributeSet attrs, int defStyle)
-	{
-		super(context, attrs, defStyle);
-	}
+    public GravatarView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
 
-	@Override
-	protected
-	void buildView()
-	{
-		super.buildView();
+    public GravatarView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+    }
 
-		getImageView().setScaleType(ImageView.ScaleType.FIT_CENTER);
-	}
+    @Override
+    protected void buildView() {
+        super.buildView();
 
-	public
-	void setDefaultResource(final int resource)
-	{
-		mDefaultResource = resource;
+        getImageView().setScaleType(ImageView.ScaleType.FIT_CENTER);
+    }
 
-		if (mSourceBitmap == null && !isLoading()) {
-			getImageView().setImageResource(resource);
-		}
-	}
+    public void setDefaultResource(final int resource) {
+        mDefaultResource = resource;
 
-	public
-	int getDefaultResource()
-	{
-		return mDefaultResource;
-	}
+        if (mSourceBitmap == null && !isLoading()) {
+            getImageView().setImageResource(resource);
+        }
+    }
 
-	public
-	void setGravatarHash(final String gravatarHash)
-	{
-		if (mGravatarHash == null || !mGravatarHash.equals(gravatarHash)) {
-			mGravatarHash = gravatarHash;
+    public int getDefaultResource() {
+        return mDefaultResource;
+    }
 
-			setIsLoading(true);
+    public void setGravatarHash(final String gravatarHash) {
+        if (mGravatarHash == null || !mGravatarHash.equals(gravatarHash)) {
+            mGravatarHash = gravatarHash;
 
-			getImageView().measure(WRAP_CONTENT, WRAP_CONTENT);
-			mGravatarThread.start();
-		}
-	}
+            setIsLoading(true);
 
-	public
-	String getGravatarHash()
-	{
-		return mGravatarHash;
-	}
+            getImageView().measure(WRAP_CONTENT, WRAP_CONTENT);
+            mGravatarThread.start();
+        }
+    }
 
-	public
-	Bitmap getSourceBitmap()
-	{
-		return mSourceBitmap;
-	}
+    public String getGravatarHash() {
+        return mGravatarHash;
+    }
 
-	@Override
-	protected
-	Parcelable onSaveInstanceState()
-	{
-		if (mGravatarThread.isAlive()) {
-			mGravatarThread.interrupt();
-		}
+    public Bitmap getSourceBitmap() {
+        return mSourceBitmap;
+    }
 
-		return super.onSaveInstanceState();
-	}
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        if (mGravatarThread.isAlive()) {
+            mGravatarThread.interrupt();
+        }
 
-	@Override
-	protected
-	void onRestoreInstanceState(Parcelable state)
-	{
-		if (mSourceBitmap == null && mGravatarHash != null) {
-			setIsLoading(true);
-			getImageView().measure(WRAP_CONTENT, WRAP_CONTENT);
-			mGravatarThread.start();
-		} else if (mSourceBitmap != null) {
-			getImageView().setImageBitmap(mSourceBitmap);
-		}
+        return super.onSaveInstanceState();
+    }
 
-		super.onRestoreInstanceState(state);
-	}
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (mSourceBitmap == null && mGravatarHash != null) {
+            setIsLoading(true);
+            getImageView().measure(WRAP_CONTENT, WRAP_CONTENT);
+            mGravatarThread.start();
+        } else if (mSourceBitmap != null) {
+            getImageView().setImageBitmap(mSourceBitmap);
+        }
 
-	public
-	interface GravatarViewCallback
-	{
-		public abstract
-		void OnGravatarFinishedLoading(Bitmap sourceBitmap);
-	}
+        super.onRestoreInstanceState(state);
+    }
 
-	public
-	void setGravatarViewCallback(GravatarViewCallback callback)
-	{
-		mGravatarViewCallback = callback;
-	}
+    public interface GravatarViewCallback {
+
+        public abstract void OnGravatarFinishedLoading(Bitmap sourceBitmap);
+    }
+
+    public void setGravatarViewCallback(GravatarViewCallback callback) {
+        mGravatarViewCallback = callback;
+    }
 }

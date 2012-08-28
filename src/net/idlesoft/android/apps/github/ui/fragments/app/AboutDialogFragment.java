@@ -21,67 +21,57 @@
  * WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package net.idlesoft.android.apps.github.ui.fragments;
+package net.idlesoft.android.apps.github.ui.fragments.app;
+
+import net.idlesoft.android.apps.github.R;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.HubroidApplication;
 
-public
-class AboutDialogFragment extends DialogFragment
-{
-	private
-	TextView mDialogTitle;
-	private
-	TextView mAppVersion;
+public class AboutDialogFragment extends DialogFragment {
 
-	@Override
-	public
-	void onCreate(Bundle savedInstanceState)
-	{
-		super.onCreate(savedInstanceState);
-		setStyle(STYLE_NO_TITLE, R.style.Theme_Sherlock_Light_Dialog);
-	}
+    private TextView mDialogTitle;
 
-	@Override
-	public
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		/* Inflate the view from XML */
-		View view = inflater.inflate(R.layout.about_dialog, container);
+    private TextView mAppVersion;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setStyle(STYLE_NO_TITLE, R.style.Theme_Sherlock_Light_Dialog);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {        /* Inflate the view from XML */
+        View view = inflater.inflate(R.layout.about_dialog, container);
 
 		/* Get a reference to the dialog title TextView */
-		mDialogTitle = (TextView) view.findViewById(R.id.title);
-		/* Get a reference to the app version TextView */
-		mAppVersion = (TextView) view.findViewById(R.id.tv_about_version);
+        mDialogTitle = (TextView) view.findViewById(R.id.title);        /* Get a reference to the app version TextView */
+        mAppVersion = (TextView) view.findViewById(R.id.tv_about_version);
 
 		/* Set the dialog's title */
-		mDialogTitle.setText(R.string.actionbar_action_about);
+        mDialogTitle.setText(R.string.actionbar_action_about);
 
-		return view;
-	}
+        return view;
+    }
 
-	@Override
-	public
-	void onActivityCreated(Bundle savedInstanceState)
-	{
-		super.onActivityCreated(savedInstanceState);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
 		/* Set application version */
-		try {
-			final PackageManager pm = getActivity().getPackageManager();
-			final PackageInfo info = pm.getPackageInfo(getActivity().getPackageName(), 0);
-			mAppVersion.setText("Version " + info.versionName);
-		} catch (PackageManager.NameNotFoundException e) {
-			e.printStackTrace();
-		}
-	}
+        try {
+            final PackageManager pm = getActivity().getPackageManager();
+            final PackageInfo info = pm.getPackageInfo(getActivity().getPackageName(), 0);
+            mAppVersion.setText("Version " + info.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 }

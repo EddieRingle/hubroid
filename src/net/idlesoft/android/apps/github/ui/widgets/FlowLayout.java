@@ -23,157 +23,151 @@
 
 package net.idlesoft.android.apps.github.ui.widgets;
 
+import net.idlesoft.android.apps.github.R;
+
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import net.idlesoft.android.apps.github.R;
 
-public
-class FlowLayout extends ViewGroup
-{
-	private int mHorizontalSpacing;
-	private int mVerticalSpacing;
+public class FlowLayout extends ViewGroup {
 
-	public
-	FlowLayout(Context context)
-	{
-		super(context);
-	}
+    private int mHorizontalSpacing;
 
-	public
-	FlowLayout(Context context, AttributeSet attrs)
-	{
-		super(context, attrs);
+    private int mVerticalSpacing;
 
-		TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlowLayout);
-		try {
-			mHorizontalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_horizontalSpacing, 0);
-			mVerticalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_verticalSpacing, 0);
-		} finally {
-			a.recycle();
-		}
-	}
+    public FlowLayout(Context context) {
+        super(context);
+    }
 
-	@Override
-	protected
-	void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-	{
-		int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+    public FlowLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
 
-		int width = 0;
-		int height = getPaddingTop();
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlowLayout);
+        try {
+            mHorizontalSpacing = a
+                    .getDimensionPixelSize(R.styleable.FlowLayout_horizontalSpacing, 0);
+            mVerticalSpacing = a.getDimensionPixelSize(R.styleable.FlowLayout_verticalSpacing, 0);
+        } finally {
+            a.recycle();
+        }
+    }
 
-		int currentWidth = getPaddingLeft();
-		int currentHeight = 0;
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
 
-		boolean breakLine = false;
+        int width = 0;
+        int height = getPaddingTop();
 
-		final int count = getChildCount();
-		for (int i = 0; i < count; i++) {
-			View child = getChildAt(i);
-			LayoutParams lp = (LayoutParams) child.getLayoutParams();
-			measureChild(child, widthMeasureSpec, heightMeasureSpec);
+        int currentWidth = getPaddingLeft();
+        int currentHeight = 0;
 
-			if (breakLine || currentWidth + child.getMeasuredWidth() > widthSize) {
-				height += currentHeight + mVerticalSpacing;
-				currentHeight = 0;
-				if (currentWidth > width) width = currentWidth;
-				currentWidth = getPaddingLeft();
-			}
+        boolean breakLine = false;
 
-			int spacing = mHorizontalSpacing;
-			if (lp.spacing > -1) {
-				spacing = lp.spacing;
-			}
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            measureChild(child, widthMeasureSpec, heightMeasureSpec);
 
-			lp.x = currentWidth;
-			lp.y = height;
+            if (breakLine || currentWidth + child.getMeasuredWidth() > widthSize) {
+                height += currentHeight + mVerticalSpacing;
+                currentHeight = 0;
+                if (currentWidth > width) {
+                    width = currentWidth;
+                }
+                currentWidth = getPaddingLeft();
+            }
 
-			currentWidth += child.getMeasuredWidth() + spacing;
-			int childHeight = child.getMeasuredHeight();
-			if (childHeight > currentHeight) currentHeight = childHeight;
+            int spacing = mHorizontalSpacing;
+            if (lp.spacing > -1) {
+                spacing = lp.spacing;
+            }
 
-			breakLine = lp.breakLine;
-		}
+            lp.x = currentWidth;
+            lp.y = height;
 
-		height += currentHeight;
-		if (currentWidth > width) width = currentWidth;
+            currentWidth += child.getMeasuredWidth() + spacing;
+            int childHeight = child.getMeasuredHeight();
+            if (childHeight > currentHeight) {
+                currentHeight = childHeight;
+            }
 
-		width += getPaddingRight();
-		height += getPaddingBottom();
+            breakLine = lp.breakLine;
+        }
 
-		setMeasuredDimension(resolveSize(width, widthMeasureSpec),
-							 resolveSize(height, heightMeasureSpec));
-	}
+        height += currentHeight;
+        if (currentWidth > width) {
+            width = currentWidth;
+        }
 
-	@Override
-	protected
-	void onLayout(boolean changed, int l, int t, int r, int b)
-	{
-		final int count = getChildCount();
-		for (int i = 0; i < count; i++) {
-			View child = getChildAt(i);
-			LayoutParams lp = (LayoutParams) child.getLayoutParams();
-			child.layout(lp.x, lp.y, lp.x + child.getMeasuredWidth(), lp.y + child.getMeasuredHeight());
-		}
-	}
+        width += getPaddingRight();
+        height += getPaddingBottom();
 
-	@Override
-	protected
-	boolean checkLayoutParams(ViewGroup.LayoutParams p)
-	{
-		return p instanceof LayoutParams;
-	}
+        setMeasuredDimension(resolveSize(width, widthMeasureSpec),
+                resolveSize(height, heightMeasureSpec));
+    }
 
-	@Override
-	protected
-	LayoutParams generateDefaultLayoutParams()
-	{
-		return new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-	}
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        final int count = getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = getChildAt(i);
+            LayoutParams lp = (LayoutParams) child.getLayoutParams();
+            child.layout(lp.x, lp.y, lp.x + child.getMeasuredWidth(),
+                    lp.y + child.getMeasuredHeight());
+        }
+    }
 
-	@Override
-	public
-	LayoutParams generateLayoutParams(AttributeSet attrs)
-	{
-		return new LayoutParams(getContext(), attrs);
-	}
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p instanceof LayoutParams;
+    }
 
-	@Override
-	protected
-	ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p)
-	{
-		return new LayoutParams(p.width, p.height);
-	}
+    @Override
+    protected LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+    }
 
-	public static class LayoutParams extends ViewGroup.LayoutParams
-	{
-		public boolean breakLine = false;
-		public int spacing = -1;
+    @Override
+    public LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(), attrs);
+    }
 
-		private int x;
-		private int y;
+    @Override
+    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new LayoutParams(p.width, p.height);
+    }
 
-		public
-		LayoutParams(Context context, AttributeSet attrs)
-		{
-			super(context, attrs);
+    public static class LayoutParams extends ViewGroup.LayoutParams {
 
-			TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlowLayout);
-			try {
-				spacing = a.getDimensionPixelSize(R.styleable.FlowLayout_LayoutParams_layout_spacing, -1);
-				breakLine = a.getBoolean(R.styleable.FlowLayout_LayoutParams_breakLine, false);
-			} finally {
-				a.recycle();
-			}
-		}
+        public boolean breakLine = false;
 
-		public
-		LayoutParams(int width, int height)
-		{
-			super(width, height);
-		}
-	}
+        public int spacing = -1;
+
+        private int x;
+
+        private int y;
+
+        public LayoutParams(Context context, AttributeSet attrs) {
+            super(context, attrs);
+
+            TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.FlowLayout);
+            try {
+                spacing = a
+                        .getDimensionPixelSize(R.styleable.FlowLayout_LayoutParams_layout_spacing,
+                                -1);
+                breakLine = a.getBoolean(R.styleable.FlowLayout_LayoutParams_breakLine, false);
+            } finally {
+                a.recycle();
+            }
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+        }
+    }
 }

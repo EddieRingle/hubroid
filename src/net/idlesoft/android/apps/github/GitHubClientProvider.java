@@ -23,48 +23,46 @@
 
 package net.idlesoft.android.apps.github;
 
+import com.google.inject.Inject;
+
+import net.idlesoft.android.apps.github.authenticator.OAuthUserProvider;
+
+import org.eclipse.egit.github.core.client.GitHubClient;
+
 import android.accounts.Account;
 import android.accounts.AccountsException;
-import com.google.inject.Inject;
-import net.idlesoft.android.apps.github.authenticator.OAuthUserProvider;
-import org.eclipse.egit.github.core.client.GitHubClient;
+import android.content.Context;
 
 import java.io.IOException;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
 
-public
-class GitHubClientProvider
-{
-	@Inject
-	private OAuthUserProvider mUserProvider;
+public class GitHubClientProvider {
 
-	private Account mCurrentUser;
+    @Inject
+    private OAuthUserProvider mUserProvider;
 
-	public
-	GitHubClient getClient(final Account account) throws IOException, AccountsException
-	{
-		final GitHubClient client = new GitHubClient();
-		OAuthUserProvider.AuthResponse response = mUserProvider.getOAuthResponse(account);
-		client.setOAuth2Token(response.access_token);
-		client.setUserAgent(USER_AGENT_STRING);
-		mCurrentUser = response.account;
+    private Account mCurrentUser;
 
-		return client;
-	}
+    public GitHubClient getClient(final Context context, final Account account)
+            throws IOException, AccountsException {
+        final GitHubClient client = new GitHubClient();
+        OAuthUserProvider.AuthResponse response = mUserProvider.getOAuthResponse(context, account);
+        client.setOAuth2Token(response.access_token);
+        client.setUserAgent(USER_AGENT_STRING);
+        mCurrentUser = response.account;
 
-	public
-	GitHubClient getAnonymousClient()
-	{
-		final GitHubClient client = new GitHubClient();
-		client.setUserAgent(USER_AGENT_STRING);
-		mCurrentUser = null;
-		return client;
-	}
+        return client;
+    }
 
-	public
-	Account getCurrentUser()
-	{
-		return mCurrentUser;
-	}
+    public GitHubClient getAnonymousClient() {
+        final GitHubClient client = new GitHubClient();
+        client.setUserAgent(USER_AGENT_STRING);
+        mCurrentUser = null;
+        return client;
+    }
+
+    public Account getCurrentUser() {
+        return mCurrentUser;
+    }
 }

@@ -21,57 +21,57 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:gravity="center"
-		android:orientation="vertical">
-	<ProgressBar android:id="@+id/progress"
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center"
-			android:indeterminate="true"
-			android:visibility="gone" />
-	<LinearLayout android:id="@+id/content"
-			android:layout_width="match_parent"
-			android:layout_height="match_parent"
-			android:visibility="visible"
-			android:gravity="center"
-			android:orientation="vertical">
-		<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_margin="10dp"
-				android:orientation="horizontal">
-			<net.idlesoft.android.apps.github.ui.widgets.OcticonView
-					android:id="@+id/ov_repository_privacy"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="center_vertical|left"
-					android:visibility="invisible"
-					android:textColor="@color/light_text_color"
-					android:textSize="24dp"
-					android:layout_marginRight="5dp" />
-			<LinearLayout
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:layout_gravity="center_vertical"
-					android:gravity="center_vertical|left"
-					android:orientation="vertical">
-				<TextView android:id="@+id/tv_repository_name"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:textColor="@color/text_color"
-						android:textSize="28dp" />
-				<TextView android:id="@+id/tv_repository_description"
-						android:layout_width="match_parent"
-						android:layout_height="wrap_content"
-						android:textColor="@color/light_text_color"
-						android:textSize="14dp"
-						android:ellipsize="end" />
-			</LinearLayout>
-		</LinearLayout>
-		<net.idlesoft.android.apps.github.ui.widgets.IdleList android:id="@+id/lv_repository_info"
-				android:layout_width="match_parent"
-				android:layout_height="match_parent" />
-	</LinearLayout>
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical">
+    <ProgressBar android:id="@+id/progress"
+                 android:layout_width="wrap_content"
+                 android:layout_height="wrap_content"
+                 android:layout_gravity="center"
+                 android:indeterminate="true"
+                 android:visibility="gone"/>
+    <LinearLayout android:id="@+id/content"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent"
+                  android:visibility="visible"
+                  android:gravity="center"
+                  android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="horizontal">
+            <net.idlesoft.android.apps.github.ui.widgets.OcticonView
+                    android:id="@+id/ov_repository_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|left"
+                    android:visibility="invisible"
+                    android:textColor="@color/light_text_color"
+                    android:textSize="24dp"
+                    android:layout_marginRight="5dp"/>
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center_vertical|left"
+                    android:orientation="vertical">
+                <TextView android:id="@+id/tv_repository_name"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/text_color"
+                          android:textSize="28dp"/>
+                <TextView android:id="@+id/tv_repository_description"
+                          android:layout_width="match_parent"
+                          android:layout_height="wrap_content"
+                          android:textColor="@color/light_text_color"
+                          android:textSize="14dp"
+                          android:ellipsize="end"/>
+            </LinearLayout>
+        </LinearLayout>
+        <net.idlesoft.android.apps.github.ui.widgets.IdleList android:id="@+id/lv_repository_info"
+                                                              android:layout_width="match_parent"
+                                                              android:layout_height="match_parent"/>
+    </LinearLayout>
 </LinearLayout>

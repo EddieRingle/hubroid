@@ -23,335 +23,104 @@
 
 package net.idlesoft.android.apps.github.ui.fragments;
 
-import android.content.Context;
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.adapters.BaseListAdapter;
+import net.idlesoft.android.apps.github.ui.adapters.HeaderFooterListAdapter;
+
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AnimationUtils;
-import android.widget.*;
+import android.widget.AdapterView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.ProgressBar;
 
-import java.util.List;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
-public abstract
-class BaseListFragment<T> extends BaseFragment
-{
-	static final int INTERNAL_EMPTY_ID = 0x00ff0001;
-	static final int INTERNAL_PROGRESS_CONTAINER_ID = 0x00ff0002;
-	static final int INTERNAL_LIST_CONTAINER_ID = 0x00ff0003;
+public abstract class BaseListFragment<T> extends BaseFragment
+        implements AdapterView.OnItemClickListener {
 
-	final private
-	Handler mHandler = new Handler();
+    private ProgressBar mProgress;
 
-	final private
-	Runnable mRequestFocus = new Runnable()
-	{
-		@Override
-		public
-		void run()
-		{
-			mListView.focusableViewAvailable(mListView);
-		}
-	};
+    private LinearLayout mContent;
 
-	final private
-	AdapterView.OnItemClickListener mOnClickListener = new AdapterView.OnItemClickListener()
-	{
-		@Override
-		public
-		void onItemClick(AdapterView<?> parent, View view, int position, long id)
-		{
-			onListItemClick((ListView)parent, view,  position, id);
-		}
-	};
+    private ListView mListView;
 
-	ArrayAdapter<T> mAdapter;
-	ListView mListView;
-	View mEmptyView;
-	TextView mStandardEmptyView;
-	View mProgressContainer;
-	View mListContainer;
-	CharSequence mEmptyText;
-	boolean mListShown;
+    /**
+     * Implementations of this method should create an instance of a subclass of BaseListAdapter
+     * specialized to the specified template type (e.g., PagedListFragment<Repository>
+     * implementations should return an instance of RepositoryListAdapter).
+     *
+     * @return BaseListAdapter
+     */
+    public abstract BaseListAdapter<T> onCreateListAdapter();
 
-	public BaseListFragment()
-	{
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        if (container == null) {
+            getBaseActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+        }
 
-	@Override
-	public
-	View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-	{
-		final Context context = getActivity();
+        View v = inflater.inflate(R.layout.list_fragment, container, false);
 
-		FrameLayout root = new FrameLayout(context);
+        if (v != null) {
+            mProgress = (ProgressBar) v.findViewById(R.id.progress);
+            mContent = (LinearLayout) v.findViewById(R.id.content);
+            mListView = (ListView) v.findViewById(R.id.list);
+        }
 
-		// ------------------------------------------------------------------
+        return v;
+    }
 
-		LinearLayout pframe = new LinearLayout(context);
-		pframe.setId(INTERNAL_PROGRESS_CONTAINER_ID);
-		pframe.setOrientation(LinearLayout.VERTICAL);
-		pframe.setVisibility(View.GONE);
-		pframe.setGravity(Gravity.CENTER);
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
 
-		ProgressBar progress = new ProgressBar(context, null,
-											   android.R.attr.progressBarStyleLarge);
-		pframe.addView(progress, new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        mListView.setAdapter(
+                new HeaderFooterListAdapter<BaseListAdapter<T>>(mListView, onCreateListAdapter()));
+    }
 
-		root.addView(pframe, new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+    protected ProgressBar getProgressBar() {
+        return mProgress;
+    }
 
-		// ------------------------------------------------------------------
+    protected LinearLayout getContentView() {
+        return mContent;
+    }
 
-		FrameLayout lframe = new FrameLayout(context);
-		lframe.setId(INTERNAL_LIST_CONTAINER_ID);
+    protected ListView getListView() {
+        return mListView;
+    }
 
-		TextView tv = new TextView(getActivity());
-		tv.setId(INTERNAL_EMPTY_ID);
-		tv.setGravity(Gravity.CENTER);
-		lframe.addView(tv, new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+    public void setListShown(boolean shown) {
+        if (shown) {
+            mProgress.setVisibility(GONE);
+            mContent.setVisibility(VISIBLE);
+            mListView.setVisibility(VISIBLE);
+        } else {
+            mContent.setVisibility(GONE);
+            mListView.setVisibility(GONE);
+            mProgress.setVisibility(VISIBLE);
+        }
+    }
 
-		ListView lv = new ListView(getActivity());
-		lv.setId(android.R.id.list);
-		lv.setDrawSelectorOnTop(false);
-		lframe.addView(lv, new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
+    protected HeaderFooterListAdapter<BaseListAdapter<T>> getListAdapter() {
+        if (getListView() != null) {
+            return (HeaderFooterListAdapter<BaseListAdapter<T>>) getListView().getAdapter();
+        } else {
+            return null;
+        }
+    }
 
-		root.addView(lframe, new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-
-		// ------------------------------------------------------------------
-
-		root.setLayoutParams(new FrameLayout.LayoutParams(
-				ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.FILL_PARENT));
-
-		return root;
-	}
-
-	@Override
-	public
-	void onViewCreated(View view, Bundle savedInstanceState)
-	{
-		super.onViewCreated(view, savedInstanceState);
-		ensureList();
-	}
-
-	@Override
-	public
-	void onDestroyView()
-	{
-		mHandler.removeCallbacks(mRequestFocus);
-		mListView = null;
-		mListShown = false;
-		mEmptyView = mProgressContainer = mListContainer = null;
-		mStandardEmptyView = null;
-		super.onDestroyView();
-	}
-
-	public abstract
-	void onListItemClick(ListView l, View v, int position, long id);
-
-	public
-	void setListAdapter(ArrayAdapter<T> adapter)
-	{
-		boolean hadAdapter = mAdapter != null;
-		mAdapter = adapter;
-		if (mListView != null) {
-			mListView.setAdapter(adapter);
-			if (!(mListShown || hadAdapter)) {
-				setListShown(true, getView().getWindowToken() != null);
-			}
-		}
-	}
-
-	public abstract
-	void onCreateListAdapter(List<T> items);
-
-	/**
-	 * Fills (or refills) the list adapter with a list of items
-	 */
-	public
-	void fillListAdapter(List<T> items)
-	{
-		if (mAdapter == null) {
-			onCreateListAdapter(items);
-			setListAdapter(mAdapter);
-		} else {
-			mAdapter.clear();
-			mAdapter.addAll(items);
-			mAdapter.notifyDataSetChanged();
-		}
-	}
-
-	/**
-	 * Appends a list of items onto the end of the list adapter
-	 *
-	 * Please ensure no duplicate items will be added beforehand.
-	 */
-	public
-	void appendToListAdapter(List<T> items)
-	{
-		if (mAdapter == null) {
-			fillListAdapter(items);
-		} else {
-			mAdapter.addAll(items);
-			mAdapter.notifyDataSetChanged();
-		}
-	}
-
-	public
-	void setSelection(int position)
-	{
-		ensureList();
-		mListView.setSelection(position);
-	}
-
-	public
-	int getSelectedItemPosition()
-	{
-		ensureList();
-		return mListView.getSelectedItemPosition();
-	}
-
-	public
-	long getSelectedItemId()
-	{
-		ensureList();
-		return mListView.getSelectedItemId();
-	}
-
-	public
-	ListView getListView() {
-		ensureList();
-		return mListView;
-	}
-
-	public
-	void setEmptyText(CharSequence text)
-	{
-		ensureList();
-		if (mStandardEmptyView == null) {
-			throw new IllegalStateException("Can't be used with a custom content view");
-		}
-		mStandardEmptyView.setText(text);
-		if (mEmptyText == null) {
-			mListView.setEmptyView(mStandardEmptyView);
-		}
-		mEmptyText = text;
-	}
-
-	public
-	void setListShown(boolean shown) {
-		setListShown(shown, true);
-	}
-
-	public
-	void setListShownNoAnimation(boolean shown) {
-		setListShown(shown, false);
-	}
-	
-	private
-	void setListShown(boolean shown, boolean animate) {
-		ensureList();
-		if (mProgressContainer == null) {
-			throw new IllegalStateException("Can't be used with a custom content view");
-		}
-		if (mListShown == shown) return;
-		mListShown = shown;
-		if (shown) {
-			if (animate) {
-				mProgressContainer.startAnimation(AnimationUtils.loadAnimation(
-						getBaseActivity(), android.R.anim.fade_out
-				));
-				mListContainer.startAnimation(AnimationUtils.loadAnimation(
-						getBaseActivity(), android.R.anim.fade_in
-				));
-			} else {
-				mProgressContainer.clearAnimation();
-				mListContainer.clearAnimation();
-			}
-			mProgressContainer.setVisibility(View.GONE);
-			mListContainer.setVisibility(View.VISIBLE);
-		} else {
-			if (animate) {
-				mProgressContainer.startAnimation(AnimationUtils.loadAnimation(
-						getBaseActivity(), android.R.anim.fade_in
-				));
-				mListContainer.startAnimation(AnimationUtils.loadAnimation(
-						getBaseActivity(), android.R.anim.fade_out
-				));
-			} else {
-				mProgressContainer.clearAnimation();
-				mListContainer.clearAnimation();
-			}
-			mProgressContainer.setVisibility(View.VISIBLE);
-			mListContainer.setVisibility(View.GONE);
-		}
-	}
-
-	public
-	ListAdapter getListAdapter()
-	{
-		return mAdapter;
-	}
-
-	private
-	void ensureList()
-	{
-		if (mListView != null) {
-			return;
-		}
-		View root = getView();
-		if (root == null) {
-			throw new IllegalStateException("Content view not yet created");
-		}
-		if (root instanceof ListView) {
-			mListView = (ListView)root;
-		} else {
-			mStandardEmptyView = (TextView)root.findViewById(INTERNAL_EMPTY_ID);
-			if (mStandardEmptyView == null) {
-				mEmptyView = root.findViewById(android.R.id.empty);
-			} else {
-				mStandardEmptyView.setVisibility(View.GONE);
-			}
-			mProgressContainer = root.findViewById(INTERNAL_PROGRESS_CONTAINER_ID);
-			mListContainer = root.findViewById(INTERNAL_LIST_CONTAINER_ID);
-			View rawListView = root.findViewById(android.R.id.list);
-			if (!(rawListView instanceof ListView)) {
-				if (rawListView == null) {
-					throw new RuntimeException(
-							"Your content must have a ListView whose id attribute is " +
-									"'android.R.id.list'");
-				}
-				throw new RuntimeException(
-						"Content has view with id attribute 'android.R.id.list' "
-								+ "that is not a ListView class");
-			}
-			mListView = (ListView)rawListView;
-			if (mEmptyView != null) {
-				mListView.setEmptyView(mEmptyView);
-			} else if (mEmptyText != null) {
-				mStandardEmptyView.setText(mEmptyText);
-				mListView.setEmptyView(mStandardEmptyView);
-			}
-		}
-		mListShown = true;
-		mListView.setOnItemClickListener(mOnClickListener);
-		if (mAdapter != null) {
-			ArrayAdapter<T> adapter = mAdapter;
-			mAdapter = null;
-			setListAdapter(adapter);
-		} else {
-			// We are starting without an adapter, so assume we won't
-			// have our data right away and start with the progress indicator.
-			if (mProgressContainer != null) {
-				setListShown(false, false);
-			}
-		}
-		mHandler.post(mRequestFocus);
-	}
+    protected BaseListAdapter<T> getWrappedListAdapter() {
+        HeaderFooterListAdapter<BaseListAdapter<T>> wrappingAdapter = getListAdapter();
+        if (wrappingAdapter != null) {
+            return wrappingAdapter.getWrappedAdapter();
+        } else {
+            return null;
+        }
+    }
 }

@@ -29,141 +29,125 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public
-class StringUtils
-{
-	/**
-	 * Get time string since a specified date
-	 *
-	 * @param itemTime
-	 * @return String of format "X U(s)", X is the quantity of U time units
-	 *         (e.g., "3 days")
-	 */
-	public static
-	String getTimeSince(final Date itemTime)
-	{
-		final Date currentTime = new Date();
-		final long ms = currentTime.getTime() - itemTime.getTime();
-		final long sec = ms / 1000;
-		final long min = sec / 60;
-		final long hour = min / 60;
-		final long day = hour / 24;
-		final long month = day / 30;
-		final long year = day / 365;
-		if (year > 0) {
-			if (year == 1) {
-				return year + " year";
-			} else {
-				return year + " years";
-			}
-		} else if (month > 0) {
-			if (month == 1) {
-				return month + " month";
-			} else {
-				return month + " months";
-			}
-		} else if (day > 0) {
-			if (day == 1) {
-				return day + " day";
-			} else {
-				return day + " days";
-			}
-		} else if (hour > 0) {
-			if (hour == 1) {
-				return hour + " hour";
-			} else {
-				return hour + " hours";
-			}
-		} else if (min > 0) {
-			if (min == 1) {
-				return min + " minute";
-			} else {
-				return min + " minutes";
-			}
-		} else if (sec > 0) {
-			if (sec == 1) {
-				return sec + " second";
-			} else {
-				return sec + " seconds";
-			}
-		} else {
-			return ms + " ms";
-		}
-	}
+public class StringUtils {
 
-	/**
-	 * Get the extension of a file
-	 *
-	 * @param filename
-	 * @return filename's extension, not including the preceding period
-	 */
-	public static
-	String getExtension(final String filename)
-	{
-		try {
-			return filename.substring(filename.lastIndexOf('.') + 1);
-		} catch (IndexOutOfBoundsException e) {
-			// Filename has no extension, oh well
-			return "";
-		} catch (NullPointerException e) {
-			return "";
-		}
-	}
+    /**
+     * Get time string since a specified date
+     *
+     * @return String of format "X U(s)", X is the quantity of U time units (e.g., "3 days")
+     */
+    public static String getTimeSince(final Date itemTime) {
+        final Date currentTime = new Date();
+        final long ms = currentTime.getTime() - itemTime.getTime();
+        final long sec = ms / 1000;
+        final long min = sec / 60;
+        final long hour = min / 60;
+        final long day = hour / 24;
+        final long month = day / 30;
+        final long year = day / 365;
+        if (year > 0) {
+            if (year == 1) {
+                return year + " year";
+            } else {
+                return year + " years";
+            }
+        } else if (month > 0) {
+            if (month == 1) {
+                return month + " month";
+            } else {
+                return month + " months";
+            }
+        } else if (day > 0) {
+            if (day == 1) {
+                return day + " day";
+            } else {
+                return day + " days";
+            }
+        } else if (hour > 0) {
+            if (hour == 1) {
+                return hour + " hour";
+            } else {
+                return hour + " hours";
+            }
+        } else if (min > 0) {
+            if (min == 1) {
+                return min + " minute";
+            } else {
+                return min + " minutes";
+            }
+        } else if (sec > 0) {
+            if (sec == 1) {
+                return sec + " second";
+            } else {
+                return sec + " seconds";
+            }
+        } else {
+            return ms + " ms";
+        }
+    }
 
-	/**
-	 * Returns a map from a HTTP query string
-	 *
-	 * @param query
-	 * @return Map of query parameters
-	 */
-	public static
-	Map<String, String> mapQueryString(String query)
-	{
-		String[] params = query.split("&");
-		Map<String, String> map = new HashMap<String, String>();
-		for (String param : params) {
-			String[] split = param.split("=");
-			map.put(split[0], split[1]);
-		}
-		return map;
-	}
+    /**
+     * Get the extension of a file
+     *
+     * @return filename's extension, not including the preceding period
+     */
+    public static String getExtension(final String filename) {
+        try {
+            return filename.substring(filename.lastIndexOf('.') + 1);
+        } catch (IndexOutOfBoundsException e) {
+            // Filename has no extension, oh well
+            return "";
+        } catch (NullPointerException e) {
+            return "";
+        }
+    }
 
-	public static
-	boolean isStringEmpty(final String str)
-	{
-		return str == null || str.equals("");
-	}
+    /**
+     * Returns a map from a HTTP query string
+     *
+     * @return Map of query parameters
+     */
+    public static Map<String, String> mapQueryString(String query) {
+        String[] params = query.split("&");
+        Map<String, String> map = new HashMap<String, String>();
+        for (String param : params) {
+            String[] split = param.split("=");
+            map.put(split[0], split[1]);
+        }
+        return map;
+    }
 
-	public static
-	CharSequence trimTrailingWhitespace(CharSequence text)
-	{
-		/* Check for empty string */
-		if (text.length() == 0)
-			return text;
-		while (text.charAt(text.length() - 1) == '\n')
-			text = text.subSequence(0, text.length() - 1);
-		return text;
-	}
+    public static boolean isStringEmpty(final String str) {
+        return str == null || str.equals("");
+    }
 
-	public static
-	String ghFlavoredMarkdown(String input)
-	{
-		final StringBuffer output = new StringBuffer();
-		final Pattern usernamePattern = Pattern.compile("@([A-Za-z0-9]?[A-Za-z0-9-]+)");
-		final Matcher usernameMatcher = usernamePattern.matcher(input);
+    public static CharSequence trimTrailingWhitespace(CharSequence text) {        /* Check for empty string */
+        if (text.length() == 0) {
+            return text;
+        }
+        while (text.charAt(text.length() - 1) == '\n') {
+            text = text.subSequence(0, text.length() - 1);
+        }
+        return text;
+    }
+
+    public static String ghFlavoredMarkdown(String input) {
+        final StringBuffer output = new StringBuffer();
+        final Pattern usernamePattern = Pattern.compile("@([A-Za-z0-9]?[A-Za-z0-9-]+)");
+        final Matcher usernameMatcher = usernamePattern.matcher(input);
 
 		/* Loop through @username matches */
-		while (usernameMatcher.find()) {
-			/* Grab the username from the match (without the '@') */
-			final String username = usernameMatcher.group(1);
+        while (usernameMatcher.find()) {            /* Grab the username from the match (without the '@') */
+            final String username = usernameMatcher.group(1);
 			/* Create a URL to the user's profile */
-			final String r = "<a href=\"https://github.com/" + username + "\">@" + username + "</a>";
+            final String r = "<a href=\"https://github.com/" + username + "\">@" + username
+                    + "</a>";
 			/* Append the replacement */
-			usernameMatcher.appendReplacement(output, r);
-		}
+            usernameMatcher.appendReplacement(output, r);
+        }
 		/* Append the rest of the non-matching text */
-		usernameMatcher.appendTail(output);
+        usernameMatcher.appendTail(output);
 
-		return output.toString();
-	}
+        return output.toString();
+    }
 }

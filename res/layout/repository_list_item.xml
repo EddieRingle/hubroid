@@ -21,82 +21,82 @@
   -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
-		android:gravity="center_vertical"
-		android:padding="10dp"
-		android:orientation="horizontal"
-		android:baselineAligned="false">
-	<LinearLayout
-			android:layout_width="0dp"
-			android:layout_height="match_parent"
-			android:layout_weight="1"
-			android:layout_gravity="left"
-			android:paddingRight="5dp"
-			android:orientation="vertical">
-		<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:orientation="horizontal">
-			<TextView android:id="@+id/tv_repository_owner"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textSize="12sp" />
-			<TextView
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:paddingLeft="5dp"
-					android:paddingRight="5dp"
-					android:textSize="13.5sp"
-					android:text="@string/single_slash" />
-			<TextView android:id="@+id/tv_repository_name"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textStyle="bold"
-					android:textSize="15sp"
-					android:textColor="@color/github_blue" />
-		</LinearLayout>
-		<TextView android:id="@+id/tv_repository_description"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:maxLines="2"
-				android:ellipsize="end"
-				android:textSize="11.5sp" />
-	</LinearLayout>
-	<LinearLayout
-			android:layout_width="wrap_content"
-			android:layout_height="match_parent"
-			android:layout_gravity="center_vertical"
-			android:orientation="vertical">
-		<LinearLayout
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:gravity="right"
-				android:orientation="horizontal">
-			<TextView android:id="@+id/tv_repository_forks"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:paddingRight="5dp" />
-			<net.idlesoft.android.apps.github.ui.widgets.OcticonView
-					android:id="@id/octicon_fork"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textSize="10dp" />
-		</LinearLayout>
-		<LinearLayout
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
-				android:gravity="right"
-				android:orientation="horizontal">
-			<TextView android:id="@+id/tv_repository_watchers"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:paddingRight="5dp" />
-			<net.idlesoft.android.apps.github.ui.widgets.OcticonView
-					android:id="@id/octicon_watchers"
-					android:layout_width="wrap_content"
-					android:layout_height="wrap_content"
-					android:textSize="10dp" />
-		</LinearLayout>
-	</LinearLayout>
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:gravity="center_vertical"
+              android:padding="10dp"
+              android:orientation="horizontal"
+              android:baselineAligned="false">
+    <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_gravity="left"
+            android:paddingRight="5dp"
+            android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+            <TextView android:id="@+id/tv_repository_owner"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textSize="12sp"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="5dp"
+                    android:textSize="13.5sp"
+                    android:text="@string/single_slash"/>
+            <TextView android:id="@+id/tv_repository_name"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:textStyle="bold"
+                      android:textSize="15sp"
+                      android:textColor="@color/github_blue"/>
+        </LinearLayout>
+        <TextView android:id="@+id/tv_repository_description"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:maxLines="2"
+                  android:ellipsize="end"
+                  android:textSize="11.5sp"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="horizontal">
+            <TextView android:id="@+id/tv_repository_forks"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:paddingRight="5dp"/>
+            <net.idlesoft.android.apps.github.ui.widgets.OcticonView
+                    android:id="@id/octicon_fork"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10dp"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:orientation="horizontal">
+            <TextView android:id="@+id/tv_repository_watchers"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:paddingRight="5dp"/>
+            <net.idlesoft.android.apps.github.ui.widgets.OcticonView
+                    android:id="@id/octicon_watchers"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="10dp"/>
+        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

@@ -23,61 +23,61 @@
 
 package net.idlesoft.android.apps.github.ui.adapters;
 
+import net.idlesoft.android.apps.github.R;
+import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
+
+import org.eclipse.egit.github.core.Repository;
+
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import net.idlesoft.android.apps.github.R;
-import net.idlesoft.android.apps.github.ui.activities.BaseActivity;
-import org.eclipse.egit.github.core.Repository;
 
-public
-class RepositoryListAdapter extends BaseListAdapter<Repository>
-{
-	public static
-	class ViewHolder
-	{
-		TextView owner;
-		TextView name;
-		TextView description;
-		TextView forks;
-		TextView watchers;
-	}
+public class RepositoryListAdapter extends BaseListAdapter<Repository> {
 
-	public
-	RepositoryListAdapter(BaseActivity context)
-	{
-		super(context);
-	}
+    public static class ViewHolder {
 
-	@Override
-	public
-	View getView(int position, View convertView, ViewGroup parent)
-	{
-		ViewHolder holder;
-		if (convertView == null) {
-			convertView = mInflater.inflate(R.layout.repository_list_item, null);
-			holder = new ViewHolder();
+        TextView owner;
 
-			holder.owner = (TextView) convertView.findViewById(R.id.tv_repository_owner);
-			holder.name = (TextView) convertView.findViewById(R.id.tv_repository_name);
-			holder.description =
-					(TextView) convertView.findViewById(R.id.tv_repository_description);
-			holder.forks = (TextView) convertView.findViewById(R.id.tv_repository_forks);
-			holder.watchers = (TextView) convertView.findViewById(R.id.tv_repository_watchers);
+        TextView name;
 
-			convertView.setTag(holder);
-		} else {
-			holder = (ViewHolder) convertView.getTag();
-		}
+        TextView description;
 
-		final Repository r = getItem(position);
+        TextView forks;
 
-		holder.owner.setText(r.getOwner().getLogin());
-		holder.name.setText(r.getName());
-		holder.description.setText(r.getDescription());
-		holder.forks.setText(Integer.toString(r.getForks()));
-		holder.watchers.setText(Integer.toString(r.getWatchers()));
+        TextView watchers;
+    }
 
-		return convertView;
-	}
+    public RepositoryListAdapter(BaseActivity context) {
+        super(context);
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder holder;
+        if (convertView == null) {
+            convertView = mInflater.inflate(R.layout.repository_list_item, null);
+            holder = new ViewHolder();
+
+            holder.owner = (TextView) convertView.findViewById(R.id.tv_repository_owner);
+            holder.name = (TextView) convertView.findViewById(R.id.tv_repository_name);
+            holder.description =
+                    (TextView) convertView.findViewById(R.id.tv_repository_description);
+            holder.forks = (TextView) convertView.findViewById(R.id.tv_repository_forks);
+            holder.watchers = (TextView) convertView.findViewById(R.id.tv_repository_watchers);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        final Repository r = getItem(position);
+
+        holder.owner.setText(r.getOwner().getLogin());
+        holder.name.setText(r.getName());
+        holder.description.setText(r.getDescription());
+        holder.forks.setText(Integer.toString(r.getForks()));
+        holder.watchers.setText(Integer.toString(r.getWatchers()));
+
+        return convertView;
+    }
 }
