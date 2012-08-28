@@ -198,6 +198,8 @@ public class GitHubAuthenticatorActivity extends BaseActivity {
     public void onCreateActionBar(ActionBar bar) {
         super.onCreateActionBar(bar);
 
+        bar.setTitle(getString(R.string.sign_in));
+
         bar.setHomeButtonEnabled(false);
         bar.setDisplayHomeAsUpEnabled(false);
     }

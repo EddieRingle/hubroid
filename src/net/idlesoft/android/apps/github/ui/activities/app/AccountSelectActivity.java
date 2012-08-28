@@ -175,6 +175,8 @@ public class AccountSelectActivity extends BaseActivity {
     public void onCreateActionBar(ActionBar bar) {
         super.onCreateActionBar(bar);
 
+        bar.setTitle(R.string.actionbar_action_select_account);
+
         bar.setHomeButtonEnabled(false);
         bar.setDisplayHomeAsUpEnabled(false);
     }

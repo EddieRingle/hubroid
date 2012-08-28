@@ -57,6 +57,8 @@
     </string>
 
     <!-- Authentication -->
+    <string name="sign_in">Sign In</string>
+
     <string name="auther_label">Hubroid - GitHub Client</string>
     <string name="auth_label_login">Login</string>
     <string name="auth_label_password">Password</string>

@@ -146,17 +146,18 @@ public class EventListFragment extends PagedListFragment<Event> {
     public void onCreateActionBar(ActionBar bar, Menu menu, MenuInflater inflater) {
         super.onCreateActionBar(bar, menu, inflater);
 
-        bar.setTitle(getTargetUser().getLogin());
-
         switch (mListType) {
             case LIST_USER_PRIVATE:
+                bar.setTitle(getTargetUser().getLogin());
                 bar.setSubtitle(R.string.events_received);
                 break;
             case LIST_USER_PUBLIC:
+                bar.setTitle(getTargetUser().getLogin());
                 bar.setSubtitle(R.string.events_public);
                 break;
             case LIST_TIMELINE:
                 bar.setTitle(R.string.events_timeline);
+                bar.setSubtitle(null);
                 break;
         }
     }

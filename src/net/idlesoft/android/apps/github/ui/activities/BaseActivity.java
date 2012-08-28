@@ -295,6 +295,7 @@ public abstract class BaseActivity extends RoboSherlockFragmentActivity {
     public void onCreateActionBar(ActionBar bar) {
         mCreateActionBarCalled = true;
 
+        bar.setDisplayShowTitleEnabled(true);
         bar.setDisplayShowHomeEnabled(true);
 
 		/* The all-white icon plays nicer with the theme */
