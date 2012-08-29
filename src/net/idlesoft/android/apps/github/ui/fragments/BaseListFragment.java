@@ -79,6 +79,7 @@ public abstract class BaseListFragment<T> extends BaseFragment
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        mListView.setOnItemClickListener(this);
         mListView.setAdapter(
                 new HeaderFooterListAdapter<BaseListAdapter<T>>(mListView, onCreateListAdapter()));
     }
