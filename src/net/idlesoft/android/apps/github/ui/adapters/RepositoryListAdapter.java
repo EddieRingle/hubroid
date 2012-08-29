@@ -44,7 +44,7 @@ public class RepositoryListAdapter extends BaseListAdapter<Repository> {
 
         TextView forks;
 
-        TextView watchers;
+        TextView stars;
     }
 
     public RepositoryListAdapter(BaseActivity context) {
@@ -63,7 +63,7 @@ public class RepositoryListAdapter extends BaseListAdapter<Repository> {
             holder.description =
                     (TextView) convertView.findViewById(R.id.tv_repository_description);
             holder.forks = (TextView) convertView.findViewById(R.id.tv_repository_forks);
-            holder.watchers = (TextView) convertView.findViewById(R.id.tv_repository_watchers);
+            holder.stars = (TextView) convertView.findViewById(R.id.tv_repository_stars);
 
             convertView.setTag(holder);
         } else {
@@ -76,7 +76,7 @@ public class RepositoryListAdapter extends BaseListAdapter<Repository> {
         holder.name.setText(r.getName());
         holder.description.setText(r.getDescription());
         holder.forks.setText(Integer.toString(r.getForks()));
-        holder.watchers.setText(Integer.toString(r.getWatchers()));
+        holder.stars.setText(Integer.toString(r.getWatchers()));
 
         return convertView;
     }
