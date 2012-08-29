@@ -184,7 +184,7 @@ public class BaseDashboardActivity extends BaseActivity {
             }
         });
 
-        int selectedItem = 4;
+        int selectedItem = (isLoggedIn()) ? 2 : 1;
 
         if (getIntent() != null) {
             selectedItem = getIntent().getIntExtra(ARG_DASHBOARD_ITEM, 4);
@@ -221,66 +221,6 @@ public class BaseDashboardActivity extends BaseActivity {
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
                 eventsIntent.putExtra(ARG_EVENT_LIST_TYPE, LIST_USER_PRIVATE);
                 startActivity(eventsIntent);
-            }
-        };
-        dashboardEntries.add(entry);
-
-        entry = new DashboardListAdapter.DashboardEntry();
-        entry.label = "Your Repositories";
-        entry.icon = (new OcticonView(this)).setOcticon(OcticonView.IC_PUBLIC_REPO)
-                .setGlyphColor(Color.parseColor("#2c2c2c"))
-                .setGlyphSize(72.0f)
-                .toDrawable();
-        entry.selected = false;
-        if (this instanceof RepositoriesActivity) {
-            final int listType = getIntent().getIntExtra(ARG_LIST_TYPE, -1);
-            if (listType == LIST_USER) {
-                entry.selected = true;
-            }
-        }
-        entry.onEntryClickListener = new DashboardListAdapter.DashboardEntry.OnEntryClickListener() {
-            @Override
-            public void onClick(DashboardListAdapter.DashboardEntry entry, int i) {
-                final Intent reposIntent = new Intent(BaseDashboardActivity.this,
-                        RepositoriesActivity.class);
-                reposIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
-                reposIntent.putExtra(ARG_DASHBOARD_ITEM, i);
-                reposIntent.putExtra(ARG_FROM_DASHBOARD, true);
-                reposIntent.putExtra(ARG_TARGET_USER,
-                        GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
-                reposIntent.putExtra(ARG_LIST_TYPE, LIST_USER);
-                startActivity(reposIntent);
-                finish();
-            }
-        };
-        dashboardEntries.add(entry);
-
-        entry = new DashboardListAdapter.DashboardEntry();
-        entry.label = "Starred Repositories";
-        entry.icon = (new OcticonView(this)).setOcticon(OcticonView.IC_STAR)
-                .setGlyphColor(Color.parseColor("#2c2c2c"))
-                .setGlyphSize(72.0f)
-                .toDrawable();
-        entry.selected = false;
-        if (this instanceof RepositoriesActivity) {
-            final int listType = getIntent().getIntExtra(ARG_LIST_TYPE, -1);
-            if (listType == LIST_STARRED) {
-                entry.selected = true;
-            }
-        }
-        entry.onEntryClickListener = new DashboardListAdapter.DashboardEntry.OnEntryClickListener() {
-            @Override
-            public void onClick(DashboardListAdapter.DashboardEntry entry, int i) {
-                final Intent reposIntent = new Intent(BaseDashboardActivity.this,
-                        RepositoriesActivity.class);
-                reposIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
-                reposIntent.putExtra(ARG_DASHBOARD_ITEM, i);
-                reposIntent.putExtra(ARG_FROM_DASHBOARD, true);
-                reposIntent.putExtra(ARG_TARGET_USER,
-                        GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
-                reposIntent.putExtra(ARG_LIST_TYPE, LIST_STARRED);
-                startActivity(reposIntent);
-                finish();
             }
         };
         dashboardEntries.add(entry);
