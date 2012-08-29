@@ -30,6 +30,7 @@ import net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity;
 import net.idlesoft.android.apps.github.ui.fragments.app.EventListFragment;
 import net.idlesoft.android.apps.github.ui.fragments.app.ProfileFragment;
 import net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment;
+import net.idlesoft.android.apps.github.ui.fragments.app.UserListFragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,6 +43,9 @@ import static net.idlesoft.android.apps.github.ui.fragments.app.EventListFragmen
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.ARG_LIST_TYPE;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_USER;
 import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFragment.LIST_STARRED;
+import static net.idlesoft.android.apps.github.ui.fragments.app.UserListFragment.ARG_USER_LIST_TYPE;
+import static net.idlesoft.android.apps.github.ui.fragments.app.UserListFragment.LIST_FOLLOWERS;
+import static net.idlesoft.android.apps.github.ui.fragments.app.UserListFragment.LIST_FOLLOWING;
 
 public class ProfileActivity extends BaseDashboardActivity {
 
@@ -79,6 +83,14 @@ public class ProfileActivity extends BaseDashboardActivity {
                     fragment = new RepositoryListFragment();
                     args.putInt(ARG_LIST_TYPE, LIST_STARRED);
                     break;
+                case 4:
+                    fragment = new UserListFragment();
+                    args.putInt(ARG_USER_LIST_TYPE, LIST_FOLLOWING);
+                    break;
+                case 5:
+                    fragment = new UserListFragment();
+                    args.putInt(ARG_USER_LIST_TYPE, LIST_FOLLOWERS);
+                    break;
                 default:
                     fragment = new Fragment();
             }
@@ -89,7 +101,7 @@ public class ProfileActivity extends BaseDashboardActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return 6;
         }
 
         @Override
@@ -103,6 +115,10 @@ public class ProfileActivity extends BaseDashboardActivity {
                     return getString(R.string.repositories);
                 case 3:
                     return getString(R.string.repositories_starred);
+                case 4:
+                    return getString(R.string.following);
+                case 5:
+                    return getString(R.string.followers);
                 default:
                     return "Fragment #" + position;
             }

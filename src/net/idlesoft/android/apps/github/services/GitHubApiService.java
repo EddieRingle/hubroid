@@ -81,6 +81,10 @@ public class GitHubApiService extends IntentService {
 
     public static final String ACTION_USERS_GET_USER = "action_users_get_user";
 
+    public static final String ACTION_USERS_LIST_FOLLOWERS = "action_users_list_followers";
+
+    public static final String ACTION_USERS_LIST_FOLLOWING = "action_users_list_following";
+
     public static final String ARG_ACCOUNT = "arg_account";
 
     public static final String ARG_ANONYMOUS = "arg_anonymous";
@@ -399,6 +403,52 @@ public class GitHubApiService extends IntentService {
             final Intent resultIntent = new Intent(ACTION_USERS_GET_USER);
             if (result != null) {
                 resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
+            } else {
+                resultIntent.putExtra(EXTRA_ERROR, true);
+            }
+            sendBroadcast(resultIntent);
+        } else if (intent.getAction().equals(ACTION_USERS_LIST_FOLLOWERS)) {
+            final UserService us = new UserService(mGitHubClient);
+            ArrayList<User> result = null;
+            PageIterator<User> iterator;
+            final int startPage = intent.getIntExtra(ARG_START_PAGE, 1);
+
+            iterator = us.pageFollowers(intent.getStringExtra(PARAM_LOGIN),
+                    startPage, REQUEST_PAGE_SIZE);
+
+            if (iterator != null && iterator.hasNext()) {
+                result = new ArrayList<User>();
+                result.addAll(iterator.next());
+            }
+
+            final Intent resultIntent = new Intent(ACTION_USERS_LIST_FOLLOWERS);
+            if (result != null) {
+                resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
+                resultIntent.putExtra(EXTRA_HAS_NEXT, iterator.hasNext());
+                resultIntent.putExtra(EXTRA_NEXT_PAGE, iterator.getNextPage());
+            } else {
+                resultIntent.putExtra(EXTRA_ERROR, true);
+            }
+            sendBroadcast(resultIntent);
+        } else if (intent.getAction().equals(ACTION_USERS_LIST_FOLLOWING)) {
+            final UserService us = new UserService(mGitHubClient);
+            ArrayList<User> result = null;
+            PageIterator<User> iterator;
+            final int startPage = intent.getIntExtra(ARG_START_PAGE, 1);
+
+            iterator = us.pageFollowing(intent.getStringExtra(PARAM_LOGIN),
+                    startPage, REQUEST_PAGE_SIZE);
+
+            if (iterator != null && iterator.hasNext()) {
+                result = new ArrayList<User>();
+                result.addAll(iterator.next());
+            }
+
+            final Intent resultIntent = new Intent(ACTION_USERS_LIST_FOLLOWING);
+            if (result != null) {
+                resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
+                resultIntent.putExtra(EXTRA_HAS_NEXT, iterator.hasNext());
+                resultIntent.putExtra(EXTRA_NEXT_PAGE, iterator.getNextPage());
             } else {
                 resultIntent.putExtra(EXTRA_ERROR, true);
             }
