@@ -209,6 +209,9 @@ public class BaseDashboardActivity extends BaseActivity {
                 .setGlyphSize(72.0f)
                 .toDrawable();
         entry.selected = false;
+        if (this instanceof EventsActivity) {
+            entry.selected = true;
+        }
         entry.onEntryClickListener = new DashboardListAdapter.DashboardEntry.OnEntryClickListener() {
             @Override
             public void onClick(DashboardListAdapter.DashboardEntry entry, int i) {
