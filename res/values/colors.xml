@@ -49,8 +49,7 @@
     <!-- Gravatar colors -->
     <color name="gravatar_border">#FFD8D8D8</color>
 
-    <!-- Colors for the tablet-mode Dashboard fragment -->
-    <color name="dashboard_background">#FF161616</color>
+    <color name="dashboard_background">#FFE4E4E4</color>
     <color name="dashboard_button_normal">#00FFFFFF</color>
     <color name="dashboard_button_highlighted">#88000000</color>
 
