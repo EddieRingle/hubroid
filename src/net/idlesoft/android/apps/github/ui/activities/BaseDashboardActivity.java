@@ -254,14 +254,6 @@ public class BaseDashboardActivity extends BaseActivity {
         };
         dashboardEntries.add(entry);
 
-        entry = new DashboardListAdapter.DashboardEntry();
-        entry.label = getString(R.string.dash_users);
-        entry.icon = (new OcticonView(this)).setOcticon(OcticonView.IC_TEAM)
-                .setGlyphColor(Color.parseColor("#2c2c2c"))
-                .setGlyphSize(72.0f)
-                .toDrawable();
-        dashboardEntries.add(entry);
-
         mDashboardListAdapter = new DashboardListAdapter(this);
         mDashboardListAdapter.fillWithItems(dashboardEntries);
 
