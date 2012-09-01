@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import static net.idlesoft.android.apps.github.HubroidConstants.ARG_TARGET_USER;
+import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHUB_ACCOUNT_TYPE;
 import static net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity.ARG_FROM_DASHBOARD;
 import static net.idlesoft.android.apps.github.ui.activities.BaseDashboardActivity.EXTRA_SHOWING_DASH;
 
@@ -74,38 +75,13 @@ public class HomeActivity extends BaseActivity {
                     HubroidConstants.PREF_CURRENT_USER_LOGIN, null);
             final String currentUserJson = mPrefs
                     .getString(HubroidConstants.PREF_CURRENT_USER, null);
-            final Account[] accounts = AccountManager.get(this).getAccountsByType(
-                    AuthConstants.GITHUB_ACCOUNT_TYPE);
-            int i;
 
-            if (currentUserLogin != null && currentUserJson == null) {
-                startActivityForResult(new Intent(this, AccountSelectActivity.class), 0);
-                finish();
-            }
-
-            mCurrentAccount = null;
-
-            if (currentUserLogin != null && currentUserJson != null) {
-                mCurrentAccount = null;
-
-				/* Try to find our current account */
-                for (i = 0; i < accounts.length; i++) {
-                    if (accounts[i].name.equals(currentUserLogin)) {
-                        mCurrentAccount = accounts[i];
-                    }
-                }
-
-				/*
-				 * If we can't find the account, it must have been deleted.
-				 * Redirect to the Account selection activity.
-				 */
-                if (mCurrentAccount == null) {
-                    mPrefsEditor.remove(HubroidConstants.PREF_CURRENT_USER);
-                    mPrefsEditor.remove(HubroidConstants.PREF_CURRENT_USER_LOGIN);
-                    mPrefsEditor.remove(HubroidConstants.PREF_CURRENT_CONTEXT_LOGIN);
-
+            if (currentUserLogin != null) {
+                if (currentUserJson == null) {
                     startActivityForResult(new Intent(this, AccountSelectActivity.class), 0);
                     finish();
+                } else {
+                    mCurrentAccount = new Account(currentUserLogin, GITHUB_ACCOUNT_TYPE);
                 }
             }
         }

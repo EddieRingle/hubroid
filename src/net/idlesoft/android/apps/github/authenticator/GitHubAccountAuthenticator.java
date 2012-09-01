@@ -29,7 +29,9 @@ import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,6 +40,9 @@ import java.util.List;
 import static android.accounts.AccountManager.KEY_ACCOUNT_NAME;
 import static android.accounts.AccountManager.KEY_ACCOUNT_TYPE;
 import static android.accounts.AccountManager.KEY_AUTHTOKEN;
+import static net.idlesoft.android.apps.github.HubroidConstants.PREF_CURRENT_CONTEXT_LOGIN;
+import static net.idlesoft.android.apps.github.HubroidConstants.PREF_CURRENT_USER;
+import static net.idlesoft.android.apps.github.HubroidConstants.PREF_CURRENT_USER_LOGIN;
 import static net.idlesoft.android.apps.github.HubroidConstants.USER_AGENT_STRING;
 import static net.idlesoft.android.apps.github.authenticator.AuthConstants.GITHUB_ACCOUNT_TYPE;
 import static net.idlesoft.android.apps.github.ui.activities.app.GitHubAuthenticatorActivity.PARAM_AUTHTOKEN_TYPE;
@@ -147,5 +152,33 @@ class GitHubAccountAuthenticator extends AbstractAccountAuthenticator {
             String authTokenType,
             Bundle options) {
         return null;
+    }
+
+    @Override
+    public Bundle getAccountRemovalAllowed(final AccountAuthenticatorResponse response,
+            final Account account)
+            throws NetworkErrorException {
+        /*
+         * Clear the current user from preferences if we detect that an account is removed.
+         *
+         * Via: http://stackoverflow.com/a/5973098
+         */
+        final Bundle result = super.getAccountRemovalAllowed(response, account);
+
+        if (result != null && result.containsKey(AccountManager.KEY_BOOLEAN_RESULT) &&
+                !result.containsKey(AccountManager.KEY_INTENT)) {
+            final boolean removalAllowed = result.getBoolean(AccountManager.KEY_BOOLEAN_RESULT);
+            if (removalAllowed) {
+                final SharedPreferences prefs =
+                        PreferenceManager.getDefaultSharedPreferences(mContext);
+                final SharedPreferences.Editor editor = prefs.edit();
+                editor.remove(PREF_CURRENT_CONTEXT_LOGIN);
+                editor.remove(PREF_CURRENT_USER);
+                editor.remove(PREF_CURRENT_USER_LOGIN);
+                editor.commit();
+            }
+        }
+
+        return result;
     }
 }
