@@ -73,8 +73,6 @@ import static net.idlesoft.android.apps.github.ui.fragments.app.RepositoryListFr
 
 public class BaseDashboardActivity extends BaseActivity {
 
-    public static final String ARG_DASHBOARD_ITEM = "arg_dashboard_item";
-
     public static final String EXTRA_CONTEXTS = "extra_contexts";
 
     public static final String ARG_FROM_DASHBOARD = "extra_from_dashboard";
@@ -184,11 +182,7 @@ public class BaseDashboardActivity extends BaseActivity {
             }
         });
 
-        int selectedItem = (isLoggedIn()) ? 2 : 1;
-
         if (getIntent() != null) {
-            selectedItem = getIntent().getIntExtra(ARG_DASHBOARD_ITEM, 4);
-
             mFromDashboard = getIntent().getBooleanExtra(ARG_FROM_DASHBOARD, false);
             if (!mFromDashboard) {
                 getDrawerGarment().setDrawerEnabled(false);
@@ -218,7 +212,6 @@ public class BaseDashboardActivity extends BaseActivity {
                 final Intent eventsIntent = new Intent(BaseDashboardActivity.this,
                         EventsActivity.class);
                 eventsIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
-                eventsIntent.putExtra(ARG_DASHBOARD_ITEM, i);
                 eventsIntent.putExtra(ARG_FROM_DASHBOARD, true);
                 eventsIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
@@ -244,7 +237,6 @@ public class BaseDashboardActivity extends BaseActivity {
                 final Intent profileIntent = new Intent(BaseDashboardActivity.this,
                         ProfileActivity.class);
                 profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
-                profileIntent.putExtra(ARG_DASHBOARD_ITEM, i);
                 profileIntent.putExtra(ARG_FROM_DASHBOARD, true);
                 profileIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
