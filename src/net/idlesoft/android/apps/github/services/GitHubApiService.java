@@ -71,6 +71,8 @@ public class GitHubApiService extends IntentService {
 
     public static final String ACTION_ORGS_USER_MEMBERSHIPS = "action_orgs_user_memberships";
 
+    public static final String ACTION_REPOS_GET_REPO = "action_repos_get_repo";
+
     public static final String ACTION_REPOS_LIST_ORG_OWNED = "action_repos_list_org_owned";
 
     public static final String ACTION_REPOS_LIST_SELF_OWNED = "action_repos_list_self_owned";
@@ -108,6 +110,10 @@ public class GitHubApiService extends IntentService {
     public static final String EXTRA_RESULT_JSON = "extra_result_json";
 
     public static final String PARAM_LOGIN = "param_login";
+
+    public static final String PARAM_REPO_OWNER = "param_repo_owner";
+
+    public static final String PARAM_REPO_NAME = "param_repo_name";
 
     public static final String USER_AGENT = "Hubroid/GitHubJava";
 
@@ -285,6 +291,24 @@ public class GitHubApiService extends IntentService {
             }
 
             final Intent resultIntent = new Intent(ACTION_ORGS_SELF_MEMBERSHIPS);
+            if (result != null) {
+                resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
+            } else {
+                resultIntent.putExtra(EXTRA_ERROR, true);
+            }
+            sendBroadcast(resultIntent);
+        } else if (intent.getAction().equals(ACTION_REPOS_GET_REPO)) {
+            final RepositoryService rs = new RepositoryService(mGitHubClient);
+            Repository result;
+            try {
+                result = rs.getRepository(intent.getStringExtra(PARAM_REPO_OWNER),
+                        intent.getStringExtra(PARAM_REPO_NAME));
+            } catch (IOException e) {
+                result = null;
+                e.printStackTrace();
+            }
+
+            final Intent resultIntent = new Intent(ACTION_REPOS_GET_REPO);
             if (result != null) {
                 resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
             } else {
