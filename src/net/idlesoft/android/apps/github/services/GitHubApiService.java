@@ -25,7 +25,9 @@ package net.idlesoft.android.apps.github.services;
 
 import net.idlesoft.android.apps.github.authenticator.OAuthUserProvider;
 
+import org.eclipse.egit.github.core.Issue;
 import org.eclipse.egit.github.core.Repository;
+import org.eclipse.egit.github.core.RepositoryIssue;
 import org.eclipse.egit.github.core.User;
 import org.eclipse.egit.github.core.client.GitHubClient;
 import org.eclipse.egit.github.core.client.GitHubRequest;
@@ -35,6 +37,7 @@ import org.eclipse.egit.github.core.client.IGitHubConstants;
 import org.eclipse.egit.github.core.client.PageIterator;
 import org.eclipse.egit.github.core.event.Event;
 import org.eclipse.egit.github.core.service.EventService;
+import org.eclipse.egit.github.core.service.IssueService;
 import org.eclipse.egit.github.core.service.OrganizationService;
 import org.eclipse.egit.github.core.service.RepositoryService;
 import org.eclipse.egit.github.core.service.UserService;
@@ -64,6 +67,8 @@ public class GitHubApiService extends IntentService {
     public static final String ACTION_EVENTS_LIST_USER_RECEIVED = "action_events_list_user_received";
 
     public static final String ACTION_EVENTS_LIST_TIMELINE = "action_events_list_timeline";
+
+    public static final String ACTION_ISSUES_LIST_SELF = "action_issues_list_self";
 
     public static final String ACTION_ORGS_LIST_MEMBERS = "action_orgs_list_members";
 
@@ -109,11 +114,23 @@ public class GitHubApiService extends IntentService {
 
     public static final String EXTRA_RESULT_JSON = "extra_result_json";
 
+    public static final String PARAM_DIRECTION = "param_direction";
+
+    public static final String PARAM_FILTER = "param_filter";
+
+    public static final String PARAM_LABELS = "param_labels";
+
     public static final String PARAM_LOGIN = "param_login";
 
     public static final String PARAM_REPO_OWNER = "param_repo_owner";
 
     public static final String PARAM_REPO_NAME = "param_repo_name";
+
+    public static final String PARAM_SINCE = "param_since";
+
+    public static final String PARAM_SORT = "param_sort";
+
+    public static final String PARAM_STATE = "param_state";
 
     public static final String USER_AGENT = "Hubroid/GitHubJava";
 
@@ -272,6 +289,48 @@ public class GitHubApiService extends IntentService {
             }
 
             final Intent resultIntent = new Intent(ACTION_EVENTS_LIST_TIMELINE);
+            if (result != null) {
+                resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
+                resultIntent.putExtra(EXTRA_HAS_NEXT, iterator.hasNext());
+                resultIntent.putExtra(EXTRA_NEXT_PAGE, iterator.getNextPage());
+            } else {
+                resultIntent.putExtra(EXTRA_ERROR, true);
+            }
+            sendBroadcast(resultIntent);
+        } else if (intent.getAction().equals(ACTION_ISSUES_LIST_SELF)) {
+            final IssueService is = new IssueService(mGitHubClient);
+            final int startPage = intent.getIntExtra(ARG_START_PAGE, 1);
+            ArrayList<RepositoryIssue> result = null;
+            PageIterator<RepositoryIssue> iterator;
+            HashMap<String, String> params = new HashMap<String, String>();
+
+            if (intent.hasExtra(PARAM_FILTER)) {
+                params.put("filter", intent.getStringExtra(PARAM_FILTER));
+            }
+            if (intent.hasExtra(PARAM_STATE)) {
+                params.put("state", intent.getStringExtra(PARAM_STATE));
+            }
+            if (intent.hasExtra(PARAM_LABELS)) {
+                params.put("labels", intent.getStringExtra(PARAM_LABELS));
+            }
+            if (intent.hasExtra(PARAM_SORT)) {
+                params.put("sort", intent.getStringExtra(PARAM_SORT));
+            }
+            if (intent.hasExtra(PARAM_DIRECTION)) {
+                params.put("direction", intent.getStringExtra(PARAM_DIRECTION));
+            }
+            if (intent.hasExtra(PARAM_SINCE)) {
+                params.put("since", intent.getStringExtra(PARAM_SINCE));
+            }
+
+            iterator = is.pageIssues(params, startPage, REQUEST_PAGE_SIZE);
+
+            if (iterator != null && iterator.hasNext()) {
+                result = new ArrayList<RepositoryIssue>();
+                result.addAll(iterator.next());
+            }
+
+            final Intent resultIntent = new Intent(ACTION_ISSUES_LIST_SELF);
             if (result != null) {
                 resultIntent.putExtra(EXTRA_RESULT_JSON, GsonUtils.toJson(result));
                 resultIntent.putExtra(EXTRA_HAS_NEXT, iterator.hasNext());
