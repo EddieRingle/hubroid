@@ -213,10 +213,13 @@ public class BaseDashboardActivity extends BaseActivity {
                         EventsActivity.class);
                 eventsIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 eventsIntent.putExtra(ARG_FROM_DASHBOARD, true);
+                eventsIntent.putExtra(EXTRA_SHOWING_DASH, true);
                 eventsIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
                 eventsIntent.putExtra(ARG_EVENT_LIST_TYPE, LIST_USER_PRIVATE);
                 startActivity(eventsIntent);
+                overridePendingTransition(0, 0);
+                finish();
             }
         };
         dashboardEntries.add(entry);
@@ -238,9 +241,11 @@ public class BaseDashboardActivity extends BaseActivity {
                         ProfileActivity.class);
                 profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 profileIntent.putExtra(ARG_FROM_DASHBOARD, true);
+                profileIntent.putExtra(EXTRA_SHOWING_DASH, true);
                 profileIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
                 startActivity(profileIntent);
+                overridePendingTransition(0, 0);
                 finish();
             }
         };
@@ -357,7 +362,7 @@ public class BaseDashboardActivity extends BaseActivity {
         super.onStart();
 
         if (mShowingDash) {
-            mDrawerGarment.openDrawer();
+            mDrawerGarment.openDrawer(false);
         }
     }
 
