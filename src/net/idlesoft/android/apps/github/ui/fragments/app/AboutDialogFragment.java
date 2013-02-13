@@ -43,7 +43,7 @@ public class AboutDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(STYLE_NO_TITLE, R.style.Theme_Sherlock_Light_Dialog);
+        setStyle(STYLE_NO_TITLE, 0);
     }
 
     @Override
