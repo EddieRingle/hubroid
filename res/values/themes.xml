@@ -35,7 +35,7 @@
         <item name="android:paddingLeft">15dip</item>
     </style>
     <style name="CustomTitlePageIndicator">
-        <item name="android:background">@android:color/transparent</item>
+        <item name="android:background">@android:color/white</item>
         <!--<item name="footerColor">#FFCACACA</item>-->
         <item name="footerColor">@color/github_blue</item>
         <item name="footerLineHeight">1dp</item>
