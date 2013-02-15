@@ -95,6 +95,8 @@ public class BaseDashboardActivity extends BaseActivity {
 
     private ContextListAdapter mContextListAdapter;
 
+    private Intent mTargetIntent;
+
     private AdapterView.OnItemSelectedListener mOnContextItemSelectedListener;
 
     private BroadcastReceiver mContextReceiver = new BroadcastReceiver() {
@@ -176,9 +178,15 @@ public class BaseDashboardActivity extends BaseActivity {
 
             @Override
             public void onDrawerClosed() {
-                mShowingDash = false;
-                supportInvalidateOptionsMenu();
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                if (mTargetIntent == null) {
+                    mShowingDash = false;
+                    supportInvalidateOptionsMenu();
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                } else {
+                    startActivity(mTargetIntent);
+                    overridePendingTransition(0, 0);
+                    finish();
+                }
             }
         });
 
@@ -186,12 +194,13 @@ public class BaseDashboardActivity extends BaseActivity {
             mFromDashboard = getIntent().getBooleanExtra(ARG_FROM_DASHBOARD, false);
             if (!mFromDashboard) {
                 getDrawerGarment().setDrawerEnabled(false);
-            }
-
-            if (getIntent().hasExtra(EXTRA_SHOWING_DASH)) {
+                mShowingDash = false;
+            } else if (getIntent().hasExtra(EXTRA_SHOWING_DASH)) {
                 mShowingDash = getIntent().getBooleanExtra(EXTRA_SHOWING_DASH, mShowingDash);
             }
         }
+
+        mTargetIntent = null;
 
         final ArrayList<DashboardListAdapter.DashboardEntry> dashboardEntries =
                 new ArrayList<DashboardListAdapter.DashboardEntry>();
@@ -213,13 +222,11 @@ public class BaseDashboardActivity extends BaseActivity {
                         EventsActivity.class);
                 eventsIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 eventsIntent.putExtra(ARG_FROM_DASHBOARD, true);
-                eventsIntent.putExtra(EXTRA_SHOWING_DASH, true);
                 eventsIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
                 eventsIntent.putExtra(ARG_EVENT_LIST_TYPE, LIST_USER_PRIVATE);
-                startActivity(eventsIntent);
-                overridePendingTransition(0, 0);
-                finish();
+                mTargetIntent = eventsIntent;
+                getDrawerGarment().closeDrawer();
             }
         };
         dashboardEntries.add(entry);
@@ -241,12 +248,10 @@ public class BaseDashboardActivity extends BaseActivity {
                         ProfileActivity.class);
                 profileIntent.setFlags(FLAG_ACTIVITY_CLEAR_TOP | FLAG_ACTIVITY_NEW_TASK);
                 profileIntent.putExtra(ARG_FROM_DASHBOARD, true);
-                profileIntent.putExtra(EXTRA_SHOWING_DASH, true);
                 profileIntent.putExtra(ARG_TARGET_USER,
                         GsonUtils.toJson(new User().setLogin(getCurrentContextLogin())));
-                startActivity(profileIntent);
-                overridePendingTransition(0, 0);
-                finish();
+                mTargetIntent = profileIntent;
+                getDrawerGarment().closeDrawer();
             }
         };
         dashboardEntries.add(entry);
@@ -416,15 +421,6 @@ public class BaseDashboardActivity extends BaseActivity {
             outState.putString(EXTRA_CONTEXTS, GsonUtils.toJson(mContextListAdapter.getAll()));
         }
         outState.putBoolean(EXTRA_SHOWING_DASH, mShowingDash);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mShowingDash = savedInstanceState.getBoolean(EXTRA_SHOWING_DASH, false);
-        }
     }
 
     @Override
