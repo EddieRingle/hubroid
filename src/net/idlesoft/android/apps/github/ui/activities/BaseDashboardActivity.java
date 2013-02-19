@@ -48,6 +48,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
@@ -167,6 +168,7 @@ public class BaseDashboardActivity extends BaseActivity {
         }
 
         mDrawerGarment = new DrawerGarment(this, R.layout.dashboard);
+        mDrawerGarment.setDrawerMaxWidth(Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 250, getResources().getDisplayMetrics())));
         mDrawerGarment.setSlideTarget(DrawerGarment.SLIDE_TARGET_CONTENT);
         mDrawerGarment.setDrawerCallbacks(new DrawerGarment.IDrawerCallbacks() {
             @Override
